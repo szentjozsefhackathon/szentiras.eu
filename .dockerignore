@@ -9,3 +9,4 @@ public/build
 .vscode
 .github
 .phpunit.cache
+_ide_helper*
