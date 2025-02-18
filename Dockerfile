@@ -9,7 +9,7 @@ RUN npm run build
 FROM php:8.2-apache AS php
 WORKDIR /var/www/html
 COPY docker/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
-#COPY docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
+COPY docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 COPY --from=node /app .
 RUN apt-get update && \
     apt-get install -y \
