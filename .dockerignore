@@ -10,3 +10,4 @@ public/build
 .github
 .phpunit.cache
 _ide_helper*
+.env

@@ -30,39 +30,45 @@ services:
       - storage:/var/www/html/storage
     env_file:
       - ./.env
+    environment:
+      - DB_HOST=database
     depends_on:
       database:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
       ## TODO get host from .env
-      - "traefik.http.routers.app.rule=Host(`szentiras.hu`)"
+      - "traefik.http.routers.app.rule=Host(`szentiras.eu`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=myresolver"
       - "traefik.http.services.app.loadbalancer.server.port=80"
     networks:
       - traefik
-      - default
-  database:
-    image: mariadb
+  sphinx:
+    image: macbre/sphinxsearch:3.7.1
+    volumes:
+      - ./deploy/production/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
+      - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
+      - sphinx_data:/opt/sphinx/indexes
+    mem_limit: 32m
     env_file:
       - ./.env
-    volumes:
-      - ./tmp:/docker-entrypoint-initdb.d
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-  sphinx:
-    image: nsign/sphinx-docker:2.2.11
-  postgres:
-    image: pgvector/pgvector
+    environment:
+      - DB_HOST=database
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - traefik
+    command: sh -c "/opt/sphinx/start.sh"
+  database:
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_USER: homestead
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: bible
+    networks:
+      - traefik
     ports:
       - "5432:5432"
     volumes:
@@ -73,25 +79,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3      
-  mailpit:
-    image: axllent/mailpit
-    ports:
-      - "1025:1025"
-      - "8025:8025"
-  composer:
-    image: app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./deploy/production/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in:ro
-      - ./docker/sphinx/start.sh:/start.sh:ro
-      - sphinx_data:/var/data
-    env_file:
-      - ./.env
-    depends_on:
-      database:
-        condition: service_healthy
 volumes:
   db-data:
   storage:
