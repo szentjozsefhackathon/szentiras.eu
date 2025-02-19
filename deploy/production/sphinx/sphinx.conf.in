@@ -23,8 +23,6 @@ source verses_source
         sql_attr_bigint = gepi
         sql_attr_uint = tip
 
-	sql_query_pre = SET NAMES utf8
-    sql_query_pre = SET CHARACTER_SET_RESULTS=utf8
 }
 
 

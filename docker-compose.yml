@@ -9,7 +9,7 @@ services:
   #     - "--entryPoints.web.address=:80"
   #     - "--entryPoints.websecure.address=:443"
   #     ## TODO review the following configuration
-  #     - "--certificatesresolvers.myresolver.acme.email=info@szentiras.hu"
+  #     - "--certificatesresolvers.myresolver.acme.email=info@szentiras.eu"
   #     - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
   #     ## TODO http -> https redirect
   #   ports:
@@ -32,6 +32,8 @@ services:
       - ./.env
     environment:
       - DB_HOST=database
+    ports:
+      - "${APP_EXTERNAL_PORT:-8000}:80"
     depends_on:
       database:
         condition: service_healthy
@@ -70,9 +72,10 @@ services:
     networks:
       - traefik
     ports:
-      - "5432:5432"
+      - "${POSTGRES_EXTERNAL_PORT:-5432}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./tmp:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U homestead -d bible"]
       start_period: 1m

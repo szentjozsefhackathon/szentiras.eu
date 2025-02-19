@@ -20,6 +20,8 @@ ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/relea
 RUN install-php-extensions gd gmp pdo_pgsql zip
 
 RUN php composer.phar install --no-dev --no-interaction
+RUN chown -R www-data:www-data bootstrap/cache
+RUN chown -R www-data:www-data storage
 
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 RUN a2enmod rewrite headers
