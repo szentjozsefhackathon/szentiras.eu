@@ -16,13 +16,10 @@ FROM php:8.2-apache AS php
 ARG UID
 ARG GID
 
-RUN addgroup --gid $GID nonroot && \
-    adduser --uid $UID --gid $GID --disabled-password --gecos "" nonroot && \
-    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
 RUN apt-get update && \
     apt-get install -y \
-    curl
+    curl sudo git gh
+
 # Add extensions not included in the base image
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/download/2.7.24/install-php-extensions /usr/local/bin/
 RUN install-php-extensions gd gmp pdo_pgsql zip
@@ -30,6 +27,10 @@ COPY docker/sites-available/000-default.conf.dev /etc/apache2/sites-available/00
 # TODO dev needs different entrypoint? 
 # COPY docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 RUN a2enmod rewrite headers
+
+RUN addgroup --gid $GID nonroot && \
+    adduser --uid $UID --gid $GID --disabled-password --gecos "" nonroot && \
+    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 USER nonroot
 WORKDIR /var/www/html
