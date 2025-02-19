@@ -8,12 +8,22 @@ ARG GID
 
 RUN apt-get update && \
     apt-get install -y \
-    curl sudo git gh
+    curl sudo git gh nano
 
 # Add extensions not included in the base image
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/download/2.7.24/install-php-extensions /usr/local/bin/
-RUN install-php-extensions gd gmp pdo_pgsql zip
+RUN install-php-extensions gd gmp pdo_pgsql xdebug zip
 COPY docker/sites-available/000-default.conf.dev /etc/apache2/sites-available/000-default.conf
+
+RUN echo "xdebug.mode=debug,develop" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN touch /var/log/xdebug.log
+RUN chown laravel:laravel /var/log/xdebug.log
+
 RUN a2enmod rewrite headers
 
 RUN addgroup --gid $GID laravel && \
@@ -21,6 +31,7 @@ RUN addgroup --gid $GID laravel && \
     echo 'laravel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN chown -R laravel:laravel .
+
 USER laravel
 
 ENV NVM_DIR /home/laravel/.nvm
