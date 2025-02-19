@@ -5,7 +5,7 @@
 
 source verses_source
 {
-	type			= __DB_TYPE__
+	type			= pgsql
 	sql_host		= __DB_HOST__
 	sql_user		= __DB_USERNAME__
 	sql_pass		= __DB_PASSWORD__
@@ -23,8 +23,6 @@ source verses_source
         sql_attr_bigint = gepi
         sql_attr_uint = tip
 
-	sql_query_pre = SET NAMES utf8
-    sql_query_pre = SET CHARACTER_SET_RESULTS=utf8
 }
 
 
@@ -40,7 +38,6 @@ source verses_root_source : verses_source
 index verse
 {
 	source	= verses_source
-	path = /tmp/sphinx_verse_index
 	min_infix_len = 3
 	charset_table = \
 	    0..9, \
@@ -56,7 +53,6 @@ index verse
 index verse_root : verse
 {
     source = verses_root_source
-    path = /tmp/sphinx_verse_root_index
 }
 
 
@@ -68,16 +64,15 @@ indexer
 
 searchd
 {
-	listen			= __SPHINX_PORT__
-	log			    = /var/log/sphinxsearch/searchd.log
-	query_log		= /var/log/sphinxsearch/query.log
 	read_timeout	= 5
 	max_children	= 30
-	pid_file		= /var/run/sphinxsearch/searchd.pid
-	max_matches		= 1000
 	seamless_rotate	= 1
 	preopen_indexes	= 1
 	unlink_old		= 1
 	workers			= threads # for RT to work
-	binlog_path		=
+}
+
+common
+{
+    datadir            = /opt/sphinx
 }

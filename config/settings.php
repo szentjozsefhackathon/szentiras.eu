@@ -12,7 +12,7 @@ return [
     'logLevel' => env("LOG_LEVEL", 'debug'),
     'imageMagickCommand' => [ 'gm', 'convert' ],
     'sphinxConfig' => env('SPHINX_CONFIG', '/etc/sphinxsearch/sphinx.conf'),
-    'sphinxHost' => env('SPHINX_HOST', 'localhost'),
+    'sphinxHost' => env('SPHINX_HOST', 'sphinx'),
     'sphinxPort' => env('SPHINX_PORT', 9312),
     'sphinxIndexes' => [
         'name' => ['verse', 'verse_root'],

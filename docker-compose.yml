@@ -44,11 +44,29 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3      
+  sphinx:
+    image: macbre/sphinxsearch:3.7.1
+    volumes:
+      - ./deploy/local/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
+      - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
+      - sphinx_data:/opt/sphinx/indexes
+    mem_limit: 32m
+    env_file:
+      - ./.env
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - szeu-network
+    command: sh -c "/opt/sphinx/start.sh"
+
   # mailpit:
   #   image: axllent/mailpit
   #   ports:
   #     - "1025:1025"
   #     - "8025:8025"
+  
+  ## The following is probably not needed, as we map the source files into the container, and need running these from inside for development anyway.
   # composer:
   #   image: app
   #   build:
@@ -74,5 +92,6 @@ services:
   #       condition: service_completed_successfully
 volumes:
   db-data:
+  sphinx_data:  
 networks:
   szeu-network:
