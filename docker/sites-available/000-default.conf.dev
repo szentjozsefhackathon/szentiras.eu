@@ -12,5 +12,5 @@
     CustomLog ${APACHE_LOG_DIR}/access.log json
 </VirtualHost>
 
-User nonroot
-Group nonroot
+User laravel
+Group laravel

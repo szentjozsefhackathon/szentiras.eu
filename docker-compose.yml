@@ -10,6 +10,7 @@ services:
         GID: ${HOST_GID:-1000}
     ports:
       - "${APP_EXTERNAL_PORT:-8080}:80"
+      - "5173:5173" # This is for vite, it is not configurable, only together with vite.config.js
     env_file:
       - ./.env
     volumes:
@@ -42,11 +43,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3      
-  mailpit:
-    image: axllent/mailpit
-    ports:
-      - "1025:1025"
-      - "8025:8025"
+  # mailpit:
+  #   image: axllent/mailpit
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
   # composer:
   #   image: app
   #   build:

@@ -1,18 +1,8 @@
 ARG NODE_VERSION=22-alpine
 FROM node:${NODE_VERSION} AS node
-ARG UID
-ARG GID
-
-RUN addgroup --gid $GID nonroot && \
-    adduser --uid $UID --gid $GID --disabled-password --gecos "" nonroot && \
-    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-USER nonroot
-
-WORKDIR /var/www/html
-RUN npm install
-RUN npm run build
 
 FROM php:8.2-apache AS php
+WORKDIR /var/www/html
 ARG UID
 ARG GID
 
@@ -24,17 +14,16 @@ RUN apt-get update && \
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/download/2.7.24/install-php-extensions /usr/local/bin/
 RUN install-php-extensions gd gmp pdo_pgsql zip
 COPY docker/sites-available/000-default.conf.dev /etc/apache2/sites-available/000-default.conf
-# TODO dev needs different entrypoint? 
-# COPY docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 RUN a2enmod rewrite headers
 
-RUN addgroup --gid $GID nonroot && \
-    adduser --uid $UID --gid $GID --disabled-password --gecos "" nonroot && \
-    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN addgroup --gid $GID laravel && \
+    adduser --uid $UID --gid $GID --disabled-password --gecos "" laravel && \
+    echo 'laravel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-USER nonroot
-WORKDIR /var/www/html
+RUN chown -R laravel:laravel .
+USER laravel
 
-#RUN php composer.phar install --no-dev --no-interaction
-RUN ls -al
-
+ENV NVM_DIR /home/laravel/.nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
+    && . $NVM_DIR/nvm.sh \
+    && nvm install 22
