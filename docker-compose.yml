@@ -30,8 +30,6 @@ services:
       - storage:/var/www/html/storage
     env_file:
       - ./.env
-    environment:
-      - DB_HOST=database
     ports:
       - "${APP_EXTERNAL_PORT:-8000}:80"
     depends_on:
@@ -55,8 +53,6 @@ services:
     mem_limit: 32m
     env_file:
       - ./.env
-    environment:
-      - DB_HOST=database
     depends_on:
       database:
         condition: service_healthy
@@ -65,14 +61,14 @@ services:
     command: sh -c "/opt/sphinx/start.sh"
   database:
     image: pgvector/pgvector:pg17
+    env_file:
+      - ./.env
     environment:
-      POSTGRES_USER: homestead
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: bible
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     networks:
       - traefik
-    ports:
-      - "${POSTGRES_EXTERNAL_PORT:-5432}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./tmp:/docker-entrypoint-initdb.d
