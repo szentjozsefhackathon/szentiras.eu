@@ -1,64 +1,26 @@
 ---
 services:
-  # traefik:
-  #   image: traefik:v3.3
-  #   restart: unless-stopped
-  #   command:
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-  #     - "--entryPoints.web.address=:80"
-  #     - "--entryPoints.websecure.address=:443"
-  #     ## TODO review the following configuration
-  #     - "--certificatesresolvers.myresolver.acme.email=info@szentiras.eu"
-  #     - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-  #     ## TODO http -> https redirect
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - letsencrypt:/letsencrypt
-  #   networks:
-  #     - default
-  #     - traefik
   app:
-    image: app
+    image: szeu-app-dev
     build:
       context: .
-      dockerfile: Dockerfile
-    volumes:
-      - storage:/var/www/html/storage
-    env_file:
-      - ./.env
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
     ports:
-      - "${APP_EXTERNAL_PORT:-8000}:80"
-    depends_on:
-      database:
-        condition: service_healthy
-    labels:
-      - "traefik.enable=true"
-      ## TODO get host from .env
-      - "traefik.http.routers.app.rule=Host(`szentiras.eu`)"
-      - "traefik.http.routers.app.entrypoints=websecure"
-      - "traefik.http.routers.app.tls.certresolver=myresolver"
-      - "traefik.http.services.app.loadbalancer.server.port=80"
-    networks:
-      - traefik
-  sphinx:
-    image: macbre/sphinxsearch:3.7.1
-    volumes:
-      - ./deploy/production/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
-      - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
-      - sphinx_data:/opt/sphinx/indexes
-    mem_limit: 32m
+      - "${APP_EXTERNAL_PORT:-8080}:80"
     env_file:
       - ./.env
+    volumes:
+      - .:/var/www/html
+    networks:
+      - szeu-network
     depends_on:
       database:
         condition: service_healthy
-    networks:
-      - traefik
-    command: sh -c "/opt/sphinx/start.sh"
+      # migrator:
+      #   condition: service_completed_successfully
   database:
     image: pgvector/pgvector:pg17
     env_file:
@@ -68,20 +30,47 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     networks:
-      - traefik
+      - szeu-network
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./tmp:/docker-entrypoint-initdb.d
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U homestead -d bible"]
       start_period: 1m
       interval: 10s
       timeout: 5s
       retries: 3      
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+  # composer:
+  #   image: app
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - .:/var/www/html
+  #   command: php composer.phar install
+  # migrator:
+  #   image: app
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   env_file:
+  #     - ./.env
+  #   volumes:
+  #     - .:/var/www/html
+  #   command: php artisan migrate -n
+  #   depends_on:
+  #     database:
+  #       condition: service_healthy
+  #     composer:
+  #       condition: service_completed_successfully
 volumes:
   db-data:
-  storage:
-  letsencrypt:
-  sphinx_data:
 networks:
-  traefik:
+  szeu-network:
