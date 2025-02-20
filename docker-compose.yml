@@ -21,8 +21,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      # migrator:
-      #   condition: service_completed_successfully
+      migrator:
+        condition: service_completed_successfully
   database:
     image: pgvector/pgvector:pg17
     env_file:
@@ -66,30 +66,47 @@ services:
   #     - "1025:1025"
   #     - "8025:8025"
   
-  ## The following is probably not needed, as we map the source files into the container, and need running these from inside for development anyway.
-  # composer:
-  #   image: app
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.dev
-  #   volumes:
-  #     - .:/var/www/html
-  #   command: php composer.phar install
-  # migrator:
-  #   image: app
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.dev
-  #   env_file:
-  #     - ./.env
-  #   volumes:
-  #     - .:/var/www/html
-  #   command: php artisan migrate -n
-  #   depends_on:
-  #     database:
-  #       condition: service_healthy
-  #     composer:
-  #       condition: service_completed_successfully
+  composer:
+    image: szeu-app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
+    env_file:
+      - ./.env
+    environment:
+      - XDEBUG_CONFIG="mode=off"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      database:
+        condition: service_healthy
+    command: php composer.phar install --no-interaction
+  migrator:
+    image: szeu-app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
+    env_file:
+      - ./.env
+    environment:
+      - XDEBUG_CONFIG="mode=off"
+    volumes:
+      - .:/var/www/html
+    command: php artisan migrate -n
+    depends_on:
+      database:
+        condition: service_healthy
+      composer:
+        condition: service_completed_successfully
+    networks:
+      - szeu-network
+
 volumes:
   db-data:
   sphinx_data:  
