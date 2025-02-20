@@ -6,9 +6,14 @@ WORKDIR /var/www/html
 ARG UID
 ARG GID
 
+# Hunspell doesn't work without a proper locale :o
 RUN apt-get update && \
     apt-get install -y \
-    curl sudo git gh nano
+    curl sudo git gh nano hunspell hunspell-hu locales 
+RUN sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen
+RUN sed -i 's/^# *\(hu_HU.UTF-8\)/\1/' /etc/locale.gen
+
+RUN locale-gen en_US.UTF-8 hu_HU.UTF-8
 
 # Add extensions not included in the base image
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/download/2.7.24/install-php-extensions /usr/local/bin/

@@ -8,21 +8,21 @@ services:
       args:
         UID: ${HOST_UID:-1000}
         GID: ${HOST_GID:-1000}
-    ports:
-      - "${APP_EXTERNAL_PORT:-8080}:80"
-      - "${XDEBUG_EXTERNAL_PORT:-9003}:9003"
-      - "5173:5173" # This is for vite, it is not configurable, only together with vite.config.js
     env_file:
       - ./.env
     volumes:
       - .:/var/www/html
     networks:
       - szeu-network
+    ports:
+      - "${APP_EXTERNAL_PORT:-8080}:80"
+      - "${XDEBUG_EXTERNAL_PORT:-9003}:9003"
+      - "5173:5173" # This is for vite, it is not configurable, only together with vite.config.js
     depends_on:
       database:
         condition: service_healthy
       migrator:
-        condition: service_completed_successfully
+        condition: service_completed_successfully        
   database:
     image: pgvector/pgvector:pg17
     env_file:
@@ -50,7 +50,6 @@ services:
       - ./deploy/local/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
       - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
       - sphinx_data:/opt/sphinx/indexes
-    mem_limit: 32m
     env_file:
       - ./.env
     depends_on:
@@ -106,9 +105,21 @@ services:
         condition: service_completed_successfully
     networks:
       - szeu-network
-
+  # Hunspell is inside the container for now, this is preparation for the future
+  # hunspell:
+  #   image: szeu-hunspell
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.hunspell
+  #   ports:
+  #     - "1234:1234"
+  #   volumes:
+  #     - hunspellpipe:/var/run/hunspell
+  #   networks:
+  #     - szeu-network
 volumes:
   db-data:
   sphinx_data:  
+  # hunspellpipe:
 networks:
   szeu-network:

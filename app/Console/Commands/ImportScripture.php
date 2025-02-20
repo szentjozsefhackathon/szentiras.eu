@@ -62,6 +62,9 @@ class ImportScripture extends Command
         2 => ["pipe", "w"]  // stderr
     ];
 
+    private array $processedStems = [];
+    const STEM_FILE = "database/preload/stems.dat";
+
     /**
      * Create a new command instance.
      *
@@ -143,15 +146,47 @@ class ImportScripture extends Command
 
         $dbToHeaderMap = $this->mapVerseSheetHeadersToDbColumns($verseSheetHeaders);
     
+        $pipes = [];
+        if ($this->hunspellEnabled) {
+            $hunspellProcess = proc_open(
+                'stdbuf -oL hunspell -m -d hu_HU -i UTF-8',
+                $this->descriptorspec,
+                $pipes,
+                null,
+                null
+            );                    
+        }
+
+        // if the stems file exists, unserialize it
+        if (file_exists(ImportScripture::STEM_FILE)) {
+            $this->info("A szótövek fájl betöltése...");
+            $this->processedStems = unserialize(gzuncompress(file_get_contents(ImportScripture::STEM_FILE)));
+            // fill the cache with the processed stems
+            foreach ($this->processedStems as $word => $stems) {
+                Cache::store("array")->put("hunspell_{$word}", $stems, 60 * 60 * 24);
+            }
+        }
+        
         $inserts = $this->readLines(
             $verseRowIterator,
             $verseSheetHeaders,
             $dbToHeaderMap,
             $translation,
-            $bookNumberToId
+            $bookNumberToId,
+            $pipes
         );
       
         $reader->close();
+
+        if ($this->hunspellEnabled) {
+            fclose($pipes[0]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            if (isset($hunspellProcess)) {
+                proc_close($hunspellProcess);
+            }
+        }
+
         return $inserts;
     }
 
@@ -212,7 +247,7 @@ class ImportScripture extends Command
         return $sheets;
     }
 
-    private function readLines(RowIterator $verseRowIterator, array $verseSheetHeaders, array $dbToHeaderMap, Translation $translation, array $booksGepiToId): array
+    private function readLines(RowIterator $verseRowIterator, array $verseSheetHeaders, array $dbToHeaderMap, Translation $translation, array $booksGepiToId, $pipes): array
     {
         $this->info("Beolvasás sorról sorra...\n");
         $progressBar = $this->output->createProgressBar();
@@ -240,7 +275,8 @@ class ImportScripture extends Command
                     $verseSheetHeaders,
                     $translation,
                     $gepi,
-                    $booksGepiToId
+                    $booksGepiToId,
+                    $pipes
                 );
                 $inserts[$rowNumber] = $newInsert;
             
@@ -250,22 +286,17 @@ class ImportScripture extends Command
                 $progressBar->advance();
             }            
         }
+        $this->info("A szótövek fájl mentése...");
+        ksort($this->processedStems);
+        $serializedStems = gzcompress(serialize($this->processedStems));
+        file_put_contents(ImportScripture::STEM_FILE, $serializedStems);
         $progressBar->finish();
+
         return $inserts;
     }
 
-    private function toDbRow(Row $row, array $verseSheetHeaders, Translation $translation, string $gepi, array $booksGepiToId): array
+    private function toDbRow(Row $row, array $verseSheetHeaders, Translation $translation, string $gepi, array $booksGepiToId, $pipes): array
     {
-        $pipes = [];
-        if ($this->hunspellEnabled) {
-            $hunspellProcess = proc_open(
-                'stdbuf -oL hunspell -m -d hu_HU -i UTF-8',
-                $this->descriptorspec,
-                $pipes,
-                null,
-                null
-            );                    
-        }
 
         $result['trans'] = $translation->id;
         $result['gepi'] = $gepi;
@@ -289,15 +320,6 @@ class ImportScripture extends Command
             App::abort(500, 'Nincs meg a book number a gepi->id listában');
         }
         $result['book_id'] = $booksGepiToId[$result['book_number']];
-
-        if ($this->hunspellEnabled) {
-            fclose($pipes[0]);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            if (isset($hunspellProcess)) {
-                proc_close($hunspellProcess);
-            }
-        }
 
         return $result;
     }
@@ -407,15 +429,19 @@ class ImportScripture extends Command
 
     private function executeStemming(string $verse, array $pipes): string
     {
-        $processedVerse = strip_tags($verse);
+        // actually replace the tags with a space
+        $processedVerse = str_replace( '<', ' <', $verse ); 
+        $processedVerse = strip_tags($verse); 
         $processedVerse = preg_replace("/(,|:|\?|!|;|\.|„|”|»|«|\")/i", ' ', $processedVerse);
         $processedVerse = preg_replace(['/Í/i', '/Ú/i', '/Ő/i', '/Ó/i', '/Ü/i'], ['í', 'ú', 'ő', 'ó', 'ü'], $processedVerse);
 
         $verseroots = collect();
         preg_match_all('/(\p{L}+)/u', $processedVerse, $words);
+        // take the first match as lower case
         foreach ($words[1] as $word) {
-            if (Cache::has("hunspell_{$word}")) {
-                $cachedStems = Cache::get("hunspell_{$word}");
+            $word = mb_strtolower($word);
+            if (Cache::store("array")->has("hunspell_{$word}")) {
+                $cachedStems = Cache::store("array")->get("hunspell_{$word}");
                 $verseroots = $verseroots->merge($cachedStems);
             } else {
                 fwrite($pipes[0], "{$word}\n"); // send start
@@ -428,16 +454,18 @@ class ImportScripture extends Command
                             $stems->push($word);
                         }
                     } else {
-                        $cachedStems = $stems->unique();
-                        Cache::put("hunspell_{$word}", $cachedStems, 60 * 60 * 24);
-                        $verseroots = $verseroots->merge($stems);
+                        $cachedStems = $stems->unique()->toArray();
+                        Cache::store("array")->put("hunspell_{$word}", $cachedStems, 60 * 60 * 24);
+                        $this->processedStems[$word] = $cachedStems;
+                        $verseroots = $verseroots->merge($stems)->unique();
                         $this->newStems++;
                         break;
                     }
                 }
             }
         }
-        return join(' ', $verseroots->unique()->toArray());
+        // serialize the $this->processedStems array to the filesystem, the name is the abbreviation .dat
+        return join(' ', $verseroots->toArray());
     }
 
     private function getAbbrevToIdFromDb(Translation $translation): array
