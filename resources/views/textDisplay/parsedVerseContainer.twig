@@ -71,7 +71,7 @@
     {% set medias = media[verse.book.number ~ "_" ~ verse.chapter ~ "_" ~ verse.numv] %}
     {% if  medias %}
         {% for image in medias %}
-            <div class="card">
+            <div class="card illustration">
                 <div class="card-body">
             <figure class="figure">
                 <img src="/media/{{ image.uuid }}" class="figure-img img-fluid rounded">

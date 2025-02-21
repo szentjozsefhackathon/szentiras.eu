@@ -26,7 +26,7 @@ class BookService {
     }
 
     public function getBookByUsxCodeTranslation(string $usxCode, string $translationAbbrev) : Book {
-        $translation = $this->translationService->getByAbbrev($translationAbbrev);
+        $translation = $this->translationService->getByAbbreviation($translationAbbrev);
         return $this->bookRepository->getByNumberForTranslation($usxCode, $translation->id);
     }
 

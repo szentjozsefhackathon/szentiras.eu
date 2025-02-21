@@ -17,7 +17,7 @@ class UploadMediaCommand extends Command
      */
     protected $signature = 'szentiras:media
         {action=list : The action to execute. Possible values: create, delete, list}
-        {--file= : If creating, the path to the file to upload. The file name must be prepared: USX_Chapter_Verse.jpg. If deleting, the id. If the file starts with "s3:", it is get from S3 bucket relative to the media folder.}
+        {--file= : If creating, the path to the file to upload. The file name must be prepared: USX_Chapter_Verse.jpg. (If the verse is bigger than the max verse in the chapter, it will be displayed at the end, so for chapter-level illustrations, use verses 1001 etc to keep the order.) If deleting, the id. If the file starts with "s3:", it is get from S3 bucket relative to the media folder.}
         {--type= : If creating a file or deleting a type, only the type name. If creating a type, the type specification, in the format: "name -- website -- license.". If a type with this name exists, it will be updated, otherwise a new type will be created. If website and license is not given, the name will be used to associate the image.};
 
     ';

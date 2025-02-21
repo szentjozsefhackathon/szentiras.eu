@@ -19,6 +19,7 @@ use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
 use SzentirasHu\Data\Repository\ReadingPlanRepository;
 use SzentirasHu\Models\Media;
+use SzentirasHu\Service\Text\BookService;
 use View;
 
 
@@ -53,7 +54,7 @@ class TextDisplayController extends Controller
      */
     private $textService;
 
-    function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository, VerseRepository $verseRepository, ReadingPlanRepository $readingPlanRepository, ReferenceService $referenceService, TextService $textService)
+    function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository, VerseRepository $verseRepository, ReadingPlanRepository $readingPlanRepository, ReferenceService $referenceService, TextService $textService, protected BookService $bookService)
     {
         $this->translationRepository = $translationRepository;
         $this->bookRepository = $bookRepository;
@@ -81,7 +82,7 @@ class TextDisplayController extends Controller
             foreach ($books as $book) {
                 $canonicalRef = CanonicalReference::fromString("{$book->abbrev}", $translation->id);
                 $verses = $this->textService->getTranslatedVerses($canonicalRef, $translation->id, Verse::getHeadingTypes($translation->id));
-                $bookHeaders[$book->abbrev] = 
+                $bookHeaders[$book->abbrev] =
                     Cache::remember(
                         "bookHeader-{$book->abbrev}-{$translation->id}",
                         60 * 24,
@@ -178,17 +179,40 @@ class TextDisplayController extends Controller
             $mediaEnabled = request()->has("media");
             if ($mediaEnabled) {
                 $mediaVerses = [];
+                $chapterMedia = [];
                 foreach ($verseContainers as $verseContainer) {
                     foreach ($verseContainer->getParsedVerses() as $verseData) {
-                        $media = Media::where('usx_code', $verseData->book->number)
-                        ->where('chapter', $verseData->chapter)
-                        ->where('verse', $verseData->numv)
-                        ->get();
-                        if (!$media->isEmpty()) {
-                            $mediaVerses["{$verseData->book->number}_{$verseData->chapter}_{$verseData->numv}"] = $media;
+                        $key = "{$verseData->book->number}_{$verseData->chapter}";
+                        if (!array_key_exists($key, $chapterMedia)) {
+                            $media = Media::where('usx_code', $verseData->book->number)
+                                ->where('chapter', $verseData->chapter)
+                                ->get();
+                            if (!$media->isEmpty()) {
+                                // now we have the media for the whole chapter
+                                $chapterMedia[$key] = $media;
+                            }
                         }
                     }
-                }    
+                }
+                
+                foreach ($chapterMedia as $book_chapter => $mediaItems) {
+                    $bookNumber = explode("_", $book_chapter)[0];
+                    $book = $this->bookService->getBookByUsxCodeTranslation($bookNumber, $translation->abbrev);
+                    $chapterNumber = explode("_", $book_chapter)[1];
+                    $verseMedia = [];
+                    foreach ($mediaItems as $mediaItem) {
+                        $verseMedia[$mediaItem->verse] = $mediaItem;
+                    }
+                    // now we have media items for all verses in the chapter
+                    foreach ($verseMedia as $verse => $mediaItems) {
+                        $chapterLength = $this->bookService->getVerseCount($book, $chapterNumber, $translation);
+                        if ($verse <= $chapterLength) {
+                            $mediaVerses["{$bookNumber}_{$chapterNumber}_{$verse}"][] = $mediaItems;
+                        } else {
+                            $otherMedia["{$bookNumber}_{$chapterNumber}"][] = $mediaItems;
+                        }
+                    }
+                }
             }
 
             $translations = $this->translationRepository->getAllOrderedByDenom();
@@ -211,6 +235,7 @@ class TextDisplayController extends Controller
                 'teaser' => $this->textService->getTeaser($verseContainers),
                 'chapterLinks' => $chapterLinks,
                 'media' => $mediaVerses ?? [],
+                'otherMedia' => $otherMedia ?? [],
                 'translationLinks' => $translations->map(
                     function ($otherTranslation) use ($canonicalRef, $translation) {
                         $allBooksExistInTranslation = true;
