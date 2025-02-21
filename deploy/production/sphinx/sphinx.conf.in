@@ -58,7 +58,7 @@ index verse_root : verse
 
 indexer
 {
-	mem_limit		= 64M
+	mem_limit		= 48M
 }
 
 

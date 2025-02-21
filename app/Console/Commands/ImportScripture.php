@@ -63,7 +63,7 @@ class ImportScripture extends Command
     ];
 
     private array $processedStems = [];
-    const STEM_FILE = "database/preload/stems.dat";
+    const STEM_FILE = "database/preload/stems.json";
 
     /**
      * Create a new command instance.
@@ -160,7 +160,7 @@ class ImportScripture extends Command
         // if the stems file exists, unserialize it
         if (file_exists(ImportScripture::STEM_FILE)) {
             $this->info("A szótövek fájl betöltése...");
-            $this->processedStems = unserialize(gzuncompress(file_get_contents(ImportScripture::STEM_FILE)));
+            $this->processedStems = json_decode(file_get_contents(ImportScripture::STEM_FILE), true);
             // fill the cache with the processed stems
             foreach ($this->processedStems as $word => $stems) {
                 Cache::store("array")->put("hunspell_{$word}", $stems, 60 * 60 * 24);
@@ -288,7 +288,7 @@ class ImportScripture extends Command
         }
         $this->info("A szótövek fájl mentése...");
         ksort($this->processedStems);
-        $serializedStems = gzcompress(serialize($this->processedStems));
+        $serializedStems = json_encode($this->processedStems, JSON_PRETTY_PRINT);
         file_put_contents(ImportScripture::STEM_FILE, $serializedStems);
         $progressBar->finish();
 
@@ -431,7 +431,7 @@ class ImportScripture extends Command
     {
         // actually replace the tags with a space
         $processedVerse = str_replace( '<', ' <', $verse ); 
-        $processedVerse = strip_tags($verse); 
+        $processedVerse = strip_tags($processedVerse); 
         $processedVerse = preg_replace("/(,|:|\?|!|;|\.|„|”|»|«|\")/i", ' ', $processedVerse);
         $processedVerse = preg_replace(['/Í/i', '/Ú/i', '/Ő/i', '/Ó/i', '/Ü/i'], ['í', 'ú', 'ő', 'ó', 'ü'], $processedVerse);
 
@@ -448,11 +448,13 @@ class ImportScripture extends Command
                 $stems = collect();
                 while ($line = fgets($pipes[1])) {
                     if (trim($line) !== '') {
+                        // store only stems as stems, as we search for the original word as well, no need to search for that in the stems
                         if (preg_match_all("/st:(\p{L}+)/u", $line, $matches)) {
-                            $stems = $stems->merge($matches[1]);
-                        } else {
-                            $stems->push($word);
-                        }
+                            $stem = $matches[1];
+                            if ($stem !== $word) {
+                                $stems = $stems->merge($stem);
+                            }
+                        } 
                     } else {
                         $cachedStems = $stems->unique()->toArray();
                         Cache::store("array")->put("hunspell_{$word}", $cachedStems, 60 * 60 * 24);

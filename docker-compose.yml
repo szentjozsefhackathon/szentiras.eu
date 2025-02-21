@@ -1,5 +1,18 @@
 ---
 services:
+  app_dev_prepopulate:
+    image: szeu-app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - ./.env
+    command: touch .bash_history
   app:
     image: szeu-app-dev
     build:
@@ -12,6 +25,8 @@ services:
       - ./.env
     volumes:
       - .:/var/www/html
+      - .devcontainer/.bash_history:/home/laravel/.bash_history
+      - .devcontainer/.ssh:/home/laravel/.ssh
     networks:
       - szeu-network
     ports:
@@ -19,6 +34,8 @@ services:
       - "${XDEBUG_EXTERNAL_PORT:-9003}:9003"
       - "5173:5173" # This is for vite, it is not configurable, only together with vite.config.js
     depends_on:
+      app_dev_prepopulate:
+        condition: service_completed_successfully
       database:
         condition: service_healthy
       migrator:

@@ -13,3 +13,4 @@ public/build
 .phpunit.cache
 _ide_helper*
 .env
+.devcontainer
