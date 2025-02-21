@@ -1,4 +1,4 @@
-Szentírás .hu
+Szentírás.eu
 ========
 
 > [!WARNING]
