@@ -157,7 +157,12 @@ return [
         | in order to be marked as safe.
         |
         */
-        'facades' => [],
+        'facades' => [
+            'Config' => [
+                'is_safe' => [ 'get']
+            ],
+            'Vite' => [ 'is_safe' => true ]
+        ],
 
         /*
         |--------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Vite;
+
 return [
 
     'name' => env('APP_NAME', 'szentiras.eu'),
@@ -187,6 +189,7 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+        'Vite' => Vite::class,
         'SphinxSearch' => SzentirasHu\Service\Sphinx\SphinxSearchFacade::class,
         'Imagine' => SzentirasHu\Service\Imagine\ImagineFacade::class
 
