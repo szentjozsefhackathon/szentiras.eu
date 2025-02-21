@@ -212,13 +212,13 @@ class ImportScripture extends Command
 
     private function runIndexer(): void
     {
-        $sphinxConfig = Config::get('settings.sphinxConfig');
-        $indexerProcess = new Process(["indexer", "--config", "{$sphinxConfig}", "--all", "--rotate"]);
-        try {
-            $indexerProcess->mustRun();
-            echo $indexerProcess->getOutput();
-        } catch (ProcessFailedException $e) {
-            echo $e->getMessage();
+        $indexerTrigger = Config::get('settings.sphinxIndexerTrigger');
+        // touch file
+        touch($indexerTrigger);
+        if (!touch($indexerTrigger)) {
+            $this->error("Nem sikerült az indexert triggerelni: $indexerTrigger");
+        } else {
+            $this->info("Indexer triggerelve.");
         }
     }
 

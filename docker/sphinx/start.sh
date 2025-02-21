@@ -12,4 +12,10 @@ echo "Start indexer"
 indexer --config /etc/sphinxsearch/sphinx.conf --all
 echo "Start indexer done"
 echo "Start searchd"
-searchd -c /etc/sphinxsearch/sphinx.conf --nodetach
+searchd -c /etc/sphinxsearch/sphinx.conf
+
+mkdir -p /opt/sphinx/trigger
+chmod a+w /opt/sphinx/trigger
+
+echo "Start watcher for trigger"
+watch -n 30 "sh /opt/sphinx/reindex.sh"

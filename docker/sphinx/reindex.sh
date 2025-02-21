@@ -1,2 +1,7 @@
 #!/bin/bash
-indexer --config /etc/sphinxsearch/sphinx.conf --all --rotate
+FILE="/opt/sphinx/trigger/indexer"
+
+if [ -f "$FILE" ]; then
+    indexer --config /etc/sphinxsearch/sphinx.conf --all --rotate
+    rm "$FILE"
+fi

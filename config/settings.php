@@ -11,7 +11,7 @@ return [
     'sphinxSearchLimit' => env("APP_SPHINX_SEARCH_LIMIT", 1000),
     'logLevel' => env("LOG_LEVEL", 'debug'),
     'imageMagickCommand' => [ 'gm', 'convert' ],
-    'sphinxConfig' => env('SPHINX_CONFIG', '/etc/sphinxsearch/sphinx.conf'),
+    'sphinxIndexerTrigger' => env("APP_SPHINX_INDEXER_TRIGGER", "/opt/sphinx/trigger/indexer"),
     'sphinxHost' => env('SPHINX_HOST', 'sphinx'),
     'sphinxPort' => env('SPHINX_PORT', 9312),
     'sphinxIndexes' => [

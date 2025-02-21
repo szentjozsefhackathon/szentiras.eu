@@ -21,6 +21,7 @@ services:
       - .:/var/www/html
       - .devcontainer/.bash_history:/home/laravel/.bash_history
       - .devcontainer/.ssh:/home/laravel/.ssh
+      - sphinx_trigger:/opt/sphinx/trigger
     networks:
       - szeu-network
     ports:
@@ -34,6 +35,8 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully        
+      sphinx:
+        condition: service_healthy
   database:
     image: pgvector/pgvector:pg17
     env_file:
@@ -80,7 +83,9 @@ services:
     volumes:
       - ./deploy/local/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
       - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
+      - ./docker/sphinx/reindex.sh:/opt/sphinx/reindex.sh
       - sphinx_data:/opt/sphinx/indexes
+      - sphinx_trigger:/opt/sphinx/trigger
     env_file:
       - ./.env
       - ./.env.docker
@@ -89,14 +94,13 @@ services:
         condition: service_healthy
     networks:
       - szeu-network
+    healthcheck:
+      test: ["CMD-SHELL", "searchd --config /etc/sphinxsearch/sphinx.conf --status"]
+      start_period: 1m
+      interval: 10s
+      timeout: 5s
+      retries: 3      
     command: sh -c "/opt/sphinx/start.sh"
-
-  # mailpit:
-  #   image: axllent/mailpit
-  #   ports:
-  #     - "1025:1025"
-  #     - "8025:8025"
-  
   composer:
     image: szeu-app-dev
     env_file:
@@ -153,9 +157,16 @@ services:
   #     - hunspellpipe:/var/run/hunspell
   #   networks:
   #     - szeu-network
+  # mailpit:
+  #   image: axllent/mailpit
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
+  
 volumes:
   db-data:
   sphinx_data:  
+  sphinx_trigger:
   # hunspellpipe:
 networks:
   szeu-network:
