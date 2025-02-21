@@ -12,7 +12,7 @@ services:
       - .:/var/www/html
     env_file:
       - ./.env
-    command: touch .bash_history
+    command: touch .devcontainer/.bash_history
   app:
     image: szeu-app-dev
     build:
