@@ -9,6 +9,7 @@ use Config;
 use DB;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -194,16 +195,21 @@ class ImportScripture extends Command
     {
         try {
             $filePath = $this->sourceDirectory . "/{$transAbbrev}";
-            $this->info("A fájl letöltése a $url címről...: $filePath");
-            $fp = fopen($filePath, 'w+');
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_FILE, $fp);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            $this->info("A fájl letöltése a $url címről...: $filePath");            
+            if ($url == 's3') {
+                $file = Storage::disk('s3')->get("xlsx/{$transAbbrev}.xlsx");
+                file_put_contents($filePath, $file);
+            } else {
+                $fp = fopen($filePath, 'w+');
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_FILE, $fp);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
-            curl_exec($ch);
-            curl_close($ch);
-            fclose($fp);
+                curl_exec($ch);
+                curl_close($ch);
+                fclose($fp);
+            }
         } catch (Exception $ex) {
             App::abort(500, "Nem sikerült fáljt letölteni a megadott url-ről.");
         }
@@ -291,6 +297,7 @@ class ImportScripture extends Command
         $serializedStems = json_encode($this->processedStems, JSON_PRETTY_PRINT);
         file_put_contents(ImportScripture::STEM_FILE, $serializedStems);
         $progressBar->finish();
+        $this->newLine();
 
         return $inserts;
     }
@@ -344,6 +351,7 @@ class ImportScripture extends Command
             $progressBar->advance(100);
         }
         $progressBar->finish();
+        $this->newLine();
         Artisan::call('up');
     }
 
