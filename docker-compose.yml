@@ -8,21 +8,15 @@ services:
       args:
         UID: ${HOST_UID:-1000}
         GID: ${HOST_GID:-1000}
+    env_file:
+      - ./.env.docker        
     volumes:
       - .:/var/www/html
-    env_file:
-      - ./.env
     command: touch .devcontainer/.bash_history
   app:
     image: szeu-app-dev
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-      args:
-        UID: ${HOST_UID:-1000}
-        GID: ${HOST_GID:-1000}
     env_file:
-      - ./.env
+      - ./.env.docker
     volumes:
       - .:/var/www/html
       - .devcontainer/.bash_history:/home/laravel/.bash_history
@@ -43,7 +37,8 @@ services:
   database:
     image: pgvector/pgvector:pg17
     env_file:
-      - ./.env
+      - ./.env # for the database credentials    
+      - ./.env.docker
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -61,6 +56,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3      
+  database_testing:
+    image: pgvector/pgvector:pg17
+    env_file:
+      - ./.env.testing # for the database credentials    
+      - ./.env.docker
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    networks:
+      - szeu-network
+    volumes:
+      - ./docker/testing/database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U homestead -d bible"]
+      start_period: 1m
+      interval: 10s
+      timeout: 5s
+      retries: 3      
   sphinx:
     image: macbre/sphinxsearch:3.7.1
     volumes:
@@ -69,6 +83,7 @@ services:
       - sphinx_data:/opt/sphinx/indexes
     env_file:
       - ./.env
+      - ./.env.docker
     depends_on:
       database:
         condition: service_healthy
@@ -84,14 +99,8 @@ services:
   
   composer:
     image: szeu-app-dev
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-      args:
-        UID: ${HOST_UID:-1000}
-        GID: ${HOST_GID:-1000}
     env_file:
-      - ./.env
+      - ./.env.docker
     environment:
       - XDEBUG_CONFIG="mode=off"
     volumes:
@@ -102,14 +111,8 @@ services:
     command: php composer.phar install --no-interaction
   migrator:
     image: szeu-app-dev
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-      args:
-        UID: ${HOST_UID:-1000}
-        GID: ${HOST_GID:-1000}
     env_file:
-      - ./.env
+      - ./.env.docker
     environment:
       - XDEBUG_CONFIG="mode=off"
     volumes:
@@ -122,6 +125,22 @@ services:
         condition: service_completed_successfully
     networks:
       - szeu-network
+  migrator_testing:
+    image: szeu-app-dev
+    env_file:
+      - ./.env.docker
+    environment:
+      - XDEBUG_CONFIG="mode=off"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      database_testing:
+        condition: service_healthy
+      composer:
+        condition: service_completed_successfully
+    networks:
+      - szeu-network      
+    command: php artisan migrate:refresh --seed --seeder="Database\\Seeders\\DatabaseSeeder" --env=testing
   # Hunspell is inside the container for now, this is preparation for the future
   # hunspell:
   #   image: szeu-hunspell

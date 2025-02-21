@@ -10,10 +10,10 @@ The idea is that you can have a working development environment, set up for effe
 
 It something is not right for you, don't hesitate to create an issue.
 
-It won't start up without a proper `.env` file. So first
+It won't start up without a proper `.env` file and a `.env.docker` file (latter contains customizations for the built containers). So first
 
 ```
-cp .env.local.dist .env
+cp .env.local.dist .env && cp .env.docker.example .env.docker
 ```
 Make adjustments if needed. Then
 
@@ -44,6 +44,10 @@ The hostname of the service in the docker network is `database`, be careful to u
 
 The sql port expose to localhost, so you can use any mysql client in the localhost at 5432 (or what you set) port.
 
+#### database_testing
+
+The database used for running the tests.
+
 #### sphinx
 
 Sphinxsearch indexer. The config files are in `deploy` folder, there are `__ENV_VAR__` placehoders in them.
@@ -67,6 +71,10 @@ It runs and exit.
 
 Makes the migrations on the database in the starting process. We can also use this cache warm-up and other initial processes.
 
+#### migrator_testing
+
+Initializes the testing database.
+
 #### The starting order
 
 With the `depends_on` keywords we can controll the order of the starting process.
@@ -88,7 +96,7 @@ With the `depends_on` keywords we can controll the order of the starting process
 
 ### Exposed ports
 
-(Some of them can be reconfigured in `.env`, see `docker-compose.yml`)
+(Some of them can be reconfigured in `.env.local.docker`, see `docker-compose.yml`)
 
 | service | protocol | port/url | service |
 | -- | -- | -- | -- |
