@@ -40,7 +40,6 @@ Route::get("/api", 'Api\ApiController@getIndex');
 Route::get('/info', 'Home\InfoController@getIndex');
 
 Route::get('/pdf/dialog/{translationAbbrev}/{refString}', 'Display\PdfController@getDialog');
-Route::get('/pdf/preview/{translationId}/{refString}', 'Display\PdfController@getPreview');
 Route::get('/pdf/ref/{translationId}/{refString}', 'Display\PdfController@getRef');
 
 /** AUDIO */
