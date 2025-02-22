@@ -126,7 +126,10 @@ return new class extends Migration {
         $result = [];
         $books = Book::all();
         foreach ($books as $book) {
-            $abbrev = $book->translation->abbrev;
+            $abbrev = $book->abbrev;
+            if (!isset($abbreviationToUsxMapping[$abbrev])) {
+                throw new InvalidArgumentException("Mapping for abbreviation '{$abbrev}' not found in the abbreviation to USX mapping array.");
+            }
             $usx = $abbreviationToUsxMapping[$abbrev];
             $key = $this->encodeBookAndTranslation($book->number, $abbrev);
             $result[$key] = $usx;

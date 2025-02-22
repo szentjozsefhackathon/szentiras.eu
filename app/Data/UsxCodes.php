@@ -216,19 +216,19 @@ class UsxCodes
     public static function abbreviationToUsxMapping(): array
     {
         return array_merge(
-            UsxMapping::OLD_TESTAMENT,
-            UsxMapping::NEW_TESTAMENT
+            UsxCodes::OLD_TESTAMENT,
+            UsxCodes::NEW_TESTAMENT
         );
     }
 
     public static function oldTestamentUsx(): array
     {
-        return array_values(array_unique(UsxMapping::OLD_TESTAMENT));
+        return array_values(array_unique(UsxCodes::OLD_TESTAMENT));
     }
 
     public static function newTestamentUsx(): array
     {
-        return array_values(array_unique(UsxMapping::NEW_TESTAMENT));
+        return array_values(array_unique(UsxCodes::NEW_TESTAMENT));
     }
 
 }

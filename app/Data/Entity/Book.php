@@ -12,8 +12,14 @@ use Eloquent;
  * @author berti
  */
 class Book extends Eloquent {
-
-
+    protected $fillable = [
+        'name',
+        'abbrev',
+        'link',
+        'old_testament',
+        'order',
+        'usx_code',
+    ];
 
     public function abbrevs() {
         return $this->hasMany('SzentirasHu\Data\Entity\BookAbbrev', 'number');
