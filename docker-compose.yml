@@ -50,7 +50,7 @@ services:
       - szeu-network
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./tmp:/docker-entrypoint-initdb.d
+      - ./docker/database:/docker-entrypoint-initdb.d
     ports:
       - "${POSTGRES_EXTERNAL_PORT:-5432}:5432"
     healthcheck:

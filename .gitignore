@@ -2,6 +2,7 @@
 /vendor
 .env
 .env.docker
+.env.prod
 .DS_Store
 Thumbs.db
 .idea

@@ -1,4 +1,5 @@
----
+name: szeu-prod
+
 services:
   # traefik:
   #   image: traefik:v3.3
@@ -22,18 +23,20 @@ services:
   #     - default
   #     - traefik
   app:
-    image: app
+    image: szeu-app-prod
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     volumes:
+      - .env.prod:/var/www/html/.env  # write your customizations here
       - storage:/var/www/html/storage
-    env_file:
-      - ./.env
+      - sphinx_trigger:/opt/sphinx/trigger
     ports:
-      - "${APP_EXTERNAL_PORT:-8000}:80"
+      - "8000:80"
     depends_on:
       database:
+        condition: service_healthy
+      sphinx:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
@@ -49,20 +52,28 @@ services:
     volumes:
       - ./deploy/production/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
       - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
+      - ./docker/sphinx/reindex.sh:/opt/sphinx/reindex.sh
       - sphinx_data:/opt/sphinx/indexes
-    mem_limit: 32m
+      - sphinx_trigger:/opt/sphinx/trigger
+    mem_limit: 64m
     env_file:
-      - ./.env
+      - ./.env.prod
     depends_on:
       database:
         condition: service_healthy
     networks:
       - traefik
+    healthcheck:
+      test: ["CMD-SHELL", "searchd --config /etc/sphinxsearch/sphinx.conf --status"]
+      start_period: 1m
+      interval: 10s
+      timeout: 5s
+      retries: 3      
     command: sh -c "/opt/sphinx/start.sh"
   database:
     image: pgvector/pgvector:pg17
     env_file:
-      - ./.env
+      - ./.env.prod # for the database credentials
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -71,7 +82,7 @@ services:
       - traefik
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./tmp:/docker-entrypoint-initdb.d
+      - ./docker/database:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U homestead -d bible"]
       start_period: 1m
@@ -83,5 +94,6 @@ volumes:
   storage:
   letsencrypt:
   sphinx_data:
+  sphinx_trigger:
 networks:
   traefik:

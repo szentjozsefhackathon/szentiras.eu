@@ -106,6 +106,26 @@ With the `depends_on` keywords we can controll the order of the starting process
 | database       | postgresql    | 5432 | The database, to let you look into it with e.g. DBeaver
 
 
+## How to test the production image
+
+The `.env.prod` file is mapped to `.env` in docker-compose. So if you don't have a way to give all values as environment variables, you should make a copy of some example values and generate the application key for first time running it.
+(The `.env` or `.env.prod` file is set as `env_file` in the compose file, because in that case they become environment variables, and they can no longer be changed from the file.)
+
+```
+cp .env.prod.dist .env.prod
+php artisan key:generate --show
+```
+And copy the shown key to `.env.prod`, and also add the database credentials.
+
+Then
+
+```
+docker compose -f docker-compose.prod.yml up -d
+```
+
+Normally in production the key is given in a secret.
+
+
 # [Deprecated] docker/Dockerfile (one box to rule them all)
 
 ## Build the image
