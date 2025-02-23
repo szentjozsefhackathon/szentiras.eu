@@ -1,3 +1,4 @@
+.git
 storage/app/*
 storage/framework/cache/*
 storage/framework/sessions/*
