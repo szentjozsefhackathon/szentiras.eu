@@ -11,6 +11,9 @@ class AnonymousIdController extends Controller
 {
     
     public function showAnonymousRegistrationForm() {
+        if (session()->has('anonymous_token')) {
+            return Redirect::to('/profile');
+        }
         return view("auth.anonymousRegistration");
     }
 

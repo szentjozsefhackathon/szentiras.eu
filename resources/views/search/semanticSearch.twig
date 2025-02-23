@@ -7,7 +7,14 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
 {% block content %}
     <h3>Keresés jelentés szerint, AI segítségével</h2>
     <div class="card mb-2">
-        <div class="card-body">
+        <div class="card-body">            
+            {% if not session_get("anonymous_token") %}
+            <div class="alert alert-primary" role="alert">
+                Regisztráció/belépés nélkül is használhatod a szemantikus keresőt, de egy munkamenetben legfeljebb {{ config_get('settings.ai.unregisteredSearchLimit') }} keresést végezhetsz. 
+                Eddig {{ session_get('semanticSearchCalls', 0) }} keresést végeztél.
+                Ha többre van szükséged, <a href="/register">lépj be vagy regisztrálj, ha még nem tetted</a>!
+            </div>
+            {% endif %}
             <form role="form" class="form-horizontal" method="post"
                   action="{{ action('Search\\SemanticSearchController@anySearch') }}">
                 <div class="mb-2">

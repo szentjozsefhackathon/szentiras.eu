@@ -33,14 +33,16 @@ class SemanticSearchController extends Controller
             return $this->getIndex($request);
         }
 
-        if (Config::get('settings.ai.unregisteredSearchLimit') != -1) {
-            $key = 'semanticSearchCalls';
-            $count = $request->session()->get($key, 0) + 1;
-            $request->session()->put($key, $count);
-            if ($count > Config::get('settings.ai.unregisteredSearchLimit')) {
-                return view('search.semanticSearchThrottle');
-            }
-        }        
+        if (!session()->get('anonymous_token')) {
+            if (Config::get('settings.ai.unregisteredSearchLimit') != -1) {
+                $key = 'semanticSearchCalls';
+                $count = $request->session()->get($key, 0) + 1;
+                if ($count > Config::get('settings.ai.unregisteredSearchLimit')) {
+                    return view('search.semanticSearchThrottle');
+                }
+                $request->session()->put($key, $count);            
+            }        
+        }
         
         $form = $this->prepareForm($request, $textToSearch);
         $view = $this->getView($form);
