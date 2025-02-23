@@ -108,22 +108,21 @@ With the `depends_on` keywords we can controll the order of the starting process
 
 ## How to test the production image
 
-The `.env.prod` file is mapped to `.env` in docker-compose. So if you don't have a way to give all values as environment variables, you should make a copy of some example values and generate the application key for first time running it.
-(The `.env` or `.env.prod` file is set as `env_file` in the compose file, because in that case they become environment variables, and they can no longer be changed from the file.)
+The `.env.prod` file is mapped to `.env` in docker-compose. So if you don't have a way to give all values with not good defaults as environment variables, you should make a copy of some example values and generate the application key for first time running it.
+(The `.env` or `.env.prod` are *not* set as `env_file` in the compose file, because in that case they become environment variables, and they can no longer be changed from the file.)
+Note that in `config/*.php` configurations there should be defaults for **all** variables here, so having a .env file should be not needed. All keys, credentials etc. should be in secrets or set by environment variables on the server. That's also true for other variables. Having a `.env.prod` file as below is for easing testing the production build locally.
 
 ```
 cp .env.prod.dist .env.prod
 php artisan key:generate --show
 ```
-And copy the shown key to `.env.prod`, and also add the database credentials.
+And copy the shown key to `.env.prod`, and also add the database credentials, and else what you need.
 
 Then
 
 ```
 docker compose -f docker-compose.prod.yml up -d
 ```
-
-Normally in production the key is given in a secret.
 
 
 # [Deprecated] docker/Dockerfile (one box to rule them all)
