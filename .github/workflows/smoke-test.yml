@@ -48,8 +48,8 @@ jobs:
           PGPASSWORD: postgres
         run: |
           psql -h 127.0.0.1 -U postgres -c "CREATE USER homestead WITH PASSWORD 'secret';"                  
-          psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE bible_testing OWNER homestead;"
-          psql -h 127.0.0.1 -U postgres -d bible_testing -c "CREATE EXTENSION IF NOT EXISTS vector;"
+          psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE bible OWNER homestead;"
+          psql -h 127.0.0.1 -U postgres -d bible -c "CREATE EXTENSION IF NOT EXISTS vector;"
 
       - name: Set Environment Variables
         run: |

@@ -1,7 +1,7 @@
 /bootstrap/compiled.php
 /vendor
 .env
-.env.local
+.env.docker
 .DS_Store
 Thumbs.db
 .idea

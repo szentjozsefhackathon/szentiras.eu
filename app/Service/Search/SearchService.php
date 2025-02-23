@@ -44,6 +44,7 @@ class SearchService {
 
     function getSuggestionsFor($term)
     {
+        $result = [];
         $searchParams = new FullTextSearchParams;
         $searchParams->text = $term;
         $searchParams->limit = 10;
@@ -64,12 +65,12 @@ class SearchService {
             $textKeys = array_keys($texts);
             if ($excerpts) {
                 foreach ($excerpts as $i => $excerpt) {
-                    $verse = $verses[$textKeys[$i]];
-                    $linkLabel = "{$verse->book->abbrev} {$verse->chapter},{$verse->numv}";
+                    $verse = $verses[$i];
+                    $linkLabel = "{$verse->book->abbrev}&nbsp;{$verse->chapter},{$verse->numv}";
                     $result[] = [
                         'cat' => 'verse',
                         'label' => $excerpt,
-                        'link' => "/{$verse->translation->abbrev}/{$linkLabel}",
+                        'link' => "/{$verse->translation->abbrev}/{$verse->book->abbrev} {$verse->chapter},{$verse->numv}",
                         'linkLabel' => $linkLabel
                     ];
                 }

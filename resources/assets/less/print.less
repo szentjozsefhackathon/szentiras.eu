@@ -1,0 +1,55 @@
+:root {
+    --book-font-size: 11pt;
+    --link-color: black;
+}
+
+span.numvai {
+    display: none;
+}
+
+a.footnote .numv {
+    color: black;
+    font-style: normal;
+}    
+
+body {
+    background-color: #fdfdfe;
+    margin: 0;
+    padding: 2rem;
+}
+
+.paper {
+    width: 210mm;
+    margin: auto;
+    padding: 15mm;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+    line-height: 1.6;
+}
+
+div.reference {
+    font-weight: bold;
+}
+
+/* Styles to disable paper-like effect when printing */
+@media print {
+    body {
+        background-color: white;
+        padding: 0;
+    }
+    .paper {
+        width: 210mm;
+        box-shadow: none;
+        border: none;
+        margin: 0;
+    }
+    div.toolbar {
+        display: none !important;
+    }
+
+    div.parsedVerses {
+        page-break-inside: avoid;
+    }
+    
+}

@@ -9,14 +9,14 @@
     <meta property="og:url" content="{{ url('/' ~ canonicalUrl ) }}">
     <meta property="og:title" content="{{ metaTitle }}">
     <meta property="og:description" content="{{ teaser }}">
-	<meta property="og:image" content="{{ url('/pdf/preview/' ~ translation.id ~ '/' ~ canonicalRef ~ '?headings=true&nums=false&refs=&quantity=1') }}">
+	<meta property="og:image" content="{{ asset('img/biblia.jpg')}}">
 {% endblock %}
 
 {% block content %}
-    <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel">
+    <div class="modal fade" id="qrModal" tabindex="-1" role="dialog">
         <div class="modal-dialog"><div class="modal-content"></div></div>
     </div>
-    <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel">
+    <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog">
         <div class="modal-dialog"><div class="modal-content"></div></div>
     </div>
     {% if readingPlanDay %}
@@ -56,6 +56,22 @@
                 <i class="far fa-images"></i> Illusztrációk elrejtése</a>
         {% endif %}    
     {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers } %}
+    {% if mediaEnabled and otherMedia %}
+        <h5>További illusztrációk</h5>
+        {% for otherMediaItem in otherMedia %}
+            {% for image in otherMediaItem %}
+                <div class="card illustration otherMedia">
+                    <div class="card-body">
+                        <figure class="figure">
+                            <img src="/media/{{ image.uuid }}" class="figure-img img-fluid rounded">
+                            <figcaption class="figure-caption text-end"><small>Forrás: {{ image.mediaType.website }} ({{ image.mediaType.license }})</small></figcaption>
+                        </figure>
+                    </div>
+                </div>
+            {% endfor  %}
+        {% endfor %}
+        <hr>
+    {% endif %}
     <div class="translationButtons">
         {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'link': book.abbrev } %}
     </div>

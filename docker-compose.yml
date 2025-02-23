@@ -1,101 +1,172 @@
 ---
 services:
-  # traefik:
-  #   image: traefik:v3.3
-  #   restart: unless-stopped
-  #   command:
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-  #     - "--entryPoints.web.address=:80"
-  #     - "--entryPoints.websecure.address=:443"
-  #     ## TODO review the following configuration
-  #     - "--certificatesresolvers.myresolver.acme.email=info@szentiras.hu"
-  #     - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-  #     ## TODO http -> https redirect
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - letsencrypt:/letsencrypt
-  #   networks:
-  #     - default
-  #     - traefik
-  app:
-    image: app
+  app_dev_prepopulate:
+    image: szeu-app-dev
     build:
       context: .
-      dockerfile: Dockerfile
-    volumes:
-      - storage:/var/www/html/storage
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
     env_file:
-      - ./.env
+      - ./.env.docker        
+    volumes:
+      - .:/var/www/html
+    command: touch .devcontainer/.bash_history
+  app:
+    image: szeu-app-dev
+    env_file:
+      - ./.env.docker
+    volumes:
+      - .:/var/www/html
+      - .devcontainer/.bash_history:/home/laravel/.bash_history
+      - .devcontainer/.ssh:/home/laravel/.ssh
+      - sphinx_trigger:/opt/sphinx/trigger
+    networks:
+      - szeu-network
+    ports:
+      - "${APP_EXTERNAL_PORT:-8080}:80"
+      - "${XDEBUG_EXTERNAL_PORT:-9003}:9003"
+      - "5173:5173" # This is for vite, it is not configurable, only together with vite.config.js
     depends_on:
+      app_dev_prepopulate:
+        condition: service_completed_successfully
       database:
         condition: service_healthy
-    labels:
-      - "traefik.enable=true"
-      ## TODO get host from .env
-      - "traefik.http.routers.app.rule=Host(`szentiras.hu`)"
-      - "traefik.http.routers.app.entrypoints=websecure"
-      - "traefik.http.routers.app.tls.certresolver=myresolver"
-      - "traefik.http.services.app.loadbalancer.server.port=80"
-    networks:
-      - traefik
-      - default
+      migrator:
+        condition: service_completed_successfully        
+      sphinx:
+        condition: service_healthy
   database:
-    image: mariadb
+    image: pgvector/pgvector:pg17
     env_file:
-      - ./.env
-    volumes:
-      - ./tmp:/docker-entrypoint-initdb.d
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-  sphinx:
-    image: nsign/sphinx-docker:2.2.11
-  postgres:
-    image: pgvector/pgvector
+      - ./.env # for the database credentials    
+      - ./.env.docker
     environment:
-      POSTGRES_USER: homestead
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: bible
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    networks:
+      - szeu-network
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./tmp:/docker-entrypoint-initdb.d
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U homestead -d bible"]
       start_period: 1m
       interval: 10s
       timeout: 5s
       retries: 3      
-  mailpit:
-    image: axllent/mailpit
-    ports:
-      - "1025:1025"
-      - "8025:8025"
-  composer:
-    image: app
-    build:
-      context: .
-      dockerfile: Dockerfile
+  database_testing:
+    image: pgvector/pgvector:pg17
+    env_file:
+      - ./.env.testing # for the database credentials    
+      - ./.env.docker
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    networks:
+      - szeu-network
     volumes:
-      - ./deploy/production/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in:ro
-      - ./docker/sphinx/start.sh:/start.sh:ro
-      - sphinx_data:/var/data
+      - ./docker/testing/database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U homestead -d bible"]
+      start_period: 1m
+      interval: 10s
+      timeout: 5s
+      retries: 3      
+  sphinx:
+    image: macbre/sphinxsearch:3.7.1
+    volumes:
+      - ./deploy/local/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
+      - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
+      - ./docker/sphinx/reindex.sh:/opt/sphinx/reindex.sh
+      - sphinx_data:/opt/sphinx/indexes
+      - sphinx_trigger:/opt/sphinx/trigger
     env_file:
       - ./.env
+      - ./.env.docker
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - szeu-network
+    healthcheck:
+      test: ["CMD-SHELL", "searchd --config /etc/sphinxsearch/sphinx.conf --status"]
+      start_period: 1m
+      interval: 10s
+      timeout: 5s
+      retries: 3      
+    command: sh -c "/opt/sphinx/start.sh"
+  composer:
+    image: szeu-app-dev
+    env_file:
+      - ./.env.docker
+    environment:
+      - XDEBUG_CONFIG="mode=off"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      database:
+        condition: service_healthy
+    command: php composer.phar install --no-interaction
+  migrator:
+    image: szeu-app-dev
+    env_file:
+      - ./.env.docker
+    environment:
+      - XDEBUG_CONFIG="mode=off"
+    volumes:
+      - .:/var/www/html
+    command: php artisan migrate -n
+    depends_on:
+      database:
+        condition: service_healthy
+      composer:
+        condition: service_completed_successfully
+    networks:
+      - szeu-network
+  migrator_testing:
+    image: szeu-app-dev
+    env_file:
+      - ./.env.docker
+    environment:
+      - XDEBUG_CONFIG="mode=off"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      database_testing:
+        condition: service_healthy
+      composer:
+        condition: service_completed_successfully
+    networks:
+      - szeu-network      
+    command: php artisan migrate:refresh --seed --seeder="Database\\Seeders\\DatabaseSeeder" --env=testing
+  # Hunspell is inside the container for now, this is preparation for the future
+  # hunspell:
+  #   image: szeu-hunspell
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.hunspell
+  #   ports:
+  #     - "1234:1234"
+  #   volumes:
+  #     - hunspellpipe:/var/run/hunspell
+  #   networks:
+  #     - szeu-network
+  # mailpit:
+  #   image: axllent/mailpit
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
+  
 volumes:
   db-data:
-  storage:
-  letsencrypt:
-  sphinx_data:
+  sphinx_data:  
+  sphinx_trigger:
+  # hunspellpipe:
 networks:
-  traefik:
+  szeu-network:

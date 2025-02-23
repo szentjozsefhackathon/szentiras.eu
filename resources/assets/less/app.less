@@ -1,40 +1,41 @@
+:root {
+    --book-font-size: 16px;
+    --background-color: #fafafa;
+    --text-color: #2e2e2e;
+    --muted-text-color: #6c757d;
+    --link-color: #0056b3;
+    --link-hover-color: #007BFF;    
+    --button-color: #0056b3;
+    --button-hover-color: #007BFF;        
+    --footnote-link-color: #0056b3;
+    --footnote-hover-color: #007BFF;
+    --text-font: 'Noto Sans', sans-serif;
+    --book-font: 'Noto Serif', serif; 
+}
+
 @import url(autocomplete.less);
-
-@background-color: #fafafa;
-@text-color: #2e2e2e;
-@muted-text-color: #6c757d;
-@text-font: 'Noto Sans', sans-serif;
-@book-font: 'Noto Serif', serif;
-@book-font-size: 16px;
-
-@link-color: #0056b3;
-@link-hover-color: #007BFF;
-
-@footnote-link-color: #0056b3;
-@footnote-hover-color: #007BFF;
-
 
 html {
     font-size: 14px;
 }
 
 body {
-    background-color: @background-color;
-    color: @text-color;
-    font-family: @text-font;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--text-font);
 }
 
 a {
     text-decoration: none;
-    color: @link-color;
+    color: var(--link-color);
     &:hover {
-        color: @link-hover-color;
+        color: var(--link-hover-color);
     }
 }
 
 a.leadChapterLink {
-    color: @text-color;
-    font-family: @book-font;
+    color: var(--text-color);
+    font-family: var(--book-font);
 }
 
 a.xref {
@@ -44,50 +45,50 @@ a.xref {
 a.footnote {
     outline: none;
     .numv {
-        color: @footnote-link-color;
+        color: var(--footnote-link-color);
         font-style: italic;
     }    
     cursor: pointer;
     text-decoration: none;    
     &:hover {
         .numv {
-            color: @footnote-hover-color;
+            color: var(--footnote-hover-color);
         }    
     }
 }
 
 p.popover-footnote {
-    font-family: @book-font;
+    font-family: var(--book-font);
     margin: 0;
 }
 
 .parsedVerses {
-    font-family: @book-font;
-    font-size: @book-font-size;
+    font-family: var(--book-font);
+    font-size: var(--book-font-size);
     hyphens: auto;
     text-align: justify;
 
     h5 {
         font-weight: bold;
-        color: @muted-text-color;
+        color: var(--muted-text-color);
         margin-top:1rem;
     }
     
     h6 {
-        font-size: @book-font-size * 0.875;
+        font-size: calc(var(--book-font-size) * 0.875);
         font-weight: bold;
-        color: @muted-text-color;
+        color: var(--muted-text-color);
         margin-top: 0.6rem;
         margin-bottom: 0.3rem;
     }
     
     span.heading7, span.heading8 {
         display: inline;
-        font-size: @book-font-size * 0.875;
+        font-size: calc(var(--book-font-size) * 0.875);
         margin-top: 3px;
         margin-right: 3px;
         font-weight: bold;
-        color: @muted-text-color;
+        color: var(--muted-text-color);
 
     }  
 
@@ -100,14 +101,14 @@ p.popover-footnote {
         color: #007bff;
         cursor: pointer;
         font-weight: bold;
-        font-family: @text-font;
+        font-family: var(--text-font);
     }
 
 
 }
 
 div.translationButtons {
-    font-family: @text-font;
+    font-family: var(--text-font);
     margin-bottom: 6px;
 }
 
@@ -116,14 +117,14 @@ div.translationButtons {
     float: left;
     padding-right: 6px;
     line-height: 40px;
-    color: @muted-text-color;
+    color: var(--muted-text-color);
     position: relative;
     top:0.4rem;
 }
 
 
 span.numv {
-  color: @muted-text-color;
+  color: var(--muted-text-color);
 }
 
 div.footnotes {
@@ -196,7 +197,7 @@ blockquote.searchResult {
 
 }
 .searchResultSource {
-    font-size: @book-font-size * 0.875;
+    font-size: calc(var(--book-font-size) * 0.875);
     background-color: white;
     padding: 2px;
 }
@@ -263,15 +264,15 @@ div.xrefQuotation {
         font-size: 0.8rem;
     }
     a.ref {
-        font-family: @text-font;
+        font-family: var(--text-font);
         font-weight: bold;
     }
-    font-family: @book-font;
+    font-family: var(--book-font);
 }
 
 h1 .sitesubtitle {
     font-size: 1.5rem;
-    color: @muted-text-color;
+    color: var(--muted-text-color);
 }
 
 h4 {
@@ -284,16 +285,16 @@ h5 {
 
 
 .btn-primary {
-    background-color: @link-color;
-    border-color: @link-color;
+    background-color: var(--button-color);
+    border-color: var(--button-color);
     &:hover {
-        background-color: @link-hover-color;
-        border-color: @link-hover-color;
+        background-color: var(--button-hover-color);
+        border-color: var(--button-hover-color);
     }
 }
 
 .searchResultVerse {
-    font-family: @book-font;
+    font-family: var(--book-font);
 }
 
 .searchResultTranslationSelector {
@@ -349,5 +350,22 @@ div.tocItem {
     }
     .chapterHeadings {
         flex: 1;
+    }
+}
+
+div.illustration {
+    .card {
+        @media screen and (min-width: 768px) {
+            max-width: 70%;
+            margin: 10px;
+        }    
+    }
+
+    &.otherMedia {
+        float: none;
+    }
+
+    figure {
+        margin: 0;
     }
 }

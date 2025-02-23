@@ -87,7 +87,7 @@ class SphinxSearcher implements Searcher
 
     public function getExcerpts($verses)
     {
-        return $this->sphinxClient->buildExcerpts($verses, "verse", $this->addAlternatives($this->params), ['query_mode' => 1]);
+        return $this->sphinxClient->buildExcerpts($verses, trim($this->params->text));
     }
 
     public function get()

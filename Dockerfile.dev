@@ -1,29 +1,40 @@
-FROM php:8.2-apache
+ARG NODE_VERSION=22-alpine
+FROM node:${NODE_VERSION} AS node
 
+FROM php:8.2-apache AS php
+WORKDIR /var/www/html
+ARG UID
+ARG GID
+
+# Hunspell doesn't work without a proper locale :o
 RUN apt-get update && \
     apt-get install -y \
-    libonig-dev \
-    git \
-    curl \
-    libpng-dev \
-    libxml2-dev \
-    libzip-dev \
-    zip \
-    unzip
+    curl sudo git gh nano hunspell hunspell-hu locales 
+RUN sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen
+RUN sed -i 's/^# *\(hu_HU.UTF-8\)/\1/' /etc/locale.gen
 
-RUN apt install -y \
-    hunspell \
-    hunspell-hu
+RUN locale-gen en_US.UTF-8 hu_HU.UTF-8
 
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Add extensions not included in the base image
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/download/2.7.24/install-php-extensions /usr/local/bin/
+RUN install-php-extensions gd gmp pdo_pgsql xdebug zip
+COPY docker/sites-available/000-default.conf.dev /etc/apache2/sites-available/000-default.conf
 
-RUN docker-php-ext-install \
-    mbstring \
-    pdo pdo_mysql \
-    exif pcntl bcmath gd zip xml
-
-RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+RUN echo "xdebug.mode=debug,develop" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.log=/tmp/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN a2enmod rewrite headers
-COPY docker/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+RUN addgroup --gid $GID laravel && \
+    adduser --uid $UID --gid $GID --disabled-password --gecos "" laravel && \
+    echo 'laravel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+RUN chown -R laravel:laravel .
+
+USER laravel
+
+ENV NVM_DIR /home/laravel/.nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
+    && . $NVM_DIR/nvm.sh \
+    && nvm install 22

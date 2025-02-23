@@ -16,8 +16,8 @@ class UploadMediaCommand extends Command
      * @var string
      */
     protected $signature = 'szentiras:media
-        {action=: The action to execute. Possible values: create, delete}
-        {--file= : If creatint, the path to the file to upload. The file name must be prepared: USX_Chapter_Verse.jpg. If deleting, the id.}
+        {action=list : The action to execute. Possible values: create, delete, list}
+        {--file= : If creating, the path to the file to upload. The file name must be prepared: USX_Chapter_Verse.jpg. (If the verse is bigger than the max verse in the chapter, it will be displayed at the end, so for chapter-level illustrations, use verses 1001 etc to keep the order.) If deleting, the id. If the file starts with "s3:", it is get from S3 bucket relative to the media folder.}
         {--type= : If creating a file or deleting a type, only the type name. If creating a type, the type specification, in the format: "name -- website -- license.". If a type with this name exists, it will be updated, otherwise a new type will be created. If website and license is not given, the name will be used to associate the image.};
 
     ';
@@ -54,9 +54,22 @@ class UploadMediaCommand extends Command
                     return;
                 }
                 $path = $this->option("file");
-                if (!file_exists($path)) {
-                    $this->error("File not found: $path");
-                    return;
+                if (substr($path, 0, 3) == "s3:") {
+                    $storage = Storage::disk('s3');
+                    $path = '/media/' . substr($path, 3);
+                    if (!$storage->exists($path)) {
+                        $this->error("File not found in S3: $path");
+                        return;
+                    }
+                    $mimeType = $storage->mimeType($path);
+                    $file = $storage->get($path);
+                } else {
+                    if (!file_exists($path)) {
+                        $this->error("File not found: $path");
+                        return;
+                    }
+                    $mimeType = mime_content_type($path);
+                    $file = file_get_contents($path);
                 }
                 $filename=basename($path);
                 // cut the extension
@@ -64,7 +77,7 @@ class UploadMediaCommand extends Command
                 // parse the filename to USX_Chapter_Verse
                 $parts = explode("_", $filename);
                 if (count($parts) != 3) {
-                    $this->error("Filename must be in the format: USX_Chapter_Verse.jpg");
+                    $this->error("Filename must be in the format: USX_Chapter_Verse.jpg, found $filename");
                     return;
                 }
                 $usx = $parts[0];
@@ -82,7 +95,6 @@ class UploadMediaCommand extends Command
                     Storage::delete("media/{$existing->id}");
                     $existing->delete();                    
                 }
-                $mimeType = mime_content_type($path);
                 $media = $mediaType->media()->create([
                     'uuid' => Str::uuid(),
                     'filename' => $filename,
@@ -91,7 +103,6 @@ class UploadMediaCommand extends Command
                     'chapter' => $chapter,
                     'verse' => $verse,
                 ]);
-                $file = file_get_contents($path);
                 Storage::put("media/{$media->id}", $file);
                 $this->info("Media uploaded: $path. Id: $media->id");
             } else {
@@ -126,6 +137,11 @@ class UploadMediaCommand extends Command
                     $this->error("Media not found: $path");
                 }
             }
+        } else if ($this->argument('action') == "list") {
+            MediaType::all()->each(function ($type) {
+                $this->info("See php artisan szentiras:media --help for usage.");
+                $this->line("Media type: $type->name. Website: $type->website. License: $type->license");
+            });
         } else {
             $this->error("Invalid action: " . $this->argument('action'));
         }

@@ -24,6 +24,8 @@ SET default_table_access_method = heap;
 -- Name: kar_articles; Type: TABLE; Schema: public; Owner: homestead
 --
 
+CREATE EXTENSION IF NOT EXISTS vector SCHEMA public;
+
 CREATE TABLE public.kar_articles (
     id integer NOT NULL,
     created_at timestamp without time zone DEFAULT '2001-01-01 00:00:00'::timestamp without time zone NOT NULL,

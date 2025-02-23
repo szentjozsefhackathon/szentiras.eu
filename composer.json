@@ -6,7 +6,6 @@
     "type": "project",
     "require": {
         "php": "^8.2",
-        "barryvdh/laravel-ide-helper": "^3.5",
         "doctrine/dbal": "^3.0",
         "endroid/qr-code": "^6.0",
         "gigablah/sphinxphp": "^2.0",
@@ -15,7 +14,6 @@
         "imagine/imagine": "1.5.0",
         "laravel/framework": "^11.0",
         "laravel/helpers": "^1.7",
-        "laravel/tinker": "^2.5",
         "league/flysystem-aws-s3-v3": "^3.0",
         "openai-php/laravel": "^0.10.2",
         "pgvector/pgvector": "^0.2.1",
@@ -26,6 +24,8 @@
         "twig/twig": "~3.9"
     },
     "require-dev": {
+        "laravel/tinker": "^2.5",        
+        "barryvdh/laravel-ide-helper": "^3.5",        
         "barryvdh/laravel-debugbar": "^3.14",        
         "spatie/laravel-ignition": "^2.0",
         "fakerphp/faker": "^1.9.1",
@@ -65,9 +65,6 @@
         "post-update-cmd": [
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:models --nowrite"
-        ],
-        "post-root-package-install": [
-            "php -r \"copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
             "php artisan key:generate --ansi"

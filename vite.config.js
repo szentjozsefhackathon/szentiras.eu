@@ -3,14 +3,18 @@ import laravel from 'laravel-vite-plugin';
 
 export default defineConfig({
     server: {
-        host: 'localhost'
+        hmr: {
+            host: 'localhost'
+        },
+        host: '0.0.0.0',
     },
     plugins: [
         laravel({
             input: ['resources/assets/less/app.less', 
                 'resources/assets/js/app.js', 
                 'resources/assets/js/pages/home.js',
-                'resources/assets/js/pages/translation.js'],
+                'resources/assets/js/pages/translation.js',
+                'resources/assets/js/pages/print.js'],
             refresh: true,
         }),
     ],
