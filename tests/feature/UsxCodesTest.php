@@ -27,4 +27,21 @@ class UsxCodesTest extends TestCase {
         );
     }
 
+    public function testAllUsx(): void {
+        $allUsx = UsxCodes::allUsx();
+        $this->assertCount(
+            73,
+            $allUsx,
+            "All Holy Scripture books count should be 73."
+        );
+    }
+
+    public function testGetUsxFromBookAbbrevAndTranslation(): void {
+        $this->assertEquals(
+            'GEN',
+            UsxCodes::getUsxFromBookAbbrevAndTranslation('Ter'),
+            "Ter should be mapped to GEN by default."
+        );
+    }
+
 } 

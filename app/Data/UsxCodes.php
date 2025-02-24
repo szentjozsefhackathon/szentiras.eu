@@ -532,4 +532,33 @@ class UsxCodes
         return array_keys(UsxCodes::NEW_TESTAMENT);
     }
 
+    public static function allUsx() : array
+    {
+        return array_merge(UsxCodes::oldTestamentUsx(), UsxCodes::newTestamentUsx());
+    }
+
+    public static function getUsxFromBookAbbrevAndTranslation(string $bookAbbrev, string $translation = "default"): string
+    {
+        return UsxCodes::abbrevToUsxPerTranslation(UsxCodes::fullMapping())[$translation][$bookAbbrev];
+    }
+
+    private static function fullMapping(): array
+    {
+        return array_merge(UsxCodes::OLD_TESTAMENT, UsxCodes::NEW_TESTAMENT);
+    }
+
+    private static function abbrevToUsxPerTranslation($inputMap): array {
+        $outputMap = [];
+        foreach ($inputMap as $usx => $translations) {
+            foreach ($translations as $translationName => $abbrevs) {
+                if (!isset($outputMap[$translationName])) {
+                    $outputMap[$translationName] = [];
+                }
+                foreach ($abbrevs as $abbrev) {
+                    $outputMap[$translationName][$abbrev] = $usx;
+                }
+            }
+        }
+        return $outputMap;
+    }
 }
