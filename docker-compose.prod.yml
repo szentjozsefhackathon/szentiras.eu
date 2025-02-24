@@ -27,6 +27,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
+      args:
+        - GIT_COMMIT_HASH=${GIT_COMMIT_HASH:-}
+    # Use this when building: GIT_COMMIT_HASH=$(git rev-parse HEAD) docker compose ...
     volumes:
       - .env.prod:/var/www/html/.env  # write your customizations here
       - storage:/var/www/html/storage
@@ -74,10 +77,6 @@ services:
     image: pgvector/pgvector:pg17
     env_file:
       - ./.env.prod # for the database credentials
-    environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
     networks:
       - traefik
     volumes:

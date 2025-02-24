@@ -10,6 +10,7 @@ RUN npm install --omit=dev
 
 FROM php:8.2-apache AS php
 WORKDIR /var/www/html
+ARG GIT_COMMIT_HASH
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
@@ -23,6 +24,10 @@ COPY docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 COPY --from=node /app .
 
 RUN php composer.phar install --no-dev --no-interaction --no-cache
+
+ENV GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
+RUN echo "<?php return [ 'hash' => '$GIT_COMMIT_HASH' ];" > config/version.php
+
 RUN chown -R www-data:www-data bootstrap/cache
 RUN chown -R www-data:www-data storage
 
