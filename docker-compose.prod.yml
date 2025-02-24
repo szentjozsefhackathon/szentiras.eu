@@ -30,8 +30,9 @@ services:
       args:
         - GIT_COMMIT_HASH=${GIT_COMMIT_HASH:-}
     # Use this when building: GIT_COMMIT_HASH=$(git rev-parse HEAD) docker compose ...
+    env_file:
+      - .env.prod # write your customizations here - these are used as environment variables, not from the file inside the container
     volumes:
-      - .env.prod:/var/www/html/.env  # write your customizations here
       - storage:/var/www/html/storage
       - sphinx_trigger:/opt/sphinx/trigger
     ports:

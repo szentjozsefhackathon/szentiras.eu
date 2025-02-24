@@ -14,8 +14,8 @@
 <div class="modal-body text-center">
                 <div class="btn-group-vertical" id="pdfToggles">
                     {{ macros.toggleButton('pdfHeadings', 'Címsorok', true) }}
+                    {{ macros.toggleButton('pdfNums', 'Versszámozás', false) }}                    
                     {{ macros.toggleButton('pdfRefs', 'Hivatkozások', false) }}
-                    {{ macros.toggleButton('pdfNums', 'Versszámozás', false) }}
                          <div class="form-control">Példányszám
                         <select id="pdfQuantity">
                             {% for i in 1..30 %}<option value="{{ i }}">{{ i }}</option>{% endfor %}

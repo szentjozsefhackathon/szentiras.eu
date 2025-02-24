@@ -18,6 +18,13 @@
     span.numchapter {
         display: none;
     }
+{% else %}
+    span.numv {
+        display: inline !important;
+    }
+    span.numchapter {
+        display: inline !important;
+    }
 {% endif %}
 
 {% if not options.refs %}
