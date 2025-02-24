@@ -4,231 +4,532 @@ namespace SzentirasHu\Data;
 
 class UsxCodes
 {
-    // Possible duplicates: Jud, Csel, Sir
     private const OLD_TESTAMENT = [
-        '1Kir' => '1KI',
-        '1Krón' => '1CH',
-        '1Mak' => '1MA',
-        '1Makk' => '1MA',
-        '1Moz' => 'GEN',
-        '1Móz' => 'GEN',
-        '1Mozes' => 'GEN',
-        '1Mózes' => 'GEN',
-        '1Sam' => '1SA',
-        '1Sám' => '1SA',
-        '1Samuel' => '1SA',
-        '1Sámuel' => '1SA',
-        '1Sámuél' => '1SA',
-        '2Kir' => '2KI',
-        '2Krón' => '2CH',
-        '2Mak' => '2MA',
-        '2Makk' => '2MA',
-        '2Moz' => 'EXO',
-        '2Móz' => 'EXO',
-        '2Mozes' => 'EXO',
-        '2Mózes' => 'EXO',
-        '2Sam' => '2SA',
-        '2Sám' => '2SA',
-        '2Samuel' => '2SA',
-        '2Sámuel' => '2SA',
-        '2Sámuél' => '2SA',
-        '3Moz' => 'LEV',
-        '3Móz' => 'LEV',
-        '3Mozes' => 'LEV',
-        '3Mózes' => 'LEV',
-        '4Moz' => 'NUM',
-        '4Móz' => 'NUM',
-        '4Mozes' => 'NUM',
-        '4Mózes' => 'NUM',
-        '5Moz' => 'DEU',
-        '5Móz' => 'DEU',
-        '5Mozes' => 'DEU',
-        '5Mózes' => 'DEU',
-        'Abd' => 'OBA',
-        'Ag' => 'HAG',
-        'Agg' => 'HAG',
-        'Ám' => 'AMO',
-        'Ámós' => 'AMO',
-        'Bár' => 'BAR',
-        'Bir' => 'JDG',
-        'Bír' => 'JDG',
-        'Birak' => 'JDG',
-        'Birák' => 'JDG',
-        'Bírák' => 'JDG',
-        'Bölcs' => 'WIS',
-        'Dán' => 'DAN',
-        'En' => 'SNG',
-        'Én' => 'SNG',
-        'Ének.Én' => 'SNG',
-        'Énekek' => 'SNG',
-        'ÉnekÉn' => 'SNG',
-        'Ésa' => '',
-        'Esz' => 'EST',
-        'Eszt' => 'EST',
-        'Ez' => 'EZR',
-        'Ezd' => 'EZR',
-        'Ezdr' => 'EZR',
-        'Ezek' => 'EZK',
-        'Ezék' => 'EZK',
-        'Ezekias' => 'EZK',
-        'Ezekiás' => 'EZK',
-        'Ezékiás' => 'EZK',
-        'Ézs' => '',
-        'Ezsd' => 'EZR',
-        'Ezsdr' => 'EZR',
-        'Hab' => 'HAB',
-        'Hag' => 'HAG',
-        'Hós' => 'HOS',
-        'Iz' => 'ISA',
-        'Jer' => 'JER',
-        'Jo' => 'JOB',
-        'Jób' => 'JOB',
-        'Joel' => 'JOL',
-        'Jóel' => 'JOL',
-        'Jón' => 'JON',
-        'Jozs' => 'JOS',
-        'Józs' => 'JOS',
-        'Jozsue' => 'JOS',
-        'Józsue' => 'JOS',
-        'Józsué' => 'JOS',
-        'Jsir' => 'LAM',
-        'Judit' => 'JDT',
-        'Kiv' => 'EXO',
-        'Kivonulas' => 'EXO',
-        'Kivonulás' => 'EXO',
-        'Lev' => 'LEV',
-        'Leviták' => 'LEV',
-        'Mal' => 'MAL',
-        'Malak' => 'MAL',
-        'Mik' => 'MIC',
-        'Mtorv' => 'DEU',
-        'MTörv' => 'DEU',
-        'Náh' => 'NAM',
-        'Neh' => 'NEH',
-        'Oz' => 'HOS',
-        'Óz' => 'HOS',
-        'Péld' => 'PRO',
-        'Préd' => 'ECC',
-        'Rut' => 'RUT',
-        'Rút' => 'RUT',
-        'Ruth' => 'RUT',
-        'Rúth' => 'RUT',
-        'Samuel1' => '1SA',
-        'Sámuel1' => '1SA',
-        'Samuel2' => '2SA',
-        'Sámuel2' => '2SA',
-        'SamuelI' => '1SA',
-        'SámuelI' => '1SA',
-        'SamuelII' => '2SA',
-        'SámuelII' => '2SA',
-        'Sir' => 'LAM',
-        'Sír' => 'LAM',
-        'Siral' => 'LAM',
-        'Siralm' => 'LAM',
-        'Sof' => 'ZEP',
-        'Szam' => 'NUM',
-        'Szám' => 'NUM',
-        'Szamok' => 'NUM',
-        'Számok' => 'NUM',
-        'Szof' => 'ZEP',
-        'Ter' => 'GEN',
-        'Teremtes' => 'GEN',
-        'Teremtés' => 'GEN',
-        'Tób' => 'TOB',
-        'Zak' => 'ZEC',
-        'Zof' => 'ZEP',
-        'Zsolt' => 'PSA',
-        'Zsoltar' => 'PSA',
-        'Zsoltár' => 'PSA',
-        'Zsoltarok' => 'PSA',
-        'Zsoltárok' => 'PSA',
+        '1KI' => [
+            'default' => [
+                '1Kir',
+            ],
+        ],
+        '1CH' => [
+            'default' => [
+                '1Krón',
+            ],
+        ],
+        '1MA' => [
+            'default' => [
+                '1Mak',
+                '1Makk',
+            ],
+        ],
+        'GEN' => [
+            'default' => [
+                'Ter',
+                '1Móz',
+                '1Mozes',
+                '1Mózes',
+                '1Moz',
+                'Teremtes',
+                'Teremtés',
+            ],
+            'RUF' => [
+                '1Móz',
+            ],
+        ],
+        '1SA' => [
+            'default' => [
+                '1Sam',
+                '1Sám',
+                '1Samuel',
+                '1Sámuel',
+                '1Sámuél',
+                'Samuel1',
+                'Sámuel1',
+                'SamuelI',
+                'SámuelI',
+            ],
+        ],
+        '2KI' => [
+            'default' => [
+                '2Kir',
+            ],
+        ],
+        '2CH' => [
+            'default' => [
+                '2Krón',
+            ],
+        ],
+        '2MA' => [
+            'default' => [
+                '2Mak',
+                '2Makk',
+            ],
+        ],
+        'EXO' => [
+            'default' => [
+                '2Moz',
+                '2Móz',
+                '2Mozes',
+                '2Mózes',
+                'Kiv',
+                'Kivonulas',
+                'Kivonulás',
+            ],
+        ],
+        '2SA' => [
+            'default' => [
+                '2Sam',
+                '2Sám',
+                '2Samuel',
+                '2Sámuel',
+                '2Sámuél',
+                'Samuel2',
+                'Sámuel2',
+                'SamuelII',
+                'SámuelII',
+            ],
+        ],
+        'LEV' => [
+            'default' => [
+                '3Moz',
+                '3Móz',
+                '3Mozes',
+                '3Mózes',
+                'Lev',
+                'Leviták',
+            ],
+        ],
+        'NUM' => [
+            'default' => [
+                '4Moz',
+                '4Móz',
+                '4Mozes',
+                '4Mózes',
+                'Szam',
+                'Szám',
+                'Szamok',
+                'Számok',
+            ],
+        ],
+        'DEU' => [
+            'default' => [
+                '5Moz',
+                '5Móz',
+                '5Mozes',
+                '5Mózes',
+                'Mtorv',
+                'MTörv',
+            ],
+        ],
+        'OBA' => [
+            'default' => [
+                'Abd',
+            ],
+        ],
+        'HAG' => [
+            'default' => [
+                'Ag',
+                'Agg',
+                'Hag',
+            ],
+        ],
+        'AMO' => [
+            'default' => [
+                'Ám',
+                'Ámós',
+            ],
+        ],
+        'BAR' => [
+            'default' => [
+                'Bár',
+            ],
+        ],
+        'JDG' => [
+            'default' => [
+                'Bir',
+                'Bír',
+                'Birak',
+                'Birák',
+                'Bírák',
+            ],
+        ],
+        'WIS' => [
+            'default' => [
+                'Bölcs',
+            ],
+        ],
+        'DAN' => [
+            'default' => [
+                'Dán',
+            ],
+        ],
+        'SNG' => [
+            'default' => [
+                'En',
+                'Én',
+                'Ének.Én',
+                'Énekek',
+                'ÉnekÉn',
+            ],
+        ],
+        'ISA' => [
+            'default' => [
+                'Ésa',
+                'Ézs',
+                'Iz',
+            ],
+        ],
+        'EST' => [
+            'default' => [
+                'Esz',
+                'Eszt',
+            ],
+        ],
+        'EZR' => [
+            'default' => [
+                'Ez',
+                'Ezd',
+                'Ezdr',
+                'Ezsd',
+                'Ezsdr',
+            ],
+        ],
+        'EZK' => [
+            'default' => [
+                'Ezek',
+                'Ezék',
+                'Ezekias',
+                'Ezekiás',
+                'Ezékiás',
+            ],
+        ],
+        'HAB' => [
+            'default' => [
+                'Hab',
+            ],
+        ],
+        'HOS' => [
+            'default' => [
+                'Hós',
+                'Oz',
+                'Óz',
+            ],
+        ],
+        'JER' => [
+            'default' => [
+                'Jer',
+            ],
+        ],
+        'JOB' => [
+            'default' => [
+                'Jo',
+                'Jób',
+            ],
+        ],
+        'JOL' => [
+            'default' => [
+                'Joel',
+                'Jóel',
+            ],
+        ],
+        'JON' => [
+            'default' => [
+                'Jón',
+            ],
+        ],
+        'JOS' => [
+            'default' => [
+                'Jozs',
+                'Józs',
+                'Jozsue',
+                'Józsue',
+                'Józsué',
+            ],
+        ],
+        'LAM' => [
+            'default' => [
+                'Siralm',
+                'Jsir',
+                'Sír',
+                'Siral',
+            ],
+            'RUF' => [
+                'Sir'
+            ]
+        ],
+        'SIR' => [
+            'default' => [
+                'Sirák',
+                'Sirák fia',
+                'Ecclesiasticus',
+            ],
+            'SZIT' => [
+                'Sir'
+            ],
+            'RUF' => [
+            ],
+        ],
+        'JDT' => [
+            'default' => [
+                'Judit',
+            ],
+        ],
+        'MAL' => [
+            'default' => [
+                'Mal',
+                'Malak',
+            ],
+        ],
+        'MIC' => [
+            'default' => [
+                'Mik',
+            ],
+        ],
+        'NAM' => [
+            'default' => [
+                'Náh',
+            ],
+        ],
+        'NEH' => [
+            'default' => [
+                'Neh',
+            ],
+        ],
+        'PRO' => [
+            'default' => [
+                'Péld',
+            ],
+        ],
+        'ECC' => [
+            'default' => [
+                'Préd',
+            ],
+        ],
+        'RUT' => [
+            'default' => [
+                'Rut',
+                'Rút',
+                'Ruth',
+                'Rúth',
+            ],
+        ],
+        'ZEP' => [
+            'default' => [
+                'Sof',
+                'Szof',
+                'Zof',
+            ],
+        ],
+        'TOB' => [
+            'default' => [
+                'Tób',
+            ],
+        ],
+        'ZEC' => [
+            'default' => [
+                'Zak',
+            ],
+        ],
+        'PSA' => [
+            'default' => [
+                'Zsolt',
+                'Zsoltar',
+                'Zsoltár',
+                'Zsoltarok',
+                'Zsoltárok',
+            ],
+        ],
     ];
 
     private const NEW_TESTAMENT = [
-        '1Jan' => '1JN',
-        '1Ján' => '1JN',
-        '1Janos' => '1JN',
-        '1János' => '1JN',
-        '1Jn' => '1JN',
-        '2Jan' => '2JN',
-        '2Ján' => '2JN',
-        '2Janos' => '2JN',
-        '2János' => '2JN',
-        '2Jn' => '2JN',
-        '3Ján' => '3JN',
-        '3Jn' => '3JN',
-        'Mat' => 'MAT',
-        'Mát' => 'MAT',
-        'Mate' => 'MAT',
-        'Máté' => 'MAT',
-        'Mt' => 'MAT',
-        'Mar' => 'MRK',
-        'Már' => 'MRK',
-        'Mark' => 'MRK',
-        'Márk' => 'MRK',
-        'Mk' => 'MRK',
-        'Lk' => 'LUK',
-        'Luk' => 'LUK',
-        'Lukacs' => 'LUK',
-        'Lukács' => 'LUK',
-        'Jan' => 'JHN',
-        'Ján' => 'JHN',
-        'Janos' => 'JHN',
-        'János' => 'JHN',
-        'Jn' => 'JHN',
-        'ApCsel' => 'ACT',
-        'Csel' => 'ACT',
-        'Rom' => 'ROM',
-        'Róm' => 'ROM',
-        '1Kor' => '1CO',
-        '2Kor' => '2CO',
-        'Gal' => 'GAL',
-        'Ef' => 'EPH',
-        'Eféz' => 'EPH',
-        'Fil' => 'PHP',
-        'Kol' => 'COL',
-        '1Tessz' => '1TH',
-        '1Tesz' => '1TH',
-        '1Thess' => '1TH',
-        '1Thessz' => '1TH',
-        '2Tessz' => '2TH',
-        '2Tesz' => '2TH',
-        '2Thess' => '2TH',
-        '2Thessz' => '2TH',
-        '1Tim' => '1TI',
-        '2Tim' => '2TI',
-        'Tit' => 'TIT',
-        'Tít' => 'TIT',
-        'Filem' => 'PHM',
-        'Zs' => 'HEB',
-        'Zsid' => 'HEB',
-        'Jak' => 'JAS',
-        '1Pét' => '1PE',
-        '1Pt' => '1PE',
-        '2Pét' => '2PE',
-        '2Pt' => '2PE',
-        'Jud' => 'JUD',
-        'Júd' => 'JUD',
-        'Júdás' => 'JUD',
-        'Jel' => 'JUD',
+        '1JN' => [
+            'default' => [
+                '1Jan',
+                '1Ján',
+                '1Janos',
+                '1János',
+                '1Jn',
+            ],
+        ],
+        '2JN' => [
+            'default' => [
+                '2Jan',
+                '2Ján',
+                '2Janos',
+                '2János',
+                '2Jn',
+            ],
+        ],
+        '3JN' => [
+            'default' => [
+                '3Ján',
+                '3Jn',
+            ],
+        ],
+        'MAT' => [
+            'default' => [
+                'Mat',
+                'Mát',
+                'Mate',
+                'Máté',
+                'Mt',
+            ],
+        ],
+        'MRK' => [
+            'default' => [
+                'Mar',
+                'Már',
+                'Mark',
+                'Márk',
+                'Mk',
+            ],
+        ],
+        'LUK' => [
+            'default' => [
+                'Lk',
+                'Luk',
+                'Lukacs',
+                'Lukács',
+            ],
+        ],
+        'JHN' => [
+            'default' => [
+                'Jan',
+                'Ján',
+                'Janos',
+                'János',
+                'Jn',
+            ],
+        ],
+        'ACT' => [
+            'default' => [
+                'ApCsel',
+                'Csel',
+            ],
+        ],
+        'ROM' => [
+            'default' => [
+                'Rom',
+                'Róm',
+            ],
+        ],
+        '1CO' => [
+            'default' => [
+                '1Kor',
+            ],
+        ],
+        '2CO' => [
+            'default' => [
+                '2Kor',
+            ],
+        ],
+        'GAL' => [
+            'default' => [
+                'Gal',
+            ],
+        ],
+        'EPH' => [
+            'default' => [
+                'Ef',
+                'Eféz',
+            ],
+        ],
+        'PHP' => [
+            'default' => [
+                'Fil',
+            ],
+        ],
+        'COL' => [
+            'default' => [
+                'Kol',
+            ],
+        ],
+        '1TH' => [
+            'default' => [
+                '1Tessz',
+                '1Tesz',
+                '1Thess',
+                '1Thessz',
+            ],
+        ],
+        '2TH' => [
+            'default' => [
+                '2Tessz',
+                '2Tesz',
+                '2Thess',
+                '2Thessz',
+            ],
+        ],
+        '1TI' => [
+            'default' => [
+                '1Tim',
+            ],
+        ],
+        '2TI' => [
+            'default' => [
+                '2Tim',
+            ],
+        ],
+        'TIT' => [
+            'default' => [
+                'Tit',
+                'Tít',
+            ],
+        ],
+        'PHM' => [
+            'default' => [
+                'Filem',
+            ],
+        ],
+        'HEB' => [
+            'default' => [
+                'Zs',
+                'Zsid',
+            ],
+        ],
+        'JAS' => [
+            'default' => [
+                'Jak',
+            ],
+        ],
+        '1PE' => [
+            'default' => [
+                '1Pét',
+                '1Pt',
+            ],
+        ],
+        '2PE' => [
+            'default' => [
+                '2Pét',
+                '2Pt',
+            ],
+        ],
+        'JUD' => [
+            'default' => [
+                'Jud',
+                'Júd',
+                'Júdás',
+            ],
+        ],
+        'REV' => [
+            'default' => [
+                'Jel',
+            ],
+        ],
     ];
 
     public static function abbreviationToUsxMapping(): array
     {
-        return array_merge(
-            UsxCodes::OLD_TESTAMENT,
-            UsxCodes::NEW_TESTAMENT
-        );
+        // TODO
     }
 
     public static function oldTestamentUsx(): array
     {
-        return array_values(array_unique(UsxCodes::OLD_TESTAMENT));
+        return array_keys(UsxCodes::OLD_TESTAMENT);
     }
 
     public static function newTestamentUsx(): array
     {
-        return array_values(array_unique(UsxCodes::NEW_TESTAMENT));
+        return array_keys(UsxCodes::NEW_TESTAMENT);
     }
 
 }
