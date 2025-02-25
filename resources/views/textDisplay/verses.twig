@@ -47,14 +47,6 @@
         <a class="btn btn-info" id="fullContextButton" href="{{ url('/' ~ canonicalUrl ~ (mediaEnabled ? '?media' : '')) }}" title="Csak a hivatkozás szövegének megjelenítése">
             <i class="fa-solid fa-down-left-and-up-right-to-center"></i> Csak a hivatkozás szövegének megjelenítése</a>
     {% endif %}
-    {% if not mediaEnabled %}
-        <a class="btn btn-info" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ '?media' ~ (fullContext ? '&fullContext' : '')) }}" title="Illusztrációk megjelenítése">
-            <i class="far fa-images"></i> Illusztrációk megjelenítése</a>
-        {% endif %}
-    {% if mediaEnabled %}
-            <a class="btn btn-info" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ (fullContext ? '?fullContext' : '')) }}" title="Illusztrációk elrejtése">
-                <i class="far fa-images"></i> Illusztrációk elrejtése</a>
-        {% endif %}    
     {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers } %}
     {% if mediaEnabled and otherMedia %}
         <h5>További illusztrációk</h5>
@@ -98,6 +90,15 @@
                             <i class="toggle fa-regular fa-square-check active"></i>
                             <i class="toggle fa-regular fa-square inactive"></i>
                             AI eszközök</a>                    
+                            {% if not mediaEnabled %}
+                                <a class="btn-sm btn btn-info m-1 flex-fill" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ '?media' ~ (fullContext ? '&fullContext' : '')) }}" title="Illusztrációk megjelenítése">
+                                    <i class="far fa-images"></i> Illusztrációk megjelenítése</a>
+                                {% endif %}
+                            {% if mediaEnabled %}
+                                    <a class="btn-sm btn btn-info m-1 flex-fill" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ (fullContext ? '?fullContext' : '')) }}" title="Illusztrációk elrejtése">
+                                        <i class="far fa-images"></i> Illusztrációk elrejtése</a>
+                                {% endif %}    
+                        
             </div>
         </div>
     </div>

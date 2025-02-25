@@ -5,8 +5,8 @@
   '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa {{ icon }} fa-lg" style="color: {{ color }}"></i> {{ label }}</a>
 {% endmacro %}
 <div>
+  <a href="#" data-bs-view="/pdf/dialog/{{ canonicalUrl }}" rel="nofollow" data-bs-target="#pdfModal" data-bs-toggle="modal" id="pdfLink" class="btn btn-outline-secondary"><i class="fa fa-print fa-lg"></i> Nyomtatás/PDF</a>  
+  <a href="#" data-bs-view="/qr/dialog/{{ fullCanonicalUrl }}" rel="nofollow" data-bs-target="#qrModal" data-bs-toggle="modal" id="qrLink" class="btn btn-outline-secondary"><i class="fa fa-qrcode fa-lg"></i> QR-kód</a></li>  
     {{ _self.social('http://www.facebook.com/share.php?title=' ~ teaser ~ '&u=' ~ fullCanonicalUrl, 'fab fa-facebook', '#3b5999', 'Facebook') }}
     {{ _self.social('https://twitter.com/share?lang=hu&text=' ~ teaser ~ '&url=' ~ fullCanonicalUrl, 'fab fa-x-twitter', '#55acee', 'Twitter') }}
-    <a href="#" data-bs-view="/qr/dialog/{{ fullCanonicalUrl }}" rel="nofollow" data-bs-target="#qrModal" data-bs-toggle="modal" id="qrLink" class="btn btn-outline-secondary"><i class="fa fa-qrcode fa-lg"></i> QR-kód</a></li>
-    <a href="#" data-bs-view="/pdf/dialog/{{ canonicalUrl }}" rel="nofollow" data-bs-target="#pdfModal" data-bs-toggle="modal" id="pdfLink" class="btn btn-outline-secondary"><i class="fa fa-print fa-lg"></i> Nyomtatás</a>
 </div>
