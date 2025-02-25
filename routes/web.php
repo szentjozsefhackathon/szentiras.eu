@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use SzentirasHu\Http\Controllers\Ai\AiController;
 use SzentirasHu\Http\Controllers\Auth\AnonymousIdController;
 use SzentirasHu\Http\Controllers\Display\TextDisplayController;
+use SzentirasHu\Http\Controllers\Home\HomeController;
 use SzentirasHu\Http\Controllers\MediaController;
 use SzentirasHu\Models\Media;
 
@@ -18,49 +19,49 @@ use SzentirasHu\Models\Media;
 |
 */
 
-Route::get('/', 'Home\HomeController@index');
+Route::get('/', [ HomeController::class, 'index' ]);
 
-Route::get("/kereses", 'Search\SearchController@getIndex');
-Route::post("/kereses/search", 'Search\SearchController@anySearch');
-Route::get("/kereses/suggest", 'Search\SearchController@anySuggest');
-Route::post("/kereses/suggest", 'Search\SearchController@anySuggest');
-Route::post("/kereses/legacy", 'Search\SearchController@postLegacy');
+Route::get("/kereses", '\SzentirasHu\Http\Controllers\Search\SearchController@getIndex');
+Route::post("/kereses/search", '\SzentirasHu\Http\Controllers\Search\SearchController@anySearch');
+Route::get("/kereses/suggest", '\SzentirasHu\Http\Controllers\Search\SearchController@anySuggest');
+Route::post("/kereses/suggest", '\SzentirasHu\Http\Controllers\Search\SearchController@anySuggest');
+Route::post("/kereses/legacy", '\SzentirasHu\Http\Controllers\Search\SearchController@postLegacy');
 
-Route::get("/ai-search", 'Search\SemanticSearchController@getIndex');
-Route::post("/ai-search/search", 'Search\SemanticSearchController@anySearch')
+Route::get("/ai-search", '\SzentirasHu\Http\Controllers\Search\SemanticSearchController@getIndex');
+Route::post("/ai-search/search", '\SzentirasHu\Http\Controllers\Search\SemanticSearchController@anySearch')
     ->middleware('throttle:10,1');
 
 Route::get("/ai-tool/{translationAbbrev}/{refString}", [AiController::class, 'getAiToolPopover']);
 
-Route::post('/searchbible.php', 'SzentirasHu\Http\Controllers\Search\SearchController@postLegacy');
+Route::post('/searchbible.php', ' \SzentirasHu\Http\Controllers\Search\SearchController@postLegacy');
 
 /** API */
-Route::get("/api", 'Api\ApiController@getIndex');
+Route::get("/api", '\SzentirasHu\Http\Controllers\Api\ApiController@getIndex');
 
-Route::get('/info', 'Home\InfoController@getIndex');
+Route::get('/info', '\SzentirasHu\Http\Controllers\Home\InfoController@getIndex');
 
-Route::get('/pdf/dialog/{translationAbbrev}/{refString}', 'Display\PdfController@getDialog');
-Route::get('/pdf/ref/{translationId}/{refString}', 'Display\PdfController@getRef');
+Route::get('/pdf/dialog/{translationAbbrev}/{refString}', '\SzentirasHu\Http\Controllers\Display\PdfController@getDialog');
+Route::get('/pdf/ref/{translationId}/{refString}', '\SzentirasHu\Http\Controllers\Display\PdfController@getRef');
 
 /** AUDIO */
-Route::get('/hang', 'Display\AudioBookController@index');
+Route::get('/hang', '\SzentirasHu\Http\Controllers\Display\AudioBookController@index');
 
-Route::get('/hang/{id}', 'Display\AudioBookController@show')
+Route::get('/hang/{id}', '\SzentirasHu\Http\Controllers\Display\AudioBookController@show')
     ->where('id', '.+');
 
 /** QR code */
-Route::get('/qr/dialog/{url}', 'Display\\QrCodeController@dialog')->where('url', '.+');
-Route::get('/qr/img/{url}', 'Display\\QrCodeController@index')->where('url', '.+');
+Route::get('/qr/dialog/{url}', '\SzentirasHu\Http\Controllers\Display\\QrCodeController@dialog')->where('url', '.+');
+Route::get('/qr/img/{url}', '\SzentirasHu\Http\Controllers\Display\\QrCodeController@index')->where('url', '.+');
 
-Route::get('/forditasok', 'Display\\TextDisplayController@showTranslationList');
+Route::get('/forditasok', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showTranslationList');
 
-Route::get('/tervek/{plan_id}/{day_number}', 'Display\\TextDisplayController@showReadingPlanDay')
+Route::get('/tervek/{plan_id}/{day_number}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showReadingPlanDay')
     ->where(['plan_id' => '.+', 'day_number' => '.+']);
 
-Route::get('/tervek/{id}', 'Display\\TextDisplayController@showReadingPlan')
+Route::get('/tervek/{id}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showReadingPlan')
     ->where('id', '.+');
 
-Route::get('/tervek', 'Display\\TextDisplayController@showReadingPlanList');
+Route::get('/tervek', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showReadingPlanList');
 
 Route::get('/register', [AnonymousIdController::class, 'showAnonymousRegistrationForm']);
 Route::post('/register', [AnonymousIdController::class, 'registerAnonymousId']);
@@ -75,14 +76,14 @@ Route::post('/login', [AnonymousIdController::class, 'login']);
 Route::get('/media/{uuid}', [MediaController::class, 'show'])->name('media.show');
 
 /** These should come at the end to not collide with other routes! */
-Route::get('/{TRANSLATION_ABBREV}', 'Display\\TextDisplayController@showTranslation')
+Route::get('/{TRANSLATION_ABBREV}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showTranslation')
     ->where('TRANSLATION_ABBREV', Config::get('settings.translationAbbrevRegex'));
 
-Route::get('/{TRANSLATION_ABBREV}/{REFERENCE}', 'Display\\TextDisplayController@showTranslatedReferenceText')
+Route::get('/{TRANSLATION_ABBREV}/{REFERENCE}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showTranslatedReferenceText')
     ->where(['TRANSLATION_ABBREV' => Config::get('settings.translationAbbrevRegex'),
         'REFERENCE' => '[^/]+']);
 
-Route::get('/{REFERENCE}', 'Display\\TextDisplayController@showReferenceText')
+Route::get('/{REFERENCE}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showReferenceText')
      ->where('REFERENCE', '[^/]+');
 Route::get('/xref/{TRANSLATION_ABBREV}/{REFERENCE}', [TextDisplayController::class, 'showXrefText'])
     ->where(['TRANSLATION_ABBREV' => Config::get('settings.translationAbbrevRegex'),

@@ -1,97 +1,21 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
-
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
-
-$app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
-    SzentirasHu\Http\Kernel::class
-);
-
-$app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    SzentirasHu\Console\Kernel::class
-);
-
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    SzentirasHu\Exceptions\Handler::class
-);
-
-/*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
-*/
-
-if (! function_exists('elixir')) {
-    /**
-     * Get the path to a versioned Elixir file.
-     *
-     * @param  string  $file
-     * @param  string  $buildDirectory
-     * @return string
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @deprecated Use Laravel Mix instead.
-     */
-    function elixir($file, $buildDirectory = 'build')
-    {
-        static $manifest = [];
-        static $manifestPath;
-
-        if (empty($manifest) || $manifestPath !== $buildDirectory) {
-            $path = public_path($buildDirectory.'/rev-manifest.json');
-
-            if (file_exists($path)) {
-                $manifest = json_decode(file_get_contents($path), true);
-                $manifestPath = $buildDirectory;
-            }
-        }
-
-        $file = ltrim($file, '/');
-
-        if (isset($manifest[$file])) {
-            return '/'.trim($buildDirectory.'/'.$manifest[$file], '/');
-        }
-
-        $unversioned = public_path($file);
-
-        if (file_exists($unversioned)) {
-            return '/'.trim($file, '/');
-        }
-
-        throw new InvalidArgumentException("File {$file} not defined in asset manifest.");
-    }
-}
-
-return $app;
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->trustProxies(at: [
+            '10.0.0.0/8',
+            '172.16.0.0/12'
+        ]);    
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();
