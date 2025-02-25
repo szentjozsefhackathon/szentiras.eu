@@ -2,8 +2,11 @@
 
 namespace SzentirasHu\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use League\Flysystem\FilesystemException;
+use League\Flysystem\StorageAttributes;
 use OpenAI\Exceptions\ErrorException;
 use OpenAI\Laravel\Facades\OpenAI as OpenAI;
 use Pgvector\Laravel\Distance;
@@ -100,53 +103,27 @@ class CreateEmbeddingVectors extends Command
             $bookAbbrevs = array_map("trim", explode(",", $this->option("book")));
             $books = $books->filter(fn($book) => in_array($book->abbrev, $bookAbbrevs));
         }
-        $this->info("Generating vectors for {$books->count()} book(s).");        
+        $this->info("Generating vectors for {$books->count()} book(s).");
         foreach ($books as $book) {
             $this->processBook($book);
         }
     }
 
-    private function processBook(Book $book) {
+    private function processBook(Book $book)
+    {
         $chapterCount = $this->bookService->getChapterCount($book, $book->translation);
-        $this->progressBar = $this->output->createProgressBar($chapterCount+1);
+        $this->progressBar = $this->output->createProgressBar($chapterCount + 1);
         $this->progressBar->setFormat("[%bar%] %message%");
         $this->progressBar->setMessage("Starting book {$book->abbrev}");
         $this->progressBar->start();
 
-        $this->currentBookFile = "vector_" . $book->translation->abbrev . "_" . $book->number  . ".dat";                                            
-        if ($this->isFileTarget() || $this->isS3Target()) {
-            $storage = $this->selectTargetStorage();
-            try {
-                if ($storage->exists($this->currentBookFile)) {
-                    $file = $storage->get($this->currentBookFile);
-                    $this->currentBookFileData = $this->unserialize($file);
-                } else {
-                    $this->currentBookFileData  = [];
-                }                            
+        $this->currentBookFile = "vectors/" . $book->translation->abbrev . "_" . $book->number  . ".dat";
+        $this->currentBookFileData = [];
 
-            } catch (FilesystemException $e) {
-                $this->error("Error reading file: {$e->getMessage()}");
-                return;
-            }
-        } else {
-            // the target is the database, load the file if needed/exists
-            if ($this->option("vectorFiles")) {
-                $storage = $this->selectInputStorage();
-                if ($storage->exists($this->currentBookFile)) {
-                    $file = $storage->get($this->currentBookFile);
-                    $this->currentBookFileData = $this->unserialize($file);
-                } else {
-                    $this->currentBookFileData = [];
-                    $this->output->newline();
-                    $this->error("Vector file not found: '{$this->currentBookFile}'. To load the vectors to the database, remove the --vectorFiles option or try an other method.");
-                    return false;
-                }                
-            }
-        }
-
-        if (!$this->option("scope") || $this->option("scope")=="range") {
+        if (!$this->option("scope") || $this->option("scope") == "range") {
             $chapterLengths = [];
             for ($chapter = 1; $chapter <= $chapterCount; $chapter++) {
+                $this->loadFiles("range", $chapter, false);
                 $chapterLengths[] = $this->bookService->getVerseCount($book, $chapter, $book->translation);
             }
 
@@ -163,6 +140,9 @@ class CreateEmbeddingVectors extends Command
                 $text = $this->textService->getPureText($canonicalReference, $book->translation);
                 $this->embedExcerpt($canonicalReference, $text, EmbeddedExcerptScope::Range, $book->translation, $book, $fromChapter, $fromVerse, $toChapter, $toVerse);
             }
+            if ($this->isFileTarget() || $this->isS3Target()) {
+                $this->writeCurrentFileData("range");
+            }        
             $this->progressBar->advance();
         }
 
@@ -173,10 +153,15 @@ class CreateEmbeddingVectors extends Command
             $chapterReference = "{$book->abbrev} $chapter";
             $canonicalReference = CanonicalReference::fromString($chapterReference, $book->translation->id);
             $text = $this->textService->getPureText($canonicalReference, $book->translation);
-            if (!$this->option("scope") || $this->option("scope")=="chapter") {                    
+            if (!$this->option("scope") || $this->option("scope") == "chapter") {
+                $this->loadFiles("chapter", $chapter);
                 $this->embedExcerpt($canonicalReference, $text, EmbeddedExcerptScope::Chapter, $book->translation, $book, $chapter);
+                if ($this->isFileTarget() || $this->isS3Target()) {
+                    $this->writeCurrentFileData("chapter");
+                }        
             }
-            if (!$this->option("scope") || $this->option("scope")=="verse") {                    
+            if (!$this->option("scope") || $this->option("scope") == "verse") {
+                $this->loadFiles("verse", $chapter);
                 $verse = 1;
                 do {
                     $reference = "{$book->abbrev} $chapter,$verse";
@@ -189,26 +174,58 @@ class CreateEmbeddingVectors extends Command
                 } while (!empty($text));
             }
             $this->progressBar->advance();
-        }
-        if ($this->isFileTarget() || $this->isS3Target()) {
-            $this->writeCurrentFileData();
+            if ($this->isFileTarget() || $this->isS3Target()) {
+                $this->writeCurrentFileData("verse");
+            }    
         }
         $this->progressBar->finish();
         $this->output->newline();
     }
 
-
-    private function selectTargetStorage() {
-        if ($this->isFileTarget()) {
-            return Storage::disk("local");
-         } else if ($this->isS3Target()) {
-            return Storage::disk("s3");
-         }  else { 
-            throw new \Exception("Invalid target storage.");
-         }         
+    private function loadFiles($scope, int $chapter, bool $unset = true) {
+        if ($this->isFileTarget() || $this->isS3Target()) {
+            $storage = $this->selectTargetStorage();
+            try {
+                $this->loadExistingFileData($storage, $scope, $chapter, $unset);
+            } catch (FilesystemException $e) {
+                $this->error("Error reading file: {$e->getMessage()}");
+                return;
+            }
+        } else {
+            // the target is the database, load the file if needed/exists
+            if ($this->option("vectorFiles")) {
+                $storage = $this->selectInputStorage();
+                $this->loadExistingFileData($storage, $scope, $chapter, $unset);
+            }
+        }
     }
 
-    private function selectInputStorage() {
+    private function loadExistingFileData($storage, $scope, $chapter, bool $unset = true)
+    {
+        if ($unset) {
+            unset($this->currentBookFileData);
+            $this->currentBookFileData = [];
+        }
+        $fileName = "{$this->currentBookFile}.{$scope}.{$chapter}";
+        if ($storage->exists($fileName)) {
+            $file = $storage->get($fileName);
+            $this->currentBookFileData[$chapter] = $this->unserialize($file);
+        }
+    }
+
+    private function selectTargetStorage()
+    {
+        if ($this->isFileTarget()) {
+            return Storage::disk("local");
+        } else if ($this->isS3Target()) {
+            return Storage::disk("s3");
+        } else {
+            throw new \Exception("Invalid target storage.");
+        }
+    }
+
+    private function selectInputStorage()
+    {
         if ($this->option("vectorFiles") == "s3") {
             return Storage::disk("s3");
         } else if ($this->option("vectorFiles") == "filesystem") {
@@ -218,50 +235,53 @@ class CreateEmbeddingVectors extends Command
         }
     }
 
-    function generateSlidingWindows($chapterLengths, $windowSize = 10, $stepSize = 5) {
+    function generateSlidingWindows($chapterLengths, $windowSize = 10, $stepSize = 5)
+    {
         $windows = [];
         $chapters = [];
-    
+
         // Build the book structure
         foreach ($chapterLengths as $chapterIndex => $sections) {
             for ($section = 1; $section <= $sections; $section++) {
                 $chapters[] = ['chapter' => $chapterIndex + 1, 'section' => $section];
             }
         }
-    
+
         $totalSections = count($chapters);
-    
+
         // Slide the window over the sections
         for ($start = 0; $start < $totalSections; $start += $stepSize) {
             $end = $start + $windowSize - 1;
             if ($end >= $totalSections) {
                 $end = $totalSections - 1;
             }
-    
+
             $from = $chapters[$start];
             $to = $chapters[$end];
-    
+
             $windows[] = [
                 $from['chapter'],
                 $from['section'],
                 $to['chapter'],
                 $to['section']
             ];
-    
+
             // Break if we've reached the end
             if ($end == $totalSections - 1) {
                 break;
             }
         }
-    
+
         return $windows;
     }
 
-    private function getExistingVector(string $text, $reference, $translation, bool $checkHash = false) {
+    private function getExistingVector(string $text, $reference, $translation, bool $checkHash = false)
+    {
         $hash = md5($text);
+        $chapterId = $reference->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
         if ($this->isFileTarget() || $this->isS3Target()) {
-            if (array_has($this->currentBookFileData, $this->getFileDataKey($reference, $translation))) {
-                $currentData = $this->currentBookFileData[$this->getFileDataKey($reference, $translation)];
+            if (array_has($this->currentBookFileData, $chapterId) && array_has($this->currentBookFileData[$chapterId], $hash)) {
+                $currentData = $this->currentBookFileData[$chapterId][$hash];
                 if (!$checkHash || $currentData->hash == $hash) {
                     return $currentData->embedding;
                 } else {
@@ -273,7 +293,7 @@ class CreateEmbeddingVectors extends Command
         } else {
             $query = EmbeddedExcerpt::where("translation_abbrev", $translation->abbrev)->where("reference", $reference->toString());
             if (!$checkHash) {
-                $query= $query->where("hash", $hash);
+                $query = $query->where("hash", $hash);
             }
             $existingDbRecord = $query->first();
             if ($existingDbRecord) {
@@ -284,12 +304,9 @@ class CreateEmbeddingVectors extends Command
         }
     }
 
-    private function getFileDataKey($reference, $translation) {
-        return "{$translation->abbrev}_{$reference->toString()}";
-    }
-
     private function embedExcerpt(CanonicalReference $reference, string $text, EmbeddedExcerptScope $scope, Translation $translation, Book $book, int $chapter, int $verse = null, int $toChapter = null, int $toVerse = null, $gepi = null)
     {
+        $chapterId = $reference->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
         $this->progressBar->setMessage("{$reference->toString()}");
         $this->progressBar->advance();
         $existingVector = $this->getExistingVector($text, $reference, $translation, $this->option("update"));
@@ -299,9 +316,9 @@ class CreateEmbeddingVectors extends Command
             if ($vectorUpdate && !empty($text)) {
                 // retrieve vectors - either from text or from OpenAI
                 if ($this->option("vectorFiles")) {
-                    if (array_has($this->currentBookFileData, md5($text))) {
-                        $response = $this->currentBookFileData[md5($text)];
-                        $this->saveEmbeddingExcerpt($text, $reference, $response->embedding, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
+                    if (array_has($this->currentBookFileData, $chapterId) &&array_has($this->currentBookFileData[$chapterId], md5($text))) {
+                        $response = $this->currentBookFileData[$chapterId][md5($text)];
+                        $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $response->embedding, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
                     } else {
                         $this->progressBar->clear();
                         $this->warn("{$reference->toString()} vector not found in file data for the text. Change --vectorFile input or remove the option to regenerate using AI.");
@@ -315,7 +332,7 @@ class CreateEmbeddingVectors extends Command
                         try {
                             $response = $this->semanticSearchService->generateVector($text, $this->model, $this->dimensions);
                             $success = true;
-                        } catch (ErrorException $e) {
+                        } catch (Exception $e) {
                             $retries++;
                             $this->progressBar->clear();
                             $this->info($e->getMessage());
@@ -326,16 +343,17 @@ class CreateEmbeddingVectors extends Command
                     }
                     if (!empty($response)) {
                         $this->tokenCount += $response->totalTokens;
-                        $this->saveEmbeddingExcerpt($text, $reference, $response->vector, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
+                        $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $response->vector, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
                     }
                 }
             }
         } else if ($update && !empty($text)) {
-            $this->saveEmbeddingExcerpt($text, $reference, $existingVector, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
+            $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $existingVector, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
         }
     }
 
-    private function saveEmbeddingExcerpt(string $text, CanonicalReference $reference, $embedding, EmbeddedExcerptScope $scope, Translation $translation, Book $book, int $chapter, int $verse = null, int $toChapter = null, int $toVerse = null, int $gepi = null) {
+    private function saveEmbeddingExcerpt(int $chapterId, string $text, CanonicalReference $reference, $embedding, EmbeddedExcerptScope $scope, Translation $translation, Book $book, int $chapter, int $verse = null, int $toChapter = null, int $toVerse = null, int $gepi = null)
+    {
         $embeddedExcerpt = new EmbeddedExcerpt();
         $embeddedExcerpt->hash = md5($text);
         $embeddedExcerpt->embedding = $embedding;
@@ -362,56 +380,69 @@ class CreateEmbeddingVectors extends Command
             $serializedObject->scope = $embeddedExcerpt->scope->value;
             $serializedObject->translationAbbrev = $translation->abbrev;
             $serializedObject->bookUsxCode = $book->number;
-            $this->createFileData($serializedObject, md5($text));
+            $this->createFileData($chapterId, $serializedObject, md5($text));
         } else {
             $existingEmbedding = EmbeddedExcerpt::where("translation_abbrev", $translation->abbrev)->where("reference", $reference->toString())->first();
             if (!empty($existingEmbedding)) {
                 $existingEmbedding->delete();
-            }    
+            }
             $embeddedExcerpt->save();
-        }        
-    }
-
-    private function createFileData(SerializedEmbeddedExcerpt $object, string $textHash) {
-        $this->currentBookFileData[$textHash] = $object;
-        // write only if file target, as on S3 might be expensive to write after each line
-        if ($this->isFileTarget()) {
-            $this->writeCurrentFileData();
         }
     }
 
-    private function writeCurrentFileData() {
-        $storage = $this->selectTargetStorage();
-        $storage->put($this->currentBookFile, $this->serialize($this->currentBookFileData));        
+    private function createFileData($chapterId, SerializedEmbeddedExcerpt $object, string $textHash)
+    {
+        $this->currentBookFileData[$chapterId][$textHash] = $object;
     }
 
-    private function isFileTarget() {
+    private function writeCurrentFileData($scope)
+    {
+        $this->progressBar->setMessage("Writing file data to {$this->currentBookFile}.{$scope}");
+        $storage = $this->selectTargetStorage();
+        foreach ($this->currentBookFileData as $chapterId => $chapterData) {
+            $serializedData = $this->serialize($chapterData);
+            $storage->put("{$this->currentBookFile}.{$scope}.{$chapterId}", $serializedData);
+        }
+    }
+
+    private function isFileTarget()
+    {
         return $this->option("target") == "filesystem";
     }
 
-    private function isS3Target() {
+    private function isS3Target()
+    {
         return $this->option("target") == "s3";
     }
 
-    private function serialize($object) {
-        if ($this->option("compress")) {
-            return gzcompress(serialize($object));
+    private function serialize($object)
+    {
+        if ($this->option("compress") === "true") {
+            return gzencode(json_encode($object));
         } else {
-            return serialize($object);
+            return json_encode($object);
         }
     }
 
-    private function unserialize($file) {
-        if ($this->option("compress")) {
-            return unserialize(gzuncompress($file));
+    private function unserialize($file)
+    {
+        $array = [];
+        if ($this->option("compress") === "true") {
+            $array = json_decode(gzdecode($file), true);
         } else {
-            return unserialize($file);
+            $array = json_decode($file, true);
         }
+        // convert back the array to array of SerializedEmbeddedExcerpts
+        $result = [];
+        foreach ($array as $key => $value) {
+            $result[$key] = new SerializedEmbeddedExcerpt($value);
+        }
+        return $result;
     }
-    
 }
 
-class SerializedEmbeddedExcerpt {
+class SerializedEmbeddedExcerpt
+{
     public string $reference;
     public array $embedding;
     public string $model;
@@ -423,4 +454,13 @@ class SerializedEmbeddedExcerpt {
     public string $scope;
     public string $translationAbbrev;
     public string $bookUsxCode;
+
+    public function __construct($data = [])
+    {
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                $this->{$key} = $value;
+            }
+        }
+    }
 }
