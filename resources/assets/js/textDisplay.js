@@ -116,7 +116,7 @@ const initToggler = function () {
                     {
                         trigger: 'manual',
                         html: true,
-                        content: '...', // not created without content!!!
+                        content: ' ', // not created without content!!!
                         placement: "auto",
                         sanitize: false
                     }

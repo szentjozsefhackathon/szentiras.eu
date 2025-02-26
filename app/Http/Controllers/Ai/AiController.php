@@ -35,25 +35,23 @@ class AiController extends Controller
             'text' => $this->textService->getPureText(CanonicalReference::fromString($reference, $translation->id), $translation, false),
         ];
         $vector1 = $this->semanticSearchService->retrieveVector($canonicalReference->toString(), $translationAbbrev);
-        if (!is_null($vector1)) {
-            foreach ($allTranslations as $otherTranslation) {
-                if ($otherTranslation->abbrev != $translationAbbrev) {
-                    $translatedReference = $this->referenceService->translateReference($canonicalReference, $otherTranslation->id)->toString();
-                    $otherText = $this->textService->getPureText(CanonicalReference::fromString($reference, $otherTranslation->id), $otherTranslation, false);
-                    if (!empty($otherText)) {
-                        $vector2 = $this->semanticSearchService->retrieveVector($translatedReference, $otherTranslation->abbrev);
-                        if ($vector2) {
-                            $similarity = $this->semanticSearchService->calculateSimilarity($vector1, $vector2);
-                        } else {
-                            $similarity = null;
-                        }
-                        $pureTexts[] = [
-                            'translationAbbrev' => $otherTranslation->abbrev,
-                            'reference' => $translatedReference,
-                            'text' => $otherText,
-                            'similarity' => $similarity
-                        ];
+        foreach ($allTranslations as $otherTranslation) {
+            if ($otherTranslation->abbrev != $translationAbbrev) {
+                $translatedReference = $this->referenceService->translateReference($canonicalReference, $otherTranslation->id)->toString();
+                $otherText = $this->textService->getPureText(CanonicalReference::fromString($reference, $otherTranslation->id), $otherTranslation, false);
+                if (!empty($otherText)) {
+                    $vector2 = $this->semanticSearchService->retrieveVector($translatedReference, $otherTranslation->abbrev);
+                    if ($vector1 && $vector2) {
+                        $similarity = $this->semanticSearchService->calculateSimilarity($vector1, $vector2);
+                    } else {
+                        $similarity = null;
                     }
+                    $pureTexts[] = [
+                        'translationAbbrev' => $otherTranslation->abbrev,
+                        'reference' => $translatedReference,
+                        'text' => $otherText,
+                        'similarity' => $similarity
+                    ];
                 }
             }
         }
@@ -72,5 +70,4 @@ class AiController extends Controller
         $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts ?? [], 'similars' => $similars ?? [], 'hash' => $hash])->render();
         return response()->json($view);
     }
-
 }
