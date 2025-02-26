@@ -9,3 +9,5 @@ Route::get("ref/{ref}/{translationAbbrev?}", 'Api\ApiController@getRef');
 Route::get("search/{text}", 'Api\ApiController@getSearch');
 
 Route::get('/API', 'Api\ApiController@getLegacyEndpoint');
+
+// Route::get('/cosine', 'Api\ApiController@getCosineSimilarity');

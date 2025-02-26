@@ -2,6 +2,8 @@
 
 namespace SzentirasHu\Http\Controllers\Api;
 
+use OpenAI\Laravel\Facades\OpenAI;
+use Pgvector\Laravel\Vector;
 use Redirect;
 use SzentirasHu\Http\Controllers\Controller;
 use SzentirasHu\Service\Reference\ParsingException;
@@ -21,6 +23,7 @@ use SzentirasHu\Data\Repository\TranslationRepository;
 use View;
 use Request;
 use SzentirasHu\Data\Repository\VerseRepository;
+use SzentirasHu\Service\Search\SemanticSearchService;
 use SzentirasHu\Service\Text\BookService;
 use SzentirasHu\Service\Text\TranslationService;
 
@@ -70,7 +73,8 @@ class ApiController extends Controller
         ReferenceService $referenceService,
         SearchService $searchService,
         protected TranslationService $translationService,
-        protected BookService $bookService)
+        protected BookService $bookService,
+        protected SemanticSearchService $semanticSearchService)
     {
         $this->textService = $textService;
         $this->lectureSelector = $lectureSelector;
@@ -79,6 +83,25 @@ class ApiController extends Controller
         $this->verseRepository = $verseRepository;
         $this->referenceService = $referenceService;
         $this->searchService = $searchService;
+    }
+
+    public function getCosineSimilarity() {
+        $text1 = Request::get('text1');
+        $text2 = Request::get('text2');
+        $response1 = OpenAI::embeddings()->create([
+            'model' => "text-embedding-3-large",
+            'input' => $text1,
+            'user' => "szentiras.eu"
+        ]);
+        $response2 = OpenAI::embeddings()->create([
+            'model' => "text-embedding-3-large",
+            'input' => $text2,
+            'user' => "szentiras.eu"
+        ]);
+        $vector1 = $response1->embeddings[0]->embedding;
+        $vector2 = $response2->embeddings[0]->embedding;
+        $similarity = $this->semanticSearchService->calculateSimilarity(new Vector($vector1), new Vector($vector2));
+        return $this->formatJsonResponse(['similarity' => $similarity]);
     }
 
     public function getIndex()
