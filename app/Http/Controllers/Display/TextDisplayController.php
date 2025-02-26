@@ -176,6 +176,22 @@ class TextDisplayController extends Controller
                     $highlightedGepis = array_merge($highlightedGepis, array_map(fn($k) => "{$k}", array_keys($verseContainer->rawVerses)));
                 }
             }
+            $hasMedia = false;
+            foreach ($verseContainers as $verseContainer) {
+                foreach ($verseContainer->getParsedVerses() as $verseData) {
+                    $key = "{$verseData->book->number}_{$verseData->chapter}";
+                    $hasMedia = Media::where('usx_code', $verseData->book->number)
+                        ->where('chapter', $verseData->chapter)
+                        ->exists();
+                    if ($hasMedia) {
+                        break;
+                    }
+                }
+                if ($hasMedia) {
+                    break;
+                }
+            }
+
             $mediaEnabled = request()->has("media");
             if ($mediaEnabled) {
                 $mediaVerses = [];
@@ -221,6 +237,7 @@ class TextDisplayController extends Controller
                 'highlightedGepis' => $highlightedGepis ?? [],
                 'fullContext' => $fullContext,
                 'mediaEnabled' => $mediaEnabled,
+                'hasMedia' => $hasMedia,
                 'previousDay' => $previousDay,
                 'readingPlan' => $readingPlanDay ? $readingPlanDay->plan : null,
                 'readingPlanDay' => $readingPlanDay,
