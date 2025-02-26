@@ -9,7 +9,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     <div class="card mb-2">
         <div class="card-body">
             <form role="form" class="form-horizontal" method="post"
-                  action="{{ action('Search\\SearchController@anySearch') }}">
+                  action="{{ action('Search\\SearchController@anySearch') }}" id="searchForm">
                 <div class="mb-2">
                     <label for="textToSearch" class="col-sm-3 control-label">Keresendő</label>
                     <div class="col-sm-9">

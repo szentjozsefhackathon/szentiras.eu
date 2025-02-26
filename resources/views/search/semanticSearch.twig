@@ -16,7 +16,7 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
             </div>
             {% endif %}
             <form role="form" class="form-horizontal" method="post"
-                  action="{{ action('Search\\SemanticSearchController@anySearch') }}">
+                  action="{{ action('Search\\SemanticSearchController@anySearch') }}" id="semanticSearchForm">
                 <div class="mb-2">
                     <label for="textToSearchAi" class="form-label">Keresendő</label>
                     <input required type="text" name="textToSearch" id="textToSearchAi" value="{{ form.textToSearch }}" class="form-control"/>                    

@@ -5,7 +5,7 @@
     </div>
     <div class="card-body">
         <form id="quickSearchForm" role="form" method="post" class="form-inline"
-                action="/kereses/search">
+                action="/kereses/search" id="quickSearchForm">
             <div class="form-group">
                 <div class="input-group">
                     <input id="quickSearch" type="text" class="form-control" name="textToSearch" value="{{ form.textToSearch }}" placeholder="Gyorskeresés">
@@ -15,7 +15,7 @@
                         <a href="#" class="quickSearchButton btn btn-default btn-secondary"><i class="fas fa-magnifying-glass"></i></a>
                     </div>
                     <div class="input-group-append">
-                        <a href="/kereses/search" title="Részletes keresés" class="btn-primary d-md-none d-lg-none btn btn-default"><i class="fa-solid fa-gear"></i></a></span>
+                        <a href="#" title="Részletes keresés" class="quickSearchButton btn-primary d-md-none d-lg-none btn btn-default"><i class="fa-solid fa-gear"></i></a></span>
                     </div>
                     <div class="input-group-append">
                         <a href="/ai-search" title="AI keresés" class="btn-primary d-md-none d-lg-none btn btn-default"><i class="fa-solid fa-robot fa-large"></i></a></span>                            
