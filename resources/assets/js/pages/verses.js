@@ -67,32 +67,38 @@ const initToggler = function () {
     });
 
     function ai(turnOn) {
-        async function getPopoverContent(element, loadingPopover, popover) {
-            if (!element.dataset.loaded) {
-                loadingPopover.show();                
-                fetch(`/ai-tool/${element.getAttribute("data-link")}`)
+        async function getPopoverContent(aiTrigger) {
+            if (!aiTrigger.dataset.loaded) {
+                aiTrigger.classList.add('loading');
+                fetch(`/ai-tool/${aiTrigger.getAttribute("data-link")}`)
                     .then(response => response.json())
                     .then(data => {
-                        loadingPopover.hide();
-                        popover.setContent({ '.popover-body': data });
-                        popover.show();
-                        element.dataset.loaded = true;
-                        element.addEventListener("shown.bs.popover", () => {
+                        const popover = new bootstrap.Popover(aiTrigger, {
+                            trigger: 'manual',
+                            html: true,
+                            placement: "auto",
+                            content: data,
+                            sanitize: false
+                        });
+                        aiTrigger.classList.remove('loading');
+                        popover.show();                        
+                        aiTrigger.dataset.loaded = true;
+                        aiTrigger.addEventListener("shown.bs.popover", () => {
                             popover.tip.querySelector('.btn-close').addEventListener("click", () => {
                                 popover.hide();
                             });
                         });    
                     })
                     .catch((e) => {
-                        loadingPopover.hide();
                         console.log("Error loading content", e);
-                        popover.setContent({ '.popover-body': ":( Hiba a betöltés során" });
-                        setTimeout(() => { popover.hide() }, 1000);
-                        element.dataset.loaded = true;
+                        
+                        setTimeout(() => {  }, 1000);
+                        aiTrigger.dataset.loaded = true;
                     });
             } else {
+                const popover = bootstrap.Popover.getInstance(aiTrigger);
                 popover.show();
-                element.addEventListener("shown.bs.popover", () => {
+                aiTrigger.addEventListener("shown.bs.popover", () => {
                     popover.tip.querySelector('.btn-close').addEventListener("click", () => {
                         popover.hide();
                     });
@@ -107,25 +113,12 @@ const initToggler = function () {
             localStorage.setItem('aiToolsState', 'true');
             const aiTriggers = document.querySelectorAll("a.numvai");
             [...aiTriggers].map(aiTrigger => {
-                const loadingPopover = new bootstrap.Popover(aiTrigger,
-                    {
-                        trigger: 'manual',
-                        placement: "auto",
-                        content: "Betöltés....",
-                    }
-                );
-                const popover = new bootstrap.Popover(aiTrigger,
-                    {
-                        trigger: 'manual',
-                        html: true,
-                        content: ' ', // not created without content!!!
-                        placement: "auto",
-                        sanitize: false
-                    }
-                );
-                aiTrigger.addEventListener("click", () => {
-                    getPopoverContent(aiTrigger, loadingPopover, popover);
-                });
+                let popover = bootstrap.Popover.getInstance(aiTrigger);
+                if (!popover) {
+                    aiTrigger.addEventListener("click", () => {
+                        getPopoverContent(aiTrigger);
+                    });
+                }
             });
         } else {
             if (localStorage.getItem("hideNumbers") != 'true') {
