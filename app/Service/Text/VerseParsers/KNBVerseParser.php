@@ -17,8 +17,9 @@ class KNBVerseParser extends DefaultVerseParser
         $rawText = preg_replace('/<tk>/', '', $rawText);
         $rawText = preg_replace('/<br>/', '<br>', $rawText);
         $rawText = preg_replace('/<brx>/', '<br>', $rawText);
-        $rawText = preg_replace('/<i>/', '<em>', $rawText);
-        $rawText = preg_replace('/<\/i>/', '</em>', $rawText);
+        // the current KNB text <i> tags are terrible, they are not opened neither closed properly
+        $rawText = preg_replace('/<i>/', '', $rawText);
+        $rawText = preg_replace('/<\/i>/', '', $rawText);
         $rawText = preg_replace('/<fs>/', '', $rawText);
         $rawText = preg_replace('/<khiv>/', '', $rawText);
         $rawText = preg_replace('/<\/khiv>/', '', $rawText);
