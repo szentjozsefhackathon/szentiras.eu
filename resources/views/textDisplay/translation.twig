@@ -57,10 +57,7 @@
             {{ _self.tocContent(translation, book, bookHeaders) }}
         {% endfor %}
     </ul>
-    <script>const translation="{{ translation.abbrev }}";</script>
+    <span id="data" data-translation="{{ translation.abbrev }}"></span>
 {% endblock %}
 
-{% block script %}
-    
-{% endblock %}
 {% set js=['pages/translation'] %}

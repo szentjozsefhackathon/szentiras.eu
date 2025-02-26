@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/assets/js/app.js', 
                 'resources/assets/js/pages/home.js',
                 'resources/assets/js/pages/translation.js',
+                'resources/assets/js/pages/verses.js',
                 'resources/assets/js/pages/print.js'],
             refresh: true,
         }),

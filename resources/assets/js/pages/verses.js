@@ -1,3 +1,5 @@
+import '../pdfDialog.js';
+
 const initToggler = function () {
     var delay = 400;
     var toggles = [
