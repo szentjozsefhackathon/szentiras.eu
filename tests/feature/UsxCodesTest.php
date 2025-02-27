@@ -42,33 +42,64 @@ class UsxCodesTest extends TestCase
 
     public function testGetUsxFromBookAbbrevAndTranslation(): void
     {
-        $this->checkUsxCode('default', 'Ter', 'GEN');
-        $this->checkUsxCode('SZIT', 'Ter', 'GEN');
-        $this->checkUsxCode('default', '1Móz', 'GEN');
-        $this->checkUsxCode('default', 'Sirák', 'SIR');
-        $this->checkUsxCode('RUF', 'Sir', 'LAM');
-        $this->checkUsxCode('RUF', 'Sirák', null);
-        $this->checkUsxCode('SZIT', 'Sir', 'SIR');
-        $this->checkUsxCode('default', 'Jud', 'JUD');
-        $this->checkUsxCode('default', 'Júd', 'JUD');
-        $this->checkUsxCode('default', 'Judit', 'JDT');
-        $this->checkUsxCode('SZIT', 'Jud', 'JDT');
-        $this->checkUsxCode('SZIT', 'Júd', 'JUD');
+        $this->checkReturnedkUsxCode('default', 'Ter', 'GEN');
+        $this->checkReturnedkUsxCode('SZIT', 'Ter', 'GEN');
+        $this->checkReturnedkUsxCode('default', '1Móz', 'GEN');
+        $this->checkReturnedkUsxCode('default', 'Sirák', 'SIR');
+        $this->checkReturnedkUsxCode('RUF', 'Sir', 'LAM');
+        $this->checkReturnedkUsxCode('RUF', 'Sirák', null);
+        $this->checkReturnedkUsxCode('SZIT', 'Sir', 'SIR');
+        $this->checkReturnedkUsxCode('default', 'Jud', 'JUD');
+        $this->checkReturnedkUsxCode('default', 'Júd', 'JUD');
+        $this->checkReturnedkUsxCode('default', 'Judit', 'JDT');
+        $this->checkReturnedkUsxCode('SZIT', 'Jud', 'JDT');
+        $this->checkReturnedkUsxCode('SZIT', 'Júd', 'JUD');
     }
 
     public function testGetUsxFromBookAbbrevAndTranslationEdgeCases(): void
     {
-        $this->checkUsxCode('noSuchTranslation', 'Ter', 'GEN');
-        $this->checkUsxCode('default', 'noSuchAbbrev', null);
-        $this->checkUsxCode('noSuchTranslation', 'noSuchAbbrev', null);
+        $this->checkReturnedkUsxCode('noSuchTranslation', 'Ter', 'GEN');
+        $this->checkReturnedkUsxCode('default', 'noSuchAbbrev', null);
+        $this->checkReturnedkUsxCode('noSuchTranslation', 'noSuchAbbrev', null);
     }
 
-    private function checkUsxCode(string $translation, string $bookAbbrev, ?string $expectedUsxCode): void
+    public function testGetPreferredAbbreviation(): void
+    {
+        $this->checkReturnedAbbrev('SZIT', 'GEN', 'Ter');
+        $this->checkReturnedAbbrev('RUF', 'GEN', '1Móz');
+
+        $this->checkReturnedAbbrev('default', 'SIR', 'Sirák');
+        $this->checkReturnedAbbrev('SZIT', 'SIR', 'Sir');
+        $this->checkReturnedAbbrev('RUF', 'SIR', null);
+        $this->checkReturnedAbbrev('KNB', 'SIR', 'Sirák');
+
+        $this->checkReturnedAbbrev('KNB', 'LAM', 'Siralm');
+        $this->checkReturnedAbbrev('RUF', 'LAM', 'Sir');
+        $this->checkReturnedAbbrev('SZIT', 'LAM', 'Siralm');
+    }
+
+    public function testGetPreferredAbbreviationEdgeCases(): void
+    {
+        $this->checkReturnedAbbrev('noSuchTranslation', 'GEN', 'Ter');
+        $this->checkReturnedAbbrev('default', 'noSuchUsx', null);
+        $this->checkReturnedAbbrev('noSuchTranslation', 'noSuchUsx', null);
+    }
+
+    private function checkReturnedkUsxCode(string $translation, string $bookAbbrev, ?string $expectedUsxCode): void
     {
         $this->assertEquals(
             $expectedUsxCode,
             UsxCodes::getUsxFromBookAbbrevAndTranslation($bookAbbrev, $translation),
             "The book abbreviation $bookAbbrev should be mapped to $expectedUsxCode for $translation."
+        );
+    }
+
+    private function checkReturnedAbbrev(string $translation, string $usxCode, ?string $expectedAbbrev): void
+    {
+        $this->assertEquals(
+            $expectedAbbrev,
+            UsxCodes::getPreferredAbbreviation($usxCode, $translation),
+            "The usx $usxCode should have the preferred abbreviation $expectedAbbrev for $translation."
         );
     }
 }

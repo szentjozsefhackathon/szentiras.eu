@@ -520,11 +520,6 @@ class UsxCodes
         ],
     ];
 
-    public static function abbreviationToUsxMapping(): array
-    {
-        // TODO
-    }
-
     public static function oldTestamentUsx(): array
     {
         return array_keys(UsxCodes::OLD_TESTAMENT);
@@ -569,6 +564,22 @@ class UsxCodes
         return null; // unknown book
     }
 
+    public static function getPreferredAbbreviation(string $usxCode, string $translation): ?string
+    {
+        if (isset(UsxCodes::fullMapping()[$usxCode][$translation])) {
+            $abbreviations = UsxCodes::fullMapping()[$usxCode][$translation];
+        } else if (isset(UsxCodes::fullMapping()[$usxCode]["default"])) {
+            $abbreviations = UsxCodes::fullMapping()[$usxCode]["default"];
+        } else {
+            $abbreviations = [];
+        }
+
+        if (count($abbreviations) > 0) {
+            return $abbreviations[0];
+        } else {
+            return null;
+        }
+    }
 
     private static function fullMapping(): array
     {
