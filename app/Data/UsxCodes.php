@@ -564,16 +564,20 @@ class UsxCodes
         return null; // unknown book
     }
 
-    public static function getPreferredAbbreviation(string $usxCode, string $translation): ?string
+    public static function getAbbreviations(string $usxCode, string $translation): array
     {
         if (isset(UsxCodes::fullMapping()[$usxCode][$translation])) {
-            $abbreviations = UsxCodes::fullMapping()[$usxCode][$translation];
-        } else if (isset(UsxCodes::fullMapping()[$usxCode]["default"])) {
-            $abbreviations = UsxCodes::fullMapping()[$usxCode]["default"];
-        } else {
-            $abbreviations = [];
+            return UsxCodes::fullMapping()[$usxCode][$translation];
         }
+        if (isset(UsxCodes::fullMapping()[$usxCode]["default"])) {
+            return UsxCodes::fullMapping()[$usxCode]["default"];
+        }
+        return [];
+    }
 
+    public static function getPreferredAbbreviation(string $usxCode, string $translation): ?string
+    {
+        $abbreviations = UsxCodes::getAbbreviations($usxCode, $translation);
         if (count($abbreviations) > 0) {
             return $abbreviations[0];
         } else {

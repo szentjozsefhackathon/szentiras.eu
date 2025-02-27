@@ -13,18 +13,13 @@ return new class extends Migration {
     {
         $prefix = Config::get('database.connections.bible.prefix');
 
-        $abbreviationToUsxMapping =
-            UsxCodes::abbreviationToUsxMapping();
         $bookNumberAndTranslationToUsxMapping =
-            $this->bookNumberAndTranslationToUsxMapping(
-                $abbreviationToUsxMapping
-            );
+            $this->bookNumberAndTranslationToUsxMapping();
         $translationIdToTranslationAbbreviationMapping =
             $this->translationIdToTranslationAbbreviationMapping();
 
         $this->addUsxCodeRelatedColumns(
             $prefix,
-            $abbreviationToUsxMapping,
             $bookNumberAndTranslationToUsxMapping,
             $translationIdToTranslationAbbreviationMapping
         );
@@ -84,7 +79,6 @@ return new class extends Migration {
 
     private function addUsxCodeRelatedColumns(
         $prefix,
-        $abbreviationToUsxMapping,
         $bookNumberAndTranslationToUsxMapping,
         $translationIdToTranslationAbbreviationMapping
     ): void {
@@ -97,12 +91,6 @@ return new class extends Migration {
             $table->string('translation_abbrev')->nullable();
             $table->string('usx_code', 3);
         });
-
-        $this->updateUsxCodeForAbbrev(
-            $prefix,
-            $abbreviationToUsxMapping,
-            ['books', 'book_abbrevs']
-        );
 
         $this->updateTranslationAbbrev(
             $prefix,
@@ -117,21 +105,19 @@ return new class extends Migration {
         $this->updateUsxCodeForBookNumberAndTranslation(
             $prefix,
             $bookNumberAndTranslationToUsxMapping,
-            ['tdverse']
+            ['tdverse', 'books', 'book_abbrevs']
         );
     }
 
-    private function bookNumberAndTranslationToUsxMapping($abbreviationToUsxMapping): array
+    private function bookNumberAndTranslationToUsxMapping(): array
     {
         $result = [];
         $books = Book::all();
         foreach ($books as $book) {
-            $abbrev = $book->abbrev;
-            if (!isset($abbreviationToUsxMapping[$abbrev])) {
-                throw new InvalidArgumentException("Mapping for abbreviation '{$abbrev}' not found in the abbreviation to USX mapping array.");
-            }
-            $usx = $abbreviationToUsxMapping[$abbrev];
-            $key = $this->encodeBookAndTranslation($book->number, $abbrev);
+            $translationAbbrev = $book->translation()->abbrev;
+            $bookAbbrev = $book->abbrev;
+            $usx = UsxCodes::getUsxFromBookAbbrevAndTranslation($bookAbbrev, $translationAbbrev);
+            $key = $this->encodeBookAndTranslation($book->number, $translationAbbrev);
             $result[$key] = $usx;
         }
         return $result;
@@ -145,22 +131,6 @@ return new class extends Migration {
             $result[$translation->id] = $translation->abbrev;
         }
         return $result;
-    }
-
-    private function updateUsxCodeForAbbrev(string $prefix, array $mapping, array $tables): void
-    {
-        $ids = [];
-        $caseStatement = "CASE abbrev ";
-        foreach ($mapping as $abbrev => $usxCode) {
-            $ids[] = "'{$abbrev}'";
-            $caseStatement .= "WHEN '{$abbrev}' THEN '{$usxCode}' ";
-        }
-        $caseStatement .= "END";
-
-        $idsList = implode(',', $ids);
-        foreach ($tables as $tableName) {
-            DB::statement("UPDATE {$prefix}{$tableName} SET usx_code = {$caseStatement} WHERE abbrev IN ({$idsList})");
-        }
     }
 
     private function updateUsxCodeForBookNumberAndTranslation(string $prefix, array $mapping, array $tables): void
@@ -197,7 +167,6 @@ return new class extends Migration {
             DB::statement("UPDATE {$prefix}{$tableName} SET translation_abbrev = {$caseStatement} WHERE translation_id IN ({$idsList})");
         }
     }
-
 
     private function isInvalidRow(array $row): bool
     {
