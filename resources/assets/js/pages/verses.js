@@ -115,7 +115,8 @@ const initToggler = function () {
             [...aiTriggers].map(aiTrigger => {
                 let popover = bootstrap.Popover.getInstance(aiTrigger);
                 if (!popover) {
-                    aiTrigger.addEventListener("click", () => {
+                    $(aiTrigger).off();
+                    $(aiTrigger).on("click", () => {
                         getPopoverContent(aiTrigger);
                     });
                 }
