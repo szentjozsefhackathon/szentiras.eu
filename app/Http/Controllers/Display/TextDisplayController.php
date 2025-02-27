@@ -79,18 +79,15 @@ class TextDisplayController extends Controller
         $bookHeaders = [];
         $toc = request()->has("toc");
         if ($toc) {
-            foreach ($books as $book) {
-                $canonicalRef = CanonicalReference::fromString("{$book->abbrev}", $translation->id);
-                $verses = $this->textService->getTranslatedVerses($canonicalRef, $translation->id, Verse::getHeadingTypes($translation->id));
-                $bookHeaders[$book->abbrev] =
-                    Cache::remember(
-                        "bookHeader-{$book->abbrev}-{$translation->id}",
-                        60 * 24,
-                        function () use ($book, $verses, $translation, $canonicalRef) {
-                            return $this->getBookViewArray($book, $verses, $translation, $canonicalRef, $canonicalRef, false);
-                        }
-                    );
-            }
+            $bookHeaders = Cache::remember("bookHeaders_{$translationAbbrev}", 60 * 24, function () use ($books, $translation) {
+                $result = [];
+                foreach ($books as $book) {
+                    $canonicalRef = CanonicalReference::fromString("{$book->abbrev}", $translation->id);
+                    $verses = $this->textService->getTranslatedVerses($canonicalRef, $translation->id, Verse::getHeadingTypes($translation->id));
+                    $result[$book->abbrev] = $this->getBookViewArray($book, $verses, $translation, $canonicalRef, $canonicalRef, false);
+                }
+                return $result;
+            });
         }
         return View::make(
             'textDisplay.translation',

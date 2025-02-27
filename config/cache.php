@@ -51,8 +51,10 @@ return [
             'driver'  => 'memcached',
             'servers' => [
                 [
-                    'host' => '127.0.0.1', 'port' => 11211, 'weight' => 100,
-                ],
+                    'host' => env('MEMCACHED_HOST', 'memcached'),
+                    'port' => env('MEMCACHED_PORT', 11211),
+                    'weight' => 100,
+                        ],
             ],
         ],
 
@@ -74,6 +76,6 @@ return [
     |
     */
 
-    'prefix' => 'szentirashu'.env('APP_ENV')
+    'prefix' => 'szentiraseu'.env('APP_ENV')
 
 ];

@@ -17,7 +17,7 @@ RUN apt-get update && apt-get upgrade -y && \
     curl
 # Add extensions not included in the base image
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/download/2.7.24/install-php-extensions /usr/local/bin/
-RUN install-php-extensions gd gmp pdo_pgsql zip
+RUN install-php-extensions gd gmp memcached pdo_pgsql zip
 
 COPY docker/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint

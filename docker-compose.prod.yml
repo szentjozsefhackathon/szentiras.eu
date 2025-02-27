@@ -95,6 +95,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3      
+  memcached:
+    image: memcached:1.6
+    command:
+      - --memory-limit=32
+    networks:
+      - traefik
 volumes:
   db-data:
   storage:

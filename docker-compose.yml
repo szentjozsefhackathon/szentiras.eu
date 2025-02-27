@@ -145,6 +145,12 @@ services:
     networks:
       - szeu-network      
     command: php artisan migrate:refresh --seed --seeder="Database\\Seeders\\DatabaseSeeder" --env=testing
+  memcached:
+    image: memcached:1.6
+    command:
+      - --memory-limit=32
+    networks:
+      - szeu-network    
   # Hunspell is inside the container for now, this is preparation for the future
   # hunspell:
   #   image: szeu-hunspell

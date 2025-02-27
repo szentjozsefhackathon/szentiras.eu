@@ -63,7 +63,7 @@ class ImportScripture extends Command
         2 => ["pipe", "w"]  // stderr
     ];
 
-    private array $processedStems = [];
+    private array $processedStems = ["_stems" => []];
     const STEM_FILE = "database/preload/stems.json";
 
     /**
@@ -293,6 +293,7 @@ class ImportScripture extends Command
             }            
         }
         $this->info("A szótövek fájl mentése...");
+        ksort($this->processedStems["_stems"]);
         ksort($this->processedStems);
         $serializedStems = json_encode($this->processedStems, JSON_PRETTY_PRINT);
         file_put_contents(ImportScripture::STEM_FILE, $serializedStems);
@@ -474,7 +475,9 @@ class ImportScripture extends Command
                 }
             }
         }
-        // serialize the $this->processedStems array to the filesystem, the name is the abbreviation .dat
+        foreach ($verseroots as $verseroot) {
+            $this->processedStems["_stems"][$verseroot] = true;   
+        }
         return join(' ', $verseroots->toArray());
     }
 
