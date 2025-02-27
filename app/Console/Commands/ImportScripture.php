@@ -420,7 +420,7 @@ class ImportScripture extends Command
             $bookOrder = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKCODE])->getValue();
             $bookAbbrev = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKABBREV])->getValue();
             $bookName = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKNAME])->getValue();
-            $bookUsx = $this->bookAbbrevToUsxCode($bookAbbrev);
+            $bookUsx = $this->bookAbbrevToUsxCode($bookAbbrev, $translationAbbrev);
             $this->info("{$bookOrder}. könyv: {$bookAbbrev} (usx: {$bookUsx})");
             $bookInserts[] = [
                 'order' => (int) $bookOrder,
@@ -532,15 +532,16 @@ class ImportScripture extends Command
         }
     }
 
-    private function bookAbbrevToUsxCode(string $bookAbbrev): string
+    private function bookAbbrevToUsxCode(string $bookAbbrev, string $translation): string
     {
-        $mapping = UsxCodes::abbreviationToUsxMapping();
-
-        if (!isset($mapping[$bookAbbrev])) {
-            App::abort(500, "Nincs USX kód ehhez a könyvhöz: {$bookAbbrev}");
+        $result = UsxCodes::getUsxFromBookAbbrevAndTranslation(
+            $bookAbbrev,
+            $translation
+        );
+        if (is_null($result)) {
+            App::abort(500, "Nincs USX kód ehhez a könyvhöz: {$bookAbbrev} (fordítás: {$translation})");
         }
-
-        return $mapping[$bookAbbrev];
+        return $result;
     }
 
     public static function isOldTestament(string $usxCode): int
