@@ -6,9 +6,16 @@ use Illuminate\Support\Facades\Cookie;
 use Redirect;
 use SzentirasHu\Data\Entity\AnonymousId;
 use SzentirasHu\Http\Controllers\Controller;
+use SzentirasHu\Rules\TurnstileValidationRule;
 
 class AnonymousIdController extends Controller
 {
+    public function showLoginForm() {
+        if (session()->has('anonymous_token')) {
+            return Redirect::to('/profile');
+        }
+        return view("auth.login");
+    }
     
     public function showAnonymousRegistrationForm() {
         if (session()->has('anonymous_token')) {
@@ -21,6 +28,7 @@ class AnonymousIdController extends Controller
         // Validate user approval
         request()->validate([
             'approve' => 'accepted',
+            'cf-turnstile-response' => ['required', new TurnstileValidationRule()],
         ]);
         $token = $this->generateToken();
         // Save token to database

@@ -8,17 +8,20 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
     <h3>Keresés jelentés szerint, AI segítségével</h2>
     <div class="card mb-2">
         <div class="card-body">            
-            {% if not session_get("anonymous_token") %}
-            <div class="alert alert-primary" role="alert">
-                Regisztráció/belépés nélkül is használhatod a szemantikus keresőt, de egy munkamenetben legfeljebb {{ config_get('settings.ai.unregisteredSearchLimit') }} keresést végezhetsz. 
-                Eddig {{ session_get('semanticSearchCalls', 0) }} keresést végeztél.
-                Ha többre van szükséged, <a href="/register">lépj be vagy regisztrálj, ha még nem tetted</a>!
-            </div>
-            {% endif %}
             <form role="form" class="form-horizontal" method="post"
                   action="{{ action('Search\\SemanticSearchController@anySearch') }}" id="semanticSearchForm">
+                  {% if not session_get("anonymous_token") %}
+                    <div class="alert alert-primary" role="alert">
+                        Regisztráció/belépés nélkül is használhatod a szemantikus keresőt, de egy munkamenetben legfeljebb {{ config_get('settings.ai.unregisteredSearchLimit') }} keresést végezhetsz. 
+                        Eddig {{ session_get('semanticSearchCalls', 0) }} keresést végeztél.
+                        Ha többre van szükséged, <a href="/register">lépj be vagy regisztrálj, ha még nem tetted</a>!
+                    </div>
+                    {%  if not form.captchaValidated %}
+                        <div class="cf-turnstile" data-sitekey="{{ config_get('services.cloudflare_turnstile.site_key') }}"></div>
+                    {% endif %}
+                {% endif %}                    
                 <div class="mb-2">
-                    <label for="textToSearchAi" class="form-label">Keresendő</label>
+                    <label for="textToSearchAi" class="form-label" required>Keresendő</label>
                     <input required type="text" name="textToSearch" id="textToSearchAi" value="{{ form.textToSearch }}" class="form-control"/>                    
                     {{ errors.first('textToSearch') }}
                 </div>
@@ -123,4 +126,7 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
 {% endblock %}
 
 {% block script %}
+    {% if not session_get("anonymous_token") %}
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    {% endif %}
 {%  endblock %}

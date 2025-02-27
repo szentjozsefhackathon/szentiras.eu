@@ -9,6 +9,7 @@ use SzentirasHu\Http\Controllers\Controller;
 use SzentirasHu\Http\Controllers\Search\SearchForm;
 use SzentirasHu\Http\Controllers\Search\SemanticSearchForm;
 use SzentirasHu\Http\Requests\SemanticSearchFormRequest;
+use SzentirasHu\Rules\TurnstileValidationRule;
 use SzentirasHu\Service\Search\SemanticSearchParams;
 use SzentirasHu\Service\Search\SemanticSearchService;
 use SzentirasHu\Service\Text\BookService;
@@ -34,6 +35,11 @@ class SemanticSearchController extends Controller
         }
 
         if (!session()->get('anonymous_token')) {
+            // validate captcha
+            $request->validate([
+                'cf-turnstile-response' => ['required', new TurnstileValidationRule()],
+            ]);
+
             if (Config::get('settings.ai.unregisteredSearchLimit') != -1) {
                 $key = 'semanticSearchCalls';
                 $count = $request->session()->get($key, 0) + 1;
@@ -45,6 +51,7 @@ class SemanticSearchController extends Controller
         }
         
         $form = $this->prepareForm($request, $textToSearch);
+        $form->captchaValidated = true;
         $view = $this->getView($form);
         $view = $this->semanticSearch($form, $view);
         return $view;

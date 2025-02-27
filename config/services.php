@@ -29,10 +29,11 @@ return [
         'region' => 'us-east-1',
     ],
 
-    'stripe' => [
-        'model'  => SzentirasHu\User::class,
-        'key'    => env('STRIPE_KEY'),
-        'secret' => env('STRIPE_SECRET'),
+'cloudflare_turnstile' => [
+        'site_key' => env('CLOUDFLARE_TURNSTILE_SITE_KEY', '1x00000000000000000000AA'),
+        'secret_key' => env('CLOUDFLARE_TURNSTILE_SECRET_KEY'),
+        'url' => env('CLOUDFLARE_TURNSTILE_URL', 'https://challenges.cloudflare.com/turnstile/v0/siteverify')
     ],
+
 
 ];

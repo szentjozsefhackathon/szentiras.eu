@@ -72,6 +72,7 @@ Route::get('/profile', [AnonymousIdController::class, 'showProfile'])
 Route::get('/logout', [AnonymousIdController::class, 'logout'])
     ->middleware('anonymousId');
 Route::post('/login', [AnonymousIdController::class, 'login']);
+Route::get('/login', [AnonymousIdController::class, 'showLoginForm']);
 
 Route::get('/media/{uuid}', [MediaController::class, 'show'])->name('media.show');
 

@@ -7,5 +7,5 @@ class SemanticSearchForm {
     public $textToSearch;
     public $translationId;
     public $bookNumber;
-
+    public $captchaValidated = false;
 }
