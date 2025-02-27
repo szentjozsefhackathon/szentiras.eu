@@ -4,6 +4,8 @@
 
 namespace SzentirasHu\Service\Text;
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Service\Reference\CanonicalReference;
@@ -50,6 +52,12 @@ class TextService
      */
     public function getTranslatedVerses($canonicalRef, $translationId, $verseTypes = [])
     {
+        // replace spaces with underscores
+        $cacheKey = "getTranslatedVerses_".str_replace(' ','_',$canonicalRef->toString())."_".$translationId;
+        // TODO cache if verse types are specified as well
+        if (empty($verseTypes) && Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
         $translatedRef = $this->referenceService->translateReference($canonicalRef, $translationId);
         $verseContainers = [];
         foreach ($translatedRef->bookRefs as $bookRef) {
@@ -72,6 +80,9 @@ class TextService
                 }
                 $verseContainers[] = $verseContainer;
             }
+        }
+        if (empty(($verseTypes))) {
+            $returnValue = Cache::put($cacheKey, $verseContainers, 60*60);
         }
         return $verseContainers;
     }
