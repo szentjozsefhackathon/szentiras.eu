@@ -21,10 +21,6 @@ class Book extends Eloquent {
         'usx_code',
     ];
 
-    public function abbrevs() {
-        return $this->hasMany('SzentirasHu\Data\Entity\BookAbbrev', 'number');
-    }
-
     public function verses() {
         return $this->hasMany('SzentirasHu\Data\Entity\Verse', 'book_id');
     }
