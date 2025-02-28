@@ -16,10 +16,10 @@ class UploadMediaCommand extends Command
      * @var string
      */
     protected $signature = 'szentiras:media
-        {action=list : The action to execute. Possible values: create, delete, list}
+        {action=list : The action to execute. Possible values: create, delete, list, edit}
         {--file= : If creating, the path to the file to upload. The file name must be prepared: USX_Chapter_Verse.jpg. (If the verse is bigger than the max verse in the chapter, it will be displayed at the end, so for chapter-level illustrations, use verses 1001 etc to keep the order.) If deleting, the id. If the file starts with "s3:", it is get from S3 bucket relative to the media folder.}
-        {--type= : If creating a file or deleting a type, only the type name. If creating a type, the type specification, in the format: "name -- website -- license.". If a type with this name exists, it will be updated, otherwise a new type will be created. If website and license is not given, the name will be used to associate the image.};
-
+        {--type= : If creating a file or deleting a type, only the type name. If creating a type, the type specification, in the format: "name -- website -- license.". If a type with this name exists, it will be updated, otherwise a new type will be created. If website and license is not given, only the name will be used.}
+        {--move=: If editing, the from and to USX codes: GEN_02_03,EXO_03_02, the type is mandatory}
     ';
 
     /**
@@ -33,7 +33,7 @@ class UploadMediaCommand extends Command
     php artisan szentiras:media create --type="SweetPublishing -- http://sweetpublishing.com -- CC BY-SA 3.0"
 
     Then you can upload the file like
-    php artisan szentiras:media create --file=/path/to/file.jpg --type="SweetPublishing"
+    php artisan szentiras:media create --file=/path/to/GEN_02_03.jpg --type="SweetPublishing"
     ';
 
     /**
@@ -71,7 +71,7 @@ class UploadMediaCommand extends Command
                     $mimeType = mime_content_type($path);
                     $file = file_get_contents($path);
                 }
-                $filename=basename($path);
+                $filename = basename($path);
                 // cut the extension
                 $filename = substr($filename, 0, strrpos($filename, "."));
                 // parse the filename to USX_Chapter_Verse
@@ -89,11 +89,11 @@ class UploadMediaCommand extends Command
                     ->where('chapter', $chapter)
                     ->where('verse', $verse)
                     ->first();
-                if ($existing) {                
+                if ($existing) {
                     // update the file
                     $this->info("Media already exists: $path. Id: $existing->id. Updating.");
                     Storage::delete("media/{$existing->id}");
-                    $existing->delete();                    
+                    $existing->delete();
                 }
                 $media = $mediaType->media()->create([
                     'uuid' => Str::uuid(),
@@ -139,9 +139,37 @@ class UploadMediaCommand extends Command
             }
         } else if ($this->argument('action') == "list") {
             MediaType::all()->each(function ($type) {
-                $this->info("See php artisan szentiras:media --help for usage.");
-                $this->line("Media type: $type->name. Website: $type->website. License: $type->license");
+                $this->line("| $type->name | $type->website | $type->license");
             });
+            Media::all()->sortBy(['usx_code', 'chapter', 'verse'])->each(function ($media) {
+                $this->line("{$media->usx_code}_{$media->chapter}_{$media->verse} | {$media->id} | {$media->mediaType->name}");
+            });
+        } else if ($this->argument('action') == 'edit') {
+            if ($this->option("move")) {
+                $move = explode(",", $this->option("move"));
+                if (count($move) != 2) {
+                    $this->error("Invalid move option: " . $this->option("move"));
+                    return;
+                }
+                $from = explode("_", $move[0]);
+                $to = explode("_", $move[1]);
+                $media = Media::where('usx_code', $from[0])->where('chapter', $from[1])->where('verse', $from[2]);
+                $mediaType = MediaType::where('name', $this->option("type"))->first();
+                if (!$mediaType) {
+                    $this->error("Media type not found: " . $this->option("type"));
+                    return;
+                }
+                $media->whereBelongsTo($mediaType);
+
+                $media = $media->get();
+                $media->each(function ($m) use ($from, $to) {
+                    $m->usx_code = $to[0];
+                    $m->chapter = $to[1];
+                    $m->verse = $to[2];
+                    $m->save();
+                    $this->info("Media moved: $m->id from $from[0]_$from[1]_$from[2] to $to[0]_$to[1]_$to[2]");
+                });
+            }
         } else {
             $this->error("Invalid action: " . $this->argument('action'));
         }
