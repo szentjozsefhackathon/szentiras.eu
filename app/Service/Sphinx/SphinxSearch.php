@@ -282,7 +282,7 @@ class SphinxSearch
     $words = explode(' ', $text);
     $excerpts = [];
     foreach ($verses as $id => $verse) {
-      $excerpts[$id] = preg_replace_callback('/(' . implode('|', array_map('preg_quote', $words)) . ')/i', function ($matches) {
+      $excerpts[$id] = preg_replace_callback('/(' . implode('|', array_map('preg_quote', $words)) . ')/iu', function ($matches) {
         return '<b>' . $matches[0] . '</b>';
       }, $verse);
     }
