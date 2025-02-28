@@ -17,7 +17,17 @@
         <div class="modal-dialog"><div class="modal-content"></div></div>
     </div>
     <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog"><div class="modal-content"></div></div>
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nyomtatás/PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">  
+            <a tabindex="0" id="pdfDownload" class="btn btn-primary"><i class="fas fa-print"></i> Nyomtatási kép létrehozása</a>    
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>        
+            </div>
+        </div></div>
     </div>
     {% if readingPlanDay %}
     <div>

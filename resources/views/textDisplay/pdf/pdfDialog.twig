@@ -5,13 +5,9 @@
 {% endmacro %}
 {% import _self as macros %}
 
-<div id="previewContainer" data-ref="{{ refString }}" data-translation="{{ translationId }}">
-</div>
-<div class="modal-header">
-    <h4 class="modal-title" id="pdfModalLabel">Nyomtatás</h4>
-    <button type="button" class="close btn-close" data-bs-dismiss="modal"></button>
-</div>
 <div class="modal-body text-center">
+                <div id="previewContainer" data-ref="{{ refString }}" data-translation="{{ translationId }}">
+                </div>    
                 <div class="btn-group-vertical" id="pdfToggles">
                     {{ macros.toggleButton('pdfHeadings', 'Címsorok', true) }}
                     {{ macros.toggleButton('pdfNums', 'Versszámozás', false) }}                    
@@ -27,8 +23,4 @@
            </div>
         </div>
     </div>
-</div>
-<div class="modal-footer">
-    <a tabindex="0" id="pdfDownload" class="btn btn-primary"><i class="fas fa-print"></i> Nyomtatási kép létrehozása</a>    
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
 </div>

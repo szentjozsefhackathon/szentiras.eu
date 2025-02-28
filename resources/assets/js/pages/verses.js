@@ -1,4 +1,4 @@
-import '../pdfDialog.js';
+import initPdfModal from '../pdfDialog.js';
 
 const initToggler = function () {
     var delay = 400;
@@ -191,26 +191,6 @@ function xrefPopovers() {
             getXrefPopoverContent(trigger, loadingPopover, popover);
         });
     });
-}
-
-function initPdfModal() {
-    const pdfModal = document.getElementById('pdfModal');
-    if (pdfModal) {
-        pdfModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const recipient = button.getAttribute('data-bs-view');
-            fetch(`${recipient}`)
-                .then(response => response.text())
-                .then(data => {
-                    const modalContent = pdfModal.querySelector('.modal-content');
-                    modalContent.innerHTML = `${data}`;
-                    initPdfModalScripts();
-                })
-                .catch((e) => {
-                    console.log("Error loading content", e);
-                });
-        });
-    }
 }
 
 function initQrModal() {
