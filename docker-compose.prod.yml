@@ -50,11 +50,11 @@ services:
       - traefik.http.middlewares.mywwwredirect.redirectregex.regex=^https://www\.(.*)
       - traefik.http.middlewares.mywwwredirect.redirectregex.replacement=https://$${1}
       - traefik.http.routers.myapp.middlewares=mywwwredirect,hsts
-
+      - traefik.http.middlewares.myapp.compress=true
       - traefik.http.middlewares.hsts.headers.stsSeconds=31536000
       - traefik.http.middlewares.hsts.headers.stsIncludeSubdomains=true
       - traefik.http.middlewares.hsts.headers.stsPreload=true
-
+      
     networks:
       - traefik
   sphinx:
