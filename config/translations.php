@@ -67,7 +67,7 @@ return [
         'verseTypes' =>
         [
             'text' => [901],
-            'heading' => [401=>2, 501=>3, 601=>4, 701=>5, 704=>6],
+            'heading' => [401=>2, 501=>4, 601=>4, 701=>5, 704=>6],
             'footnote' => [2001]
         ],
         'textSource' => env('TEXT_SOURCE_SZIT'),
@@ -86,7 +86,7 @@ return [
         'verseTypes' =>
         [
             'text' => [901],
-            'heading' => [701=>2, 704=>3]
+            'heading' => [701=>4, 704=>5]
         ],
         'textSource' => env('TEXT_SOURCE_BD'),
         'id' => 5,
