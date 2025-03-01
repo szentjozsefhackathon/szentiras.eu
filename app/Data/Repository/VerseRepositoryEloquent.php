@@ -41,6 +41,7 @@ class VerseRepositoryEloquent implements VerseRepository {
         $verses = Verse::whereIn('id', $verseIds)->with([
             'translation',
             'book'])->get();
+        $idVerseMap = [];
         foreach ($verses as $verse) {
             $idVerseMap[$verse->id] = $verse;
         }

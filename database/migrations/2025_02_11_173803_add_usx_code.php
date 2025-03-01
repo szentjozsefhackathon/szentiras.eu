@@ -15,13 +15,10 @@ return new class extends Migration {
 
         $bookNumberAndTranslationToUsxMapping =
             $this->bookNumberAndTranslationToUsxMapping();
-        $translationIdToTranslationAbbreviationMapping =
-            $this->translationIdToTranslationAbbreviationMapping();
 
         $this->addUsxCodeRelatedColumns(
             $prefix,
-            $bookNumberAndTranslationToUsxMapping,
-            $translationIdToTranslationAbbreviationMapping
+            $bookNumberAndTranslationToUsxMapping
         );
 
         Schema::table('translations', function (Blueprint $table): void {
@@ -65,8 +62,7 @@ return new class extends Migration {
 
     private function addUsxCodeRelatedColumns(
         $prefix,
-        $bookNumberAndTranslationToUsxMapping,
-        $translationIdToTranslationAbbreviationMapping
+        $bookNumberAndTranslationToUsxMapping
     ): void {
         Schema::table('books', function (Blueprint $table): void {
             $table->renameColumn('number', 'order');
@@ -80,7 +76,16 @@ return new class extends Migration {
         $this->updateUsxCodeForBookNumberAndTranslation(
             $prefix,
             $bookNumberAndTranslationToUsxMapping,
-            ['tdverse', 'books']
+            'tdverse',
+            'book_number',
+            'trans'
+        );
+        $this->updateUsxCodeForBookNumberAndTranslation(
+            $prefix,
+            $bookNumberAndTranslationToUsxMapping,
+            'books',
+            'order',
+            'translation_id'
         );
     }
 
@@ -89,29 +94,35 @@ return new class extends Migration {
         $result = [];
         $books = Book::all();
         foreach ($books as $book) {
-            $translationAbbrev = $book->translation()->abbrev;
+            $translationId = $book->translation->id;
+            $translationAbbrev = $book->translation->abbrev;
             $bookAbbrev = $book->abbrev;
             $usx = UsxCodes::getUsxFromBookAbbrevAndTranslation($bookAbbrev, $translationAbbrev);
-            $key = $this->encodeBookAndTranslation($book->number, $translationAbbrev);
+            $key = $this->encodeBookAndTranslation($book->number, $translationId);
             $result[$key] = $usx;
         }
         return $result;
     }
 
-    private function translationIdToTranslationAbbreviationMapping(): array
+    private function translationAbbrevToIdMapping(): array
     {
         $result = [];
         $translations = Translation::all();
         foreach ($translations as $translation) {
-            $result[$translation->id] = $translation->abbrev;
+            $result[$translation->abbrev] = $translation->id;
         }
         return $result;
     }
 
-    private function updateUsxCodeForBookNumberAndTranslation(string $prefix, array $mapping, array $tables): void
-    {
+    private function updateUsxCodeForBookNumberAndTranslation(
+        string $prefix,
+        array $mapping,
+        string $tableName,
+        string $bookColumn,
+        string $transColumn
+    ): void {
         $ids = [];
-        $caseStatement = "CASE CONCAT(book_number, '|', translation) ";
+        $caseStatement = "CASE CONCAT(`{$bookColumn}`, '|', `{$transColumn}`) ";
 
         foreach ($mapping as $encodedBookAndTranslation => $usxCode) {
             $ids[] = "'{$encodedBookAndTranslation}'";
@@ -122,9 +133,8 @@ return new class extends Migration {
 
         $idsList = implode(',', $ids);
 
-        foreach ($tables as $tableName) {
-            DB::statement("UPDATE {$prefix}{$tableName} SET usx_code = {$caseStatement} WHERE CONCAT(book_number, '|', translation) IN ({$idsList})");
-        }
+        $statement = "UPDATE {$prefix}{$tableName} SET usx_code = {$caseStatement} WHERE CONCAT(`{$bookColumn}`, '|', `{$transColumn}`) IN ({$idsList})";
+        DB::statement($statement);
     }
 
     private function isInvalidRow(array $row): bool
@@ -132,7 +142,7 @@ return new class extends Migration {
         return count($row) !== 2;
     }
 
-    private function encodeBookAndTranslation(int $bookNumber, string $translation): string
+    private function encodeBookAndTranslation(int $bookNumber, int $translation): string
     {
         return "{$bookNumber}|{$translation}";
     }
