@@ -37,14 +37,18 @@
     {% include 'bookAbbrevList' with { 'translation' : translation } %}
       
     {% include 'quickChapterSelector' %}
+    <div class="mb-2">
     <a data-url="/{{ translation.abbrev }}?toc" tabindex="0" class="btn btn-info {{ toc ? "hidden" : "" }}" role="button" id="showToc"><i class="bi-bookmarks"></i> Teljes tartalomjegyzék</a>
     <a data-url="/{{ translation.abbrev }}" tabindex="0" class="btn btn-info {{ not toc ? "hidden": '' }}" role="button" id="hideToc"><i class="bi-bookmark"></i> Csak könyvnevek</a>
+    </div>
+    <div class="mb-3">
                 <h4>Újszövetség</h4>
                     {% for book in books|filter(book => not book.old_testament) %}
                         {{ _self.bookLink(translation, book) }}
                         {{ _self.tocContent(translation, book, bookHeaders) }}
                     {% endfor %}
-            </td>            
+    </div>
+                   
     {% for book in books|filter(book => book.old_testament) %}
         {% if loop.first %}
             <h4>Ószövetség</h4>

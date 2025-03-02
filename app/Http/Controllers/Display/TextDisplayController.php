@@ -173,30 +173,28 @@ class TextDisplayController extends Controller
                     $highlightedGepis = array_merge($highlightedGepis, array_map(fn($k) => "{$k}", array_keys($verseContainer->rawVerses)));
                 }
             }
+            $chapterMedia = [];
             $hasMedia = false;
             foreach ($verseContainers as $verseContainer) {
                 foreach ($verseContainer->getParsedVerses() as $verseData) {
-                    $key = "{$verseData->book->number}_{$verseData->chapter}";
+                    $key = "{$verseData->book->number}_{$verseData->chapter}";                    
+                    if (array_key_exists($key, $chapterMedia)) {
+                        continue;
+                    }
                     $hasMedia = Media::where('usx_code', $verseData->book->number)
                         ->where('chapter', $verseData->chapter)
                         ->exists();
-                    if ($hasMedia) {
-                        break;
-                    }
-                }
-                if ($hasMedia) {
-                    break;
+                    $chapterMedia[$key] = $hasMedia;
                 }
             }
 
             $mediaEnabled = request()->has("media");
             if ($mediaEnabled) {
                 $mediaVerses = [];
-                $chapterMedia = [];
                 foreach ($verseContainers as $verseContainer) {
                     foreach ($verseContainer->getParsedVerses() as $verseData) {
                         $key = "{$verseData->book->number}_{$verseData->chapter}";
-                        if (!array_key_exists($key, $chapterMedia)) {
+                        if (array_key_exists($key, $chapterMedia) && $chapterMedia[$key] === true) {
                             $media = Media::where('usx_code', $verseData->book->number)
                                 ->where('chapter', $verseData->chapter)
                                 ->get();
@@ -413,8 +411,12 @@ class TextDisplayController extends Controller
         return $title;
     }
 
+    /** this only works for one chapter references
+     */
     private function createChapterLinks(CanonicalReference $canonicalReference, Translation $translation)
     {
+        $currentChapter = $canonicalReference->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
+        $chapterCount = $this->bookService->getChapterCount($this->bookRepository->getByAbbrevForTranslation($canonicalReference->bookRefs[0]->bookId, $translation->id), $translation);
         list($prevRef, $nextRef) = $this->referenceService->getPrevNextChapter($canonicalReference, $translation->id);
         $prevLink = $prevRef ?
             $this->referenceService->getCanonicalUrl($prevRef, $translation->id) :
@@ -423,7 +425,7 @@ class TextDisplayController extends Controller
         $nextLink = $nextRef ?
             $this->referenceService->getCanonicalUrl($nextRef, $translation->id) :
             false;
-        return ['prevLink' => $prevLink, 'nextLink' => $nextLink];
+        return ['prevLink' => $prevLink, 'nextLink' => $nextLink, 'currentChapter' => $currentChapter, 'chapterCount' => $chapterCount];
     }
 
     /**

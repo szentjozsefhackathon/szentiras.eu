@@ -27,6 +27,7 @@
     {% endif %}
 {% endmacro %}
 
+<div class="parsedVerses">
 {# In some sources the same verse (verse number 1) appears more than once, so we only display a chapter number if we haven't displayed that one. This handles references like Jer 5;6#}
 {% set lastChapterNumber = 0 %}
 {%- for verse in verseContainer.parsedVerses -%}
@@ -84,3 +85,4 @@
         {% endfor  %}
     {% endif %}
 {%- endfor -%}
+    </div>

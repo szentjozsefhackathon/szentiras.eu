@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Cache;
 use OpenAI\Laravel\Facades\OpenAI;
 use Pgvector\Laravel\Vector;
 use Redirect;
@@ -74,8 +75,8 @@ class ApiController extends Controller
         SearchService $searchService,
         protected TranslationService $translationService,
         protected BookService $bookService,
-        protected SemanticSearchService $semanticSearchService)
-    {
+        protected SemanticSearchService $semanticSearchService
+    ) {
         $this->textService = $textService;
         $this->lectureSelector = $lectureSelector;
         $this->translationRepository = $translationRepository;
@@ -85,7 +86,8 @@ class ApiController extends Controller
         $this->searchService = $searchService;
     }
 
-    public function getCosineSimilarity() {
+    public function getCosineSimilarity()
+    {
         $text1 = Request::get('text1');
         $text2 = Request::get('text2');
         $response1 = OpenAI::embeddings()->create([
@@ -136,7 +138,8 @@ class ApiController extends Controller
                 "forditas" => [
                     "nev" => $translation->name,
                     "rov" => $translation->abbrev
-                ]]
+                ]
+            ]
         ]);
     }
 
@@ -177,22 +180,25 @@ class ApiController extends Controller
         return $this->formatJsonResponse(['lectures' => $formattedLectures]);
     }
 
-    public function getBooks($translationAbbrev = false) {
+    public function getBooks($translationAbbrev = false)
+    {
         $translation = $this->findTranslation($translationAbbrev);
-        foreach ($this->bookRepository->getBooksByTranslation($translation->id) as $book) {
-            $bookData[] = [
-                'abbrev' => $book->abbrev,
-                'name' => $book->name,
-                'number' => $book->number,
-                'corpus' => $book->old_testament,
-                'chapterCount' => $this->bookService->getChapterCount($book, $translation)
+        return Cache::remember("api_books_{$translation->id}", now()->addDay(), function () use ($translation) {
+            foreach ($this->bookRepository->getBooksByTranslation($translation->id) as $book) {
+                $bookData[] = [
+                    'abbrev' => $book->abbrev,
+                    'name' => $book->name,
+                    'number' => $book->number,
+                    'corpus' => $book->old_testament,
+                    'chapterCount' => $this->bookService->getChapterCount($book, $translation)
+                ];
+            }
+            $data = [
+                'translation' => ['abbrev' => $translation->abbrev, 'id' => $translation->id],
+                'books' => $bookData
             ];
-        }
-        $data = [
-            'translation' => ['abbrev' => $translation->abbrev, 'id'=>$translation->id],
-            'books' => $bookData
-        ];
-        return $this->formatJsonResponse($data);
+        return    $this->formatJsonResponse($data);
+        });
     }
 
     public function getRef($ref, $translationAbbrev = false)
@@ -201,10 +207,8 @@ class ApiController extends Controller
         if (empty($results)) {
             \App::abort(404, "Nincs ilyen hivatkozás");
         } else {
-            return $this->formatJsonResponse(count($results)<=1 ? $results[0] : $results);
+            return $this->formatJsonResponse(count($results) <= 1 ? $results[0] : $results);
         }
-
-
     }
 
     public function getSearch($text)
@@ -217,7 +221,8 @@ class ApiController extends Controller
         return $this->formatJsonResponse(["refResult" => $refResult, "fullTextResult" => $results]);
     }
 
-    public function getLegacyApiEndpoint() {
+    public function getLegacyApiEndpoint()
+    {
         if (Request::get('feladat') === 'idezet') {
             return Redirect::action('SzentirasHu\Http\Controllers\Api\ApiController@getIdezet', [Request::get('hivatkozas'), Request::get('forditas')], 301);
         } else if (Request::get('feladat') === '') {
@@ -226,10 +231,10 @@ class ApiController extends Controller
         return Redirect::to('api');
     }
 
-    public function getTranslationList() {
+    public function getTranslationList()
+    {
         $translations = $this->translationRepository->getAllOrderedByDenom();
         return $this->formatJsonResponse(["translations" => $translations, "defaultTranslationId" => \Config::get('settings.defaultTranslationId')]);
-
     }
 
     private function formatJsonResponse($data)
@@ -246,13 +251,7 @@ class ApiController extends Controller
      */
     private function findTranslation($translationAbbrev = false)
     {
-        if ($translationAbbrev) {
-            $translation = $this->translationRepository->getByAbbrev($translationAbbrev);
-            return $translation;
-        } else {
-            $translation = $this->translationService->getDefaultTranslation();
-            return $translation;
-        }
+        return $translationAbbrev ? $this->translationRepository->getByAbbrev($translationAbbrev) : $this->translationService->getDefaultTranslation();
     }
 
     /**
@@ -282,7 +281,6 @@ class ApiController extends Controller
                     $results[] = $result;
                 }
             } catch (ParsingException $parsingException) {
-
             }
         }
         return $results;
