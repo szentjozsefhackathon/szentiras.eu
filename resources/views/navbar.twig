@@ -1,4 +1,4 @@
-{% set externalIcon %}<i class="fa-solid fa-arrow-up-right-from-square"></i>{% endset %}
+{% set externalIcon %}<i class="bi-box-arrow-up-right"></i>{% endset %}
 
 <nav class="navbar navbar-light navbar-expand-md" role="navigation">
     <div class="container-fluid">
@@ -40,11 +40,11 @@
                 <li class="nav-item">
                     {% if  not session('anonymous_token') %}
                     <a class="nav-link" href="/login">
-                        <i class="fa-solid fa-user fa-lg"></i> Belépés
+                        <i class="bi bi-person bi-large"></i> Belépés
                     </a>
                     {% else %}
                         <a class="nav-link" href="/profile/{{ session('anonymous_token') }}">
-                            <i class="fa-solid fa-user-check fa-lg"></i>
+                            <i class="bi bi-person-check bi-large"></i>
                         </a>                        
                     {% endif %}
                 </li>

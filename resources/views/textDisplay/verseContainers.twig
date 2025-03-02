@@ -22,21 +22,21 @@
                 {% if hasFootnote %}</div>{% endif %}
         <p>
             {% if chapterLinks.prevLink %}
-                <a href="/{{ chapterLinks.prevLink }}" role="button" class="btn btn-primary btn-default"><i class="fas fa-chevron-left"></i> Előző {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}}</a>
+                <a href="/{{ chapterLinks.prevLink }}" role="button" class="btn btn-primary btn-default"><i class="bi-chevron-left"></i> Előző {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}}</a>
             {% endif %}
             {% if chapterLinks.nextLink %}
-                <a href="/{{ chapterLinks.nextLink }}" role="button" class="btn btn-primary btn-default">Következő {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}} <i class="fas fa-chevron-right"></i></a>
+                <a href="/{{ chapterLinks.nextLink }}" role="button" class="btn btn-primary btn-default">Következő {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}} <i class="bi bi-chevron-right"></i></a>
             {% endif %}
         </p>
         <p>
             {% if previousDay %}
-                <a href="/tervek/{{ previousDay.plan_id }}/{{ previousDay.day_number }}" class="btn btn-primary btn-default"><i class="fas fa-chevron-left"></i> Előző nap</a>
+                <a href="/tervek/{{ previousDay.plan_id }}/{{ previousDay.day_number }}" class="btn btn-primary btn-default"><i class="bi bi-chevron-left"></i> Előző nap</a>
             {% endif %}
             {% if readingPlanDay %}
-                <a href="/tervek/{{ readingPlanDay.plan_id }}" class="btn btn-primary btn-default"><span class="btn-primary"><i class="fas fa-chevron-up"></i></span> Olvasási terv</a>
+                <a href="/tervek/{{ readingPlanDay.plan_id }}" class="btn btn-primary btn-default"><span class="btn-primary"><i class="bi bi-chevron-up"></i></span> Olvasási terv</a>
             {% endif %}
             {% if nextDay %}
-                <a href="/tervek/{{ nextDay.plan_id }}/{{ nextDay.day_number }}" class="btn btn-primary btn-default">Következő nap <i class="fas fa-chevron-right"></i></a>
+                <a href="/tervek/{{ nextDay.plan_id }}/{{ nextDay.day_number }}" class="btn btn-primary btn-default">Következő nap <i class="bi bi-chevron-right"></i></a>
             {% endif %}
         </p>
     </div>

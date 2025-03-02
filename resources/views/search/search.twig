@@ -95,7 +95,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
             <div class="searchResult">
                 {% for abbrev,group in chapters.translations %}
                         <a data-target="#g{{ key }}_{{ group.trans.abbrev }}" class="searchResultTranslationSelector btn btn-outline-secondary btn-sm {% if loop.first %}active{% endif %}">
-                            <i class="fas fa-book"></i>{% if form.translation is not defined or form.translation.id < 1 %}
+                            <i class="bi bi-book"></i>{% if form.translation is not defined or form.translation.id < 1 %}
                             <span title="{{ group.trans.name }}">{{ group.trans.abbrev }}</span>
                         {% endif %}                        
                             <span class="header-bookabbrev {{ loop.first ? 'active d-sm-inline' : 'inactive d-md-inline'}}" title="{{ group.book.name }}">{{ group.book.abbrev }}</span>
@@ -108,7 +108,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                 <div>                   
                 {% for abbrev,group in chapters.translations %}
                         <div class="searchResultTranslationText searchResultVerse {% if loop.first %}active{% endif %}" id="g{{ key }}_{{ group.trans.abbrev }}">
-                            <a href="/{{ group.trans.abbrev}}/{{ group.book.abbrev }}{% if form.grouping == 'verse' or  form.grouping == 'chapter' %}{{ group.verses[0].chapter }}{% endif %}{% if form.grouping == 'verse' %},{{ group.verses[0].numv }}{% endif %}"><i class="fas fa-circle-chevron-right"></i></a>
+                            <a href="/{{ group.trans.abbrev}}/{{ group.book.abbrev }}{% if form.grouping == 'verse' or  form.grouping == 'chapter' %}{{ group.verses[0].chapter }}{% endif %}{% if form.grouping == 'verse' %},{{ group.verses[0].numv }}{% endif %}"><i class="bi-arrow-right-circle-fill"></i></a>
                         {% for verse in group.verses %}
                             {% if verse.chapterStart %}{% if form.grouping == 'book' %}{{ loop.first ? "" : "<br>" }}<strong>
                                 <a href="/{{ group.trans.abbrev }}/{{ group.book.abbrev }}{{ verse.chapter }}">{{ verse.chapter }}</a></strong> {% endif %}{% endif %}
@@ -128,7 +128,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     {% if fullTextResults is defined %}
         <h4>Találatok a szövegben <span class="badge">{{ fullTextResults.hitCount }} találat</span></h4>
         {% for result in fullTextResults.results %}
-            <h5><a href="/{{ result.translation.abbrev }}/{{ result.book.abbrev }}"><i class="fas fa-book"></i> {{ result.book.name }}
+            <h5><a href="/{{ result.translation.abbrev }}/{{ result.book.abbrev }}"><i class="bi bi-book"></i> {{ result.book.name }}
                     ({{ result.translation.name }})</a></h5>
             <div>
                 {% if form.grouping == 'verse' %}
