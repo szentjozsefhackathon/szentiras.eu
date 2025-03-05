@@ -22,6 +22,6 @@ interface BookRepository {
      */
     public function getByAbbrevForTranslation($abbrev, $translationId);
 
-    public function getByOrderForTranslation($order, $translationId);
+    public function getByUsxCodeForTranslation($usxCode, $translationId);
 
-} 
+}

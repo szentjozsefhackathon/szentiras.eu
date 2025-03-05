@@ -17,6 +17,18 @@ class Verse extends Eloquent {
     public $timestamps = false;
     protected $table = 'tdverse';
 
+    protected $fillable = [
+        'usx_code',
+        'gepi',
+        'verse',
+        'order',
+        'chapter',
+        'numv',
+        'tip',
+        'verseroot',
+        'ido',
+    ];
+
     private static $typeMap;
 
     public function book() {

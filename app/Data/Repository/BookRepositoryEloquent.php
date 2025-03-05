@@ -58,18 +58,20 @@ class BookRepositoryEloquent implements BookRepository
      */
     public function getByAbbrevForTranslation($abbrev, $translationId)
     {
-        return Cache::remember("getBookByOrderForTranslation_{$abbrev}_{$translationId}", 120, function () use ($abbrev, $translationId) {
+        return Cache::remember("getBookByUsxCodeForTranslation_{$abbrev}_{$translationId}", 120, function () use ($abbrev, $translationId) {
             $book = $this->getByAbbrev($abbrev, $translationId);
             if ($book) {
-                return $this->getByOrderForTranslation($book->order, $translationId);
+                return $this->getByUsxCodeForTranslation($book->usx_code, $translationId);
             }
         });
     }
 
-    public function getByOrderForTranslation($order, $translationId)
+    public function getByUsxCodeForTranslation($usxCode, $translationId)
     {
-        return Cache::remember("getBookByOrderForTranslation_{$order}_{$translationId}", 120, function () use ($translationId, $order) {
-            $book = Book::where('order', $order)->where('translation_id', $translationId)->first();
+        return Cache::remember("getBookByUsxCodeForTranslation_{$usxCode}_{$translationId}", 120, function () use ($translationId, $usxCode) {
+            $book = Book::where('usx_code', $usxCode)
+                ->where('translation_id', $translationId)
+                ->first();
             if ($book == null) {
                 return false;
             } else {

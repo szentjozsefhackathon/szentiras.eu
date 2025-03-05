@@ -64,7 +64,7 @@ class ReferenceService
         $result = null;
         $abbreviatedBook = $this->bookRepository->getByAbbrev($bookRef->bookId, $refTranslationId);
         if ($abbreviatedBook) {
-            $book = $this->bookRepository->getByOrderForTranslation($abbreviatedBook->order, $translationId);
+            $book = $this->bookRepository->getByUsxCodeForTranslation($abbreviatedBook->usx_code, $translationId);
             if ($book) {
                 $result = new BookRef($book->abbrev);
                 $result->chapterRanges = $bookRef->chapterRanges;
@@ -145,11 +145,11 @@ class ReferenceService
         return [$prevRef, $nextRef];
     }
 
-    public function createReferenceFromNumbers($bookOrder, $chapterNumber, int $verseNumber, $translation = null) {
+    public function createReferenceFromNumbers($usxCode, $chapterNumber, int $verseNumber, $translation = null) {
         if ($translation == null) {
             $translation = $this->translationService->getDefaultTranslation();
         }
-        $book = $this->bookRepository->getByOrderForTranslation($bookOrder, $translation->id);
+        $book = $this->bookRepository->getByUsxCodeForTranslation($usxCode, $translation->id);
         $ref = CanonicalReference::fromBookChapterVerse($book->abbrev, $chapterNumber, $verseNumber);
         return $ref;
     }
