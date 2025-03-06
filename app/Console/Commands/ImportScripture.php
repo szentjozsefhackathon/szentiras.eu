@@ -30,6 +30,8 @@ define('BOOKCODE', 'gepi');
 define('BOOKABBREV', 'rov');
 define('BOOKNAME', 'nev');
 
+define('ROW_NUMBER_ESTIMATE', 159000);
+
 class ImportScripture extends Command
 {
     /**
@@ -117,7 +119,6 @@ class ImportScripture extends Command
 
         [$bookInserts, $verseInserts] = $this->readInserts($translation, $transAbbrevToImport, $filePath);
         if (!empty($bookInserts) || !empty($verseInserts)) {
-            // $this->saveToDb($transAbbrevToImport, $translation, $bookInserts, $verseInserts);
             $this->storeInDb($translation, $bookInserts, $verseInserts);
         } else {
             $this->info("Nincs mit feltölteni.");
@@ -148,8 +149,10 @@ class ImportScripture extends Command
                 $query->where('translation_id', $translation->id);
             })->delete();
 
+            $this->info("Könyvek tárolása...");
             $this->storeBooks($translation, $bookInserts);
 
+            $this->info("Versek tárolása...");
             $this->storeVerses($translation, $verseInserts);
         });
         Artisan::call('up');
@@ -183,11 +186,18 @@ class ImportScripture extends Command
 
     private function storeVerses(Translation $translation, array $verseInserts): void
     {
+        $progressBar = $this->createProgressBar(count($verseInserts));
+        $verseNumber = 1;
         foreach ($verseInserts as $verseInsert) {
             $book = Cache::remember(
                 $this->getBookCacheKey($verseInsert['order'], $translation->name),
                 now()->addMinutes(10),
                 fn() => $this->fetchBook($verseInsert['order'], $translation)
+            );
+            $progressBar->setMessage(
+                "$verseNumber. vers mentése az adatbázisba... " .
+                "($translation->name/{$book->usx_code} " .
+                "{$verseInsert['chapter']}:{$verseInsert['numv']})"
             );
 
             if (!$book) {
@@ -199,7 +209,7 @@ class ImportScripture extends Command
                 'usx_code' => $book->usx_code,
                 BOOKCODE => $syntheticCode,
                 'verse' => $verseInsert['verse'],
-                'order' => $verseInsert['order'],
+                // 'order' => $verseInsert['order'], -- we don't have this yet
                 'chapter' => $verseInsert['chapter'],
                 'numv' => $verseInsert['numv'],
                 'tip' => $verseInsert['tip'],
@@ -209,7 +219,10 @@ class ImportScripture extends Command
             $verse->translation()->associate($translation);
             $verse->book()->associate($book);
             $verse->save();
+            $progressBar->advance();
+            $verseNumber++;
         }
+        $progressBar->finish();
     }
 
     private function fetchBook($order, Translation $translation): ?Book
@@ -233,7 +246,7 @@ class ImportScripture extends Command
         $sheets = $this->getSheets($reader);
 
         $this->info("Könyvek lap ellenőrzése");
-        $bookInserts = $this->getBookInserts(
+        $bookInserts = $this->readBookSheetInserts(
             $transAbbrevToImport,
             $sheets['Könyvek']
         );
@@ -308,8 +321,8 @@ class ImportScripture extends Command
         $verseRowIterator = $versesSheet->getRowIterator();
         $verseSheetHeaders = $this->getHeaders($verseRowIterator);
         $dbToHeaderMap = $this->mapVerseSheetHeadersToDbColumns($verseSheetHeaders);
-        $this->info("Beolvasás sorról sorra...\n");
-        $progressBar = $this->createProgressBar();
+        $this->info("Beolvasás sorról sorra...");
+        $progressBar = $this->createProgressBar(ROW_NUMBER_ESTIMATE);
         $rowNumber = 0;
         foreach ($verseRowIterator as $verseRow) {
             $rowNumber++;
@@ -322,23 +335,26 @@ class ImportScripture extends Command
             }
             $originalBookCode = $verseRow->getCellAtIndex($verseSheetHeaders[$dbToHeaderMap[BOOKCODE]])->getValue();
             if (!$this->option('filter') or $this->checkFilterMatch($originalBookCode)) {
-                $newInsert = $this->toVerseInsert(
+                $newVerseInsert = $this->toVerseInsert(
                     $verseRow,
                     $verseSheetHeaders,
                     $originalBookCode
                 );
-                $inserts[$rowNumber] = $newInsert;
+                $verseInserts[$rowNumber] = $newVerseInsert;
                 $rowNumber++;
                 $progressBar->setMessage(
                     "$rowNumber. sor" .
-                    " - {$newInsert['original_book_code']}" .
+                    " - {$newVerseInsert['original_book_code']}" .
                     " - új szavak: {$this->newStems}"
                 );
+                if ($rowNumber > $progressBar->getMaxSteps()) {
+                    $progressBar->setMaxSteps($rowNumber);
+                }
                 $progressBar->advance();
             }
         }
         $progressBar->finish();
-        return $inserts;
+        return $verseInserts;
     }
 
     private function toVerseInsert(
@@ -373,30 +389,7 @@ class ImportScripture extends Command
         return $result;
     }
 
-    private function saveToDb(string $abbrev, Translation $translation, array $inserts): void
-    {
-        $this->info("\nFeldolgozott adatok mentése az adatbázisba...");
-        $progressBar = $this->output->createProgressBar(count($inserts));
-
-        Artisan::call('down');
-        $this->info("A tdveres tábla (részleges) ürítése...");
-        if (!$this->option('filter')) {
-            DB::table('tdverse')->where('trans', '=', $translation->id)->delete();
-        } else {
-            DB::table('tdverse')->where('trans', '=', $translation->id)->where(BOOKCODE, 'REGEXP', $this->option('filter'))->delete();
-        }
-        $this->info("A tdverse tábla feltöltése " . count($inserts) . " sorral...");
-        echo "\n";
-        for ($rowNumber = 0; $rowNumber < count($inserts); $rowNumber += 100) {
-            $slice = array_slice($inserts, $rowNumber, 100);
-            DB::table('tdverse')->insert($slice);
-            $progressBar->advance(100);
-        }
-        $progressBar->finish();
-        Artisan::call('up');
-    }
-
-    private function getBookInserts(
+    private function readBookSheetInserts(
         string $translationAbbrev,
         Sheet $bookSheet
     ): array {
@@ -417,23 +410,34 @@ class ImportScripture extends Command
                 continue;
             }
 
-            $bookOrder = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKCODE])->getValue();
-            $bookAbbrev = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKABBREV])->getValue();
-            $bookName = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKNAME])->getValue();
-            $bookUsx = $this->bookAbbrevToUsxCode($bookAbbrev, $translationAbbrev);
-            $this->info("{$bookOrder}. könyv: {$bookAbbrev} (usx: {$bookUsx})");
-            $bookInserts[] = [
-                'order' => (int) $bookOrder,
-                'abbrev' => $bookAbbrev,
-                'usx_code' => $bookUsx,
-                'translation' => $translationAbbrev,
-                'name' => $bookName,
-                'link' => $this->removeAccents($bookAbbrev),
-                'old_testament' => $this->isOldTestament($bookUsx),
-            ];
+            $newBookInsert = $this->toBookInsert(
+                $bookRow,
+                $translationAbbrev
+            );
+            $bookInserts[] = $newBookInsert;
         }
 
         return $bookInserts;
+    }
+
+    private function toBookInsert(
+        Row $bookRow,
+        string $translationAbbrev
+    ): array {
+        $bookOrder = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKCODE])->getValue();
+        $bookAbbrev = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKABBREV])->getValue();
+        $bookName = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKNAME])->getValue();
+        $bookUsx = $this->bookAbbrevToUsxCode($bookAbbrev, $translationAbbrev);
+        $this->info("{$bookOrder}. könyv: {$bookAbbrev} (usx: {$bookUsx})");
+        return [
+            'order' => (int) $bookOrder,
+            'abbrev' => $bookAbbrev,
+            'usx_code' => $bookUsx,
+            'translation' => $translationAbbrev,
+            'name' => $bookName,
+            'link' => $this->removeAccents($bookAbbrev),
+            'old_testament' => $this->isOldTestament($bookUsx),
+        ];
     }
 
 
@@ -512,26 +516,6 @@ class ImportScripture extends Command
         return join(' ', $verseroots->unique()->toArray());
     }
 
-    private function getAbbrevToIdFromDb(Translation $translation): array
-    {
-        $books = $this->bookRepository->getBooksByTranslation($translation->id);
-        $booksAbbrevToId = [];
-        foreach ($books as $book) {
-            $booksAbbrevToId[$book->abbrev] = $book->id;
-        }
-        return $booksAbbrevToId;
-    }
-
-    private function checkBadAbbrevs(array $badAbbrevs): void
-    {
-        if (!empty($badAbbrevs)) {
-            $this->info("A következő rövidítések csak a szövegforrásban találhatóak meg, az adatbázisban nem!\n" . implode(', ', $badAbbrevs));
-            if (!$this->confirm('Folytassuk?')) {
-                App::abort(500, "Kilépés");
-            }
-        }
-    }
-
     private function bookAbbrevToUsxCode(string $bookAbbrev, string $translation): string
     {
         $result = UsxCodes::getUsxFromBookAbbrevAndTranslation(
@@ -575,17 +559,12 @@ class ImportScripture extends Command
         foreach ($verseRowIterator as $row) { // only go through the first row
             foreach ($row->getCells() as $cell) {
                 $cols[$cell->getValue()] = $i;
-                $this->info("$i.oszlop: {$cell->getValue()}");
+                $this->info("$i. oszlop: {$cell->getValue()}");
                 $i++;
             }
             break;
         }
         return $cols;
-    }
-
-    private function isImportSourceBookAbbrevMissingFromDb(array $dbBookAbbrevs, string $bookAbbrev): bool
-    {
-        return !isset($dbBookAbbrevs[$bookAbbrev]) && ($bookAbbrev != '-' && $bookAbbrev != '');
     }
 
     private function isVerseHeaderRow(Row $row): bool
@@ -620,12 +599,12 @@ class ImportScripture extends Command
         App::abort(500, "A fájl nem Excel Sheet: $originalFilePath ($fileExtension)");
     }
 
-    private function createProgressBar(): ProgressBar
+    private function createProgressBar(int $max): ProgressBar
     {
-        $progressBar = $this->output->createProgressBar();
+        $progressBar = $this->output->createProgressBar($max);
         $progressBar->setRedrawFrequency(25);
         $progressBar->setBarWidth(24);
-        $progressBar->setFormat("[%bar%] %message%");
+        $progressBar->setFormat("[%bar%] %message%\n");
         return $progressBar;
     }
 
