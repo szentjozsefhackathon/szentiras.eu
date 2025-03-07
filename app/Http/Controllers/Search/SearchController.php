@@ -6,6 +6,7 @@ use App;
 use Request;
 use Redirect;
 use Response;
+use SzentirasHu\Data\UsxCodes;
 use SzentirasHu\Http\Controllers\Controller;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ParsingException;
@@ -171,21 +172,21 @@ class SearchController extends Controller
         return $view;
     }
 
-    private function extractBookNumbers($form)
+    private function extractBookUsxCodes($form)
     {
-        $bookIds = [];
+        $bookUsxCodes = [];
         if ($form->book) {
             if ($form->book == 'old_testament') {
-                $bookIds = range(101, 146);
+                $bookUsxCodes = UsxCodes::OLD_TESTAMENT;
             } else if ($form->book == 'new_testament') {
-                $bookIds = range(201, 227);
+                $bookUsxCodes = UsxCodes::NEW_TESTAMENT;
             } else if ($form->book == 'all') {
-                $bookIds = [];
+                $bookUsxCodes = [];
             } else {
-                $bookIds = [$form->book];
+                $bookUsxCodes = [$form->book];
             }
         }
-        return $bookIds;
+        return $bookUsxCodes;
     }
 
     /**
@@ -219,7 +220,7 @@ class SearchController extends Controller
         if ($form->translation) {
             $searchParams->translationId = $form->translation->id;
         }
-        $searchParams->bookNumbers = $this->extractBookNumbers($form);
+        $searchParams->usxCodes = $this->extractBookUsxCodes($form);
         $searchParams->synonyms = true;
         $searchParams->grouping = $form->grouping;        
         return $searchParams;

@@ -72,9 +72,13 @@ class TextDisplayController extends Controller
     {
         $translation = $this->translationRepository->getByAbbrev($translationAbbrev);
         $books = $this->translationRepository->getBooks($translation);
-        return View::make('textDisplay.translation',
-            ['translation' => $translation,
-                'books' => $books]);
+        return View::make(
+            'textDisplay.translation',
+            [
+                'translation' => $translation,
+                'books' => $books
+            ]
+        );
     }
 
     public function showReferenceText($reference)
@@ -103,7 +107,7 @@ class TextDisplayController extends Controller
                 'readingPlan' => $readingPlanDay ? $readingPlanDay->plan : null,
                 'readingPlanDay' => $readingPlanDay,
                 'nextDay' => $nextDay,
-				'canonicalRef' => str_replace(" ", "%20", $canonicalRef->toString()),
+                'canonicalRef' => str_replace(" ", "%20", $canonicalRef->toString()),
                 'verseContainers' => $verseContainers,
                 'translation' => $translation,
                 'translations' => $translations,
@@ -112,23 +116,23 @@ class TextDisplayController extends Controller
                 'teaser' => $this->textService->getTeaser($verseContainers),
                 'chapterLinks' => $chapterLinks,
                 'translationLinks' => $translations->map(
-                        function ($otherTranslation) use ($canonicalRef, $translation) {
-                            $allBooksExistInTranslation = true;
-                            foreach ($canonicalRef->bookRefs as $bookRef) {
-                                $book = $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translation->id);
-                                if (!$this->getAllBookTranslations($book->number)->contains($otherTranslation->id)) {
-                                    $allBooksExistInTranslation = false;
-                                    break;
-                                }
+                    function ($otherTranslation) use ($canonicalRef, $translation) {
+                        $allBooksExistInTranslation = true;
+                        foreach ($canonicalRef->bookRefs as $bookRef) {
+                            $book = $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translation->id);
+                            if (!$this->getAllBookTranslations($book->usx_code)->contains($otherTranslation->id)) {
+                                $allBooksExistInTranslation = false;
+                                break;
                             }
-                            return [
-                                'id' => $otherTranslation->id,
-                                'link' => $this->referenceService->getCanonicalUrl($canonicalRef, $otherTranslation->id, $translation->id),
-                                'abbrev' => $otherTranslation->abbrev,
-                                'enabled' => $allBooksExistInTranslation
-                            ];
                         }
-                    )
+                        return [
+                            'id' => $otherTranslation->id,
+                            'link' => $this->referenceService->getCanonicalUrl($canonicalRef, $otherTranslation->id, $translation->id),
+                            'abbrev' => $otherTranslation->abbrev,
+                            'enabled' => $allBooksExistInTranslation
+                        ];
+                    }
+                )
             ]);
         } catch (ParsingException $e) {
             // as this doesn't look like a valid reference
@@ -176,8 +180,8 @@ class TextDisplayController extends Controller
         $translation = $this->translationRepository->getByAbbrev($translationAbbrev ? $translationAbbrev : Config::get('settings.defaultTranslationAbbrev'));
         $translatedRef = $this->referenceService->translateReference($canonicalRef, $translation->id);
         $book = $this->bookRepository->getByAbbrevForTranslation($translatedRef->bookRefs[0]->bookId, $translation->id);
-        if ($book) {           
-            $chapters = [];                    
+        if ($book) {
+            $chapters = [];
             $verses = $this->verseRepository->getVerses($book->id);
             $groupedVerses = [];
             foreach ($verses as $verse) {
@@ -211,17 +215,17 @@ class TextDisplayController extends Controller
                 if ($type == 'text' || $type == 'poemLine') {
                     $verseContainer = new VerseContainer($book);
                     $verseContainer->addVerse($verse);
-                    $oldText = "";                    
-                    if(isset($chapters[$verse['chapter']]['leadVerses'])) {                   
+                    $oldText = "";
+                    if (isset($chapters[$verse['chapter']]['leadVerses'])) {
                         if (array_has($chapters[$verse['chapter']]['leadVerses'], $verse['numv'])) {
                             $oldText = $chapters[$verse['chapter']]['leadVerses'][$verse['numv']];
                         }
                     }
                     $chapters[$verse['chapter']]['leadVerses'][$verse['numv']] = $oldText . $this->textService->getTeaser([$verseContainer]);
                 }
-            }            
+            }
             $allTranslations = $this->translationRepository->getAllOrderedByDenom();
-            $bookTranslations = $this->getAllBookTranslations($book->number);
+            $bookTranslations = $this->getAllBookTranslations($book->usx_code);
             return View::make('textDisplay.book', [
                 'translation' => $translation,
                 'reference' => $translatedRef,
@@ -230,15 +234,16 @@ class TextDisplayController extends Controller
                 'headings' => $chapterHeadings,
                 'translations' => $allTranslations,
                 'translationLinks' => $allTranslations->map(
-                        function ($translation) use ($canonicalRef, $bookTranslations) {
-                            $bookExistsInTranslation = $bookTranslations->contains($translation->id);
-                            return [
-                                'id' => $translation->id,
-                                'link' => $this->referenceService->getCanonicalUrl($canonicalRef, $translation->id),
-                                'abbrev' => $translation->abbrev,
-                                'enabled' => $bookExistsInTranslation];
-                        }
-                    )
+                    function ($translation) use ($canonicalRef, $bookTranslations) {
+                        $bookExistsInTranslation = $bookTranslations->contains($translation->id);
+                        return [
+                            'id' => $translation->id,
+                            'link' => $this->referenceService->getCanonicalUrl($canonicalRef, $translation->id),
+                            'abbrev' => $translation->abbrev,
+                            'enabled' => $bookExistsInTranslation
+                        ];
+                    }
+                )
 
             ]);
 
@@ -289,12 +294,20 @@ class TextDisplayController extends Controller
      * @param $book
      * @return mixed
      */
-    private function getAllBookTranslations($bookNumber)
+    private function getAllBookTranslations($usxCode)
     {
-        $translations = $this->translationRepository->getAllOrderedByDenom()->filter(function ($translation) use ($bookNumber) {
-                return $this->bookRepository->getByNumberForTranslation($bookNumber, $translation->id);
-            }
-        );
+        $translations = $this
+            ->translationRepository
+            ->getAllOrderedByDenom()
+            ->filter(
+                function ($translation) use ($usxCode) {
+                    return $this->bookRepository
+                        ->getByUsxCodeForTranslation(
+                            $usxCode,
+                            $translation->id
+                        );
+                }
+            );
         return $translations;
     }
 }

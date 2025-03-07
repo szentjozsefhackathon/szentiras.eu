@@ -12,12 +12,12 @@ source verses_source
 	sql_port		= 3306
 
 	sql_query		= \
-		SELECT id, gepi, trans, book_number, chapter, numv, tip, verse \
+		SELECT id, gepi, trans, usx_code, chapter, numv, tip, verse \
 		FROM kar_tdverse \
         WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
 
 	sql_attr_uint = trans
-	sql_attr_uint = book_number
+	sql_attr_string = usx_code
 	sql_attr_uint = chapter
 	sql_attr_bigint = gepi
 	sql_attr_uint = tip
@@ -31,7 +31,7 @@ source verses_source
 source verses_root_source : verses_source
 {
     sql_query		= \
-    SELECT id, gepi, trans, book_number, chapter, numv, tip, verseroot \
+    SELECT id, gepi, trans, usx_code, chapter, numv, tip, verseroot \
     FROM kar_tdverse \
     WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
 }

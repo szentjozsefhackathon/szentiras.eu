@@ -79,8 +79,8 @@ class SphinxSearcher implements Searcher
         if ($params->translationId) {
             $this->sphinxClient->filter('trans', $params->translationId);
         }
-        if ($params->bookNumbers !== null && count($params->bookNumbers) > 0) {
-            $this->sphinxClient->filter('book_number', $params->bookNumbers);
+        if ($params->usxCodes !== null && count($params->usxCodes) > 0) {
+            $this->sphinxClient->filter('usx_code', $params->usxCodes);
         }
         $this->params = $params;
     }
