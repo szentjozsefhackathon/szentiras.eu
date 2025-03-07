@@ -432,13 +432,20 @@ class TextDisplayController extends Controller
      * @param $book
      * @return mixed
      */
-    private function getAllBookTranslations($bookNumber)
+    private function getAllBookTranslations($usxCode)
     {
-        $translations = $this->translationRepository->getAllOrderedByDenom()->filter(
-            function ($translation) use ($bookNumber) {
-                return $this->bookRepository->getByNumberForTranslation($bookNumber, $translation->id);
-            }
-        );
+        $translations = $this
+            ->translationRepository
+            ->getAllOrderedByDenom()
+            ->filter(
+                function ($translation) use ($usxCode) {
+                    return $this->bookRepository
+                        ->getByUsxCodeForTranslation(
+                            $usxCode,
+                            $translation->id
+                        );
+                }
+            );
         return $translations;
     }
 }

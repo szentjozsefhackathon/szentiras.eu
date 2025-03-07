@@ -58,7 +58,6 @@ class SmokeTest extends TestCase
                 'id' => 1001]
                 ]
             ));
-
     }
 
 
@@ -70,7 +69,6 @@ class SmokeTest extends TestCase
     public function testBasicHomePage()
     {
         $this->get('/')->assertStatus(200);
-
     }
 
     public function testBasicTranslationPage()

@@ -24,7 +24,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                             <option value="old_testament" {{ 'old_testament' == form.book ? 'selected' }}>Ószövetség</option>
                             <option value="new_testament" {{ 'new_testament' == form.book ? 'selected' }}>Újszövetség</option>
                             {% for book in books %}
-                                <option value="{{ book.number }}" {{ book.number == form.book ? 'selected' }}>{{ book.name }}</option>
+                                <option value="{{ book.usx_code }}" {{ book.usx_code == form.book ? 'selected' }}>{{ book.name }}</option>
                             {% endfor %}
                         </select>
                     </div>

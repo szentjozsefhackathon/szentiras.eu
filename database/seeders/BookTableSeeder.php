@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use SzentirasHu\Data\UsxCodes;
+
 
 /**
 
@@ -22,15 +24,16 @@ class BookTableSeeder extends \Illuminate\Database\Seeder
         $this->addBook(99202, 102, "2Móz", $translation);
     }
 
-    private function addBook($id, $number, $abbrev, $translation)
+    private function addBook($id, $order, $abbrev, $translation)
     {
         $book = new \SzentirasHu\Data\Entity\Book();
         $book->id = $id;
-        $book->number = $number;
+        $book->order = $order;
         $book->abbrev = $abbrev;
         $book->name = "$abbrev.";
         $book->link = "link";
         $book->old_testament = 1;
+        $book->usx_code = UsxCodes::getUsxFromBookAbbrevAndTranslation($abbrev);
         $book->translation()->associate($translation);
         $book->save();
         return $book;

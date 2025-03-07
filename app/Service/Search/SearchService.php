@@ -138,7 +138,6 @@ class SearchService {
             }          
             $trans = $translations[$verse['attrs']['trans']];
             if(!array_key_exists($trans['abbrev'], $results[$key]['translations']) or $results[$key]['translations'][$trans['abbrev']] == array() ) {
-                //$book = $this->bookRepository->getByNumberForTranslation($verse['attrs']['book_number'],$verse['attrs']['trans']);
                 $results[$key]['translations'][$trans['abbrev']] = [                       
                        'verseIds' => [],
                        'verses' => [],
