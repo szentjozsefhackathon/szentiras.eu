@@ -22,12 +22,12 @@
                 <ul class="pagination">
                     {% if chapterLinks.prevLink %}
                         <li class="page-item">                        
-                            <a href="/{{ chapterLinks.prevLink }}" class="page-link"><i class="bi-chevron-left"></i> Előző {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}}</a>
+                            <a href="/{{ chapterLinks.prevLink }}" class="page-link"><i class="bi-chevron-left"></i> Előző {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}</a>
                         </li>                        
                     {% endif %}                            
                         {% if chapterLinks.nextLink %}
                             <li class="page-item">
-                            <a href="/{{ chapterLinks.nextLink }}" role="button" class="page-link">Következő {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}} <i class="bi bi-chevron-right"></i></a>
+                            <a href="/{{ chapterLinks.nextLink }}" role="button" class="page-link">Következő {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}} <i class="bi bi-chevron-right"></i></a>
                         </li>                            
                         {% endif %}                    
                   </ul>                

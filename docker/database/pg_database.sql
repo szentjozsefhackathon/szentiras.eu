@@ -1976,7 +1976,7 @@ SELECT pg_catalog.setval('public.kar_book_abbrevs_id_seq', 205, false);
 -- Name: kar_books_id_seq; Type: SEQUENCE SET; Schema: public; Owner: homestead
 --
 
-SELECT pg_catalog.setval('public.kar_books_id_seq', 228, false);
+SELECT pg_catalog.setval('public.kar_books_id_seq', 476, false);
 
 
 --

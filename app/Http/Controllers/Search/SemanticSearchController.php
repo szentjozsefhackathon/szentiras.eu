@@ -91,7 +91,7 @@ class SemanticSearchController extends Controller
         $semanticSearchParams = new SemanticSearchParams();
         $semanticSearchParams->text = $form->textToSearch;
         $semanticSearchParams->translationAbbrev = $form->translationId;
-        $semanticSearchParams->usxCodes = SearchController::extractBookNumbers($form->bookNumber);
+        $semanticSearchParams->usxCodes = SearchController::extractBookUsxCodes($form->bookNumber);
         $aiResult = $this->semanticSearchService->generateVector($form->textToSearch);
         $response = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector);
         $chapterResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Chapter);

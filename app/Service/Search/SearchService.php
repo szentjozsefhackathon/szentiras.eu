@@ -105,31 +105,27 @@ class SearchService {
     private function handleFullTextResults($sphinxResults, FullTextSearchParams $params)
     {
         
-        $sortedVerses = $this->verseRepository->getVersesInOrder($sphinxResults->verseIds);
-        //echo "<pre>".print_r($sphinxResults ,1)."</pre>";
-        
-        
+        $sortedVerses = $this->verseRepository->getVersesInOrder($sphinxResults->verseIds);      
         $defaultTranslation = $this->translationService->getDefaultTranslation();
                 
         /* beginning of new part */                
         $results = [];
         $translations = [];
         foreach($sphinxResults->verses as $id => $verse) {
+            $key = $verse['attrs']['gepi'];
             switch ($params->grouping) {
                 case 'book':
-                    $limit = 3;
+                    $key = substr($key, 0, 3);
                     break;
                 case 'chapter':
-                    $limit = 6;
+                    $secondUnderscorePos = strpos($key, '_', strpos($key, '_') + 1);
+                    if ($secondUnderscorePos !== false) {
+                        $key = substr($key, 0, $secondUnderscorePos);
+                    }
                     break;
-                case 'verse':
-                    $limit = 9;
-                    break;                
-                default:
-                    $limit = 9;
-                    break;
+                default:                    
             }
-            $key = substr($verse['attrs']['gepi'],0,$limit);
+            
             if(!array_key_exists($key, $results)) {
                 $results[$key] = ['weights' => [], 'translations' => [$defaultTranslation->abbrev => [] ] ];                
             }
@@ -192,18 +188,6 @@ class SearchService {
                     $results[$key]['translations'][$abbrev]['verses'][$k] = $verseData;
                     
                 }
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                  }
              }
         }
@@ -282,7 +266,7 @@ class SearchService {
         foreach ($sortedVerses as $verse) {
             $book = $verse->book;
             if($groupByVerse OR 4==4) $key = $verse->gepi;
-            else $key = $book->number."_".$verse->chapter;
+            else $key = $book->usx_code."_".$verse->chapter;
             
             if (!array_key_exists($key, $verseContainers)) {
                 $verseContainers[$key] = [];

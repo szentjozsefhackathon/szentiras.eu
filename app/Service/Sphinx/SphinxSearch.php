@@ -2,6 +2,8 @@
 
 namespace SzentirasHu\Service\Sphinx;
 
+use PDO;
+
 class SphinxSearch
 {
   protected $_connection;
@@ -15,13 +17,16 @@ class SphinxSearch
   {
     $host = \Config::get('settings.sphinxHost');
     $port = \Config::get('settings.sphinxPort');
-    $this->_connection = new \Sphinx\SphinxClient();
-    $this->_connection->setServer($host, $port);
-    $this->_connection->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_ANY);
-    $this->_connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
-    $this->_config = \Config::get('settings.sphinxIndexes');
-    reset($this->_config);
-    $this->_index_name = isset($this->_config['name']) ? implode(',', $this->_config['name']) : key($this->_config);
+    $this->_connection = new PDO("mysql:host=$host;port=$port");
+    if (!$this->_connection) {
+      throw new \ErrorException('Connection to Sphinx failed');
+    }
+    // $this->_connection->setServer($host, $port);
+    // $this->_connection->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_ANY);
+    // $this->_connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
+    // $this->_config = \Config::get('settings.sphinxIndexes');
+    // reset($this->_config);
+    // $this->_index_name = isset($this->_config['name']) ? implode(',', $this->_config['name']) : key($this->_config);
   }
 
   /**
@@ -148,10 +153,10 @@ class SphinxSearch
     if (is_array($values)) {
       $val = array();
       foreach ($values as $v) {
-        $val[] = (int) $v;
+        $val[] = $v;
       }
     } else {
-      $val = array((int) $values);
+      $val = array($values);
     }
     $this->_connection->setFilter($attribute, $val, $exclude);
 

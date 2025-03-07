@@ -4,7 +4,7 @@ namespace SzentirasHu\Data;
 
 class UsxCodes
 {
-    private const OLD_TESTAMENT = [
+    public const OLD_TESTAMENT = [
         '1KI' => [
             'default' => [
                 '1Kir',
@@ -343,7 +343,7 @@ class UsxCodes
         ],
     ];
 
-    private const NEW_TESTAMENT = [
+    public const NEW_TESTAMENT = [
         '1JN' => [
             'default' => [
                 '1Jan',

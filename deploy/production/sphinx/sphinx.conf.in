@@ -21,7 +21,7 @@ source verses_source
 	sql_attr_uint = trans
 	sql_attr_string = usx_code
 	sql_attr_uint = chapter
-	sql_attr_bigint = gepi
+	sql_attr_string = gepi
 	sql_attr_uint = tip
 
 }
@@ -51,7 +51,7 @@ index verse
 	    U+0170->U+0171
 }
 
-index verse_root : verse
+index verseroot : verse
 {
     source = verses_root_source
 }

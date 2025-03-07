@@ -166,18 +166,28 @@ class ImportScripture extends Command
     private function storeBooks(Translation $translation, array $bookInserts): void
     {
         foreach ($bookInserts as $bookInsert) {
-            $book = new Book([
-                'name' => $bookInsert['name'],
-                'abbrev' => $bookInsert['abbrev'],
-                'link' => $bookInsert['link'],
-                'old_testament' => $bookInsert['old_testament'],
-                'order' => $bookInsert['order'],
-                'usx_code' => $bookInsert['usx_code'],
-            ]);
-            $book->translation()->associate($translation);
-            $book->save();
-
-            Cache::add(
+            $book = Book::where('usx_code', $bookInsert['usx_code'])->where('translation_id', $translation->id)->first();
+            if ($book) {
+                $book->update([
+                    'name' => $bookInsert['name'],
+                    'abbrev' => $bookInsert['abbrev'],
+                    'link' => $bookInsert['link'],
+                    'old_testament' => $bookInsert['old_testament'],
+                    'order' => $bookInsert['order'],
+                ]);
+            } else {
+                $book = new Book([
+                    'name' => $bookInsert['name'],
+                    'abbrev' => $bookInsert['abbrev'],
+                    'link' => $bookInsert['link'],
+                    'old_testament' => $bookInsert['old_testament'],
+                    'order' => $bookInsert['order'],
+                    'usx_code' => $bookInsert['usx_code']
+                ]);
+                $book->translation()->associate($translation);
+                $book->save();
+            }
+            Cache::store("array")->add(
                 $this->getBookCacheKey(
                     $bookInsert['order'],
                     $translation->name
@@ -193,15 +203,15 @@ class ImportScripture extends Command
         $progressBar = $this->createProgressBar(count($verseInserts));
         $verseNumber = 1;
         foreach ($verseInserts as $verseInsert) {
-            $book = Cache::remember(
+            $book = Cache::store("array")->remember(
                 $this->getBookCacheKey($verseInsert['order'], $translation->name),
                 now()->addMinutes(10),
                 fn() => $this->fetchBook($verseInsert['order'], $translation)
             );
             $progressBar->setMessage(
                 "$verseNumber. vers mentése az adatbázisba... " .
-                "($translation->name/{$book->usx_code} " .
-                "{$verseInsert['chapter']}:{$verseInsert['numv']})"
+                    "($translation->name/{$book->usx_code} " .
+                    "{$verseInsert['chapter']}:{$verseInsert['numv']})"
             );
 
             if (!$book) {
@@ -261,7 +271,7 @@ class ImportScripture extends Command
         $verseSheetHeaders = $this->getHeaders($verseRowIterator);
 
         $dbToHeaderMap = $this->mapVerseSheetHeadersToDbColumns($verseSheetHeaders);
-    
+
         $pipes = [];
         if ($this->hunspellEnabled) {
             $hunspellProcess = proc_open(
@@ -270,7 +280,7 @@ class ImportScripture extends Command
                 $pipes,
                 null,
                 null
-            );                    
+            );
         }
 
         // if the stems file exists, unserialize it
@@ -282,9 +292,10 @@ class ImportScripture extends Command
                 Cache::store("array")->put("hunspell_{$word}", $stems, 60 * 60 * 24);
             }
         }
-        
+
         $verseInserts = $this->readVerseSheetInserts(
             $sheets[$transAbbrevToImport],
+            $pipes
         );
         $reader->close();
 
@@ -304,7 +315,7 @@ class ImportScripture extends Command
     {
         try {
             $filePath = $this->sourceDirectory . "/{$transAbbrev}";
-            $this->info("A fájl letöltése a $url címről...: $filePath");            
+            $this->info("A fájl letöltése a $url címről...: $filePath");
             if ($url == 's3') {
                 $file = Storage::disk('s3')->get("xlsx/{$transAbbrev}.xlsx");
                 file_put_contents($filePath, $file);
@@ -362,7 +373,7 @@ class ImportScripture extends Command
         return $sheets;
     }
 
-    private function readVerseSheetInserts(Sheet $versesSheet): array
+    private function readVerseSheetInserts(Sheet $versesSheet, array $pipes): array
     {
         $verseRowIterator = $versesSheet->getRowIterator();
         $verseSheetHeaders = $this->getHeaders($verseRowIterator);
@@ -371,9 +382,8 @@ class ImportScripture extends Command
         $progressBar = $this->createProgressBar(ROW_NUMBER_ESTIMATE);
         $rowNumber = 0;
         foreach ($verseRowIterator as $verseRow) {
-            $rowNumber++;
             if ($this->isVerseHeaderRow($verseRow)) {
-                $this->info("Sor átugrása: $rowNumber. (fejlécnek tűnik)");
+                $this->info("Sor átugrása.");
                 continue;
             }
             if (empty($verseRow->getCellAtIndex($verseSheetHeaders[$dbToHeaderMap[BOOKCODE]])->getValue())) {
@@ -384,15 +394,18 @@ class ImportScripture extends Command
                 $newVerseInsert = $this->toVerseInsert(
                     $verseRow,
                     $verseSheetHeaders,
-                    $originalBookCode
+                    $originalBookCode,
+                    $pipes
                 );
                 $verseInserts[$rowNumber] = $newVerseInsert;
                 $rowNumber++;
-                $progressBar->setMessage(
-                    "$rowNumber. sor" .
-                    " - {$newVerseInsert['original_book_code']}" .
-                    " - új szavak: {$this->newStems}"
-                );
+                if ($rowNumber % 100 == 0) {
+                    $progressBar->setMessage(
+                        "$rowNumber. sor" .
+                            " - {$newVerseInsert['original_book_code']}" .
+                            " - új szavak: {$this->newStems}"
+                    );    
+                }
                 if ($rowNumber > $progressBar->getMaxSteps()) {
                     $progressBar->setMaxSteps($rowNumber);
                 }
@@ -412,11 +425,8 @@ class ImportScripture extends Command
         Row $row,
         array $verseSheetHeaders,
         string $originalBookCode,
+        array $pipes
     ): array {
-        $pipes = [];
-        if ($this->hunspellEnabled) {
-            $hunspellProcess = $this->startHunspell($pipes);
-        }
 
         $result['original_book_code'] = $originalBookCode;
         $result['order'] = (int) substr($originalBookCode, 0, 3);
@@ -432,11 +442,6 @@ class ImportScripture extends Command
             $idoValue = $row->getCellAtIndex($verseSheetHeaders['ido'])->getValue();
             $result['ido'] = $idoValue;
         }
-
-        if ($this->hunspellEnabled) {
-            $this->closeHunspell($hunspellProcess, $pipes);
-        }
-
         return $result;
     }
 
@@ -535,8 +540,8 @@ class ImportScripture extends Command
     private function executeStemming(string $verse, array $pipes): string
     {
         // actually replace the tags with a space
-        $processedVerse = str_replace( '<', ' <', $verse ); 
-        $processedVerse = strip_tags($processedVerse); 
+        $processedVerse = str_replace('<', ' <', $verse);
+        $processedVerse = strip_tags($processedVerse);
         $processedVerse = preg_replace("/(,|:|\?|!|;|\.|„|”|»|«|\")/i", ' ', $processedVerse);
         $processedVerse = preg_replace(['/Í/i', '/Ú/i', '/Ő/i', '/Ó/i', '/Ü/i'], ['í', 'ú', 'ő', 'ó', 'ü'], $processedVerse);
 
@@ -559,7 +564,7 @@ class ImportScripture extends Command
                             if ($stem !== $word) {
                                 $stems = $stems->merge($stem);
                             }
-                        } 
+                        }
                     } else {
                         $cachedStems = $stems->unique()->toArray();
                         Cache::store("array")->put("hunspell_{$word}", $cachedStems, 60 * 60 * 24);
@@ -572,7 +577,7 @@ class ImportScripture extends Command
             }
         }
         foreach ($verseroots as $verseroot) {
-            $this->processedStems["_stems"][$verseroot] = true;   
+            $this->processedStems["_stems"][$verseroot] = true;
         }
         return join(' ', $verseroots->toArray());
     }
@@ -607,7 +612,7 @@ class ImportScripture extends Command
             App::abort(
                 500,
                 'Ennél a szövegforrásnál (' . $translationAbbrev . ') ' .
-                'nem tudjuk, hogy hol vannak a könyvek rövidítéseit feloldó oszlopok.'
+                    'nem tudjuk, hogy hol vannak a könyvek rövidítéseit feloldó oszlopok.'
             );
         }
     }

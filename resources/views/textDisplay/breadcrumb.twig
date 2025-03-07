@@ -9,7 +9,7 @@
             {% if bookRef is defined %}    
             <li class="breadcrumb-item"><a href="/{{ translation.abbrev }}/{{ book.abbrev }}">{{ book.name }}</a></li>
             {% set chapter = bookRef.chapterRanges[0].chapterRef.chapterId %}
-            <li class="breadcrumb-item"><a href="/{{ translation.abbrev }}/{{ book.abbrev }}{{ chapter }}">{{ chapter }}. {{ book.number != 121 ? "fejezet" : "zsoltár"}}</a></li>
+            <li class="breadcrumb-item"><a href="/{{ translation.abbrev }}/{{ book.abbrev }}{{ chapter }}">{{ chapter }}. {{ book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}</a></li>
             <li class="breadcrumb-item active">{{ bookRef.toString() }}</a></li>            
             {% else %}
                 <li class="breadcrumb-item active">{{ book.name }}</li>

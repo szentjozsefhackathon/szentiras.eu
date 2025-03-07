@@ -101,7 +101,7 @@ class CreateEmbeddingVectors extends Command
         $books = $this->bookService->getBooksForTranslation($translation);
         if ($this->option("book")) {
                 $usxCodes = array_map("trim", explode(",", $this->option("book")));
-            $books = $books->filter(fn($book) => in_array($book->number, $usxCodes));
+            $books = $books->filter(fn($book) => in_array($book->usx_code, $usxCodes));
         }
         $this->info("Generating vectors for {$books->count()} book(s).");
         foreach ($books as $book) {
@@ -117,7 +117,7 @@ class CreateEmbeddingVectors extends Command
         $this->progressBar->setMessage("Starting book {$book->abbrev}");
         $this->progressBar->start();
 
-        $this->currentBookFile = "vectors/" . $book->translation->abbrev . "_" . $book->number  . ".dat";
+        $this->currentBookFile = "vectors/" . $book->translation->abbrev . "_" . $book->usx_code  . ".dat";
         $this->currentBookFileData = [];
 
         if (!$this->option("scope") || $this->option("scope") == "range") {
@@ -363,7 +363,7 @@ class CreateEmbeddingVectors extends Command
         $embeddedExcerpt->verse = $verse;
         $embeddedExcerpt->to_chapter = $toChapter;
         $embeddedExcerpt->to_verse = $toVerse;
-        $embeddedExcerpt->usx_code = $book->number;
+        $embeddedExcerpt->usx_code = $book->usx_code;
         $embeddedExcerpt->translation_abbrev = $translation->abbrev;
         $embeddedExcerpt->scope = $scope;
         $embeddedExcerpt->gepi = $gepi;
@@ -379,7 +379,7 @@ class CreateEmbeddingVectors extends Command
             $serializedObject->gepi = $embeddedExcerpt->gepi;
             $serializedObject->scope = $embeddedExcerpt->scope->value;
             $serializedObject->translationAbbrev = $translation->abbrev;
-            $serializedObject->bookUsxCode = $book->number;
+            $serializedObject->bookUsxCode = $book->usx_code;
             $this->createFileData($chapterId, $serializedObject, md5($text));
         } else {
             $existingEmbedding = EmbeddedExcerpt::where("translation_abbrev", $translation->abbrev)->where("reference", $reference->toString())->first();

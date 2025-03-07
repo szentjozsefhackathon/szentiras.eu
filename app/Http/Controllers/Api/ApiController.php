@@ -188,7 +188,7 @@ class ApiController extends Controller
                 $bookData[] = [
                     'abbrev' => $book->abbrev,
                     'name' => $book->name,
-                    'number' => $book->number,
+                    'usx_code' => $book->usx_code,
                     'corpus' => $book->old_testament,
                     'chapterCount' => $this->bookService->getChapterCount($book, $translation)
                 ];

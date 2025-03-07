@@ -69,7 +69,7 @@
             {%- if versePart.newline %}<br>{% endif -%}
         {%- endif -%}                
     {%- endfor -%}
-    {% set medias = media[verse.book.number ~ "_" ~ verse.chapter ~ "_" ~ verse.numv] %}
+    {% set medias = media[verse.book.usx_code ~ "_" ~ verse.chapter ~ "_" ~ verse.numv] %}
     {% if  medias %}
         {% for image in medias %}
         <div class="d-flex justify-content-center illustration">

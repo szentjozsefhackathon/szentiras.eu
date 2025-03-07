@@ -63,7 +63,7 @@ class VerseRepositoryEloquent implements VerseRepository {
 
     public function getMaxNumv(Book $book, int $chapter, Translation $translation)
     {
-        return Verse::whereBelongsTo($translation)->where("book_number", $book->number)->where('chapter', $chapter)->max('numv');
+        return Verse::whereBelongsTo($translation)->where("usx_code", $book->usx_code)->where('chapter', $chapter)->max('numv');
     }
 
 

@@ -42,7 +42,7 @@ class QuickChapterSelector {
                 filteredBooks.forEach(book => {
                     const a = document.createElement('a');
                     a.href = '#';
-                    a.setAttribute('data-booknumber', book.number);
+                    a.setAttribute('data-usx', book.usx_code);
                     a.setAttribute('data-abbrev', book.abbrev);
                     a.classList.add('dropdown-item');
                     a.innerHTML = `<strong>${book.abbrev}</strong> <small>${book.name}</small>`;
@@ -52,8 +52,8 @@ class QuickChapterSelector {
                         while (chapterSelectorList.firstChild) {
                             chapterSelectorList.removeChild(chapterSelectorList.firstChild);
                         }
-                        const bookNumber = a.getAttribute("data-booknumber");
-                        const selectedBook = books.find(book => book.number == bookNumber);
+                        const usx = a.getAttribute("data-usx");
+                        const selectedBook = books.find(book => book.usx_code == usx);
                         bookSelectorButton.innerHTML = `<strong>${selectedBook.abbrev}</strong>`;
                         for (let i = 1; i <= selectedBook.chapterCount; i++) {
                             const a = document.createElement('a');

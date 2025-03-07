@@ -33,7 +33,7 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
                             <option value="old_testament" {{ 'old_testament' == form.bookNumber ? 'selected' }}>Ószövetség</option>
                             <option value="new_testament" {{ 'new_testament' == form.bookNumber ? 'selected' }}>Újszövetség</option>
                             {% for book in books %}
-                                <option value="{{ book.number }}" {{ book.number == form.bookNumber ? 'selected' }}>{{ book.name }}</option>
+                                <option value="{{ book.usx_code }}" {{ book.usx_code == form.bookNumber ? 'selected' }}>{{ book.name }}</option>
                             {% endfor %}
                         </select>
                     </div>

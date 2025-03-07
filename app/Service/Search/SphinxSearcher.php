@@ -59,7 +59,7 @@ class SphinxSearcher implements Searcher
         $this->sphinxClient = SphinxSearch::search($term);
         \Log::debug('searching', ['params' => $params, 'term' => $term]);
         $this->sphinxClient->setFieldWeights(['verse'=>100,'verse2'=>10,'verse3'=>1]);
-        $this->sphinxClient->setIndexWeights(['verse'=>2,'verse_root'=>1]);
+        $this->sphinxClient->setIndexWeights(['verse'=>2,'verseroot'=>1]);
         $this->sphinxClient->setMatchMode(SphinxClient::SPH_MATCH_EXTENDED);
         $this->sphinxClient->setSortMode(SphinxClient::SPH_SORT_EXTENDED, "@weight DESC, gepi ASC");
         
@@ -80,7 +80,7 @@ class SphinxSearcher implements Searcher
             $this->sphinxClient->filter('trans', $params->translationId);
         }
         if ($params->usxCodes !== null && count($params->usxCodes) > 0) {
-            $this->sphinxClient->filter('usx_code', $params->usxCodes);
+            $this->sphinxClient->filter('usx_code', array_keys($params->usxCodes));
         }
         $this->params = $params;
     }

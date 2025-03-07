@@ -22,11 +22,11 @@ class Book extends Eloquent {
     ];
 
     public function verses() {
-        return $this->hasMany('SzentirasHu\Data\Entity\Verse');
+        return $this->hasMany(Verse::class);
     }
 
     public function translation() {
-        return $this->belongsTo('SzentirasHu\Data\Entity\Translation');
+        return $this->belongsTo(Translation::class);
     }
 
 }

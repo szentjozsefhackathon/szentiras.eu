@@ -68,7 +68,7 @@ class SearchController extends Controller
         $refs = $this->searchService->findTranslatedRefs($term);
         if (!empty($refs)) {
             $labels = [];
-            foreach ($refs as $ref) {                
+            foreach ($refs as $ref) {
                 $labels[] = $ref->toString();
             }
             $concatenatedLabel = implode(';', $labels);
@@ -167,19 +167,17 @@ class SearchController extends Controller
         return $view;
     }
 
-    public static function extractBookUsxCodes($form)
+    public static function extractBookUsxCodes(?string $book)
     {
         $bookUsxCodes = [];
-        if ($form->book) {
-            if ($form->book == 'old_testament') {
-                $bookUsxCodes = UsxCodes::OLD_TESTAMENT;
-            } else if ($form->book == 'new_testament') {
-                $bookUsxCodes = UsxCodes::NEW_TESTAMENT;
-            } else if ($form->book == 'all') {
-                $bookUsxCodes = [];
-            } else {
-                $bookUsxCodes = [$form->book];
-            }
+        if ($book == 'old_testament') {
+            $bookUsxCodes = UsxCodes::OLD_TESTAMENT;
+        } else if ($book == 'new_testament') {
+            $bookUsxCodes = UsxCodes::NEW_TESTAMENT;
+        } else if ($book == 'all') {
+            $bookUsxCodes = [];
+        } else if ($book !== null) {
+            $bookUsxCodes = [$book];
         }
         return $bookUsxCodes;
     }
@@ -215,9 +213,9 @@ class SearchController extends Controller
         if ($form->translation) {
             $searchParams->translationId = $form->translation->id;
         }
-        $searchParams->usxCodes = $this->extractBookUsxCodes($form);
+        $searchParams->usxCodes = $this->extractBookUsxCodes($form->book);
         $searchParams->synonyms = true;
-        $searchParams->grouping = $form->grouping;        
+        $searchParams->grouping = $form->grouping;
         return $searchParams;
     }
 
@@ -229,5 +227,4 @@ class SearchController extends Controller
         $textToSearch = Request::get('texttosearch');
         return Redirect::to("/kereses/search?textToSearch={$textToSearch}");
     }
-
 }

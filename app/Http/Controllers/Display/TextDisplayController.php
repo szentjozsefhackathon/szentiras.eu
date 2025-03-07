@@ -177,11 +177,11 @@ class TextDisplayController extends Controller
             $hasMedia = false;
             foreach ($verseContainers as $verseContainer) {
                 foreach ($verseContainer->getParsedVerses() as $verseData) {
-                    $key = "{$verseData->book->number}_{$verseData->chapter}";                    
+                    $key = "{$verseData->book->usx_code}_{$verseData->chapter}";                    
                     if (array_key_exists($key, $chapterMedia)) {
                         continue;
                     }
-                    $hasMedia = Media::where('usx_code', $verseData->book->number)
+                    $hasMedia = Media::where('usx_code', $verseData->book->usx_code)
                         ->where('chapter', $verseData->chapter)
                         ->exists();
                     $chapterMedia[$key] = $hasMedia;
@@ -193,9 +193,9 @@ class TextDisplayController extends Controller
                 $mediaVerses = [];
                 foreach ($verseContainers as $verseContainer) {
                     foreach ($verseContainer->getParsedVerses() as $verseData) {
-                        $key = "{$verseData->book->number}_{$verseData->chapter}";
+                        $key = "{$verseData->book->usx_code}_{$verseData->chapter}";
                         if (array_key_exists($key, $chapterMedia) && $chapterMedia[$key] === true) {
-                            $media = Media::where('usx_code', $verseData->book->number)
+                            $media = Media::where('usx_code', $verseData->book->usx_code)
                                 ->where('chapter', $verseData->chapter)
                                 ->get();
                             if (!$media->isEmpty()) {
@@ -253,7 +253,7 @@ class TextDisplayController extends Controller
                         $allBooksExistInTranslation = true;
                         foreach ($canonicalRef->bookRefs as $bookRef) {
                             $book = $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translation->id);
-                            if (!$this->getAllBookTranslations($book->number)->contains($otherTranslation->id)) {
+                            if (!$this->getAllBookTranslations($book->usx_code)->contains($otherTranslation->id)) {
                                 $allBooksExistInTranslation = false;
                                 break;
                             }
@@ -373,7 +373,7 @@ class TextDisplayController extends Controller
             }
         }
         $allTranslations = $this->translationRepository->getAllOrderedByDenom();
-        $bookTranslations = $this->getAllBookTranslations($book->number);
+        $bookTranslations = $this->getAllBookTranslations($book->usx_code);
         $bookViewArray = [
             'translation' => $translation,
             'reference' => $translatedRef,
