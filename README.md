@@ -1,4 +1,4 @@
-Régi Szentírás.hu
+Szentírás.eu
 ========
 
 > 2025 feburárjától intenzív fejlesztések kezdődtek itt, mivel **2025 januárjában átvette ennek a kódnak a helyét a [szentiras.hu](http://szentiras.hu) oldalon egy új (zárt) kód!**
