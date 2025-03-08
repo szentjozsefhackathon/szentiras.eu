@@ -50,18 +50,18 @@ class TextService
      * @param $translation
      * @return VerseContainer[]
      */
-    public function getTranslatedVerses($canonicalRef, $translationId, $verseTypes = [])
+    public function getTranslatedVerses(CanonicalReference $canonicalRef, Translation $translation, $verseTypes = [])
     {
         // replace spaces with underscores
-        $cacheKey = "getTranslatedVerses_".str_replace(' ','_',$canonicalRef->toString())."_".$translationId;
+        $cacheKey = "getTranslatedVerses_".str_replace(' ','_',$canonicalRef->toString())."_".$translation->id;
         // TODO cache if verse types are specified as well
         if (empty($verseTypes) && Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
         }
-        $translatedRef = $this->referenceService->translateReference($canonicalRef, $translationId);
+        $translatedRef = $this->referenceService->translateReference($canonicalRef, $translation->id);
         $verseContainers = [];
         foreach ($translatedRef->bookRefs as $bookRef) {
-            $book = $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translationId);
+            $book = $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translation);
             if ($book) {
                 $verseContainer = new VerseContainer($book, $bookRef);
                 if (!empty($bookRef->chapterRanges)) {
@@ -109,7 +109,7 @@ class TextService
         if (is_string($canonicalRef)) {
             $canonicalRef = CanonicalReference::fromString($canonicalRef);
         }
-        $verseContainers = $this->getTranslatedVerses($canonicalRef, $translation->id);
+        $verseContainers = $this->getTranslatedVerses($canonicalRef, $translation);
         $text = '';
         foreach ($verseContainers as $verseContainer) {
             $verses = $verseContainer->getParsedVerses();

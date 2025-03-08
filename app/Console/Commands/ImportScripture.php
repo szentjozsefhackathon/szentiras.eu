@@ -145,13 +145,13 @@ class ImportScripture extends Command
         $this->info("Adatok mentése az adatbázisba...");
         Artisan::call('down');
         DB::transaction(function () use ($translation, $bookInserts, $verseInserts): void {
-            $this->info("Régi könyvek törlése...");
-            Book::where('translation_id', $translation->id)->delete();
-
             $this->info("Régi versek törlése...");
             Verse::whereHas('book', function ($query) use ($translation) {
                 $query->where('translation_id', $translation->id);
             })->delete();
+
+            $this->info("Régi könyvek törlése...");
+            Book::where('translation_id', $translation->id)->delete();
 
             $this->info("Könyvek tárolása...");
             $this->storeBooks($translation, $bookInserts);
@@ -200,6 +200,7 @@ class ImportScripture extends Command
 
     private function storeVerses(Translation $translation, array $verseInserts): void
     {
+        $existingUsxCodes = [];
         $progressBar = $this->createProgressBar(count($verseInserts));
         $verseNumber = 1;
         foreach ($verseInserts as $verseInsert) {
@@ -218,6 +219,7 @@ class ImportScripture extends Command
                 App::abort(500, "Hiányzó Book az adatbázisban: {$translation->name}/{$verseInsert['order']}.");
             }
 
+            $existingUsxCodes[$book->usx_code] = true;
             $syntheticCode = $book->usx_code . "_" . $verseInsert['chapter'] . '_' . $verseInsert['numv'];
             $verse = new Verse([
                 'usx_code' => $book->usx_code,
@@ -235,6 +237,10 @@ class ImportScripture extends Command
             $progressBar->advance();
             $verseNumber++;
         }
+        // delete all books from this translation which are not in the existingUsxCodes
+        Book::where('translation_id', $translation->id)
+            ->whereNotIn('usx_code', array_keys($existingUsxCodes))
+            ->delete();
         $progressBar->finish();
     }
 
@@ -469,7 +475,9 @@ class ImportScripture extends Command
                 $bookRow,
                 $translationAbbrev
             );
-            $bookInserts[] = $newBookInsert;
+            if (!empty($newBookInsert)) {
+                $bookInserts[] = $newBookInsert;
+            }
         }
 
         return $bookInserts;
@@ -481,6 +489,9 @@ class ImportScripture extends Command
     ): array {
         $bookOrder = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKCODE])->getValue();
         $bookAbbrev = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKABBREV])->getValue();
+        if ($bookAbbrev == '-') {
+            return [];
+        }
         $bookName = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKNAME])->getValue();
         $bookUsx = $this->bookAbbrevToUsxCode($bookAbbrev, $translationAbbrev);
         $this->info("{$bookOrder}. könyv: {$bookAbbrev} (usx: {$bookUsx})");

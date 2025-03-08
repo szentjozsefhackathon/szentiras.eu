@@ -53,7 +53,7 @@ class PdfController extends Controller {
     {
         $options = new PdfOptions(request());
         $ref = CanonicalReference::fromString($refString);
-        $verses = $this->textService->getTranslatedVerses($ref, $translationId);
+        $verses = $this->textService->getTranslatedVerses($ref, $this->translationRepository->getById($translationId));
         return view('textDisplay.pdf.print' , ['verses' => $verses, 'options' => $options, 'reference' => $ref]);
         }
 

@@ -98,14 +98,14 @@ class SemanticSearchService {
                 $topVerseInChapter = $topVerseInChapter->first();
                 if (!empty($topVerseInChapter)) {
                     $topVerseTranslation = $this->translationService->getByAbbreviation($topVerseInChapter->translation_abbrev);                    
-                    $topVerseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($topVerseInChapter->reference, $topVerseTranslation->id), $topVerseTranslation->id);                
+                    $topVerseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($topVerseInChapter->reference, $topVerseTranslation->id), $topVerseTranslation);                
                 }
             }
             $result = new SemanticSearchResult;
             $result->embeddedExcerpt = $neighbor;
             $result->distance = $neighbor->neighbor_distance;
             $neighborTranslation = $this->translationService->getByAbbreviation($neighbor->translation_abbrev);
-            $result->verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($neighbor->reference, $neighborTranslation->id), $neighborTranslation->id);
+            $result->verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($neighbor->reference, $neighborTranslation->id), $neighborTranslation);
             $result->quality=$this->getQualityScore($neighbor->neighbor_distance, $metric, $scope);
             $highlightedGepis = [];
             foreach ($topVerseContainers as $verseContainer) {

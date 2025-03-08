@@ -39,7 +39,7 @@ class TranslationRepositoryEloquent implements TranslationRepository
 
     public function getBooks($translation)
     {
-        return $translation->books()->orderBy('id')->get();
+        return $translation->books()->orderBy('order')->get();
     }
 
     public function getByAbbrev($abbrev)

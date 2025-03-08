@@ -166,7 +166,7 @@ class CreateEmbeddingVectors extends Command
                 do {
                     $reference = "{$book->abbrev} $chapter,$verse";
                     $canonicalReference = CanonicalReference::fromString($reference, $book->translation->id);
-                    $verseContainers = $this->textService->getTranslatedVerses($canonicalReference, $book->translation->id);
+                    $verseContainers = $this->textService->getTranslatedVerses($canonicalReference, $book->translation);
                     $gepi = array_pop($verseContainers[0]->rawVerses)[0]->gepi ?? null;
                     $text = $this->textService->getPureText($canonicalReference, $book->translation);
                     $this->embedExcerpt($canonicalReference, $text, EmbeddedExcerptScope::Verse, $book->translation, $book, $chapter, $verse, null, null, $gepi);

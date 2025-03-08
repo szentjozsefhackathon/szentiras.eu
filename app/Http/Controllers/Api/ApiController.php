@@ -119,7 +119,7 @@ class ApiController extends Controller
             $translation = $this->translationService->getDefaultTranslation();
         }
         $canonicalRef = CanonicalReference::fromString($refString);
-        $verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($refString), $translation->id);
+        $verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($refString), $translation);
         $verses = [];
         foreach ($verseContainers as $verseContainer) {
             foreach ($verseContainer->getParsedVerses() as $verse) {
@@ -166,18 +166,6 @@ class ApiController extends Controller
                 "versek" => $verseDataList
             ]
         ])->setCallback(Request::input('callback'));
-    }
-
-    public function getLectures()
-    {
-        $lectureReferences = $this->lectureSelector->getLectures();
-        $formattedLectures = [];
-        foreach ($lectureReferences as $lectureReference) {
-            $text = $this->textService->getPureText($lectureReference->ref, $lectureReference->translationId);
-            $formattedLecture = ['text' => $text, 'ref' => $lectureReference->ref];
-            $formattedLectures[] = $formattedLecture;
-        }
-        return $this->formatJsonResponse(['lectures' => $formattedLectures]);
     }
 
     public function getBooks($translationAbbrev = false)

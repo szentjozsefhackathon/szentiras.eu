@@ -134,7 +134,7 @@ class SearchController extends Controller
         $translatedRefs = $this->searchService->findTranslatedRefs($form->textToSearch, $form->translation);
         if (!empty($translatedRefs)) {
             $translation = $form->translation ? $form->translation : $this->translationService->getDefaultTranslation();
-            $verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($form->textToSearch), $translation->id);
+            $verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($form->textToSearch), $translation);
             $labels = [];
             foreach ($translatedRefs as $ref) {
                 $labels[] = $ref->toString();

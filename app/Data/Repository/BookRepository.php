@@ -4,6 +4,7 @@ namespace SzentirasHu\Data\Repository;
 
 
 use SzentirasHu\Data\Entity\Book;
+use SzentirasHu\Data\Entity\Translation;
 
 interface BookRepository {
 
@@ -13,15 +14,15 @@ interface BookRepository {
      * @param $bookAbbrev
      * @return Book The first book of the given abbrev.
      */
-    public function getByAbbrev($bookAbbrev, $translationId = null);
+    public function getByAbbrev(string $bookAbbrev, ?Translation $translation);
 
     /**
      * @param string $abbrev
      * @param int $translationId
      * @return Book
      */
-    public function getByAbbrevForTranslation($abbrev, $translationId);
+    public function getByAbbrevForTranslation($abbrev, Translation $translation);
 
-    public function getByUsxCodeForTranslation($usxCode, $translationId);
+    public function getByUsxCodeForTranslation(string $usxCode, Translation $translation);
 
 }

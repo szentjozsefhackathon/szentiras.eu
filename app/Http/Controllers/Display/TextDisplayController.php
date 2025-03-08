@@ -83,7 +83,7 @@ class TextDisplayController extends Controller
                 $result = [];
                 foreach ($books as $book) {
                     $canonicalRef = CanonicalReference::fromString("{$book->abbrev}", $translation->id);
-                    $verses = $this->textService->getTranslatedVerses($canonicalRef, $translation->id, Verse::getHeadingTypes($translation->id));
+                    $verses = $this->textService->getTranslatedVerses($canonicalRef, $translation, Verse::getHeadingTypes($translation->id));
                     $result[$book->abbrev] = $this->getBookViewArray($book, $verses, $translation, $canonicalRef, $canonicalRef, false);
                 }
                 return $result;
@@ -109,7 +109,7 @@ class TextDisplayController extends Controller
     {
         $translation = $this->translationRepository->getByAbbrev($translationAbbrev ? $translationAbbrev : Config::get('settings.defaultTranslationAbbrev'));
         $canonicalRef = CanonicalReference::fromString($reference, $translation->id);
-        $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation->id);
+        $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation);
         $view = view('textDisplay.xrefText', ['verseContainers' => $verseContainers, 'translation' => $translation])->render();
         return response()->json($view);
     }
@@ -125,7 +125,7 @@ class TextDisplayController extends Controller
             $chapterLinks = $canonicalRef->isOneChapter() ?
                 $this->createChapterLinks($canonicalRef, $translation)
                 : false;
-            $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation->id);
+            $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation);
             if (sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {
                 abort(404);
             }
@@ -167,7 +167,7 @@ class TextDisplayController extends Controller
                     $chapterReferenceString .= $bookId;
                     $chapterReferenceString .= implode(';', $chapters);
                 }
-                $fullContextVerseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($chapterReferenceString, $translation->id), $translation->id);
+                $fullContextVerseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($chapterReferenceString, $translation->id), $translation);
                 $highlightedGepis = [];
                 foreach ($verseContainers as $verseContainer) {
                     $highlightedGepis = array_merge($highlightedGepis, array_map(fn($k) => "{$k}", array_keys($verseContainer->rawVerses)));
@@ -252,7 +252,7 @@ class TextDisplayController extends Controller
                     function ($otherTranslation) use ($canonicalRef, $translation) {
                         $allBooksExistInTranslation = true;
                         foreach ($canonicalRef->bookRefs as $bookRef) {
-                            $book = $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translation->id);
+                            $book = $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translation);
                             if (!$this->getAllBookTranslations($book->usx_code)->contains($otherTranslation->id)) {
                                 $allBooksExistInTranslation = false;
                                 break;
@@ -311,9 +311,9 @@ class TextDisplayController extends Controller
     {
         $translation = $this->translationRepository->getByAbbrev($translationAbbrev ? $translationAbbrev : Config::get('settings.defaultTranslationAbbrev'));
         $translatedRef = $this->referenceService->translateReference($canonicalRef, $translation->id);
-        $book = $this->bookRepository->getByAbbrevForTranslation($translatedRef->bookRefs[0]->bookId, $translation->id);
+        $book = $this->bookRepository->getByAbbrevForTranslation($translatedRef->bookRefs[0]->bookId, $translation);
         if ($book) {
-            return View::make('textDisplay.book', $this->getBookViewArray($book, $this->textService->getTranslatedVerses($canonicalRef, $translation->id), $translation, $canonicalRef, $translatedRef));
+            return View::make('textDisplay.book', $this->getBookViewArray($book, $this->textService->getTranslatedVerses($canonicalRef, $translation), $translation, $canonicalRef, $translatedRef));
         } else {
             abort(404);
         }
@@ -416,7 +416,7 @@ class TextDisplayController extends Controller
     private function createChapterLinks(CanonicalReference $canonicalReference, Translation $translation)
     {
         $currentChapter = $canonicalReference->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
-        $chapterCount = $this->bookService->getChapterCount($this->bookRepository->getByAbbrevForTranslation($canonicalReference->bookRefs[0]->bookId, $translation->id), $translation);
+        $chapterCount = $this->bookService->getChapterCount($this->bookRepository->getByAbbrevForTranslation($canonicalReference->bookRefs[0]->bookId, $translation), $translation);
         list($prevRef, $nextRef) = $this->referenceService->getPrevNextChapter($canonicalReference, $translation->id);
         $prevLink = $prevRef ?
             $this->referenceService->getCanonicalUrl($prevRef, $translation->id) :
@@ -442,7 +442,7 @@ class TextDisplayController extends Controller
                     return $this->bookRepository
                         ->getByUsxCodeForTranslation(
                             $usxCode,
-                            $translation->id
+                            $translation
                         );
                 }
             );

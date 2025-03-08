@@ -9,6 +9,7 @@ use Eloquent;
  * @property string abbrev
  * @property int id
  * @property  int number
+ * @property string usx_code
  * @author berti
  */
 class Book extends Eloquent {

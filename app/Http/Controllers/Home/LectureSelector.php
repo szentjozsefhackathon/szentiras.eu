@@ -45,38 +45,6 @@ class LectureSelector
         $this->textService = $textService;
     }
 
-    public function getLectures()
-    {
-        $resultLectures = [];
-        $referenceString = $this->lectureDownloader->getReferenceString();
-        if (!$referenceString) {
-            return $resultLectures;
-        } else {
-            $referenceString = preg_replace('/\s+vagy\s+/', '; ', $referenceString);
-        }
-
-        $translationId = \Config::get('settings.defaultTranslationId');
-        $ref = CanonicalReference::fromString($referenceString);
-        $bookRefs = $this->referenceService->translateReference($ref, $translationId)->bookRefs;
-
-        foreach ($bookRefs as $bookRef) {
-            // extract and convert Psalm numbering
-            if (preg_match('/Zs.*/', $bookRef->bookId, $matches)) {
-                $vulgataNum = $bookRef->chapterRanges[0]->chapterRef->chapterId;
-                $bookRef->chapterRanges[0]->chapterRef->chapterId = $this->getHebrewPsalmNum($vulgataNum);
-            }
-            $lecture = new Lecture();
-            $lecture->ref = $bookRef->toString();
-            $lecture->teaser = $this->textService->getTeaser($this->textService->getTranslatedVerses(CanonicalReference::fromString($bookRef->toString()), $translationId));
-            $lecture->link = str_replace(' ', '', $lecture->ref);
-            $lecture->translationId = $translationId;
-            $lecture->bookAbbrev = $bookRef->bookId;
-
-            $resultLectures[] = $lecture;
-        }
-        return $resultLectures;
-    }
-
     private function getHebrewPsalmNum($vulgataNum)
     {
         // see http://en.wikipedia.org/wiki/Psalms#Numbering

@@ -320,9 +320,12 @@ class SearchService {
         try {
             $ref = CanonicalReference::fromString($refToSearch);
             $storedBookRefs = $this->referenceService->getExistingBookRefs($ref);
+            if ($translation === null) {
+                $translation = $this->translationService->getDefaultTranslation();
+            }
             $translatedBookRefs = [];
             foreach ($storedBookRefs as $storedBookRef) {
-                $bookRef = $this->referenceService->translateBookRef($storedBookRef, $translation === null ? null : $translation->id);
+                $bookRef = $this->referenceService->translateBookRef($storedBookRef, $translation->id);
                 if ($bookRef !== null) {
                     $translatedBookRefs[] = $bookRef;
                 }

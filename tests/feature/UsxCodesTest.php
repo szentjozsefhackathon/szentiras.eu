@@ -24,9 +24,9 @@ class UsxCodesTest extends TestCase
     {
         $oldTestamentBooks = UsxCodes::oldTestamentUsx();
         $this->assertCount(
-            47,
+            54,
             $oldTestamentBooks,
-            "The Old Testament books count should be 47."
+            "The Old Testament books count should be 54."
         );
     }
 
@@ -34,9 +34,9 @@ class UsxCodesTest extends TestCase
     {
         $allUsx = UsxCodes::allUsx();
         $this->assertCount(
-            74,
+            81,
             $allUsx,
-            "All Holy Scripture books count should be 74."
+            "All Holy Scripture books count should be 81."
         );
     }
 

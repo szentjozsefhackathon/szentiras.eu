@@ -28,8 +28,10 @@ class VerseRepositoryEloquent implements VerseRepository {
             $verses->whereIn('tip', $types);
         }
         return $verses
-            ->orderBy('id')
-            ->get();
+        ->orderBy('chapter')
+        ->orderBy('numv')
+        ->orderBy('gepi')
+        ->get();
         
 
     }
@@ -40,7 +42,7 @@ class VerseRepositoryEloquent implements VerseRepository {
             ->whereIn('numv', ['1', '2'])
             ->orderBy('chapter')
             ->orderBy('numv')
-            ->orderBy('id')
+            ->orderBy('gepi')
             ->get();
     }
 
