@@ -14,5 +14,7 @@ class FullTextSearchParams {
     public $limit;
     public $grouping;
     public $synonyms;
+    public $groupGepi;
+    public $countOnly;
 
 } 

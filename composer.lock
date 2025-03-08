@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b2d9225e5afb7f52c297ba5049a5733",
+    "content-hash": "f250709f5bd0433db78372c41496a94d",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.1",
+            "version": "3.342.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "8a4ba50aa12ce509d0e598a7fd65d6b9309c39dd"
+                "reference": "ef66e0fdba9e7f786a7b1e522f847d76d0320e89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8a4ba50aa12ce509d0e598a7fd65d6b9309c39dd",
-                "reference": "8a4ba50aa12ce509d0e598a7fd65d6b9309c39dd",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ef66e0fdba9e7f786a7b1e522f847d76d0320e89",
+                "reference": "ef66e0fdba9e7f786a7b1e522f847d76d0320e89",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.1"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.2"
             },
-            "time": "2025-03-06T19:17:36+00:00"
+            "time": "2025-03-07T19:12:43+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -1326,61 +1326,6 @@
                 }
             ],
             "time": "2023-10-12T05:21:21+00:00"
-        },
-        {
-            "name": "gigablah/sphinxphp",
-            "version": "2.0.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/gigablah/sphinxphp.git",
-                "reference": "6d5e97fdd33c1129ca372203d1330827c1cbc46c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/gigablah/sphinxphp/zipball/6d5e97fdd33c1129ca372203d1330827c1cbc46c",
-                "reference": "6d5e97fdd33c1129ca372203d1330827c1cbc46c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*",
-                "satooshi/php-coveralls": "dev-master"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Sphinx": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Andrew Aksyonoff",
-                    "homepage": "http://sphinxsearch.com/"
-                }
-            ],
-            "description": "Sphinx Search PHP API",
-            "homepage": "http://sphinxsearch.com/",
-            "keywords": [
-                "api",
-                "search",
-                "sphinx"
-            ],
-            "support": {
-                "issues": "https://github.com/gigablah/sphinxphp/issues",
-                "source": "https://github.com/gigablah/sphinxphp/tree/2.0.x"
-            },
-            "time": "2013-08-22T08:05:44+00:00"
         },
         {
             "name": "google/apiclient",
@@ -10838,5 +10783,5 @@
         "php": "^8.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }

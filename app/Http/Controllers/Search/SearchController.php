@@ -177,7 +177,7 @@ class SearchController extends Controller
         } else if ($book == 'all') {
             $bookUsxCodes = [];
         } else if ($book !== null) {
-            $bookUsxCodes = [$book];
+            $bookUsxCodes = [$book => true];
         }
         return $bookUsxCodes;
     }
@@ -192,6 +192,7 @@ class SearchController extends Controller
         $translationHits = [];
         foreach ($this->translationRepository->getAll() as $translation) {
             $params = clone $searchParams;
+            $params->countOnly = true;
             $params->translationId = $translation->id;
             $searchHits = $this->searchService->getSimpleResults($params);
             if ($searchHits) {

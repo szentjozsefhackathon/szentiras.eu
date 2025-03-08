@@ -49,6 +49,7 @@ class SearchService {
         $searchParams->text = $term;
         $searchParams->limit = 10;
         $searchParams->grouping = 'verse';
+        $searchParams->groupGepi = true;
         $searchParams->synonyms = true;
         $sphinxSearcher = $this->searcherFactory->createSearcherFor($searchParams);
         $sphinxResults = $sphinxSearcher->get();
@@ -112,7 +113,7 @@ class SearchService {
         $results = [];
         $translations = [];
         foreach($sphinxResults->verses as $id => $verse) {
-            $key = $verse['attrs']['gepi'];
+            $key = $verse['gepi'];
             switch ($params->grouping) {
                 case 'book':
                     $key = substr($key, 0, 3);
@@ -129,10 +130,10 @@ class SearchService {
             if(!array_key_exists($key, $results)) {
                 $results[$key] = ['weights' => [], 'translations' => [$defaultTranslation->abbrev => [] ] ];                
             }
-            if(!array_key_exists($verse['attrs']['trans'], $translations)) {
-                $translations[$verse['attrs']['trans']] = $this->translationRepository->getById($verse['attrs']['trans']); 
+            if(!array_key_exists($verse['trans'], $translations)) {
+                $translations[$verse['trans']] = $this->translationRepository->getById($verse['trans']); 
             }          
-            $trans = $translations[$verse['attrs']['trans']];
+            $trans = $translations[$verse['trans']];
             if(!array_key_exists($trans['abbrev'], $results[$key]['translations']) or $results[$key]['translations'][$trans['abbrev']] == array() ) {
                 $results[$key]['translations'][$trans['abbrev']] = [                       
                        'verseIds' => [],
@@ -141,8 +142,7 @@ class SearchService {
                        'book' => $sortedVerses[$id]->book
                     ];                
             }
-            //echo "<pre>"; print_r($sortedVerses[$id]); exit;
-            $results[$key]['weights'][] = $verse['weight'];
+            $results[$key]['weights'][] = $verse['weight()'];
             $results[$key]['translations'][$trans['abbrev']]['verseIds'][] = $id;
             $results[$key]['translations'][$trans['abbrev']]['verses'][] = $sortedVerses[$id];
         }

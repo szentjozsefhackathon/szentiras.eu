@@ -13,10 +13,6 @@ return [
     'sphinxIndexerTrigger' => env("APP_SPHINX_INDEXER_TRIGGER", "/opt/sphinx/trigger/indexer"),
     'sphinxHost' => env('SPHINX_HOST', 'sphinx'),
     'sphinxPort' => env('SPHINX_PORT', 9312),
-    'sphinxIndexes' => [
-        'name' => ['verse', 'verseroot'],
-        'mapping' => false
-    ],
     'googleAppName' => 'szentiras-hu',
     'googleApiKey' => env('GOOGLE_API_KEY'),
     'googleCalendarId' => 'katolikus.hu@gmail.com',
