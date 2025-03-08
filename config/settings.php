@@ -12,7 +12,7 @@ return [
     'logLevel' => env("LOG_LEVEL", 'debug'),
     'sphinxIndexerTrigger' => env("APP_SPHINX_INDEXER_TRIGGER", "/opt/sphinx/trigger/indexer"),
     'sphinxHost' => env('SPHINX_HOST', 'sphinx'),
-    'sphinxPort' => env('SPHINX_PORT', 9312),
+    'sphinxPort' => env('SPHINX_PORT', 9306),
     'googleAppName' => 'szentiras-hu',
     'googleApiKey' => env('GOOGLE_API_KEY'),
     'googleCalendarId' => 'katolikus.hu@gmail.com',
