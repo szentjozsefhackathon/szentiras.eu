@@ -223,7 +223,6 @@ class ImportScripture extends Command
                 'usx_code' => $book->usx_code,
                 BOOKCODE => $syntheticCode,
                 'verse' => $verseInsert['verse'],
-                // 'order' => $verseInsert['order'], -- we don't have this yet
                 'chapter' => $verseInsert['chapter'],
                 'numv' => $verseInsert['numv'],
                 'tip' => $verseInsert['tip'],

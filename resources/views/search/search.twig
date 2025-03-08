@@ -69,7 +69,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     {% endif %}
 
     <div class="mb-2">
-    {% for translationHit in translationHits %}
+    {% for translationHit in translationHits|filter(translationHit => translationHit.hitCount > 0) %}
         <form class="translationHitForm" action="/kereses/search?textToSearch={{ form.textToSearch }}&translation={{ translationHit.translation.id }}&book={{ form.book }}&grouping={{ form.grouping }}" method="post">
             {{ csrf_field() }}
         <a 

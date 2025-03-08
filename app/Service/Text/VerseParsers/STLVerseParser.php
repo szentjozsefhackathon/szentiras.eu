@@ -5,6 +5,8 @@ namespace SzentirasHu\Service\Text\VerseParsers;
 use SzentirasHu\Data\Entity\Verse;
 use SzentirasHu\Http\Controllers\Display\VerseParsers\Footnote;
 use SzentirasHu\Http\Controllers\Display\VerseParsers\VerseData;
+use SzentirasHu\Http\Controllers\Display\VerseParsers\VersePart;
+use SzentirasHu\Http\Controllers\Display\VerseParsers\VersePartType;
 use SzentirasHu\Http\Controllers\Display\VerseParsers\Xref;
 
 class STLVerseParser extends DefaultVerseParser
@@ -35,7 +37,8 @@ class STLVerseParser extends DefaultVerseParser
             }
             $purified = preg_replace('/\s*' . self::FOOTNOTE_REGEXP . '/u', '', $purified);
         }
-        $verseData->simpleText .= $purified;
+        $verseData->verseParts[] = new VersePart($verseData, $purified, VersePartType::SIMPLE_TEXT, count($verseData->verseParts));
+
     }
 
     protected function parseFootnoteVerse(Verse $rawVerse, VerseData $verse)

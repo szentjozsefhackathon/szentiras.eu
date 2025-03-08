@@ -43,7 +43,7 @@ return new class extends Migration {
         });
 
         Schema::table('translations', function (Blueprint $table): void {
-            $table->dropUnique('abbrev');
+            $table->dropUnique('translations_abbrev_unique');
         });
 
         Schema::table('books', function (Blueprint $table): void {
@@ -52,8 +52,8 @@ return new class extends Migration {
         });
 
         Schema::table('tdverse', function (Blueprint $table): void {
-            $table->integer('book_number');
-            $table->bigInteger('gepi')->change();
+            $table->integer('book_number')->nullable();
+            //$table->bigInteger('gepi')->nullable()->change();
         });
     }
 

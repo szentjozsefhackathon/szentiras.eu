@@ -352,7 +352,7 @@ class CreateEmbeddingVectors extends Command
         }
     }
 
-    private function saveEmbeddingExcerpt(int $chapterId, string $text, CanonicalReference $reference, $embedding, EmbeddedExcerptScope $scope, Translation $translation, Book $book, int $chapter, int $verse = null, int $toChapter = null, int $toVerse = null, int $gepi = null)
+    private function saveEmbeddingExcerpt(int $chapterId, string $text, CanonicalReference $reference, $embedding, EmbeddedExcerptScope $scope, Translation $translation, Book $book, int $chapter, ?int $verse = null, ?int $toChapter = null, ?int $toVerse = null, ?string $gepi = null)
     {
         $embeddedExcerpt = new EmbeddedExcerpt();
         $embeddedExcerpt->hash = md5($text);
@@ -450,7 +450,7 @@ class SerializedEmbeddedExcerpt
     public ?int $verse;
     public ?int $to_chapter;
     public ?int $to_verse;
-    public ?int $gepi;
+    public ?string $gepi;
     public string $scope;
     public string $translationAbbrev;
     public string $bookUsxCode;

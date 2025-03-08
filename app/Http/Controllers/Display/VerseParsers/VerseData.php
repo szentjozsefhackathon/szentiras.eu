@@ -21,7 +21,6 @@ class VerseData
      */
     public $xrefs = [];
     public $footnotes = [];
-    public $simpleText;
     public $gepi;
     public Book $book;
     public $poemLines;

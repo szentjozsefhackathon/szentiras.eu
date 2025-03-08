@@ -24,9 +24,9 @@ class UsxCodesTest extends TestCase
     {
         $oldTestamentBooks = UsxCodes::oldTestamentUsx();
         $this->assertCount(
-            46,
+            47,
             $oldTestamentBooks,
-            "The Old Testament books count should be 46."
+            "The Old Testament books count should be 47."
         );
     }
 
@@ -34,9 +34,9 @@ class UsxCodesTest extends TestCase
     {
         $allUsx = UsxCodes::allUsx();
         $this->assertCount(
-            73,
+            74,
             $allUsx,
-            "All Holy Scripture books count should be 73."
+            "All Holy Scripture books count should be 74."
         );
     }
 
@@ -49,6 +49,9 @@ class UsxCodesTest extends TestCase
         $this->checkReturnedkUsxCode('RUF', 'Sir', 'LAM');
         $this->checkReturnedkUsxCode('RUF', 'Sirák', null);
         $this->checkReturnedkUsxCode('SZIT', 'Sir', 'SIR');
+        $this->checkReturnedkUsxCode('STL', 'Sir', 'SIR');
+        $this->checkReturnedkUsxCode('default', 'Zsuzs', 'SUS');
+        $this->checkReturnedkUsxCode('STL', 'Zsuzs', 'SUS');
         $this->checkReturnedkUsxCode('default', 'Jud', 'JUD');
         $this->checkReturnedkUsxCode('default', 'Júd', 'JUD');
         $this->checkReturnedkUsxCode('default', 'Judit', 'JDT');

@@ -64,6 +64,23 @@ class UsxCodes
                 '2Makk',
             ],
         ],
+        '3MA' => [
+            'default' => [
+                '3Mak',
+                '3Makk',
+            ],
+        ],
+        '4MA' => [
+            'default' => [
+                '4Mak',
+                '4Makk',
+            ],
+        ],
+        'LJE' => [
+            'default' => [
+              'JerLev'
+            ]
+        ],
         'EXO' => [
             'default' => [
                 '2Moz',
@@ -143,6 +160,11 @@ class UsxCodes
                 'Bár',
             ],
         ],
+        'BEL' => [
+            'default' => [
+                'Bél', '(Bél)', 'BelTh'
+            ],
+        ],
         'JDG' => [
             'default' => [
                 'Bir',
@@ -150,6 +172,7 @@ class UsxCodes
                 'Birak',
                 'Birák',
                 'Bírák',
+                'JudgA'
             ],
         ],
         'WIS' => [
@@ -160,6 +183,7 @@ class UsxCodes
         'DAN' => [
             'default' => [
                 'Dán',
+                'DanTh'
             ],
         ],
         'SNG' => [
@@ -193,6 +217,11 @@ class UsxCodes
                 'Ezsdr',
             ],
         ],
+        '1ES' => [
+            'default' => [
+                'Ezd3',
+            ],
+        ],
         'EZK' => [
             'default' => [
                 'Ezek',
@@ -212,6 +241,11 @@ class UsxCodes
                 'Hós',
                 'Oz',
                 'Óz',
+            ],
+        ],
+        'ODA' => [
+            'default' => [
+                'Ód',
             ],
         ],
         'JER' => [
@@ -243,6 +277,7 @@ class UsxCodes
                 'Jozsue',
                 'Józsue',
                 'Józsué',
+                'JoshA'
             ],
         ],
         'LAM' => [
@@ -261,6 +296,7 @@ class UsxCodes
                 'Sirák',
                 'Sirák fia',
                 'Ecclesiasticus',
+                'Sir'
             ],
             'SZIT' => [
                 'Sir'
@@ -275,6 +311,11 @@ class UsxCodes
             'SZIT' => [
                 'Jud',
             ]
+        ],
+        'SUS' => [
+            'default' => [
+                'Zsuzs', '(Zsuzs)', 'SusTh'
+            ],
         ],
         'MAL' => [
             'default' => [
@@ -325,6 +366,7 @@ class UsxCodes
         'TOB' => [
             'default' => [
                 'Tób',
+                'TobBA'
             ],
         ],
         'ZEC' => [
@@ -341,6 +383,9 @@ class UsxCodes
                 'Zsoltárok',
             ],
         ],
+        'PSS' => [
+            'default' => [ 'SalZsolt' ]
+        ]
     ];
 
     public const NEW_TESTAMENT = [
@@ -407,6 +452,7 @@ class UsxCodes
             'default' => [
                 'ApCsel',
                 'Csel',
+                'Acs'
             ],
         ],
         'ROM' => [
