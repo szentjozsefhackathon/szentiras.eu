@@ -292,12 +292,12 @@ class CreateEmbeddingVectors extends Command
             }
         } else {
             $query = EmbeddedExcerpt::where("translation_abbrev", $translation->abbrev)->where("reference", $reference->toString());
-            if (!$checkHash) {
+            if ($checkHash) {
                 $query = $query->where("hash", $hash);
             }
             $existingDbRecord = $query->first();
             if ($existingDbRecord) {
-                $existingDbRecord->embedding;
+                return $existingDbRecord->embedding;
             } else {
                 return null;
             }

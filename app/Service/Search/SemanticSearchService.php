@@ -44,7 +44,9 @@ class SemanticSearchService {
         if (is_null($dimensions)) {
             $dimensions = Config::get("settings.ai.embeddingDimensions");
         }
-        return \Cache::remember(urlencode("generateVector_{$text}_{$model}_{$dimensions}"), 24*60*60, function () use ($text, $model, $dimensions) {
+        $textEncoded = md5($text);
+        $cacheKey = ("generateVector_{$textEncoded}_{$model}_{$dimensions}");
+        return \Cache::remember($cacheKey, 24*60*60, function () use ($text, $model, $dimensions) {
             $response = OpenAI::embeddings()->create([
                 'model' => $model,
                 'input' => $text,
