@@ -9,9 +9,9 @@ use SzentirasHu\Data\Entity\Translation;
 interface TranslationRepository {
 
     /**
-     * @return Translation[]
+     * @return Collection<Translation>
      */
-    public function getAll();
+    public function getAll() : Collection;
 
 
     public function getAllOrderedByDenom() : Collection;

@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Data\Entity;
 
+use Cache;
 use Config;
 use Eloquent;
 
@@ -14,7 +15,8 @@ use Eloquent;
  * @property int numv
  * @author berti
  */
-class Verse extends Eloquent {
+class Verse extends Eloquent
+{
 
     public $timestamps = false;
     protected $table = 'tdverse';
@@ -33,20 +35,24 @@ class Verse extends Eloquent {
 
     private static $typeMap;
 
-    public function book() {
+    public function book()
+    {
         return $this->belongsTo('SzentirasHu\Data\Entity\Book');
     }
 
-    public function books() {
+    public function books()
+    {
         return $this->belongsTo('SzentirasHu\Data\Entity\Book', 'usx_code');
     }
 
-    public function translation() {
-        return $this->belongsTo('SzentirasHu\Data\Entity\Translation','trans');
+    public function translation()
+    {
+        return $this->belongsTo('SzentirasHu\Data\Entity\Translation', 'trans');
     }
 
-    public static function getTypeMap() {
-        if (!self::$typeMap) {
+    public static function getTypeMap()
+    {
+        return Cache::remember('typeMap', 60, function () {
             foreach (Config::get('translations') as $translationAbbrev => $typeDefs) {
                 $translationId = $typeDefs['id'];
                 foreach($typeDefs['verseTypes'] as $typeName => $typeIds) {
@@ -61,31 +67,31 @@ class Verse extends Eloquent {
                     }
                 }
             }
-        }
-        return self::$typeMap;
+            return self::$typeMap;
+        });
     }
 
-    public static function getHeadingTypes($translationId) {
+    public static function getHeadingTypes($translationAbbrev)
+    {
         $typeMap = self::getTypeMap();
         $headingTypes = [];
         foreach ($typeMap as $types) {
             foreach ($types as $typeId => $typeName) {
                 if (strpos($typeName, 'heading') !== false) {
-                    $headingTypes[$translationId][] = $typeId;
+                    $headingTypes[$translationAbbrev][] = $typeId;
                 }
             }
         }
-        return $headingTypes[$translationId];
+        return $headingTypes[$translationAbbrev];
     }
 
-    public function getType() {
+    public function getType()
+    {
         $typeMap = self::getTypeMap();
-        if (array_key_exists($this->tip, $typeMap[$this->trans] ?? [] )) {
+        if (array_key_exists($this->tip, $typeMap[$this->trans] ?? [])) {
             return $typeMap[$this->trans][$this->tip];
         } else {
             return 'unknown';
         }
-
     }
-
 }

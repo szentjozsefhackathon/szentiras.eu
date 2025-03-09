@@ -34,7 +34,7 @@ Fejezetválasztás <span class="caret"></span></button>
         {% set chheadings = headings[chapterId] %}
         {% if chheadings|length > 0 %}            
         {%- for heading in chheadings -%}
-            <a href='/{{ translation.abbrev }}/{{ book.abbrev }}{{ chapterId}}#heading_{{ heading.gepi }}_{{ heading.headingLevel }}' class='link'>{{ heading.content|striptags('<br><a>')|raw  }}.&nbsp;</a>
+            <a href='/{{ translation.abbrev }}/{{ book.abbrev }}{{ chapterId}}#heading_{{ heading.gepi }}_{{ heading.headingLevel }}' class='link'>{{ heading.content|striptags('<br><a>')|raw  }}&nbsp;</a>
         {% endfor %}        
         {% endif %}        
         

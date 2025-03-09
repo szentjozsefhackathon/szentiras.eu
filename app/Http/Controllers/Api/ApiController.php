@@ -222,7 +222,8 @@ class ApiController extends Controller
     public function getTranslationList()
     {
         $translations = $this->translationRepository->getAllOrderedByDenom();
-        return $this->formatJsonResponse(["translations" => $translations, "defaultTranslationId" => \Config::get('settings.defaultTranslationId')]);
+        $defaultTranslation = $this->translationService->getDefaultTranslation();
+        return $this->formatJsonResponse(["translations" => $translations, "defaultTranslationId" => $defaultTranslation->id]);
     }
 
     private function formatJsonResponse($data)

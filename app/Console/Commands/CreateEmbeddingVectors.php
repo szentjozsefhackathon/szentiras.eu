@@ -34,7 +34,7 @@ class CreateEmbeddingVectors extends Command
      */
     protected $signature = '
         szentiras:create-embedding-vectors 
-            {translation=KNB : The abbreviation of the translation for which the vectors are being generated.} 
+            {translation=SZIT : The abbreviation of the translation for which the vectors are being generated.} 
             {--b|book= : The USX codes of the book(s) if we don\'t want to generate vectors for all of them, e.g., GEN, 1KI.}
             {--u|update : Request the vectors again, even if we\'ve already retrieved them for the given verse. However, we check the hash and only request again if the text has changed.}
             {--forceUpdate : Request the vectors again, even if we\'ve already retrieved them for the given verse. We don\'t check the hash; always request again.}

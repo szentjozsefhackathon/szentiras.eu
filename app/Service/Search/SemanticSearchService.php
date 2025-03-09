@@ -37,14 +37,14 @@ class SemanticSearchService {
     public function __construct(protected TextService $textService, protected TranslationService $translationService, protected BookService $bookService) {
     }
 
-    public function generateVector(string $text, string $model = null, int $dimensions = null) : EmbeddingResult{
+    public function generateVector(string $text, ?string $model = null, ?int $dimensions = null) : EmbeddingResult{
         if (is_null($model)) {
             $model = Config::get("settings.ai.embeddingModel");
         }
         if (is_null($dimensions)) {
             $dimensions = Config::get("settings.ai.embeddingDimensions");
         }
-        return \Cache::remember("generateVector_{$text}_{$model}_{$dimensions}", 24*60*60, function () use ($text, $model, $dimensions) {
+        return \Cache::remember(urlencode("generateVector_{$text}_{$model}_{$dimensions}"), 24*60*60, function () use ($text, $model, $dimensions) {
             $response = OpenAI::embeddings()->create([
                 'model' => $model,
                 'input' => $text,
@@ -59,7 +59,7 @@ class SemanticSearchService {
 
     }
 
-    public function findNeighbors(SemanticSearchParams $params, array $vector, $scope = EmbeddedExcerptScope::Verse, $maxResults = 10, $metric = Distance::Cosine, string $model = null) : SemanticSearchResponse {        
+    public function findNeighbors(SemanticSearchParams $params, array $vector, $scope = EmbeddedExcerptScope::Verse, $maxResults = 10, $metric = Distance::Cosine, ?string $model = null) : SemanticSearchResponse {        
         if (is_null($model)) {
             $model = Config::get("settings.ai.embeddingModel");
         }
@@ -70,7 +70,7 @@ class SemanticSearchService {
         if (!empty($params->translationAbbrev)) {
             $neighbors->where("translation_abbrev", $params->translationAbbrev);
         }
-        if (!empty($params->bookNumbers)) {
+        if (!empty($params->usxCodes)) {
             $neighbors->whereIn("usx_code", $params->usxCodes);
         }
         $neighbors = $neighbors->limit($maxResults)->get();

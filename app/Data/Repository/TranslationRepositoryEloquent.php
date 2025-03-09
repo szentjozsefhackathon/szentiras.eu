@@ -11,7 +11,7 @@ use SzentirasHu\Data\Entity\Translation;
 class TranslationRepositoryEloquent implements TranslationRepository
 {
 
-    public function getAll()
+    public function getAll() : Collection
     {
         $allTranslations = \Cache::remember(
             'getAllTranslations', 120, function () {

@@ -40,7 +40,7 @@ abstract class AbstractVerseParser implements VerseParser {
         }
         foreach ($verseData->xrefs as $key => $xref) {
             if (!$xref->text) {
-                unset($verse->xrefs[$key]);
+                unset($verseData->xrefs[$key]);
             }
         }
         return $verseData;

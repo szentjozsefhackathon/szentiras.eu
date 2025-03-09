@@ -4,8 +4,8 @@ namespace SzentirasHu\Http\Controllers\Search;
 
 
 class SemanticSearchForm {
-    public $textToSearch;
-    public $translationId;
-    public $bookNumber;
+    public $textToSearchAi;
+    public $translationAbbrev;
+    public $usxCode;
     public $captchaValidated = false;
 }

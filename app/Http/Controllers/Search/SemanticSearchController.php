@@ -29,7 +29,7 @@ class SemanticSearchController extends Controller
 
     public function anySearch(SemanticSearchFormRequest $request)
     {
-        $textToSearch = $request->get('textToSearch');
+        $textToSearch = $request->get('textToSearchAi');
         if (empty($textToSearch)) {
             return $this->getIndex($request);
         }
@@ -77,10 +77,10 @@ class SemanticSearchController extends Controller
     private function prepareForm($request) : SemanticSearchForm
     {
         $form = new SemanticSearchForm();
-        $form->textToSearch = $request->get('textToSearch');
-        $form->bookNumber =  $request->get('bookNumber');
-        if ($request->get('translationId') > 0) {
-            $form->translationId = $request->get('translationId');
+        $form->textToSearchAi = $request->get('textToSearchAi');
+        $form->usxCode =  $request->get('usxCode');
+        if ($request->get('translationAbbrev') != '0') {
+            $form->translationAbbrev = $request->get('translationAbbrev');
         }
 
         return $form;
@@ -89,10 +89,10 @@ class SemanticSearchController extends Controller
     private function semanticSearch(SemanticSearchForm $form, $view)
     {
         $semanticSearchParams = new SemanticSearchParams();
-        $semanticSearchParams->text = $form->textToSearch;
-        $semanticSearchParams->translationAbbrev = $form->translationId;
-        $semanticSearchParams->usxCodes = SearchController::extractBookUsxCodes($form->bookNumber);
-        $aiResult = $this->semanticSearchService->generateVector($form->textToSearch);
+        $semanticSearchParams->text = $form->textToSearchAi;
+        $semanticSearchParams->translationAbbrev = $form->translationAbbrev;
+        $semanticSearchParams->usxCodes = array_keys(SearchController::extractBookUsxCodes($form->usxCode));
+        $aiResult = $this->semanticSearchService->generateVector($form->textToSearchAi);
         $response = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector);
         $chapterResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Chapter);
         $rangeResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Range);

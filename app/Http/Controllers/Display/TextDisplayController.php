@@ -83,7 +83,7 @@ class TextDisplayController extends Controller
                 $result = [];
                 foreach ($books as $book) {
                     $canonicalRef = CanonicalReference::fromString("{$book->abbrev}", $translation->id);
-                    $verses = $this->textService->getTranslatedVerses($canonicalRef, $translation, Verse::getHeadingTypes($translation->id));
+                    $verses = $this->textService->getTranslatedVerses($canonicalRef, $translation, Verse::getHeadingTypes($translation->abbrev));
                     $result[$book->abbrev] = $this->getBookViewArray($book, $verses, $translation, $canonicalRef, $canonicalRef, false);
                 }
                 return $result;

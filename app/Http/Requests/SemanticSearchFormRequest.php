@@ -27,15 +27,15 @@ class SemanticSearchFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'textToSearch' => "required|max:{$this->maxLength}",
+            'textToSearchAi' => "required|max:{$this->maxLength}",
         ];
     }
 
     public function messages(): array
 {
     return [
-        'textToSearch.max' => "A keresett szöveg maximum {$this->maxLength} karakter hosszú lehet.",
-        'textToSearch.required' => "A keresett szöveget meg kell adni.",
+        'textToSearchAi.max' => "A keresett szöveg maximum {$this->maxLength} karakter hosszú lehet.",
+        'textToSearchAi.required' => "A keresett szöveget meg kell adni.",
 
     ];
 

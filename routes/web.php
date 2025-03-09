@@ -23,6 +23,7 @@ Route::get('/', [ HomeController::class, 'index' ]);
 
 Route::get("/kereses", '\SzentirasHu\Http\Controllers\Search\SearchController@getIndex');
 Route::post("/kereses/search", '\SzentirasHu\Http\Controllers\Search\SearchController@anySearch');
+Route::post("/kereses/quicksearch", '\SzentirasHu\Http\Controllers\Search\SearchController@anySearch');
 Route::get("/kereses/suggest", '\SzentirasHu\Http\Controllers\Search\SearchController@anySuggest');
 Route::post("/kereses/suggest", '\SzentirasHu\Http\Controllers\Search\SearchController@anySuggest');
 Route::post("/kereses/legacy", '\SzentirasHu\Http\Controllers\Search\SearchController@postLegacy');

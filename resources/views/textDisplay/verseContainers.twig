@@ -2,6 +2,7 @@
     <div>
         {% include 'textDisplay.breadcrumb' with {'book': verseContainer.book, 'bookRef': verseContainer.bookRef } %}
     </div>
+        <div class="mb-2">
          {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' : translation} %}
             {% for verse in verseContainer.parsedVerses %}
                 {% if verse.footnotes is not empty %}
@@ -16,8 +17,8 @@
                     {%endfor %}
                 {% endif %}
                 {% endfor %}
-                    </div>
                 {% if hasFootnote %}</div>{% endif %}
+            </div>
             {%  if chapterLinks %}
                 <ul class="pagination">
                     {% if chapterLinks.prevLink %}

@@ -22,18 +22,18 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
                 {% endif %}                    
                 <div class="mb-2">
                     <label for="textToSearchAi" class="form-label" required>Keresendő</label>
-                    <input required type="text" name="textToSearch" id="textToSearchAi" value="{{ form.textToSearch }}" class="form-control"/>                    
-                    {{ errors.first('textToSearch') }}
+                    <input required type="text" name="textToSearchAi" id="textToSearchAi" value="{{ form.textToSearchAi }}" class="form-control"/>                    
+                    {{ errors.first('textToSearchAi') }}
                 </div>
                 <div class="row g-3 mb-2">
                     <div class="col">
-                        <label for="bookNumber" class="form-label">Könyv</label>
-                        <select name="bookNumber" class="form-control" id="bookNumber">
-                            <option value="all" {{ 'all' == form.bookNumber ? 'selected' }}>mind</option>
-                            <option value="old_testament" {{ 'old_testament' == form.bookNumber ? 'selected' }}>Ószövetség</option>
-                            <option value="new_testament" {{ 'new_testament' == form.bookNumber ? 'selected' }}>Újszövetség</option>
+                        <label for="usxCode" class="form-label">Könyv</label>
+                        <select name="usxCode" class="form-control" id="usxCode">
+                            <option value="all" {{ 'all' == form.usxCode ? 'selected' }}>mind</option>
+                            <option value="old_testament" {{ 'old_testament' == form.usxCode ? 'selected' }}>Ószövetség</option>
+                            <option value="new_testament" {{ 'new_testament' == form.usxCode ? 'selected' }}>Újszövetség</option>
                             {% for book in books %}
-                                <option value="{{ book.usx_code }}" {{ book.usx_code == form.bookNumber ? 'selected' }}>{{ book.name }}</option>
+                                <option value="{{ book.usx_code }}" {{ book.usx_code == form.usxCode ? 'selected' }}>{{ book.name }}</option>
                             {% endfor %}
                         </select>
                     </div>

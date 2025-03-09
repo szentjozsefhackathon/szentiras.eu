@@ -167,6 +167,10 @@ class SearchController extends Controller
         return $view;
     }
 
+    /**
+     * @param $book
+     * @return array The keys will contain the USX codes of the books to search in.
+     */
     public static function extractBookUsxCodes(?string $book)
     {
         $bookUsxCodes = [];
