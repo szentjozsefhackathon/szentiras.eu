@@ -313,16 +313,15 @@ class CreateEmbeddingVectors extends Command
         $this->progressBar->advance();
         $existingVector = $this->getExistingVector($text, $reference, $translation, $this->option("update"));
         $update = empty($existingVector);
-        $vectorUpdate = $update || $this->option("forceUpdate");
-        $updateRequested = $this->option("update") || $this->option("forceUpdate");        
+        $forceUpdate = $this->option("forceUpdate");
         if (!empty($text)) {
             // retrieve vectors - either from text or from OpenAI
             $vectorAlreadyKnown = array_has($this->currentBookFileData, $chapterId) && array_has($this->currentBookFileData[$chapterId], md5($text));
-            if ($vectorAlreadyKnown && !$vectorUpdate) {
+            if ($vectorAlreadyKnown && !$forceUpdate) {
                     $response = $this->currentBookFileData[$chapterId][md5($text)];
                     $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $response->embedding, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
-            } else if (!$vectorAlreadyKnown && !$updateRequested) {
-                $this->warn("Vector not found for {$reference->toString()}, and update not requested (with --uupdate or --force-update). Skipping.");
+            } else if ($this->option("source") && !$vectorAlreadyKnown) {
+                $this->warn("Vector not found for {$reference->toString()} in source. First you must generate with --target (maybe using the --update parameter if the text might have changed.)");
             } else {
                 $retries = 0;
                 $success = false;
