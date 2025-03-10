@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create("embedded_excerpts", function (Blueprint $table) {
             $table->id();
-            $table->vector("embedding", \Config::get("settings.ai.embeddingDimensions"));
+            $table->vector("embedding", 2000);
             $table->string("hash", 32);
             $table->string("model");
             $table->string("reference");

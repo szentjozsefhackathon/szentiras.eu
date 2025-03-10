@@ -53,7 +53,7 @@ class TextService
     public function getTranslatedVerses(CanonicalReference $canonicalRef, Translation $translation, $verseTypes = [])
     {
         // replace spaces with underscores
-        $cacheKey = "getTranslatedVerses_".str_replace(' ','_',$canonicalRef->toString())."_".$translation->id;
+        $cacheKey = "getTranslatedVerses_".base64_encode($canonicalRef->toString())."_".$translation->abbrev;
         // TODO cache if verse types are specified as well
         if (empty($verseTypes) && Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
@@ -82,7 +82,7 @@ class TextService
             }
         }
         if (empty(($verseTypes))) {
-            $returnValue = Cache::put($cacheKey, $verseContainers, 60*60);
+            Cache::put($cacheKey, $verseContainers, now()->addHour());
         }
         return $verseContainers;
     }

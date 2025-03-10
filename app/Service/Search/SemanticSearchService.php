@@ -46,7 +46,7 @@ class SemanticSearchService {
         }
         $textEncoded = md5($text);
         $cacheKey = ("generateVector_{$textEncoded}_{$model}_{$dimensions}");
-        return \Cache::remember($cacheKey, 24*60*60, function () use ($text, $model, $dimensions) {
+        return \Cache::remember($cacheKey, now()->addDay(), function () use ($text, $model, $dimensions) {
             $response = OpenAI::embeddings()->create([
                 'model' => $model,
                 'input' => $text,
