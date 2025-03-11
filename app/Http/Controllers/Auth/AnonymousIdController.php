@@ -52,7 +52,7 @@ class AnonymousIdController extends Controller
         return Redirect::to('/');
     }
 
-    public function showProfile(string $profileId = null) {
+    public function showProfile(?string $profileId = null) {
         if (is_null($profileId)) {
             $profileId= session('anonymous_token');
         }
@@ -60,7 +60,7 @@ class AnonymousIdController extends Controller
             'token', $profileId
         )->first();
         if (empty($anonymousId)) {
-            abort(403, 'Érvénytelen névtelen azonosító');
+            return $this->logout();
         }
         session(['anonymous_token' => $anonymousId->token]);
         Cookie::queue(Cookie::forever('anonymous_token', $anonymousId->token));
