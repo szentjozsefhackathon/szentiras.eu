@@ -1,4 +1,5 @@
 <?php
+
 /**
 
  */
@@ -14,7 +15,8 @@ use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
 use SzentirasHu\Service\Text\TranslationService;
 
-class SearchService {
+class SearchService
+{
 
 
     /**
@@ -63,7 +65,7 @@ class SearchService {
                 }
             }
             $excerpts = $sphinxSearcher->getExcerpts($texts);
-            $textKeys = array_keys($texts);
+
             if ($excerpts) {
                 foreach ($excerpts as $i => $excerpt) {
                     $verse = $verses[$i];
@@ -105,14 +107,14 @@ class SearchService {
 
     private function handleFullTextResults($sphinxResults, FullTextSearchParams $params)
     {
-        
-        $sortedVerses = $this->verseRepository->getVersesInOrder($sphinxResults->verseIds);      
+        $allTranslationIds = $this->translationService->getAllTranslations()->pluck('id');
+        $sortedVerses = $this->verseRepository->getVersesInOrder($sphinxResults->verseIds);
         $defaultTranslation = $this->translationService->getDefaultTranslation();
-                
-        /* beginning of new part */                
+
+        /* beginning of new part */
         $results = [];
         $translations = [];
-        foreach($sphinxResults->verses as $id => $verse) {
+        foreach ($sphinxResults->verses as $id => $verse) {
             $key = $verse['gepi'];
             switch ($params->grouping) {
                 case 'book':
@@ -124,87 +126,84 @@ class SearchService {
                         $key = substr($key, 0, $secondUnderscorePos);
                     }
                     break;
-                default:                    
+                default:
             }
-            
-            if(!array_key_exists($key, $results)) {
-                $results[$key] = ['weights' => [], 'translations' => [$defaultTranslation->abbrev => [] ] ];                
+
+            if (!array_key_exists($key, $results)) {
+                $results[$key] = ['weights' => [], 'translations' => [$defaultTranslation->abbrev => []]];
             }
-            if(!array_key_exists($verse['trans'], $translations)) {
-                $translations[$verse['trans']] = $this->translationRepository->getById($verse['trans']); 
-            }          
+            if (!array_key_exists($verse['trans'], $translations)) {
+                $translations[$verse['trans']] = $this->translationRepository->getById($verse['trans']);
+            }
             $trans = $translations[$verse['trans']];
-            if(!array_key_exists($trans['abbrev'], $results[$key]['translations']) or $results[$key]['translations'][$trans['abbrev']] == array() ) {
-                $results[$key]['translations'][$trans['abbrev']] = [                       
-                       'verseIds' => [],
-                       'verses' => [],
-                       'trans' => $trans,
-                       'book' => $sortedVerses[$id]->book
-                    ];                
+            // skip if the translation is not enabled
+            if ($allTranslationIds->contains($trans->id)) {
+
+                if (!array_key_exists($trans['abbrev'], $results[$key]['translations']) or $results[$key]['translations'][$trans['abbrev']] == array()) {
+                    $results[$key]['translations'][$trans['abbrev']] = [
+                        'verseIds' => [],
+                        'verses' => [],
+                        'trans' => $trans,
+                        'book' => $sortedVerses[$id]->book
+                    ];
+                }
+                $results[$key]['weights'][] = $verse['weight()'];
+                $results[$key]['translations'][$trans['abbrev']]['verseIds'][] = $id;
+                $results[$key]['translations'][$trans['abbrev']]['verses'][] = $sortedVerses[$id];
             }
-            $results[$key]['weights'][] = $verse['weight()'];
-            $results[$key]['translations'][$trans['abbrev']]['verseIds'][] = $id;
-            $results[$key]['translations'][$trans['abbrev']]['verses'][] = $sortedVerses[$id];
         }
 
-        // echo "<pre> ".print_r($results,1)."</pre>";/**/
-        
-        foreach($results as $key => $result) {
+        foreach ($results as $key => $result) {
             rsort($result['weights']);
-            //echo "<pre>"; print_R($result['weights']); echo "</pre>";
-             $results[$key]['weight'] = reset($result['weights']) + sqrt(array_sum($result['weights'])); // log10()
+            $results[$key]['weight'] = reset($result['weights']) + sqrt(array_sum($result['weights'])); // log10()
 
-             foreach($result['translations'] as $abbrev => $group ) {
-                 if($group == []) unset($results[$key]['translations'][$abbrev]);
-                 else {
-                    $gepis = array_column($group['verses'],'gepi');
+            foreach ($result['translations'] as $abbrev => $group) {
+                if ($group == []) unset($results[$key]['translations'][$abbrev]);
+                else {
+                    $gepis = array_column($group['verses'], 'gepi');
                     array_multisort($gepis, SORT_ASC, $results[$key]['translations'][$abbrev]['verses']);
-                 
-                $currentNumv = false;
-                $currentChapter = false;
-                foreach ($group['verses'] as $k => $verse) {
-                    $verseData = [];
-                    $verseData['chapter'] = $verse->chapter;
-                    $verseData['numv'] = $verse->numv;
-                    $verseData['text'] = preg_replace('/<[^>]*>/', ' ', $verse->verse);
-                    if ($verse->headings) { // Ez nem üzemel, mert nem volt getParsedVerse mert nem volt VerseContainer, mert book-onként kall azt csináni.
-                        echo "bizony";
-                        foreach ($verse->headings as $heading) {
-                            $verseData['text'] .= "<small>".$heading . '</small> ';
+
+                    $currentNumv = false;
+                    $currentChapter = false;
+                    foreach ($group['verses'] as $k => $verse) {
+                        $verseData = [];
+                        $verseData['chapter'] = $verse->chapter;
+                        $verseData['numv'] = $verse->numv;
+                        $verseData['text'] = preg_replace('/<[^>]*>/', ' ', $verse->verse);
+                        if ($verse->headings) { // Ez nem üzemel, mert nem volt getParsedVerse mert nem volt VerseContainer, mert book-onként kall azt csináni.
+                            echo "bizony";
+                            foreach ($verse->headings as $heading) {
+                                $verseData['text'] .= "<small>" . $heading . '</small> ';
+                            }
                         }
-                    }
-                    
-                    if($verse->chapter > $currentChapter ) {                        
-                        $verseData['chapterStart'] = true;
+
+                        if ($verse->chapter > $currentChapter) {
+                            $verseData['chapterStart'] = true;
+                            $currentNumv = $verse->numv;
+                        }
+                        $currentChapter = $verse->chapter;
+
+                        if ($verse->numv > $currentNumv + 1 and $currentNumv = $verse->numv) {
+                            $verseData['ellipseBefore'] = true;
+                        }
                         $currentNumv = $verse->numv;
+
+                        $results[$key]['translations'][$abbrev]['verses'][$k] = $verseData;
                     }
-                    $currentChapter = $verse->chapter;
-                    
-                    if($verse->numv > $currentNumv + 1 AND $currentNumv = $verse->numv) {
-                        $verseData['ellipseBefore'] = true;
-                    } 
-                    $currentNumv = $verse->numv;
-                    
-                    $results[$key]['translations'][$abbrev]['verses'][$k] = $verseData;
-                    
                 }
-                 }
-             }
+            }
         }
         $weights  = array_column($results, 'weight');
         array_multisort($weights, SORT_DESC, $results);
-        
-        //echo "<pre> ".print_r($results,1)."</pre>";/**/
-                
-        /* end of new part */                
-        
+        /* end of new part */
+
         $resultsByBookNumber = $results;
-        
-        
+
+
         /* original */
 
         $verseContainers = $this->groupVersesByBook($sortedVerses, $params->translationId);
-        //echo "<pre>".print_r($verseContainers,1)."</pre>";
+
         $results = [];
         $chapterCount = 0;
         $verseCount = 0;
@@ -219,12 +218,6 @@ class SearchService {
                 $verseData['chapter'] = $verse->chapter;
                 $verseData['numv'] = $verse->numv;
                 $verseData['text'] = '';
-                // TODO: add headings
-                // if ($verse->headings) {
-                //     foreach ($verse->headings as $heading) {
-                //         $verseData['text'] .= "<small>".$heading . '</small> ';
-                //     }
-                // }
                 if ($verse->getText()) {
                     $verseData['text'] .= preg_replace('/<[^>]*>/', ' ', $verse->getText());
                 }
@@ -233,7 +226,7 @@ class SearchService {
                 $verseCount++;
             }
             $chapterCount += count($result['chapters']);
-            if ($params->grouping == 'chapter') { 
+            if ($params->grouping == 'chapter') {
                 foreach ($result['chapters'] as $chapterNumber => $verses) {
                     usort($verses, function ($verseData1, $verseData2) {
                         if ($verseData1['numv'] == $verseData2['numv']) {
@@ -254,10 +247,9 @@ class SearchService {
                 $results[] = $result;
             }
         }
-        //echo "<pre>".print_r($results,1)."</pre>";
-        if($params->grouping == 'verse') $hitCount = $verseCount;
+        if ($params->grouping == 'verse') $hitCount = $verseCount;
         else $hitCount = $chapterCount;
-        return ['resultsByBookNumber' => $resultsByBookNumber,'results' => $results, 'hitCount' => $hitCount ];
+        return ['resultsByBookNumber' => $resultsByBookNumber, 'results' => $results, 'hitCount' => $hitCount];
     }
 
     private function groupVersesByBookNumber($sortedVerses, $groupByVerse = false)
@@ -265,9 +257,9 @@ class SearchService {
         $verseContainers = [];
         foreach ($sortedVerses as $verse) {
             $book = $verse->book;
-            if($groupByVerse OR 4==4) $key = $verse->gepi;
-            else $key = $book->usx_code."_".$verse->chapter;
-            
+            if ($groupByVerse or 4 == 4) $key = $verse->gepi;
+            else $key = $book->usx_code . "_" . $verse->chapter;
+
             if (!array_key_exists($key, $verseContainers)) {
                 $verseContainers[$key] = [];
             }
@@ -276,13 +268,13 @@ class SearchService {
                     'translation' => $verse->translation,
                     'book' => $book,
                     'chapter' => $verse->chapter,
-                    'numv' => $verse->numv,                    
+                    'numv' => $verse->numv,
                     'verses' => new VerseContainer($book)
                 ];
             }
-                     
-            $book->translation_id . '/' . $book->abbrev ;
-            
+
+            $book->translation_id . '/' . $book->abbrev;
+
             $verseContainer = $verseContainers[$key][$book->translation_id]['verses'];
             $verseContainer->addVerse($verse);
         }
@@ -334,6 +326,4 @@ class SearchService {
         } catch (ParsingException $e) {
         }
     }
-
-
 }

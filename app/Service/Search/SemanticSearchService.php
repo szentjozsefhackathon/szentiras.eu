@@ -123,7 +123,7 @@ class SemanticSearchService {
         return $response;
     }
 
-    private function getQualityScore(float $distance, Distance $metric, EmbeddedExcerptScope $scope) {        
+    public static function getQualityScore(float $distance, ?Distance $metric = Distance::Cosine) {        
         $value = $distance;
         if ($metric == Distance::Cosine) {
             if ($value < .4) {

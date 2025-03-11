@@ -14,7 +14,7 @@ class TranslationRepositoryEloquent implements TranslationRepository
     public function getAll() : Collection
     {
         $allTranslations = \Cache::remember(
-            'getAllTranslations', 120, function () {
+           'getAllTranslations', 120, function () {
             return Translation::orderBy('order')->orderBy('name')->whereIn('id', \Config::get('settings.enabledTranslations'))->get();
         });
         return $allTranslations;

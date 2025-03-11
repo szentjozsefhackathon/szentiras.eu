@@ -88,6 +88,35 @@ class SemanticSearchController extends Controller
         return $form;
     }
 
+    private function groupResponses($results) {
+        $groupedResponses = [];
+        foreach ($results as $item) {
+            $embeddedExcerpt = $item->embeddedExcerpt;
+            if ($embeddedExcerpt->scope == EmbeddedExcerptScope::Verse) {
+                $gepi = $embeddedExcerpt->gepi;
+            } else if ($embeddedExcerpt->scope == EmbeddedExcerptScope::Chapter) {
+                $gepi = "{$embeddedExcerpt->usx_code}_{$embeddedExcerpt->chapter}";
+            } else {
+                $gepi = "{$embeddedExcerpt->usx_code}_{$embeddedExcerpt->chapter}_{$embeddedExcerpt->verse}_{$embeddedExcerpt->to_chapter}_{$embeddedExcerpt->to_verse}";
+            }
+            if (!isset($groupedResponses[$gepi])) {
+                $groupedResponses[$gepi] = [ 'items' => [], 'totalDistance' => 0, 'count' => 0];
+            }
+            $groupedResponses[$gepi]['items'][] = $item;
+            $groupedResponses[$gepi]['totalDistance'] += $item->distance;
+            $groupedResponses[$gepi]['count']++;
+        }
+
+        foreach ($groupedResponses as $gepi => $data) {
+            $groupedResponses[$gepi]['averageDistance'] = $data['totalDistance'] / $data['count'];
+            $groupedResponses[$gepi]['quality'] = SemanticSearchService::getQualityScore($groupedResponses[$gepi]['averageDistance'] );            
+        }
+        $groupedResponses = array_sort($groupedResponses, function ($value) {
+            return $value['averageDistance'];
+        });
+        return $groupedResponses;
+    }
+
     private function semanticSearch(SemanticSearchForm $form, $view)
     {
         $semanticSearchParams = new SemanticSearchParams();
@@ -98,9 +127,10 @@ class SemanticSearchController extends Controller
         $response = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Verse, 25);
         $chapterResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Chapter);
         $rangeResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Range);
-        $view = $view->with('response', $response);
-        $view = $view->with('chapterResponse', $chapterResponse);
-        $view = $view->with('rangeResponse', $rangeResponse);
+
+        $view = $view->with('groupedResponses', $this->groupResponses($response->results));
+        $view = $view->with('groupedRangeResponses', $this->groupResponses($rangeResponse->results));
+        $view = $view->with('groupedChapterResponses', $this->groupResponses($chapterResponse->results));
 
         return $view;
     }
