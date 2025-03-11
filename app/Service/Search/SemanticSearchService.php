@@ -68,7 +68,8 @@ class SemanticSearchService {
         $neighbors = EmbeddedExcerpt::query()
             ->where("scope", $scope)
             ->where("model", $model)
-            ->nearestNeighbors("embedding", $vector, $metric);
+            ->nearestNeighbors("embedding", $vector, $metric)
+            ;
         if (!empty($params->translationAbbrev)) {
             $neighbors->where("translation_abbrev", $params->translationAbbrev);
         }
@@ -76,6 +77,8 @@ class SemanticSearchService {
             $neighbors->whereIn("usx_code", $params->usxCodes);
         }
         $neighbors = $neighbors->limit($maxResults)->get();
+    
+        $neighbors = $neighbors->filter(fn($n) => $n->neighbor_distance < .6);
         // if we are looking for chapters, look for the most relevant verse in the chapter
         $topVerseContainers = [];
         $results = [];

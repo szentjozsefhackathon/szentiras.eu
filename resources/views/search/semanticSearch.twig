@@ -11,10 +11,11 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
         <div class="alert alert-primary" role="alert">
             <p>A „jelentés szerinti” keresés mesterséges intelligenciát használ a kereséshez, és <b>másképp működik, mint a hagyományos keresés</b>. A használatához néhány fontos szempont:</p>
             <ul>
-                <li>Még mi is kísérletezünk vele, hogy milyen módon tudjuk a legjobb találatokat szolgáltatni, ezért néha csalódást kelthet a működése. A visszajelzéseknek örülünk.</li>
+                <li>Mivel nagy a számításigénye, mi is kísérletezünk a legjobb/leghatékonyabb működéssel. A pozitív és negatív visszajelzéseknek egyaránt örülünk.</li>
                 <li>Pontos idézeteket, szavakat, mondatokat a <a href="/kereses">Részletes keresőben</a> keress!</li>   
                 <li>Minél több kontextust adsz a keresésben, annál pontosabbak lesznek a találatok. A <i>Mit mond Jézus az ellenség szeretetéről?</i> sokkal jobb lehet, mint az <i>ellenségszeretet</i>.</li>
                 <li>Ha idézetet keresel, csak nem tudod pontosan a szövegét, akkor próbáld meg idézőjelek között is.</li>
+                <li>Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási részekkel (versekkel, nagyobb szakaszokkal és fejezetekkel) válaszol.</li>
             </ul>
             
         </div>
@@ -29,6 +30,8 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
                     </div>
                     {%  if not form.captchaValidated %}
                         <div class="cf-turnstile" data-sitekey="{{ config_get('services.cloudflare_turnstile.site_key') }}"></div>
+                    {% else %}
+                        <input type="hidden" name="captchaValidated" value="1"/>
                     {% endif %}
                 {% endif %}                    
                 <div class="mb-2">

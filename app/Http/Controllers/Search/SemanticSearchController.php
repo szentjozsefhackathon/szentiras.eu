@@ -33,8 +33,9 @@ class SemanticSearchController extends Controller
         if (empty($textToSearch)) {
             return $this->getIndex($request);
         }
+        $form = $this->prepareForm($request, $textToSearch);
 
-        if (!session()->get('anonymous_token')) {
+        if (!session()->get('anonymous_token') && !$form->captchaValidated) {
             // validate captcha
             $request->validate([
                 'cf-turnstile-response' => ['required', new TurnstileValidationRule()],
@@ -50,7 +51,6 @@ class SemanticSearchController extends Controller
             }        
         }
         
-        $form = $this->prepareForm($request, $textToSearch);
         $form->captchaValidated = true;
         $view = $this->getView($form);
         $view = $this->semanticSearch($form, $view);
@@ -79,6 +79,8 @@ class SemanticSearchController extends Controller
         $form = new SemanticSearchForm();
         $form->textToSearchAi = $request->get('textToSearchAi');
         $form->usxCode =  $request->get('usxCode');
+        $form->captchaValidated =  $request->get('captchaValidated');
+                
         if ($request->get('translationAbbrev') != '0') {
             $form->translationAbbrev = $request->get('translationAbbrev');
         }
@@ -93,7 +95,7 @@ class SemanticSearchController extends Controller
         $semanticSearchParams->translationAbbrev = $form->translationAbbrev;
         $semanticSearchParams->usxCodes = array_keys(SearchController::extractBookUsxCodes($form->usxCode));
         $aiResult = $this->semanticSearchService->generateVector($form->textToSearchAi);
-        $response = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector);
+        $response = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Verse, 25);
         $chapterResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Chapter);
         $rangeResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Range);
         $view = $view->with('response', $response);
