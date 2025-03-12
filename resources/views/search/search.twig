@@ -103,7 +103,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                             <span class="header-bookabbrev {{ loop.first ? 'active d-sm-inline' : 'inactive d-md-inline'}}" title="{{ group.book.name }}">{{ group.book.abbrev }}</span>
                             <span class="header-ref {{ loop.first ? 'active' : 'd-sm-none'}}">
                                 {% if form.grouping == 'verse' or  form.grouping == 'chapter' %}{{ group.verses[0].chapter }}{% endif %}
-                                {% if form.grouping == 'verse' %},{{ group.verses[0].numv }}{% endif %}
+                                {%- if form.grouping == 'verse' %},{{ group.verses[0].numv }}{% endif %}
                             </span>                                                                                                      
                         </a>
                 {% endfor %}

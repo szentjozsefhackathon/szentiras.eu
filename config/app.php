@@ -135,7 +135,6 @@ return [
         SzentirasHu\Providers\EventServiceProvider::class,
         SzentirasHu\Providers\RouteServiceProvider::class,
         SzentirasHu\Providers\RepositoriesProvider::class,
-        SzentirasHu\Providers\SphinxSearchServiceProvider::class,
         SzentirasHu\Providers\ViewComposerServiceProvider::class,
         SzentirasHu\Service\Imagine\ImagineServiceProvider::class
 
@@ -189,7 +188,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
         'Vite' => Vite::class,
-        'SphinxSearch' => SzentirasHu\Service\Sphinx\SphinxSearchFacade::class,
         'Imagine' => SzentirasHu\Service\Imagine\ImagineFacade::class
 
     ],

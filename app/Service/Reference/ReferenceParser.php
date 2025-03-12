@@ -2,6 +2,8 @@
 
 namespace SzentirasHu\Service\Reference;
 
+use Throwable;
+
 /**
  * Examples of possible formats:
  * - 1Kor - full book
@@ -50,7 +52,11 @@ class ReferenceParser
             if ($token['type'] == ReferenceLexer::T_NUMERIC
                 || $token['type'] == ReferenceLexer::T_TEXT
             ) {
-                $bookRefs[] = $this->bookRef();
+                try {
+                    $bookRefs[] = $this->bookRef();
+                } catch (Throwable $e) {
+                    $this->parsingError();
+                }                
             }
         }
         return $bookRefs;
@@ -146,7 +152,6 @@ class ReferenceParser
                 }
             }
         }
-        //print("Range chapterId: {$range->chapterRef->chapterId}\n");
         return $range;
     }
 
