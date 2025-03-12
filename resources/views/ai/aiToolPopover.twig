@@ -27,15 +27,24 @@
   <div class="tab-content">
     <div class="tab-pane active" id="parallel{{ hash }}" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
       {% for pureText in pureTexts %}
-        <div>
-        <a href="/{{ pureText.translationAbbrev }}/{{ pureText.reference }}">{{ pureText.translationAbbrev }}: {{ pureText.reference }}</a> {{ _self.similarity(pureText.similarity) }} {{ pureText.text }}
+        <div><a href="/{{ pureText.translationAbbrev }}/{{ pureText.reference }}">{{ pureText.translationAbbrev }}: {{ pureText.reference }}</a> {{ _self.similarity(pureText.similarity) }} 
+        <span class="pureText">{{ pureText.text }}</span>
         </div>
       {% endfor %}
+      {% if greekText %}
+      <div class="greek" lang="grc">
+        {{  greekText }}
+      </div>
+      {% endif %}
     </div>
     <div class="tab-pane scrollable-content" id="similar{{ hash }}" role="tabpanel" aria-labelledby="similar-tab" tabindex="0">
+      <div><a href="/{{ pureTexts[0].text }}/{{ pureText[0].reference }}">{{ pureTexts[0].reference }}</a>  
+      <span class="pureText">{{ pureTexts[0].text }}</span>
+      </div>
       {% for similar in similars %}
         <div>
-          <a href="/{{ similar.translationAbbrev }}/{{ similar.reference }}">{{ similar.reference }}</a> {{ _self.similarity(similar.similarity) }} {{ similar.text }}
+          <a href="/{{ similar.translationAbbrev }}/{{ similar.reference }}">{{ similar.reference }}</a> {{ _self.similarity(similar.similarity) }}
+          <span class="pureText">{{ similar.text }}</span>
         </div>
       {% endfor %}
     </div>

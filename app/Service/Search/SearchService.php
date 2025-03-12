@@ -6,6 +6,8 @@
 
 namespace SzentirasHu\Service\Search;
 
+use Illuminate\Support\Facades\Config;
+use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ParsingException;
 use SzentirasHu\Service\Reference\ReferenceService;
@@ -49,14 +51,42 @@ class SearchService
         $result = [];
         $searchParams = new FullTextSearchParams;
         $searchParams->text = $term;
-        $searchParams->limit = 10;
+        $searchParams->limit = 40; // increase the limit, as due to grouping there might be more
         $searchParams->grouping = 'verse';
-        $searchParams->groupGepi = true;
+        $searchParams->groupGepi = false; // at the moment I found no way to order the translations, so I need to this an other way
         $searchParams->synonyms = true;
         $sphinxSearcher = $this->searcherFactory->createSearcherFor($searchParams);
         $sphinxResults = $sphinxSearcher->get();
         if ($sphinxResults) {
-            $verses = $this->verseRepository->getVersesInOrder($sphinxResults->verseIds);
+            $groupedResults = [];
+
+            foreach ($sphinxResults->verses as $verse) {
+                $gepi = $verse['gepi'];
+                $enabledTranslationArray = Config::get('settings.enabledTranslations');
+                if (in_array($verse['trans'], $enabledTranslationArray)) {
+                    if (!isset($groupedResults[$gepi])) {
+                        $groupedResults[$gepi] = [];
+                    }
+                    $groupedResults[$gepi][] = $verse;
+                }
+            }
+    
+            // sort the verses in each grouped by the order of the translation
+            foreach ($groupedResults as $gepi => &$verses) {
+                usort($verses, function ($a, $b) {
+                    return Translation::getOrderById($a['trans']) <=> Translation::getOrderById($b['trans']);
+                });
+            }
+
+            // keep only the first verse of each group
+            $groupedResults = array_map(function ($verses) {
+                $firstElement = reset($verses);
+                return $firstElement['id'];
+            }, $groupedResults);
+            unset($verses);
+        
+            $verses = $this->verseRepository->getVersesInOrder($groupedResults);
+
             $texts = [];
             foreach ($verses as $key => $verse) {
                 $parsedVerse = $this->getParsedVerse($verse);

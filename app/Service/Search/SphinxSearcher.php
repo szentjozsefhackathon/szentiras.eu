@@ -23,7 +23,8 @@ class SphinxSearcher implements Searcher
 
     private function addAlternatives($params)
     {
-        $text = trim($params->text);
+        // keep only the letters and numbers, taking care of unicode characters
+        $text = trim(preg_replace('/[^\p{L}\p{N}]+/u', ' ', $params->text));        
         $originalWords = preg_split('/\W+/u', $text);
         $searchedTerm = " ( @verse \"{$text}\"~".(count($originalWords)+2)." ) ";
         $searchedTerm .= " | ( @verse2 ( {$text} | *{$text}* ) )";        

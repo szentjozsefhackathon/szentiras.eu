@@ -39,76 +39,94 @@
 */
 
 return [
-    'KNB' => [
-        'verseTypes' =>
-        [
-            'text' => [901],
-            'heading' => [301=>0, 320=>1, 330=>2, 640=>3, 650=>4, 680=>5, 701=>6, 702=>7],
-            'footnote' => [120, 2001, 2002],
-            'poemLine' => [902],
-            'xref' => [920],
-            'footnoteInterval' => [1990]
+    'definitions' => [
+        'KNB' => [
+            'verseTypes' =>
+            [
+                'text' => [901],
+                'heading' => [301=>0, 320=>1, 330=>2, 640=>3, 650=>4, 680=>5, 701=>6, 702=>7],
+                'footnote' => [120, 2001, 2002],
+                'poemLine' => [902],
+                'xref' => [920],
+                'footnoteInterval' => [1990]
+            ],
+            'textSource' => env('TEXT_SOURCE_KNB'),
+            'id' => 3,
+            'order' => 1,
         ],
-        'textSource' => env('TEXT_SOURCE_KNB'),
-        'id' => 3
-    ],
 
-    'KG' => [
-        'verseTypes' =>
-        [
-            'text' => [901],
-            'heading' => [1=>1, 2=>2, 3=>3],
-            'xref' => [2017]
+        'KG' => [
+            'verseTypes' =>
+            [
+                'text' => [901],
+                'heading' => [1=>1, 2=>2, 3=>3],
+                'xref' => [2017]
+            ],
+            'textSource' => env('TEXT_SOURCE_KG'),
+            'id' => 4,
+            'order' => 11,
         ],
-        'textSource' => env('TEXT_SOURCE_KG'),
-        'id' => 4
+        'SZIT' => [
+            'verseTypes' =>
+            [
+                'text' => [901],
+                'heading' => [401=>2, 501=>4, 601=>4, 701=>5, 704=>6],
+                'footnote' => []
+            ],
+            'textSource' => env('TEXT_SOURCE_SZIT'),
+            'id' => 1,
+            'order' => 3,
+        ],
+        'UF' => [
+            'verseTypes' =>
+            [
+                'text' => [901],
+                'heading' => [703 => 3]
+            ],
+            'textSource' => env('TEXT_SOURCE_UF'),
+            'id' => 2,
+            'order' => 10,
+        ],
+        'BD' => [
+            'verseTypes' =>
+            [
+                'text' => [901],
+                'heading' => [701=>4, 704=>5]
+            ],
+            'textSource' => env('TEXT_SOURCE_BD'),
+            'id' => 5,
+            'order' => 5,
+        ],
+        'RUF' => [
+            'verseTypes' =>
+            [
+                'text' => [901],
+                'heading' => [701=>3],
+                'footnote' => [2001],
+                'xref' => [2021]
+            ],
+            'textSource' => env('TEXT_SOURCE_RUF'),
+            'id' => 6,
+            'order' => 9,
+        ],
+        'STL' => [
+            'verseTypes' =>
+            [
+                'text' => [901],
+                'footnote' => [2001, 2004, 2023]
+            ],
+            'textSource' => env('TEXT_SOURCE_STL'),
+            'id' => 7,
+            'order' => 4,
+        ]
     ],
-    'SZIT' => [
-        'verseTypes' =>
-        [
-            'text' => [901],
-            'heading' => [401=>2, 501=>4, 601=>4, 701=>5, 704=>6],
-            'footnote' => []
-        ],
-        'textSource' => env('TEXT_SOURCE_SZIT'),
-        'id' => 1
-    ],
-    'UF' => [
-        'verseTypes' =>
-        [
-            'text' => [901],
-            'heading' => [703 => 3]
-        ],
-        'textSource' => env('TEXT_SOURCE_UF'),
-        'id' => 2
-    ],
-    'BD' => [
-        'verseTypes' =>
-        [
-            'text' => [901],
-            'heading' => [701=>4, 704=>5]
-        ],
-        'textSource' => env('TEXT_SOURCE_BD'),
-        'id' => 5,
-    ],
-    'RUF' => [
-        'verseTypes' =>
-        [
-            'text' => [901],
-            'heading' => [701=>3],
-            'footnote' => [2001],
-            'xref' => [2021]
-        ],
-        'textSource' => env('TEXT_SOURCE_RUF'),
-        'id' => 6
-    ],
-    'STL' => [
-        'verseTypes' =>
-        [
-            'text' => [901],
-            'footnote' => [2001, 2004, 2023]
-        ],
-		'textSource' => env('TEXT_SOURCE_STL'),
-        'id' => 7
+    'ids' => [
+        1 => 'SZIT',
+        2 => 'UF',
+        3 => 'KNB',
+        4 => 'KG',
+        5 => 'BD',
+        6 => 'RUF',
+        7 => 'STL'
     ]
 ];

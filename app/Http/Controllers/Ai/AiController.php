@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use League\CommonMark\Reference\Reference;
 use Pgvector\Vector;
 use SzentirasHu\Http\Controllers\Controller;
+use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ReferenceService;
 use SzentirasHu\Service\Search\SemanticSearchService;
@@ -32,8 +33,17 @@ class AiController extends Controller
         $pureTexts[] = [
             'translationAbbrev' => $translationAbbrev,
             'reference' => $canonicalReference->toString(),
-            'text' => $this->textService->getPureText(CanonicalReference::fromString($reference, $translation->id), $translation, false),
+            'text' => $this->textService->getPureText($canonicalReference, $translation, false),
         ];
+        $usxVerseId = $canonicalReference->toUsxVerseId();
+        $verseIdParts = explode('_', str_replace(':', '_', str_replace(' ','_', $usxVerseId)));
+        $greekVerse = GreekVerse::where('usx_code', $verseIdParts[0])->where('chapter', $verseIdParts[1])->where('verse', $verseIdParts[2])->first();
+        if ($greekVerse) {
+            $greekText = str_replace('¶', '', $greekVerse->text);
+        } else {
+            $greekText = null;
+        }
+        
         $vector1 = $this->semanticSearchService->retrieveVector($canonicalReference->toString(), $translationAbbrev);
         foreach ($allTranslations as $otherTranslation) {
             if ($otherTranslation->abbrev != $translationAbbrev) {
@@ -67,7 +77,7 @@ class AiController extends Controller
             }
         }
 
-        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts ?? [], 'similars' => $similars ?? [], 'hash' => $hash])->render();
+        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts ?? [], 'similars' => $similars ?? [], 'greekText' => $greekText, 'hash' => $hash])->render();
         return response()->json($view);
     }
 }

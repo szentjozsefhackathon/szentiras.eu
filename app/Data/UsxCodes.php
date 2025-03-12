@@ -190,9 +190,9 @@ class UsxCodes
             'default' => [
                 'En',
                 'Én',
-                'Ének.Én',
                 'Énekek',
                 'ÉnekÉn',
+                'Ének.Én',
             ],
         ],
         'ISA' => [

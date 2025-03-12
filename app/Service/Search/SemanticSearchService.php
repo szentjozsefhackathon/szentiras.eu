@@ -4,6 +4,7 @@ namespace SzentirasHu\Service\Search;
 
 use Config;
 use Exception;
+use League\CommonMark\Extension\Embed\Embed;
 use Log;
 use OpenAI\Laravel\Facades\OpenAI;
 use Pgvector\Laravel\Distance;

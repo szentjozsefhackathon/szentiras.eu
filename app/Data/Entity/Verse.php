@@ -53,7 +53,7 @@ class Verse extends Eloquent
     public static function getTypeMap()
     {
         return Cache::remember('typeMap', 60, function () {
-            foreach (Config::get('translations') as $translationAbbrev => $typeDefs) {
+            foreach (Config::get('translations.definitions') as $translationAbbrev => $typeDefs) {
                 $translationId = $typeDefs['id'];
                 foreach($typeDefs['verseTypes'] as $typeName => $typeIds) {
                     foreach ($typeIds as $typeId => $typeValue) {

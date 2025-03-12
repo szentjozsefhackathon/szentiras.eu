@@ -45,7 +45,7 @@ class SmokeTest extends TestCase
 
         \Config::set('translations', 
             array_merge_recursive(\Config::get('translations'),
-            ['TESTTRANS' => [
+            ['definitions' => ['TESTTRANS' => [
                 'verseTypes' =>
                 [
                     'text' => [6, 901],
@@ -57,6 +57,7 @@ class SmokeTest extends TestCase
                 'textSource' => env('TEXT_SOURCE_KNB'),
                 'id' => 1001]
                 ]
+            ]
             ));
     }
 

@@ -2,6 +2,9 @@
 
 namespace SzentirasHu\Service\Reference;
 
+use SzentirasHu\Data\Entity\Translation;
+use SzentirasHu\Data\UsxCodes;
+
 /**
  * Class CanonicalReference to represent a unique reference to some Bible verses.
  * This reference normally is agnostic to translation but to handle collisions, optionally can contain a translation id.
@@ -104,6 +107,22 @@ class CanonicalReference
 
     public function addBookRef(BookRef $bookRef) {
         $this->bookRefs[] = $bookRef;
+    }
+
+    public function toUsxVerseId() {
+        $s = '';
+        $lastBook = end($this->bookRefs);
+        foreach ($this->bookRefs as $bookRef) {
+            $newBookRef = clone $bookRef;
+            $abbrev = $this->translationId ? Translation::getAbbrevById($this->translationId) : 'default';
+            $newBookRef->bookId = UsxCodes::getUsxFromBookAbbrevAndTranslation($bookRef->bookId, $abbrev);
+            $s .= str_replace(',',':',$newBookRef->toString());
+            if ($lastBook !== $bookRef) {
+                $s .= "; ";
+            }
+        }
+        return $s;
+       
     }
 
 }

@@ -39,9 +39,10 @@ class ReferenceParser
 
     public function __construct($referenceString)
     {
+        // the one and only unparseable reference with this implementation
+        $referenceString = str_replace('Ének.Én', 'ÉnekÉn', $referenceString);
         $this->lexer = new ReferenceLexer($referenceString);
         $this->input = $referenceString;
-        ////print("Parsing: $referenceString\n");
     }
 
     public function bookRefs()

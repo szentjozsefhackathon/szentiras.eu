@@ -20,6 +20,10 @@ class TranslationService {
         return $this->translationRepository->getByAbbrev($translationAbbrev);
     }
 
+    public function getById($translationId) : Translation {
+        return $this->translationRepository->getById($translationId);
+    }
+
     public function getAllTranslations() : Collection {
         return $this->translationRepository->getAll();
     }
