@@ -33,6 +33,7 @@ Route::post("/ai-search/search", '\SzentirasHu\Http\Controllers\Search\SemanticS
     ->middleware('throttle:10,1');
 
 Route::get("/ai-tool/{translationAbbrev}/{refString}", [AiController::class, 'getAiToolPopover']);
+Route::get("/ai-greek/{usx_code}/{chapter}/{verse}/{i}", [AiController::class, 'getGreekWordPanel']);
 
 Route::post('/searchbible.php', ' \SzentirasHu\Http\Controllers\Search\SearchController@postLegacy');
 

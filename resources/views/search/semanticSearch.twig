@@ -18,20 +18,27 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
 
 {% block content %}
     <h3>Keresés jelentés szerint, AI segítségével</h2>
-    <div class="card mb-2">
-        <div class="card-body">            
-        <div class="alert alert-primary" role="alert">
-            <p>A „jelentés szerinti” keresés mesterséges intelligenciát használ a kereséshez, és <b>másképp működik, mint a hagyományos keresés</b>. A használatához néhány fontos szempont:</p>
-            <ul>
-                <li>Mivel nagy a számításigénye, mi is kísérletezünk a legjobb/leghatékonyabb működéssel. A pozitív és negatív visszajelzéseknek egyaránt örülünk.</li>
-                <li>Pontos idézeteket, szavakat, mondatokat a <a href="/kereses">Részletes keresőben</a> keress!</li>   
-                <li>Minél több kontextust adsz a keresésben, annál pontosabbak lesznek a találatok. A <i>Mit mond Jézus az ellenség szeretetéről?</i> sokkal jobb lehet, mint az <i>ellenségszeretet</i>.</li>
-                <li>Ha idézetet keresel, csak nem tudod pontosan a szövegét, akkor próbáld meg idézőjelek között is.</li>
-                <li>Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási részekkel (versekkel, nagyobb szakaszokkal és fejezetekkel) válaszol.</li>
-            </ul>
-            
-        </div>
-
+                <div class="card bg-light mb-2">
+                    <div class="card-header collapsible" data-bs-toggle="collapse" data-bs-target="#cardContent">
+                        <i class="bi bi-chevron-down"></i>
+                        Keresési útmutató
+                        
+                </div>
+                <div id="cardContent" class="collapse">
+                    <div class="card-body">
+                        <p>A „jelentés szerinti” keresés mesterséges intelligenciát használ a kereséshez, és <b>másképp működik, mint a hagyományos keresés</b>. A használatához néhány fontos szempont:</p>
+                        <ul>
+                            <li>Mivel nagy a számításigénye, mi is kísérletezünk a legjobb/leghatékonyabb működéssel. A pozitív és negatív visszajelzéseknek egyaránt örülünk.</li>
+                            <li>Pontos idézeteket, szavakat, mondatokat a <a href="/kereses">Részletes keresőben</a> keress!</li>   
+                            <li>Minél több kontextust adsz a keresésben, annál pontosabbak lesznek a találatok. A <i>Mit mond Jézus az ellenség szeretetéről?</i> sokkal jobb lehet, mint az <i>ellenségszeretet</i>.</li>
+                            <li>Ha idézetet keresel, csak nem tudod pontosan a szövegét, akkor próbáld meg idézőjelek között is.</li>
+                            <li>Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási részekkel (versekkel, nagyobb szakaszokkal és fejezetekkel) válaszol.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <div class="card-body">                    
             <form role="form" class="form-horizontal" method="post"
                   action="{{ action('Search\\SemanticSearchController@anySearch') }}" id="semanticSearchForm">
                   {% if not session_get("anonymous_token") %}

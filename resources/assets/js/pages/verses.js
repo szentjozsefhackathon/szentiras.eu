@@ -81,13 +81,29 @@ const initToggler = function () {
                             sanitize: false
                         });
                         aiTrigger.classList.remove('loading');
-                        popover.show();                        
                         aiTrigger.dataset.loaded = true;
                         aiTrigger.addEventListener("shown.bs.popover", () => {
                             popover.tip.querySelector('.btn-close').addEventListener("click", () => {
                                 popover.hide();
                             });
+                            const greekWords = popover.tip.querySelectorAll('.greekWord');
+                            [...greekWords].map(greekWord => {  
+                                greekWord.addEventListener("click", (event) => {
+                                    const span = event.target;
+                                    $(span).parent().find('.explanation').html('<span class="spinner-border spinner-border-sm"></span>');
+                                    fetch(`/ai-greek/${span.getAttribute("data-usx")}/${span.getAttribute("data-chapter")}/${span.getAttribute("data-verse")}/${span.getAttribute("data-i")}`)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            $(span).parent().find('.explanation').html(data);
+                                        })
+                                        .catch((e) => {
+                                            $(span).parent().find('.explanation').html('');
+                                        });
+
+                                });
+                            });
                         });    
+                        popover.show();                        
                     })
                     .catch((e) => {
                         console.log("Error loading content", e);
@@ -98,11 +114,6 @@ const initToggler = function () {
             } else {
                 const popover = bootstrap.Popover.getInstance(aiTrigger);
                 popover.show();
-                aiTrigger.addEventListener("shown.bs.popover", () => {
-                    popover.tip.querySelector('.btn-close').addEventListener("click", () => {
-                        popover.hide();
-                    });
-                });    
             }
         }
     
