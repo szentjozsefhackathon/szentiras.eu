@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('strong_word_number');
-            $table->string('meaning');
-            $table->string('explanation');
+            $table->string("paradigm");
+            $table->text('meaning');
+            $table->text('explanation');
             $table->integer('order');
             $table->string('source');
         });

@@ -90,6 +90,8 @@ const initToggler = function () {
                             [...greekWords].map(greekWord => {  
                                 greekWord.addEventListener("click", (event) => {
                                     const span = event.target;
+                                    $(span).parent().find('.greekWord').removeClass('mark');
+                                    $(span).addClass('mark');
                                     $(span).parent().find('.explanation').html('<span class="spinner-border spinner-border-sm"></span>');
                                     fetch(`/ai-greek/${span.getAttribute("data-usx")}/${span.getAttribute("data-chapter")}/${span.getAttribute("data-verse")}/${span.getAttribute("data-i")}`)
                                         .then(response => response.json())

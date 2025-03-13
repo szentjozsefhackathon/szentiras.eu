@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('strong_word_number');
-            $table->string('etymology');
+            $table->text('etymology');
             $table->string('source');
         });
     }

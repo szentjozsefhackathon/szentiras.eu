@@ -12,6 +12,7 @@ use SzentirasHu\Models\StrongWord;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ReferenceService;
 use SzentirasHu\Service\Search\SemanticSearchService;
+use SzentirasHu\Service\Text\BookService;
 use SzentirasHu\Service\Text\TextService;
 use SzentirasHu\Service\Text\TranslationService;
 
@@ -22,7 +23,8 @@ class AiController extends Controller
         protected TextService $textService,
         protected SemanticSearchService $semanticSearchService,
         protected TranslationService $translationService,
-        protected ReferenceService $referenceService
+        protected ReferenceService $referenceService,
+        protected BookService $bookService
     ) {}
 
     public function getAiToolPopover($translationAbbrev, $reference)
@@ -113,9 +115,56 @@ class AiController extends Controller
                 'strongWord' => $strongWord,
                 'printed' => $printed,
             ]
-
         )->render();
         return response()->json($view);
+    }
+
+    public function getAllInstancesOfGreekWord($strongNumber, ?int $offset = 0)
+    {
+        $limit = 50;
+        $translation = $this->translationService->getDefaultTranslation();
+
+        $strongWord = StrongWord::where('number', $strongNumber)->first();
+        $hitCount = $strongWord->greekVerses()->count();
+
+        $otherGreekVerses = $strongWord->greekVerses()
+            ->join('books', function ($join) use ($translation) {
+                $join->on('greek_verses.usx_code', '=', 'books.usx_code')
+                    ->where('books.translation_id', '=', $translation->id);
+            })
+            ->select('greek_verses.*')
+            ->orderBy('books.order', 'asc')
+            ->orderBy('chapter', 'asc')
+            ->orderBy('verse', 'asc')
+            ->offset($offset) 
+            ->limit($limit)
+            ->get();
+
+ 
+        $instances = [];
+        if (!empty($otherGreekVerses)) {
+            foreach ($otherGreekVerses as $greekVerse) {
+                $greekText = str_replace('¶', '', $greekVerse->text);                
+                $explodedStrongs = explode(' ', $greekVerse->strongs);
+                $strongIndexes = [];
+                foreach ($explodedStrongs as $index => $explodedStrong) {
+                    if ($explodedStrong == $strongWord->lemma) {
+                        $strongIndexes[] = $index;
+                    }
+                }
+                $explodedGreekText = explode(' ', $greekText);
+                foreach ($strongIndexes as $index) {
+                    $explodedGreekText[$index] = "<mark>{$explodedGreekText[$index]}</mark>";
+                }
+                $greekText = implode(' ', $explodedGreekText);
+                $book = $this->bookService->getBookByUsxCodeTranslation($greekVerse->usx_code, $translation->abbrev);
+                $ref = CanonicalReference::fromString("{$book->abbrev} {$greekVerse->chapter},{$greekVerse->verse}", $translation->id);
+                $pureText = $this->textService->getPureText($ref, $translation, false);
+                $instances[] = ["book" => $book, "greekVerse" => $greekVerse, "greekText" => $greekText, "pureText" => $pureText, "ref" => $ref];
+            }
+        }
+
+        return view("ai.allInstancesOfGreekWord", ['instances' => $instances, 'strongWord' => $strongWord, 'hitCount' => $hitCount, 'limit' => $limit, 'offset' => $offset]);
     }
 
 
@@ -142,12 +191,16 @@ class AiController extends Controller
             "ADV"  => "határozószó",
             "CONJ" => "kötőszó",
             "COND" => "feltételes kötőszó",
-            "PRT" => "indulatszó",
+            "PRT" => "diszjunktív partikula",
+            "PRT-I" => "kérdő partikula",
+            "PRT-K" => "diszjunktív partikula",
+            "PRT-N" => "negatív partikula",
+
             "PREP" => "elöljárószó",
             "INJ" => "felkiáltószó",
             "ARAM" => "arámi",
             "HEB" => "héber",
-            "N-PRI" => "nem ragozható tulajdonnév",
+            "N-PRI" => "tulajdonnév",
             "N-NSM" => "nem ragozható tulajdonnév",
             "N-LI" => "nem ragozható betű",
             "N-OI" => "nem ragozható főnév",
@@ -165,21 +218,21 @@ class AiController extends Controller
             }
             $posTag = $parts[0];
             $attributes = $parts[1];
-            $posLookup = [ 
-                "N" => "főnév", 
-                "A" => "melléknév", 
-                "T" => "határozott névelő", 
+            $posLookup = [
+                "N" => "főnév",
+                "A" => "melléknév",
+                "T" => "határozott névelő",
                 "R" => "vonatkozó névmás",
-                "C" => "kölcsönös névmás", 
-                "D" => "mutató névmás", 
-                "K" => "korrelatív névmás", 
+                "C" => "kölcsönös névmás",
+                "D" => "mutató névmás",
+                "K" => "korrelatív névmás",
                 "I" => "kérdő névmás",
                 "X" => "határozatlan névmás",
                 "Q" => "korrelatív vagy kérdő névmás",
                 "F" => "visszaható névmás",
                 "S" => "birtokos névmás",
                 "P" => "személyes névmás"
-                ];
+            ];
 
 
             $caseLookup = ["N" => "alanyeset", "G" => "birtokos eset", "D" => "részes eset", "A" => "tárgyeset", "V" => "megszólító eset"];
@@ -196,8 +249,8 @@ class AiController extends Controller
 
             // Felépítjük az eredmény tömböt.
             $result[] = " " . $posLookup[$posTag] ?? "";
+            $result[] = " " . $numberLookup[$numberCode] ?? "";            
             $result[] = " " . $caseLookup[$caseCode] ?? "";
-            $result[] = " " . $numberLookup[$numberCode] ?? "";
             $result[] = " " . $genderLookup[$genderCode] ?? "";
 
             return implode(',', $result);

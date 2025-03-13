@@ -36,7 +36,7 @@
         {% for piece in greekText %}
           <span class="greekWord" data-usx="{{ piece.usx_code }}" data-chapter="{{ piece.chapter }}" data-verse="{{ piece.verse }}" data-i="{{ piece.i }}" title="{{ piece.strong }} ({{ piece.translit }})">{{ piece.printed }}</span>
         {% endfor %}
-        <div class="explanation"><i class="bi bi-lightbulb"></i> Kattints a görög szavakra a jelentésük megjelenítéséhez.</div>
+        <div class="explanation"><div class="ps-2"><i class="bi bi-lightbulb"></i> Kattints a görög szavakra a jelentésük megjelenítéséhez.</div></div>
       </div>
 
       {% endif %}

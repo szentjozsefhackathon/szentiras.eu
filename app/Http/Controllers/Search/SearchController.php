@@ -6,6 +6,7 @@ use App;
 use Request;
 use Redirect;
 use Response;
+use SzentirasHu\Data\Entity\Verse;
 use SzentirasHu\Data\UsxCodes;
 use SzentirasHu\Http\Controllers\Controller;
 use SzentirasHu\Service\Reference\CanonicalReference;
@@ -19,6 +20,7 @@ use SzentirasHu\Service\VerseContainer;
 use SzentirasHu\Data\Repository\BookRepository;
 use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
+use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Service\Text\TranslationService;
 use View;
 
@@ -87,12 +89,14 @@ class SearchController extends Controller
 
     public function anySearch()
     {
-        if (Request::get('textToSearch') == null) {
+        if (Request::get('textToSearch') == null && Request::get('greekTranslit') == null) {
             return $this->getIndex();
         }
         $form = $this->prepareForm();
         $view = $this->getView($form);
-        $view = $this->searchBookRef($form, $view);
+        if ($form->textToSearch) {
+            $view = $this->searchBookRef($form, $view);
+        }
         $view = $this->searchFullText($form, $view);
         return $view;
     }
@@ -104,6 +108,7 @@ class SearchController extends Controller
     {
         $form = new SearchForm();
         $form->textToSearch = Request::get('textToSearch');
+        $form->greekTranslit = Request::get('greekTranslit');
         $form->grouping = Request::get('grouping');
         $form->book = Request::get('book');
         if (Request::get('translation') > 0) {
@@ -128,7 +133,7 @@ class SearchController extends Controller
      * @param $view
      * @return mixed
      */
-    private function searchBookRef($form, $view)
+    private function searchBookRef(SearchForm $form, $view)
     {
         $augmentedView = $view;
         $translatedRefs = $this->searchService->findTranslatedRefs($form->textToSearch, $form->translation);
@@ -158,12 +163,58 @@ class SearchController extends Controller
      */
     private function searchFullText($form, $view)
     {
-        $searchParams = $this->createFullTextSearchParams($form);
-        $view = $this->addTranslationHits($view, $searchParams);
-        $results = $this->searchService->getDetailedResults($searchParams);
-        if ($results) {
-            $view = $view->with('fullTextResults', $results);
+        $greekVerses = [];
+        if ($form->greekTranslit) {
+            $explodedGreekText = explode(" " , strtolower($form->greekTranslit));
+            $query = GreekVerse::query();
+            foreach ($explodedGreekText as $i => $word) {
+                $query->where('strong_normalizations', '~', "{$word}");
+            }
+            $greekVerses = $query->get()->toArray();
+            $gepis = array_map(fn ($greekVerse) => "{$greekVerse['usx_code']}_{$greekVerse['chapter']}_{$greekVerse['verse']}", $greekVerses);
+            $greekVersesPerGepi = array_combine($gepis, $greekVerses);
+            $searchParams = $this->createFullTextSearchParams($form);
+            $query = Verse::query();
+            if ($searchParams->translationId) {
+                $query = $query->where('trans', $searchParams->translationId);
+            }
+            if ($searchParams->usxCodes) {
+                $query= $query->whereIn('usx_code', array_keys($searchParams->usxCodes));
+            }
+            $query= $query->whereIn('gepi', $gepis)->whereIn('tip', [901]);
+
+            $verses = $query->limit(5000)->orderBy('tip')->orderBy('usx_code')->orderBy('chapter')->orderBy('numv')->get();
+            
+            $results = new FullTextSearchResult();
+            $results->verses = [];
+            foreach ($verses as $verse) {
+                $results->verseIds[] = $verse->id;
+                $results->verses[$verse->id]['id'] = $verse->id;
+                $results->verses[$verse->id]['trans'] = $verse->trans;
+                $results->verses[$verse->id]['usx_code'] = $verse->usx_code;
+                $results->verses[$verse->id]['chapter'] = $verse->chapter;
+                $results->verses[$verse->id]['numv'] = $verse->numv;
+                $results->verses[$verse->id]['gepi'] = $verse->gepi;
+                $results->verses[$verse->id]['tip'] = $verse->tip;
+                $results->verses[$verse->id]['weight()'] = 1;
+                $results->verses[$verse->id]['greekText'] = str_replace('¶', '', $greekVersesPerGepi[$verse->gepi]['text']);
+            }
+            if (!$verses->isEmpty()) {
+                $results->hitCount = count($verses);
+                $processedResults = $this->searchService->handleFullTextResults($results, $searchParams);
+                $view = $view->with('fullTextResults', $processedResults);
+            }
+
+        } else {
+            $searchParams = $this->createFullTextSearchParams($form);
+            $view = $this->addTranslationHits($view, $searchParams);
+            $results = $this->searchService->getDetailedResults($searchParams);
+            if ($results) {
+                $view = $view->with('fullTextResults', $results);
+            }    
         }
+        
+
         return $view;
     }
 

@@ -135,7 +135,7 @@ class SearchService
         }
     }
 
-    private function handleFullTextResults($sphinxResults, FullTextSearchParams $params)
+    public function handleFullTextResults(FullTextSearchResult $sphinxResults, FullTextSearchParams $params)
     {
         $allTranslationIds = $this->translationService->getAllTranslations()->pluck('id');
         $sortedVerses = $this->verseRepository->getVersesInOrder($sphinxResults->verseIds);
@@ -200,6 +200,7 @@ class SearchService
                         $verseData['chapter'] = $verse->chapter;
                         $verseData['numv'] = $verse->numv;
                         $verseData['text'] = preg_replace('/<[^>]*>/', ' ', $verse->verse);
+                        $verseData['greekText'] = $sphinxResults->verses[$verse->id]['greekText'] ?? null;
                         if ($verse->headings) { // Ez nem üzemel, mert nem volt getParsedVerse mert nem volt VerseContainer, mert book-onként kall azt csináni.
                             echo "bizony";
                             foreach ($verse->headings as $heading) {
@@ -237,6 +238,10 @@ class SearchService
         $results = [];
         $chapterCount = 0;
         $verseCount = 0;
+        $gepiToId = []; 
+        foreach ($sphinxResults->verses as $id => $verse) {
+            $gepiToId[$verse['gepi']] = $id;
+        }
         foreach ($verseContainers as $verseContainer) {
             $result = [];
             $result['book'] = $verseContainer->book;
@@ -248,6 +253,7 @@ class SearchService
                 $verseData['chapter'] = $verse->chapter;
                 $verseData['numv'] = $verse->numv;
                 $verseData['text'] = '';
+                $verseData['greekText'] =  $sphinxResults->verses[$gepiToId[$verse->gepi]]['greekText'] ?? null;
                 if ($verse->getText()) {
                     $verseData['text'] .= preg_replace('/<[^>]*>/', ' ', $verse->getText());
                 }
@@ -282,34 +288,6 @@ class SearchService
         return ['resultsByBookNumber' => $resultsByBookNumber, 'results' => $results, 'hitCount' => $hitCount];
     }
 
-    private function groupVersesByBookNumber($sortedVerses, $groupByVerse = false)
-    {
-        $verseContainers = [];
-        foreach ($sortedVerses as $verse) {
-            $book = $verse->book;
-            if ($groupByVerse or 4 == 4) $key = $verse->gepi;
-            else $key = $book->usx_code . "_" . $verse->chapter;
-
-            if (!array_key_exists($key, $verseContainers)) {
-                $verseContainers[$key] = [];
-            }
-            if (!array_key_exists($book->translation_id, $verseContainers[$key])) {
-                $verseContainers[$key][$book->translation_id] = [
-                    'translation' => $verse->translation,
-                    'book' => $book,
-                    'chapter' => $verse->chapter,
-                    'numv' => $verse->numv,
-                    'verses' => new VerseContainer($book)
-                ];
-            }
-
-            $book->translation_id . '/' . $book->abbrev;
-
-            $verseContainer = $verseContainers[$key][$book->translation_id]['verses'];
-            $verseContainer->addVerse($verse);
-        }
-        return $verseContainers;
-    }
     private function groupVersesByBook($sortedVerses, $translationId)
     {
         $verseContainers = [];

@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Service\Text;
 
+use Cache;
 use Illuminate\Support\Collection;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Translation;
@@ -26,8 +27,10 @@ class BookService {
     }
 
     public function getBookByUsxCodeTranslation(string $usxCode, string $translationAbbrev) : Book {
+        return Cache::remember("getBookByUsxCodeTranslation_{$usxCode}_{$translationAbbrev}", now()->addDays(), function() use ($usxCode, $translationAbbrev) {
         $translation = $this->translationService->getByAbbreviation($translationAbbrev);
-        return $this->bookRepository->getByNumberForTranslation($usxCode, $translation->id);
+        return $this->bookRepository->getByUsxCodeForTranslation($usxCode, $translation);
+        });
     }
 
 }

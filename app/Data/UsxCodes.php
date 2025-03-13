@@ -210,7 +210,6 @@ class UsxCodes
         ],
         'EZR' => [
             'default' => [
-                'Ez',
                 'Ezd',
                 'Ezdr',
                 'Ezsd',
@@ -224,11 +223,13 @@ class UsxCodes
         ],
         'EZK' => [
             'default' => [
+                'Ez',
                 'Ezek',
                 'Ezék',
                 'Ezekias',
                 'Ezekiás',
                 'Ezékiás',
+                'Ezekiel',
             ],
         ],
         'HAB' => [
