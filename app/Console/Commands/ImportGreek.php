@@ -89,16 +89,16 @@ class ImportGreek extends Command
             $header = fgetcsv($file);
             while (($row = fgetcsv($file)) !== false) {
                 $data = array_combine($header, $row);
-                $chapter = $data['chapter'];
-                $verse = $data['verse'];
+                $chapter = (int)$data['chapter'];
+                $verse = (int)$data['verse'];
                 $parsedVerses[$usxCode][$chapter][$verse] = $data['text'];
             }
             $file = Storage::readStream("greek/unparsed/{$usxCode}.csv");
             $header = fgetcsv($file);
             while (($row = fgetcsv($file)) !== false) {
                 $data = array_combine($header, $row);
-                $chapter = $data['chapter'];
-                $verse = $data['verse'];
+                $chapter = (int) $data['chapter'];
+                $verse = (int) $data['verse'];
                 $unparsedVerses[$usxCode][$chapter][$verse] = $data['text'];
             }
         }

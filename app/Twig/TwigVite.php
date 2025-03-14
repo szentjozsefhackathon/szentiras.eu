@@ -25,7 +25,7 @@ class TwigVite extends AbstractExtension
     /**
      * Set a new string callback.
      *
-     * @param string|object
+     * @param string|object $callback
      *
      * @return void
      */
@@ -51,10 +51,7 @@ class TwigVite extends AbstractExtension
             new TwigFunction(
                 'vite',
                 function (...$arguments) {
-                    $arguments ??= '()';
-
-                    $html = app(IlluminateVite::class)($arguments);
-
+                    $html = app(IlluminateVite::class)(...$arguments);
                     return $html->toHtml();
                 }
             ),

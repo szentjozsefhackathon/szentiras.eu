@@ -308,19 +308,21 @@ class CreateEmbeddingVectors extends Command
 
     private function embedExcerpt(CanonicalReference $reference, string $text, EmbeddedExcerptScope $scope, Translation $translation, Book $book, int $chapter, int $verse = null, int $toChapter = null, int $toVerse = null, $gepi = null)
     {
+        $hash = md5($text);
         $chapterId = $reference->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
         $this->progressBar->setMessage("{$reference->toString()}");
         $this->progressBar->advance();
         $existingVector = $this->getExistingVector($text, $reference, $translation, $this->option("update"));
-        $update = empty($existingVector);
-        $forceUpdate = $this->option("forceUpdate");
-        if (!empty($text)) {
-            // retrieve vectors - either from text or from OpenAI
-            $vectorAlreadyKnown = array_has($this->currentBookFileData, $chapterId) && array_has($this->currentBookFileData[$chapterId], md5($text));
-            if ($vectorAlreadyKnown && !$forceUpdate) {
-                    $response = $this->currentBookFileData[$chapterId][md5($text)];
-                    $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $response->embedding, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
-            } else if ($this->option("source") && !$vectorAlreadyKnown) {
+        // the vector (at least for the current text status) doesn't exist in the target
+        $update = empty($existingVector); // if the vector doesn't exist for the current target, we need to get it from the source (either file or OpenAI)
+        $forceUpdate = $this->option("forceUpdate"); 
+        if (!empty($text) && $update) { // if we already know the vector, we skip
+            // retrieve vectors - either from the file source or from OpenAI. If we don't know the vector of the current text, we will get from openAI.
+            $vectorAlreadyKnown = array_key_exists($chapterId, $this->currentBookFileData) && array_key_exists($hash, $this->currentBookFileData[$chapterId]);
+            if ($vectorAlreadyKnown && !$forceUpdate) { // if forceUpdate, we get it from OpenAi for sure
+                $response = $this->currentBookFileData[$chapterId][$hash];
+                $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $response->embedding, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
+            } else if ($this->option("source") && !$vectorAlreadyKnown) { // we don't know the vector, but we should, as the target doesn't know it
                 $this->warn("Vector not found for {$reference->toString()} in source. First you must generate with --target (maybe using the --update parameter if the text might have changed.)");
             } else {
                 $retries = 0;
@@ -343,8 +345,6 @@ class CreateEmbeddingVectors extends Command
                     $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $response->vector, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
                 }
             }
-        } else if ($update && !empty($text)) {
-            $this->saveEmbeddingExcerpt($chapterId, $text, $reference, $existingVector, $scope, $translation, $book, $chapter, $verse, $toChapter, $toVerse, $gepi);
         }
     }
 

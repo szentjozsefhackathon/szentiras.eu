@@ -50,7 +50,6 @@ class ImportScripture extends Command
     protected $description = 'Update texts from external source (xls)';
 
     private $translationRepository;
-    private $bookRepository;
     private $hunspellEnabled = false;
     private $newStems = 0;
     private $sourceDirectory;
@@ -81,18 +80,17 @@ class ImportScripture extends Command
      *
      * @return void
      */
-    public function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository)
+    public function __construct(TranslationRepository $translationRepository)
     {
         parent::__construct();
         $this->translationRepository = $translationRepository;
-        $this->bookRepository = $bookRepository;
         $this->sourceDirectory = Config::get('settings.sourceDirectory');
     }
 
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
     public function handle(): int
     {
@@ -112,7 +110,7 @@ class ImportScripture extends Command
             $this->info("A fájl betöltése innen: " . $this->option('file'));
             $filePath = $this->ensureProperFile($filePath);
         } else {
-            $url = Config::get("translations.{$transAbbrevToImport}.textSource");
+            $url = Config::get("translations.definitions.{$transAbbrevToImport}.textSource");
             if (empty($url)) {
                 App::abort(500, "Nincs megadva a TEXT_SOURCE_{$transAbbrevToImport} konfiguráció.");
             }
@@ -380,6 +378,7 @@ class ImportScripture extends Command
 
     private function readVerseSheetInserts(Sheet $versesSheet, array $pipes): array
     {
+        $verseInserts = [];
         $verseRowIterator = $versesSheet->getRowIterator();
         $verseSheetHeaders = $this->getHeaders($verseRowIterator);
         $dbToHeaderMap = $this->mapVerseSheetHeadersToDbColumns($verseSheetHeaders);
@@ -556,6 +555,7 @@ class ImportScripture extends Command
         $processedVerse = preg_replace(['/Í/i', '/Ú/i', '/Ő/i', '/Ó/i', '/Ü/i'], ['í', 'ú', 'ő', 'ó', 'ü'], $processedVerse);
 
         $verseroots = collect();
+        $collectedStems = collect();
         preg_match_all('/(\p{L}+)/u', $processedVerse, $words);
         // take the first match as lower case
         foreach ($words[1] as $word) {
@@ -571,23 +571,26 @@ class ImportScripture extends Command
                         // store only stems as stems, as we search for the original word as well, no need to search for that in the stems
                         if (preg_match_all("/st:(\p{L}+)/u", $line, $matches)) {
                             $stem = $matches[1];
-                            if ($stem !== $word) {
+                            if ($stem[0] !== $word) {
                                 $stems = $stems->merge($stem);
+                            } else {
+                                $collectedStems->add($word);
                             }
                         }
                     } else {
-                        $cachedStems = $stems->unique()->toArray();
+                        $cachedStems = array_values($stems->unique()->toArray());
                         Cache::store("array")->put("hunspell_{$word}", $cachedStems, 60 * 60 * 24);
                         $this->processedStems[$word] = $cachedStems;
                         $verseroots = $verseroots->merge($stems)->unique();
+                        $collectedStems = $collectedStems->merge($verseroots);
                         $this->newStems++;
                         break;
                     }
                 }
             }
         }
-        foreach ($verseroots as $verseroot) {
-            $this->processedStems["_stems"][$verseroot] = true;
+        foreach ($collectedStems as $collectedStem) {
+            $this->processedStems["_stems"][$collectedStem] = true;
         }
         return join(' ', $verseroots->toArray());
     }
@@ -682,27 +685,6 @@ class ImportScripture extends Command
         $progressBar->setBarWidth(24);
         $progressBar->setFormat("[%bar%] %message%\n");
         return $progressBar;
-    }
-
-    private function startHunspell(array &$pipes)
-    {
-        return proc_open(
-            'stdbuf -oL hunspell -m -d hu_HU -i UTF-8',
-            $this->descriptorspec,
-            $pipes,
-            null,
-            null
-        );
-    }
-
-    private function closeHunspell($hunspellProcess, array $pipes): void
-    {
-        fclose($pipes[0]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        if (isset($hunspellProcess)) {
-            proc_close($hunspellProcess);
-        }
     }
 
     private function removeAccents($string): string

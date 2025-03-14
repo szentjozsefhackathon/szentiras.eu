@@ -50,7 +50,7 @@ return [
                 'xref' => [920],
                 'footnoteInterval' => [1990]
             ],
-            'textSource' => env('TEXT_SOURCE_KNB'),
+            'textSource' => env('TEXT_SOURCE_KNB', 's3'),
             'id' => 3,
             'order' => 1,
         ],
@@ -62,7 +62,7 @@ return [
                 'heading' => [1=>1, 2=>2, 3=>3],
                 'xref' => [2017]
             ],
-            'textSource' => env('TEXT_SOURCE_KG'),
+            'textSource' => env('TEXT_SOURCE_KG', 's3'),
             'id' => 4,
             'order' => 11,
         ],
@@ -73,7 +73,7 @@ return [
                 'heading' => [401=>2, 501=>4, 601=>4, 701=>5, 704=>6],
                 'footnote' => []
             ],
-            'textSource' => env('TEXT_SOURCE_SZIT'),
+            'textSource' => env('TEXT_SOURCE_SZIT', 's3'),
             'id' => 1,
             'order' => 3,
         ],
@@ -83,7 +83,7 @@ return [
                 'text' => [901],
                 'heading' => [703 => 3]
             ],
-            'textSource' => env('TEXT_SOURCE_UF'),
+            'textSource' => env('TEXT_SOURCE_UF', 's3'),
             'id' => 2,
             'order' => 10,
         ],
@@ -93,7 +93,7 @@ return [
                 'text' => [901],
                 'heading' => [701=>4, 704=>5]
             ],
-            'textSource' => env('TEXT_SOURCE_BD'),
+            'textSource' => env('TEXT_SOURCE_BD', 's3'),
             'id' => 5,
             'order' => 5,
         ],
@@ -105,7 +105,7 @@ return [
                 'footnote' => [2001],
                 'xref' => [2021]
             ],
-            'textSource' => env('TEXT_SOURCE_RUF'),
+            'textSource' => env('TEXT_SOURCE_RUF', 's3'),
             'id' => 6,
             'order' => 9,
         ],
@@ -115,7 +115,7 @@ return [
                 'text' => [901],
                 'footnote' => [2001, 2004, 2023]
             ],
-            'textSource' => env('TEXT_SOURCE_STL'),
+            'textSource' => env('TEXT_SOURCE_STL', 's3'),
             'id' => 7,
             'order' => 4,
         ]
