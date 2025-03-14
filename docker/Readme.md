@@ -106,11 +106,11 @@ With the `depends_on` keywords we can controll the order of the starting process
 | database       | postgresql    | 5432 | The database, to let you look into it with e.g. DBeaver
 
 
-## How to test the production image
+## Testing the production image
 
-The `.env.prod` file is mapped to `.env` in docker-compose. So if you don't have a way to give all values with not good defaults as environment variables, you should make a copy of some example values and generate the application key for first time running it.
-(The `.env` or `.env.prod` are *not* set as `env_file` in the compose file, because in that case they become environment variables, and they can no longer be changed from the file.)
-Note that in `config/*.php` configurations there should be defaults for **all** variables here, so having a .env file should be not needed. All keys, credentials etc. should be in secrets or set by environment variables on the server. That's also true for other variables. Having a `.env.prod` file as below is for easing testing the production build locally.
+The `.env.prod` file is mapped to `env_file` in docker-compose, so they are used as environment variables, and it is not intended to log in the container and change .env file there (there is actually no .env file in the production container).
+Note that in `config/*.php` configurations there should be defaults for most variables. All keys, credentials etc. should be in secrets or set by environment variables on the server. That's also true for other variables. 
+However having an `.env.prod` file as below is for easing testing the production build locally.
 
 ```
 cp .env.prod.dist .env.prod
