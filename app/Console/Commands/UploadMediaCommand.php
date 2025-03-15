@@ -164,8 +164,8 @@ class UploadMediaCommand extends Command
                 $media = $media->get();
                 $media->each(function ($m) use ($from, $to) {
                     $m->usx_code = $to[0];
-                    $m->chapter = $to[1];
-                    $m->verse = $to[2];
+                    $m->chapter = (int)$to[1];
+                    $m->verse = (int)$to[2];
                     $m->save();
                     $this->info("Media moved: $m->id from $from[0]_$from[1]_$from[2] to $to[0]_$to[1]_$to[2]");
                 });

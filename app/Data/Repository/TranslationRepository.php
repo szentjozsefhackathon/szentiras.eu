@@ -18,9 +18,8 @@ interface TranslationRepository {
 
     /**
      * @param bool $denom
-     * @return Translation[]
      */
-    public function getByDenom($denom = false);
+    public function getByDenom($denom = false) : Collection;
 
     /**
      * @param Translation $translation

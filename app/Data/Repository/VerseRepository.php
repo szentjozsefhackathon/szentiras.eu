@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Data\Repository;
 
+use Illuminate\Support\Collection;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Data\Entity\Verse;
@@ -11,9 +12,9 @@ interface VerseRepository {
     public function getTranslatedChapterVerses($bookId, $chapters, $types);
 
     /**
-     * @return Verse
+     * @return Collection<Verse>
      */
-    public function getLeadVerses($bookId);
+    public function getLeadVerses($bookId) : Collection;
 
     /**
      * @param int[] $verseIds

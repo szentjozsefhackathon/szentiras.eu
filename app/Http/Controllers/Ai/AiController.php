@@ -95,7 +95,7 @@ class AiController extends Controller
             }
         }
 
-        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts ?? [], 'similars' => $similars ?? [], 'greekText' => $annotatedGreekText, 'hash' => $hash])->render();
+        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts, 'similars' => $similars ?? [], 'greekText' => $annotatedGreekText, 'hash' => $hash])->render();
         return response()->json($view);
     }
 
@@ -182,10 +182,10 @@ class AiController extends Controller
      *   V-PAI-1S → "ige, jelen idő, aktív, kijelentő mód, első személy, egyes szám"
      *   V-2AOM-3P-ATT → "ige, második aoristus, passzív deponens, felszólító mód, harmadik személy, többes szám, attikus alak"
      *
-     * @param string $code The morph code starting with "V-"
+     * @param string $morphCode The morph code starting with "V-"
      * @return string Explanation in Hungarian.
      */
-    private function parseMorphology($morphCode)
+    private function parseMorphology($morphCode) : ?string
     {
         $undeclined = [
             "ADV"  => "határozószó",
@@ -248,10 +248,10 @@ class AiController extends Controller
             $genderCode = substr($attributes, 2, 1);
 
             // Felépítjük az eredmény tömböt.
-            $result[] = " " . $posLookup[$posTag] ?? "";
-            $result[] = " " . $numberLookup[$numberCode] ?? "";            
-            $result[] = " " . $caseLookup[$caseCode] ?? "";
-            $result[] = " " . $genderLookup[$genderCode] ?? "";
+            $result[] = " " . $posLookup[$posTag];
+            $result[] = " " . $numberLookup[$numberCode];            
+            $result[] = " " . $caseLookup[$caseCode];
+            $result[] = " " . $genderLookup[$genderCode];
 
             return implode(',', $result);
         }
@@ -275,7 +275,7 @@ class AiController extends Controller
      * @param string $code The morph code starting with "V-"
      * @return string Explanation in Hungarian.
      */
-    function parseVerbMorphCode($code)
+    function parseVerbMorphCode($code) : ?string
     {
         $code = trim($code);
         $attic = false;

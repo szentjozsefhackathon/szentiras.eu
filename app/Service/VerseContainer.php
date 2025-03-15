@@ -25,14 +25,9 @@ class VerseContainer
      */
     private $verseParser;
     /**
-     * @var Verse[]
+     * @var Verse[][]
      */
     public $rawVerses;
-
-    /**
-     * @var VerseData[]
-     */
-    private $parsedVerses;
 
     function __construct(Book $book, $bookRef=null)
     {

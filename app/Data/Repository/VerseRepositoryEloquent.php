@@ -38,7 +38,7 @@ class VerseRepositoryEloquent implements VerseRepository {
 
     }
 
-    public function getLeadVerses($bookId)
+    public function getLeadVerses($bookId) : Collection
     {
         return Verse::where('book_id', $bookId)
             ->whereIn('numv', ['1', '2'])

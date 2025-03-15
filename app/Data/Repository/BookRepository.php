@@ -18,7 +18,7 @@ interface BookRepository {
 
     /**
      * @param string $abbrev
-     * @param int $translationId
+     * @param Translation $translation
      * @return Book
      */
     public function getByAbbrevForTranslation($abbrev, Translation $translation);
