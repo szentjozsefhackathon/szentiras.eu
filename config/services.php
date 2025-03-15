@@ -35,5 +35,9 @@ return [
         'url' => env('CLOUDFLARE_TURNSTILE_URL', 'https://challenges.cloudflare.com/turnstile/v0/siteverify')
     ],
 
+'anthropic' => [
+    'api_key' => env('ANTHROPIC_API_KEY')
+]
+
 
 ];
