@@ -2,12 +2,13 @@
 
 namespace SzentirasHu\Console\Commands;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Models\StrongWord;
+
 
 class ImportGreek extends Command
 {
@@ -15,9 +16,13 @@ class ImportGreek extends Command
      * The name and signature of the console command.
      *
      * @var string
-     */
+     */    
     protected $signature = 'szentiras:import-greek
-        {--skip-words : Skip the import of the strong words}
+        {--skip-words : Skip the import of the strong words }
+        {--skip-verses : Skip importing the verses. Useful if it is already imported, and you only want to generate the vectors. }
+        {--create-vectors : Create the vectors based on the existing verses }
+        {--vector-source= : filesystem, s3. Vector-target must be db if given. If not given, the vectors are generated with AI. }        
+        {--vector-target=db : filesystem, s3 or db }
     ';
 
     /**
@@ -60,24 +65,41 @@ class ImportGreek extends Command
     ];
 
     const SOURCE = 'BMT';
+    private string $model;
+    private int $dimensions;
 
     private $strongWords = [];
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->model = \Config::get("settings.ai.embeddingModel");
+        $this->dimensions = \Config::get("settings.ai.embeddingDimensions");
+    }
+
+    
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        GreekVerse::truncate();
-        $this->downloadFiles();
+        if (!$this->option('skip-verses')) {
+            GreekVerse::truncate();
+            $this->downloadFiles();    
+        }
         if (!$this->option('skip-words')) {
             StrongWord::truncate();
             $this->fillStrongWordsTable();
-        }
+        }        
         foreach (StrongWord::all() as $strongWord) {
             $this->strongWords[$strongWord->number] = $strongWord;
         }
-        $this->fillGreekVerseTable();
+    if (!$this->option('skip-verses')) {
+            $this->fillGreekVerseTable();
+        }
+        if ($this->option('create-vectors')) {
+            $this->createVectors();
+        }        
     }
 
     private function fillGreekVerseTable() {
@@ -103,7 +125,7 @@ class ImportGreek extends Command
             }
         }
         $progressBar = $this->output->createProgressBar(count($parsedVerses));
-        foreach ($parsedVerses as $usxCode => $parsedBookVerses) {
+        foreach ($parsedVerses as $usxCode => $parsedBookVerses) {            
             $progressBar->advance();
             foreach ($parsedBookVerses as $chapter => $parsedBookVerse) {
                 foreach ($parsedBookVerse as $verse => $parsedText) {
@@ -163,12 +185,21 @@ class ImportGreek extends Command
                 }
             }
         }
+        
         $progressBar->finish();
         $this->output->newline();
-                
 
     }
 
+    function varexport($expression, $return=FALSE) {
+        $export = var_export($expression, TRUE);
+        $export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
+        $array = preg_split("/\r\n|\n|\r/", $export);
+        $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
+        $export = join(PHP_EOL, array_filter(["["] + $array));
+        if ((bool)$return) return $export; else echo $export;
+    }
+    
     private function fillStrongWordsTable() {
         $xmlFile = Storage::get("greek/dictionary.xml");
         $this->info('Fill Strong words');
@@ -215,4 +246,18 @@ class ImportGreek extends Command
             }
         }
     }
+
+    private function createVectors() {        
+        $this->info("Creating vectors");
+        $greekVerses = GreekVerse::all();
+        $progressBar = $this->output->createProgressBar(count($greekVerses));
+        foreach ($greekVerses as $greekVerse) {
+            
+            $progressBar->advance();
+        }
+        $progressBar->finish();
+        $this->info("Vectors created");
+    }
+
+
 }
