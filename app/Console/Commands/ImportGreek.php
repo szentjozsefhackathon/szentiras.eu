@@ -145,6 +145,7 @@ class ImportGreek extends Command
                     $greekVerse = new GreekVerse();
                     $greekVerse->source = self::SOURCE;
                     $greekVerse->usx_code = $usxCode;
+                    $greekVerse->gepi="{$usxCode}_{$chapter}_{$verse}";
                     $greekVerse->chapter = $chapter;
                     $greekVerse->verse = $verse;
                     $greekVerse->text = $unparsedText;

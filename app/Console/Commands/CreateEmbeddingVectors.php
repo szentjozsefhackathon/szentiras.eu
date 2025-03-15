@@ -118,7 +118,7 @@ class CreateEmbeddingVectors extends Command
         $this->progressBar->setMessage("Starting book {$book->abbrev}");
         $this->progressBar->start();
 
-        $this->currentBookFile = "vectors/" . $book->translation->abbrev . "_" . $book->usx_code  . ".dat";
+        $this->currentBookFile = "vectors/{$book->translation->abbrev}_{$book->usx_code}_{$this->model}_{$this->dimensions}";
         $this->currentBookFileData = [];
 
         if (!$this->option("scope") || $this->option("scope") == "range") {
@@ -173,11 +173,11 @@ class CreateEmbeddingVectors extends Command
                     $this->embedExcerpt($canonicalReference, $text, EmbeddedExcerptScope::Verse, $book->translation, $book, $chapter, $verse, null, null, $gepi);
                     $verse++;
                 } while (!empty($text));
+                if ($this->isFileTarget() || $this->isS3Target()) {
+                    $this->writeCurrentFileData("verse");
+                }    
             }
             $this->progressBar->advance();
-            if ($this->isFileTarget() || $this->isS3Target()) {
-                $this->writeCurrentFileData("verse");
-            }
         }
         $this->progressBar->finish();
         $this->output->newline();

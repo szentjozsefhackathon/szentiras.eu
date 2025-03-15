@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('usx_code', 3);
             $table->unsignedInteger('chapter');
             $table->unsignedInteger('verse');
+            $table->string('gepi', 20);
             $table->text('text')->collation("el-GR-x-icu");
             $table->text('json');
             $table->text('strongs')->collation("el-GR-x-icu");

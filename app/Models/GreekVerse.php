@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereUsxCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereVerse($value)
+ * @property string $gepi
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereGepi($value)
  * @mixin \Eloquent
  */
 class GreekVerse extends Model

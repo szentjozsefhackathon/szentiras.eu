@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('embedded_excerpts', function (Blueprint $table) {
-            $table->string('gepi')->nullable()->change();
+            $table->string('gepi', 20)->nullable()->change();
         });
     }
 
