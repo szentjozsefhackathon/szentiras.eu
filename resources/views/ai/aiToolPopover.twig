@@ -1,8 +1,8 @@
 {% macro similarity(value) %}
   {% if value %}
   <div class="quality" title="Becsült hasonlóság">
-      {% for i in 1..5 %}
-          {% if i+4 <= value * 10 %}
+        {% for i in 1..5 %}
+          {% if i+4 < value * 10 + 3 %}
               <span class="star active">&#9733;</span>
           {% else %}
               <span class="star inactive">&#9734;</span>
@@ -10,6 +10,17 @@
       {% endfor %}
   </div>
   {% endif %}
+{% endmacro %}
+
+{%  macro similarityCircle(value) %}
+  {% if value > 0 %}
+  <span title="Göröghöz becsült hasonlóság: {{ (value*100)|round(2) }}">
+  <svg width="10" height="10" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="45" fill="#ddd" stroke="#ddd" stroke-width="10"/>
+    <path d="M50,50 m0,-35 a35,35 0 1,1 0,70 a35,35 0 1,1 0,-70" fill="none" stroke="blue" stroke-width="20" stroke-dasharray="282.743" stroke-dashoffset="{{ (1 - value ) * 282.743 }}"/>
+  </svg>        
+</span>
+{% endif  %}
 {% endmacro %}
 
 <button data-close-button-id="closePopover" type="button" class="btn-close"></button>
@@ -27,9 +38,9 @@
   <div class="tab-content">
     <div class="tab-pane active" id="parallel{{ hash }}" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
       {% for pureText in pureTexts %}
-        <div><a href="/{{ pureText.translationAbbrev }}/{{ pureText.reference }}">{{ pureText.translationAbbrev }}: {{ pureText.reference }}</a> {{ _self.similarity(pureText.similarity) }} 
-        <span class="pureText">{{ pureText.text }}</span>
-        </div>
+        <div><a href="/{{ pureText.translationAbbrev }}/{{ pureText.reference }}">{{ pureText.translationAbbrev }}: {{ pureText.reference }}</a> {{ _self.similarity(pureText.similarity * 0.7) }}
+        <span class="pureText">{{ pureText.text }}</span> {{ _self.similarityCircle(pureText.greekSimilarity) }}
+    </div>
       {% endfor %}
       {% if greekText %}
       <div class="greek greekSection" lang="grc">
@@ -47,7 +58,7 @@
       </div>
       {% for similar in similars %}
         <div>
-          <a href="/{{ similar.translationAbbrev }}/{{ similar.reference }}">{{ similar.reference }}</a> {{ _self.similarity(similar.similarity) }}
+          <a href="/{{ similar.translationAbbrev }}/{{ similar.reference }}">{{ similar.reference }}</a> {{ _self.similarity(similar.similarity - 0.1) }}
           <span class="pureText">{{ similar.text }}</span>
         </div>
       {% endfor %}

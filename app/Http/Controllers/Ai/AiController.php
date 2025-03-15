@@ -34,14 +34,10 @@ class AiController extends Controller
         $allTranslations = $this->translationService->getAllTranslations();
         $translation = $this->translationService->getByAbbreviation($translationAbbrev);
         $canonicalReference = CanonicalReference::fromString($reference, $translation->id);
-        $pureTexts[] = [
-            'translationAbbrev' => $translationAbbrev,
-            'reference' => $canonicalReference->toString(),
-            'text' => $this->textService->getPureText($canonicalReference, $translation, false),
-        ];
         $usxVerseId = $canonicalReference->toUsxVerseId();
         $verseIdParts = explode('_', str_replace(':', '_', str_replace(' ', '_', $usxVerseId)));
         $greekVerse = GreekVerse::where('usx_code', $verseIdParts[0])->where('chapter', $verseIdParts[1])->where('verse', $verseIdParts[2])->first();
+        $greekVector = null;
         if ($greekVerse) {
             $annotatedGreekText = [];
             $greekText = str_replace('¶', '', $greekVerse->text);
@@ -59,11 +55,23 @@ class AiController extends Controller
                     'i' => $i
                 ];
             }
+            $greekVector = $this->semanticSearchService->retrieveGreekVector($greekVerse->gepi);
         } else {
             $annotatedGreekText = null;
         }
-
         $vector1 = $this->semanticSearchService->retrieveVector($canonicalReference->toString(), $translationAbbrev);
+        if ($vector1 && $greekVector) {
+            $greekSimilarity = $this->semanticSearchService->calculateSimilarity($vector1, $greekVector);
+        } else {
+            $greekSimilarity = null;
+        }
+        $pureTexts[] = [
+            'translationAbbrev' => $translationAbbrev,
+            'reference' => $canonicalReference->toString(),
+            'text' => $this->textService->getPureText($canonicalReference, $translation, false),
+            'greekSimilarity' => $greekSimilarity
+        ];
+
         foreach ($allTranslations as $otherTranslation) {
             if ($otherTranslation->abbrev != $translationAbbrev) {
                 $translatedReference = $this->referenceService->translateReference($canonicalReference, $otherTranslation->id)->toString();
@@ -75,11 +83,17 @@ class AiController extends Controller
                     } else {
                         $similarity = null;
                     }
+                    if ($vector2 && $greekVector) {
+                        $translationGreekSimilarity = $this->semanticSearchService->calculateSimilarity($vector2, $greekVector);
+                    } else {
+                        $translationGreekSimilarity = null;
+                    }
                     $pureTexts[] = [
                         'translationAbbrev' => $otherTranslation->abbrev,
                         'reference' => $translatedReference,
                         'text' => $otherText,
-                        'similarity' => $similarity
+                        'similarity' => $similarity,
+                        'greekSimilarity' => $translationGreekSimilarity
                     ];
                 }
             }
@@ -96,7 +110,7 @@ class AiController extends Controller
             }
         }
 
-        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts, 'similars' => $similars ?? [], 'greekText' => $annotatedGreekText, 'hash' => $hash])->render();
+        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts, 'similars' => $similars ?? [], 'greekText' => $annotatedGreekText, 'greekSimilarity' => $greekSimilarity, 'hash' => $hash])->render();
         return response()->json($view);
     }
 

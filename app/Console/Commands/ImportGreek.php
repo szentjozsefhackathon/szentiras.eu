@@ -6,9 +6,12 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Pgvector\Laravel\Vector;
 use SzentirasHu\Models\GreekVerse;
+use SzentirasHu\Models\GreekVerseEmbedding;
 use SzentirasHu\Models\StrongWord;
-
+use SzentirasHu\Service\Search\SemanticSearchService;
+use Throwable;
 
 class ImportGreek extends Command
 {
@@ -16,13 +19,13 @@ class ImportGreek extends Command
      * The name and signature of the console command.
      *
      * @var string
-     */    
+     */
     protected $signature = 'szentiras:import-greek
         {--skip-words : Skip the import of the strong words }
         {--skip-verses : Skip importing the verses. Useful if it is already imported, and you only want to generate the vectors. }
         {--create-vectors : Create the vectors based on the existing verses }
-        {--vector-source= : filesystem, s3. Vector-target must be db if given. If not given, the vectors are generated with AI. }        
-        {--vector-target=db : filesystem, s3 or db }
+        {--source= : filesystem or s3. Must be given if target is db.}        
+        {--target=db : filesystem, s3 or db }
     ';
 
     /**
@@ -70,14 +73,14 @@ class ImportGreek extends Command
 
     private $strongWords = [];
 
-    public function __construct()
+    public function __construct(protected SemanticSearchService $semanticSearchService)
     {
         parent::__construct();
         $this->model = \Config::get("settings.ai.embeddingModel");
         $this->dimensions = \Config::get("settings.ai.embeddingDimensions");
     }
 
-    
+
     /**
      * Execute the console command.
      */
@@ -85,24 +88,25 @@ class ImportGreek extends Command
     {
         if (!$this->option('skip-verses')) {
             GreekVerse::truncate();
-            $this->downloadFiles();    
+            $this->downloadFiles();
         }
         if (!$this->option('skip-words')) {
             StrongWord::truncate();
             $this->fillStrongWordsTable();
-        }        
+        }
         foreach (StrongWord::all() as $strongWord) {
             $this->strongWords[$strongWord->number] = $strongWord;
         }
-    if (!$this->option('skip-verses')) {
+        if (!$this->option('skip-verses')) {
             $this->fillGreekVerseTable();
         }
         if ($this->option('create-vectors')) {
             $this->createVectors();
-        }        
+        }
     }
 
-    private function fillGreekVerseTable() {
+    private function fillGreekVerseTable()
+    {
         setlocale(LC_ALL, "el_GR.UTF-8");
         $parsedVerses = [];
         $unparsedVerses = [];
@@ -125,7 +129,7 @@ class ImportGreek extends Command
             }
         }
         $progressBar = $this->output->createProgressBar(count($parsedVerses));
-        foreach ($parsedVerses as $usxCode => $parsedBookVerses) {            
+        foreach ($parsedVerses as $usxCode => $parsedBookVerses) {
             $progressBar->advance();
             foreach ($parsedBookVerses as $chapter => $parsedBookVerse) {
                 foreach ($parsedBookVerse as $verse => $parsedText) {
@@ -167,7 +171,7 @@ class ImportGreek extends Command
                     $greekVerse = new GreekVerse();
                     $greekVerse->source = self::SOURCE;
                     $greekVerse->usx_code = $usxCode;
-                    $greekVerse->gepi="{$usxCode}_{$chapter}_{$verse}";
+                    $greekVerse->gepi = "{$usxCode}_{$chapter}_{$verse}";
                     $greekVerse->chapter = $chapter;
                     $greekVerse->verse = $verse;
                     $greekVerse->text = $unparsedText;
@@ -179,28 +183,19 @@ class ImportGreek extends Command
 
                     $strongWordsToAttach = [];
                     foreach ($strongNumbers as $position => $strongNumber) {
-                        $strongWordsToAttach[$this->strongWords[$strongNumber]->id] = [ 'position' => $position ];
+                        $strongWordsToAttach[$this->strongWords[$strongNumber]->id] = ['position' => $position];
                     }
                     $greekVerse->strongWords()->attach($strongWordsToAttach);
                 }
             }
         }
-        
+
         $progressBar->finish();
         $this->output->newline();
-
     }
 
-    function varexport($expression, $return=FALSE) {
-        $export = var_export($expression, TRUE);
-        $export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
-        $array = preg_split("/\r\n|\n|\r/", $export);
-        $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
-        $export = join(PHP_EOL, array_filter(["["] + $array));
-        if ((bool)$return) return $export; else echo $export;
-    }
-    
-    private function fillStrongWordsTable() {
+    private function fillStrongWordsTable()
+    {
         $xmlFile = Storage::get("greek/dictionary.xml");
         $this->info('Fill Strong words');
         // parse the xml
@@ -209,7 +204,7 @@ class ImportGreek extends Command
         foreach ($xml->xpath('//entry[@strongs]') as $entry) {
             $strongWord = new StrongWord();
             $strongWord->number = (int)$entry['strongs'];
-            $strongWord->lemma = (string) $entry->greek['unicode'];            
+            $strongWord->lemma = (string) $entry->greek['unicode'];
             $strongWord->transliteration = (string) $entry->greek['translit'];
             $normalizedText = \Normalizer::normalize($strongWord->transliteration, \Normalizer::FORM_D);
             $cleanText = preg_replace('/\p{Mn}/u', '', $normalizedText);
@@ -222,19 +217,20 @@ class ImportGreek extends Command
         $this->output->newline();
     }
 
-    private function downloadFiles() {
+    private function downloadFiles()
+    {
         $parsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/strongs/with-parsing/';
         $unparsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/ccat/no-variants/';
         $dictionaryFile = 'https://raw.githubusercontent.com/briff/strongs-dictionary-xml/refs/heads/master/strongsgreek.xml';
         foreach (self::ABBREVIATION_MAPPING as $abbrev => $usxCode) {
-            if (!Storage::exists("greek/parsed/{$usxCode}.csv")) {            
+            if (!Storage::exists("greek/parsed/{$usxCode}.csv")) {
                 $filePath = $parsedFileDir . $abbrev . '.csv';
                 $this->info("Download {$filePath}");
                 $fileContents = Http::get($filePath)->body();
                 Storage::put("greek/parsed/{$usxCode}.csv", $fileContents);
             }
             if (!Storage::exists("greek/unparsed/{$usxCode}.csv")) {
-                $filePath = $unparsedFileDir . $abbrev . '.csv';                
+                $filePath = $unparsedFileDir . $abbrev . '.csv';
                 $this->info("Download {$filePath}");
                 $fileContents = Http::get($filePath)->body();
                 Storage::put("greek/unparsed/{$usxCode}.csv", $fileContents);
@@ -247,17 +243,140 @@ class ImportGreek extends Command
         }
     }
 
-    private function createVectors() {        
+    private function createVectors()
+    {
         $this->info("Creating vectors");
-        $greekVerses = GreekVerse::all();
-        $progressBar = $this->output->createProgressBar(count($greekVerses));
-        foreach ($greekVerses as $greekVerse) {
-            
-            $progressBar->advance();
+        $currentChapter = 1;
+        foreach (self::ABBREVIATION_MAPPING as $abbrev => $usxCode) {
+            $progressBar = $this->output->createProgressBar(50);
+            $progressBar->setFormat("[%bar%] %message%");
+            $progressBar->setMessage("{$usxCode} {$currentChapter}");            
+            $progressBar->start();
+            do {
+                $greekVerses = GreekVerse::where('usx_code', $usxCode)->where('chapter', $currentChapter)->get();            
+                if ($greekVerses->isEmpty()) {
+                    $currentChapter = 1;
+                    break;
+                }
+                $vectorFileName = "vectors_greek/".self::SOURCE."_{$usxCode}_{$this->model}_{$this->dimensions}.{$currentChapter}";
+                $currentDeserializedVectors = null;
+                if ($this->option('source')) {
+                    $storage = $this->selectInputStorage();
+                    $file = $storage->get($vectorFileName);
+                    if ($file == null) {
+                        $this->error("{$vectorFileName} does not exist.");
+                        continue;
+                    } else {
+                        $currentDeserializedVectors = self::unserialize($file);
+                    }
+                }
+                if ($this->option('target')) {
+                    if ($this->option('target') != 'db') {
+                        $storage = $this->selectTargetStorage();
+                        $file = $storage->get($vectorFileName);
+                        if ($file != null) {
+                            $currentDeserializedVectors = self::unserialize($file);
+                        } else {
+                            $currentDeserializedVectors = [];
+                        }
+                    } else {
+                        if (!$this->option('source')) {
+                            $this->error("Source is mandatory if target is db.");
+                            return;
+                        }
+                    }
+                }
+                foreach ($greekVerses as $greekVerse) {
+                    $progressBar->setMessage("{$greekVerse->gepi}");
+                    $progressBar->display();
+                    $existingVector = $currentDeserializedVectors[$greekVerse->gepi]['vector'] ?? null;
+                    if (!$existingVector) {
+                        // we generate now
+                        $retries = 0;
+                        $success = false;
+                        while ($retries < 3 && !$success) {
+                            try {
+                                $response = $this->semanticSearchService->generateVector(str_replace('¶', '', $greekVerse->text), $this->model, $this->dimensions);
+                                $success = true;
+                            } catch (Throwable $e) {
+                                $retries++;
+                                $progressBar->clear();
+                                $this->info($e->getMessage());
+                                $this->info("OpenAI error occurred, might have reached the rate limit. Retrying {$retries}. Waiting 15 seconds.");
+                                $progressBar->display();
+                                sleep(15);
+                            }
+                        }
+                        if (!empty($response)) {
+                            $currentDeserializedVectors[$greekVerse->gepi] = [
+                                "source" => self::SOURCE,
+                                "model" => $this->model,
+                                "dimensions" => $this->dimensions,
+                                "usx_code" => $greekVerse->usx_code,
+                                "chapter" => $greekVerse->chapter,
+                                "verse" => $greekVerse->verse,
+                                "vector" => $response->vector
+                            ];
+                        }
+                    }
+                }                
+                // now we have all the vectors for the current chapter, let's load to the db if the target is db. Otherwise save to the file.
+                if ($this->option('target') == 'db') {
+                    GreekVerseEmbedding::where('usx_code', $usxCode)->where('chapter', $currentChapter)->delete();
+                    foreach ($currentDeserializedVectors as $gepi => $data) {
+                        $greekVerseEmbedding = new GreekVerseEmbedding();
+                        $greekVerseEmbedding->gepi = $gepi;
+                        $greekVerseEmbedding->source = $data['source'];
+                        $greekVerseEmbedding->model = $data['model'];
+                        $greekVerseEmbedding->usx_code = $data['usx_code'];
+                        $greekVerseEmbedding->chapter = $data['chapter'];
+                        $greekVerseEmbedding->verse = $data['verse'];
+                        $greekVerseEmbedding->embedding = new Vector($data['vector']);
+                        $greekVerseEmbedding->save();
+                    }
+                } else {
+                    $storage = $this->selectTargetStorage();
+                    $storage->put($vectorFileName, self::serialize($currentDeserializedVectors));
+                }
+
+                $currentChapter++;
+                $progressBar->advance();
+            } while (true);
+            $progressBar->finish();
+            $this->output->newline();    
         }
-        $progressBar->finish();
         $this->info("Vectors created");
     }
 
+    private function selectInputStorage()
+    {
+        if ($this->option("source") == "s3") {
+            return Storage::disk("s3");
+        } else if ($this->option("source") == "filesystem") {
+            return Storage::disk("local");
+        } else {
+            throw new \Exception("Invalid input storage.");
+        }
+    }
+
+    private function selectTargetStorage()
+    {
+        if ($this->option("target") == "s3") {
+            return Storage::disk("s3");
+        } else if ($this->option("target") == "filesystem") {
+            return Storage::disk("local");
+        } else {
+            throw new \Exception("Invalid input storage.");
+        }
+    }
+
+
+    private static function unserialize($file) {
+        return json_decode(gzdecode($file), true);
+    }
+
+    private static function serialize($object) {
+        return gzencode(json_encode($object));
+    }
 
 }

@@ -12,6 +12,7 @@ use Pgvector\Vector;
 use SzentirasHu\Data\Entity\EmbeddedExcerpt;
 use SzentirasHu\Data\Entity\EmbeddedExcerptScope;
 use SzentirasHu\Http\Controllers\Search\SemanticSearchForm;
+use SzentirasHu\Models\GreekVerseEmbedding;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Text\BookService;
 use SzentirasHu\Service\Text\TextService;
@@ -112,7 +113,7 @@ class SemanticSearchService {
             $result->distance = $neighbor->neighbor_distance;
             $neighborTranslation = $this->translationService->getByAbbreviation($neighbor->translation_abbrev);
             $result->verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($neighbor->reference, $neighborTranslation->id), $neighborTranslation);
-            $result->quality=$this->getQualityScore($neighbor->neighbor_distance, $metric, $scope);
+            $result->quality=$this->getQualityScore($neighbor->neighbor_distance);
             $highlightedGepis = [];
             foreach ($topVerseContainers as $verseContainer) {
                 $highlightedGepis = array_map(fn($k) => "{$k}",array_keys($verseContainer->rawVerses));
@@ -124,35 +125,18 @@ class SemanticSearchService {
         return $response;
     }
 
-    public static function getQualityScore(float $distance, ?Distance $metric = Distance::Cosine) {        
-        $value = $distance;
-        if ($metric == Distance::Cosine) {
-            if ($value < .4) {
-                return 5;
-            } else if ($value <.5) {
-                return 4;
-            } else if ($value <.6) {
-                return 3;
-            } else if ($value <.7) {
-                return 2;
-            } else {
-                return 1;
-            }
-        } else {
-            if ($value < .8) {
-                return 5;
-            } else if ($value <.9) {
-                return 4;
-            } else if ($value <1) {
-                return 3;
-            } else if ($value <1.1) {
-                return 2;
-            } else {
-                return 1;
-            }
+    public static function getQualityScore(float $distance) {                
+        $similarity = 1 - $distance;
+        if ($similarity > .6) {
+            return 5;
+        } else if ($similarity > .5) {
+            return 4;
+        } else if ($similarity >.4) {
+            return 3;
+        } else if ($similarity > .3) {
+            return 2;
         }
-        
-        return $value;
+        return 1;
     }
 
     /**
@@ -195,11 +179,33 @@ class SemanticSearchService {
         return $vector->embedding;
     }
 
+    public function retrieveGreekVector($gepi, $source = "BMT") {
+        $model = Config::get("settings.ai.embeddingModel");
+        $vector = GreekVerseEmbedding::query()
+            ->where("gepi", $gepi)
+            ->where("source", $source)            
+            ->where("model", $model)
+            ->first();
+        if (empty($vector)) {
+            return null;
+        }
+        return $vector->embedding;    
+    }
+
+    /**
+     * This is some code to normalize/linearize similarity, but its usefulness probably depends on the model used.
+     */
+    public static function normalizeSimilarity($cosineSimilarity) {
+        $theta = acos($cosineSimilarity);
+        $linearDistance = $theta / pi();
+        return 1 - $linearDistance;
+    }
+
     public function calculateSimilarity(Vector $v1, Vector $v2) {
         return $this->cosineSimilarity($v1, $v2);
     }
 
-    function cosineSimilarity(Vector $v1, Vector $v2)
+    private function cosineSimilarity(Vector $v1, Vector $v2)
     {
         $components1 = $v1->toArray();
         $components2 = $v2->toArray();
