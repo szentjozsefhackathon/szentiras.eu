@@ -7,8 +7,7 @@ namespace SzentirasHu\Service\Search;
 
 
 use Config;
-use Sphinx\SphinxClient;
-use SphinxSearch;
+use SzentirasHu\Service\Sphinx\SphinxSearch;
 
 class SphinxSearcher implements Searcher
 {
@@ -24,7 +23,8 @@ class SphinxSearcher implements Searcher
 
     private function addAlternatives($params)
     {
-        $text = trim($params->text);
+        // keep only the letters and numbers, taking care of unicode characters
+        $text = trim(preg_replace('/[^\p{L}\p{N}]+/u', ' ', $params->text));        
         $originalWords = preg_split('/\W+/u', $text);
         $searchedTerm = " ( @verse \"{$text}\"~".(count($originalWords)+2)." ) ";
         $searchedTerm .= " | ( @verse2 ( {$text} | *{$text}* ) )";        
@@ -49,57 +49,55 @@ class SphinxSearcher implements Searcher
             }
         }
         $searchedTerm .= ' )';
-        //echo ">>".$searchedTerm."<<<br/>";
         return $searchedTerm;
     }
 
     public function __construct(FullTextSearchParams $params)
     {
         $term = $this->addAlternatives($params);
-        $this->sphinxClient = SphinxSearch::search($term);
+        $this->sphinxClient = new SphinxSearch($term);
         \Log::debug('searching', ['params' => $params, 'term' => $term]);
-        $this->sphinxClient->setFieldWeights(['verse'=>100,'verse2'=>10,'verse3'=>1]);
-        $this->sphinxClient->setIndexWeights(['verse'=>2,'verse_root'=>1]);
-        $this->sphinxClient->setMatchMode(SphinxClient::SPH_MATCH_EXTENDED);
-        $this->sphinxClient->setSortMode(SphinxClient::SPH_SORT_EXTENDED, "@weight DESC, gepi ASC");
         
         if ($params->limit) {
             $limit = $params->limit;
         } else {
-            $limit = (int)Config::get('settings.searchLimit') + 1;
+            $limit = (int)Config::get('settings.sphinxSearchLimit');
         }
         $this->sphinxClient->limit($limit);
         
-        /*
-         * Itt if($params->groupByVerse ) volt, de az mindig false volt. Viszont, ha valaha true, akkor nem működik valami.
-        if ($params->grouping == 'verse') {        
-            $this->sphinxClient->setGroupBy('gepi', SphinxClient::SPH_GROUPBY_ATTR, '@relevance desc');
-        }
-         */
         if ($params->translationId) {
-            $this->sphinxClient->filter('trans', $params->translationId);
+             $this->sphinxClient->filter('trans', $params->translationId);
         }
-        if ($params->usxCodes !== null && count($params->usxCodes) > 0) {
-            $this->sphinxClient->filter('usx_code', $params->usxCodes);
+        if (!empty($params->usxCodes)) {
+            $this->sphinxClient->filter('usx_code', array_keys($params->usxCodes));
+        }
+        if ($params->groupGepi) {
+            $this->sphinxClient->groupGepi(true);
+        }
+        if ($params->countOnly) {
+            $this->sphinxClient->countOnly(true);
         }
         $this->params = $params;
     }
 
     public function getExcerpts($verses)
     {
-        return $this->sphinxClient->buildExcerpts($verses, "verse", $this->addAlternatives($this->params), ['query_mode' => 1]);
+        return $this->sphinxClient->buildExcerpts($verses, trim($this->params->text));
     }
 
     public function get()
     {
         $sphinxResult = $this->sphinxClient->get();
         if ($sphinxResult) {
-            //echo "<pre>".print_R($sphinxResult['matches'],1)."</pre>";       
             $fullTextSearchResult = new FullTextSearchResult();
-            $fullTextSearchResult->verseIds = array_keys($sphinxResult['matches']);
-            $fullTextSearchResult->verses = $sphinxResult['matches'];
-            $fullTextSearchResult->hitCount = count($sphinxResult['matches']);
-
+            if (array_has($sphinxResult[0], "count(*)")) {
+                $fullTextSearchResult->hitCount = $sphinxResult[0]["count(*)"];
+            } else {
+                $fullTextSearchResult->verseIds = array_map(fn ($elem) => $elem['id'], $sphinxResult);
+                // transform sphinxResult to id => element
+                $fullTextSearchResult->verses = array_combine($fullTextSearchResult->verseIds, $sphinxResult);
+                $fullTextSearchResult->hitCount = count($sphinxResult);
+            }
             return $fullTextSearchResult;
         } else {
             return null;

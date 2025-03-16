@@ -23,7 +23,7 @@ class AddOptionalTranslationToBookAbbrevs extends Migration {
             ->update(['translation_id' => 1]);
 
         $prefix= Config::get('database.connections.bible.prefix');
-        DB::statement("ALTER TABLE {$prefix}book_abbrevs MODIFY abbrev VARCHAR(255) COLLATE utf8_bin");
+        DB::statement("ALTER TABLE {$prefix}book_abbrevs ALTER COLUMN abbrev TYPE VARCHAR(255) COLLATE \"hu-x-icu\"");
 
     }
 

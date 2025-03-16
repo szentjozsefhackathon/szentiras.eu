@@ -1,4 +1,4 @@
-{% macro numv(verse) -%}
+{% macro numv(verse, mark = false) -%}
 {% if verse.footnotes is not empty %}
     {% set currentFootnote %}
     <p class='popover-footnote'>
@@ -7,60 +7,82 @@
     {% endfor %}
     </p>
     {% endset %}
-<a tabindex="0" class="footnote" data-placement="auto top" data-toggle="popover" data-trigger="focus" data-html="true" data-content="{{ currentFootnote }}">
-{% endif -%}
-<span class="numv"><sup>{{ verse.numv }}</sup></span>
-{%- if verse.footnotes is not empty %}</a>{% endif %}
+    <a tabindex="0" class="footnote" data-bs-placement="auto" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-html="true" data-bs-content="{{ currentFootnote }}" tabindex="0"><span class="numv footnote"><sup>{{ verse.numv }}</sup></span></a>
+{%- else -%}
+     <span class="numv hidden {{ mark ? 'mark' : '' }}"><sup>{{ verse.numv }}</sup></span>
+{%- endif -%}
+<a class="numvai" data-bs-placement="auto" tabindex="0" data-bs-custom-class="ai-tool-popover" data-link="{{ verse.book.translation.abbrev }}/{{ verse.book.abbrev}}{{ verse.chapter }},{{ verse.numv }}"><span class="numvai hidden">{{ verse.numv }}&nbsp;</span></a>
 {%- endmacro %}
 
-{% macro xrefs(verse, translation) %}
+{% macro xrefs(verse, translation, mark) %}
     {% if verse.xrefs is not empty %}
-        <span class="xref">
+        <span class="xref {{ mark ? 'mark' : '' }}">
             <sup>
                 ({%- for xref in verse.xrefs -%}
-                <a href="/{{ translation.abbrev }}/{{ xref.text }}">{{ xref.text }}{% if not loop.last %};{% endif %}</a>
+                <a tabindex="0" class="xref" data-bs-custom-class="xref-popover" data-bs-placement="auto" data-bs-toggle="popover" data-bs-trigger="manual"
+                data-link="{{ translation.abbrev }}/{{ xref.text }}">{{ xref.text }}{% if not loop.last %};{% endif %}</a>
                 {%- endfor -%})
             </sup>
         </span>
     {% endif %}
 {% endmacro %}
 
+<div class="parsedVerses">
 {# In some sources the same verse (verse number 1) appears more than once, so we only display a chapter number if we haven't displayed that one. This handles references like Jer 5;6#}
 {% set lastChapterNumber = 0 %}
-{% for verse in verseContainer.parsedVerses %}
-    {% for headingLevel in 0..4 %}
-    {% if verse.headings[headingLevel] is defined %}
+{%- for verse in verseContainer.parsedVerses -%}
+    {%- set mark= verse.gepi in highlightedGepis -%}
+    {%- for headingLevel in 0..4 -%}
+    {%- if verse.headings[headingLevel] is defined -%}
         {% set tag = 'h' ~ (headingLevel+1) %}
         <{{ tag }} id="heading_{{ verse.gepi }}_{{ headingLevel }}">
+            {{ verse.headings[headingLevel]|raw }}
+            <br>
+            <small>{{ verse.headings[headingLevel]|striptags('<br><a>')|raw }}</small>
         <small>{{ verse.headings[headingLevel]|striptags('<br><a>')|raw }}</small>
         </{{ tag }}>
-    {% endif %}
-    {% endfor %}
-    {% set inPoem = false %}
-    {% set verseNumberWritten = false %}
-    {% for versePart in verse.verseParts %}
+    {%- endif -%}
+    {%- endfor -%}
+    {%- set inPoem = false -%}
+    {%- set verseNumberWritten = false -%}
+    {%- for versePart in verse.verseParts -%}
         {% if versePart.poem %}
             {% if (lastChapterNumber != verse.chapter) and verse.numv == 1 %}    {% set lastChapterNumber = verse.chapter %}<span class="numchapter">{{ verse.chapter }}</span>{% endif %}
-            {% if not inPoem %}<p class="poem">{% set inPoem = true %}{%endif%}
-            {%- if not verseNumberWritten %}{{ _self.numv(verse) }}{% set verseNumberWritten = true %}{% endif %}
-            {{- versePart.content|raw }}{% if versePart.last %} {{ _self.xrefs(verse, translation) }}</p>{%else%}<br>{%endif%}
+            {% if not inPoem %}<p class="poem {{ mark ? 'mark' : '' }}">{% set inPoem = true %}{%endif%}
+            {%- if not verseNumberWritten %}{{ _self.numv(verse, mark) }}{% set verseNumberWritten = true %}{% endif %}
+            {{ versePart.content|raw }}{% if versePart.last %}{{ _self.xrefs(verse, translation, mark) }}</p>{%else%}<br>{%endif%}
         {% elseif  versePart.heading %}
-            {%- if inPoem %}</p>{% set inPoem =false %}{% endif %}
-            {% if versePart.headingLevel < 6 %}
-                {% set tag = 'h' ~ (versePart.headingLevel+1) %}
-            {% else %}
-                {% set tag = 'span' %}{% set extraclass = 'heading' ~ (versePart.headingLevel + 1) %}
-            {% endif %}
+            {%- if inPoem %}</p>{% set inPoem =false %}{% endif -%}
+            {%- if versePart.headingLevel < 6 -%}
+                {%- set tag = 'h' ~ (versePart.headingLevel+1) -%}
+            {%- else -%}
+                {%- set tag = 'span' %}{% set extraclass = 'heading' ~ (versePart.headingLevel + 1) ~ (mark ? ' mark' : '') -%}
+            {%- endif -%}
             <{{ tag|raw }} class="heading {{ extraclass }}" id="heading_{{ verse.gepi }}_{{ versePart.headingLevel }}">{{ versePart.content|striptags('<br><a>')|raw }}</{{ tag }}>
-        {% else %}
+        {%- else -%}
             {% if (lastChapterNumber != verse.chapter) and verse.numv == 1 %}{% set lastChapterNumber = verse.chapter %}
-            <span class="numchapter">{{ verse.chapter }}</span>{% endif %}
-            {%- if inPoem %}</p>{% set inPoem =false %}{% endif %}
-            {%- if not verseNumberWritten %}{{ _self.numv(verse) }}{% set verseNumberWritten=true %}{% endif %}
-            {{- versePart.content|raw }}
-            {% if versePart.last %}{{ _self.xrefs(verse, translation) }}{% endif %}
-            {% if versePart.newline %}<br>{% endif %}
-        {% endif %}                
-    {% endfor %}
-
-{% endfor %}
+            <span class="numchapter">{{ verse.chapter }}</span>{% endif -%}
+            {%- if inPoem %}</p>{% set inPoem =false %}{% endif -%}
+            {%- if not verseNumberWritten %}{{ _self.numv(verse, mark) }}{% set verseNumberWritten=true %}{% endif -%}
+            <span class="{{ mark ? 'mark' : '' }}">{{ versePart.content|raw }} </span>
+            {%- if versePart.last %}{{ _self.xrefs(verse, translation, mark) }}{% endif -%}
+            {%- if versePart.newline %}<br>{% endif -%}
+        {%- endif -%}                
+    {%- endfor -%}
+    {% set medias = media[verse.book.usx_code ~ "_" ~ verse.chapter ~ "_" ~ verse.numv] %}
+    {% if  medias %}
+        {% for image in medias %}
+        <div class="d-flex justify-content-center illustration">
+            <div class="card ">
+                <div class="card-body">
+            <figure class="figure">
+                <img src="/media/{{ image.uuid }}" class="figure-img img-fluid rounded">
+                <figcaption class="figure-caption text-end"><small>Forrás: {{ image.mediaType.website }} ({{ image.mediaType.license }})</small></figcaption>
+            </figure>
+        </div>
+        </div>
+        </div>
+        {% endfor  %}
+    {% endif %}
+{%- endfor -%}
+    </div>

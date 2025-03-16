@@ -39,8 +39,6 @@ class UseNewBookIdInVerses extends Migration {
 	{
 		Schema::table('tdverse', function(Blueprint $table)
 		{
-            $table->dropForeign('tdverse_book_id_foreign');
-            $table->dropIndex('tdverse_book_id_foreign');
             $table->dropColumn('book_id');
         });
     }

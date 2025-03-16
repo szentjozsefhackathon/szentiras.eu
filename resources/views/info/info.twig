@@ -3,23 +3,22 @@
 
 {% block content %}
     <h4>Hírek</h4>
-    {% for n in news %}
-        <div class="panel-group" id="newsAccordion">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#newsAccordion" href="#news{{ loop.index }}">{{ n.title }}</a>
-                    </h4>
-                </div>
-                <div id="news{{ loop.index }}" class="panel-collapse collapse">
-                    <div class="panel-body">{{ n.text|raw }}</div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
 
-    <h4>Fejlesztések</h4>
     <dl>
+        <dt>2025. 02. 16.<dt>
+        <dd>Két hétnyi intenzív munkával a csapat újabb fejlesztéseket is végrehajtott, amelyekkel ismét egyedülálló lett a rendszerünk.
+            <ul>
+                <li>Megjelent a mesterséges intelligencia alapú jelentés szerinti (szemantikus) keresés.
+                <li>A szemantikus keresés mellett a hasonló versek keresése és a fordítások összehasonlítása is lehetővé vált.
+                <li>Számos kényelmi funkciót beépítettünk, felugró ablakok, gyors fejezetválasztás stb.
+				<li>Kontextussal együtt is meg tudjuk jeleníteni a hivatkozásokat, fejezeten túlnyúló tartományok esetén is, ki-be kapcsolható módon.
+                <li>Számos megjelenítési hibát kijavítottunk.
+                <li>Frissítettük a rendszer mögötti informatikai motort.
+            </ul>
+        </dd>
+
+        <dt>2025. 01. 30.</dt>
+        <dd>A Jeromos-társulat a megújított és bővített szövegek megjelenítéséhez új, zárt forráskódú rendszert fejlesztett és telepített a <a href="https://szentiras.hu">szentiras.hu</a>-ra. Számos korábban működő és sokak által használt funkciót nem készítettek el, ezért a korábbi fejlesztőcsapat a regi.szentiras.hu oldal korszerűsítésével és továbbfejlesztésével újrakezdte a fejlesztési munkát, immár a Szent József Hackathon keretében.
         <dt>2019. 10. 30.</dt>
 		<dd>A <a href="http://www.biblia-tarsulat.hu/">Szent Jeromos Katolikus Bibliatársulat</a> átvette a szentiras.hu-t.</dd>
 		<dt>2017. 10. 16.</dt>

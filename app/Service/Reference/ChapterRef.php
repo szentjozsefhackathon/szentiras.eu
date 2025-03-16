@@ -4,7 +4,7 @@ namespace SzentirasHu\Service\Reference;
 
 class ChapterRef
 {
-    public $chapterId;
+    public int $chapterId;
     public $chapterPart;
 
     /**

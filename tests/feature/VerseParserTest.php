@@ -23,14 +23,14 @@ class VerseParserTest extends TestCase
         $v->chapter = $chapter;
         $numv = 3;
         $v->numv = $numv;
-        $v->verse = "abc {Mk 12,34} xyz {Mt 23,45} zyx";
-        $v->tip = \Config::get('translations.KNB.verseTypes.text.0');
+        $v->verse = "abc {2Óz 12,34} xyz {Mt 23,45} zyx";
+        $v->tip = \Config::get('translations.definitions.KNB.verseTypes.text.0');
         $v->trans = 3;
         $verseData = $parser->parse([$v], $book);
 
         $this->assertEquals("abc xyz zyx", $verseData->getText());
         $this->assertCount(2, $verseData->xrefs);
-        $this->assertEquals("Mk 12,34", $verseData->xrefs[0]->text);
+        $this->assertEquals("2Óz 12,34", $verseData->xrefs[0]->text);
 
     }
 
@@ -47,13 +47,13 @@ class VerseParserTest extends TestCase
         $numv = 3;
         $v->numv = $numv;
         $v->verse = "abc " . KGVerseParser::$xrefSigns[0] . " xyz";
-        $v->tip = \Config::get('translations.KG.verseTypes.text.0');
+        $v->tip = \Config::get('translations.definitions.KG.verseTypes.text.0');
         $v->trans = 4;
         $xrefVerse = new Verse();
         $xrefVerse->chapter = $chapter;
         $xrefVerse->numv = $numv;
         $xrefVerse->verse = KGVerseParser::$xrefSigns[0] . " Mk. 12,34.";
-        $xrefVerse->tip = \Config::get('translations.KG.verseTypes.xref.0');;
+        $xrefVerse->tip = \Config::get('translations.definitions.KG.verseTypes.xref.0');;
         $xrefVerse->trans = 4;
         $verseData = $parser->parse([$v, $xrefVerse], $book);
 
@@ -70,7 +70,7 @@ class VerseParserTest extends TestCase
         $numv = 3;
         $v->numv = $numv;
         $v->verse = "abc xyz";
-        $v->tip = \Config::get('translations.KG.verseTypes.text.0');
+        $v->tip = \Config::get('translations.definitions.KG.verseTypes.text.0');
         $v->trans = 4;
         $verseData = $parser->parse([$v, $xrefVerse], $book);
 
@@ -81,13 +81,13 @@ class VerseParserTest extends TestCase
         $v->chapter = $chapter;
         $v->numv = $numv;
         $v->verse = "Abc • cde † fgh";
-        $v->tip = \Config::get('translations.KG.verseTypes.text.0');
+        $v->tip = \Config::get('translations.definitions.KG.verseTypes.text.0');
         $v->trans = 4;
         $ref = new Verse();
         $ref->chapter = $chapter;
         $ref->numv = $numv;
         $ref->verse = "• rész 5,7. † Zsolt. 16,10.";
-        $ref->tip = \Config::get('translations.KG.verseTypes.xref.0');
+        $ref->tip = \Config::get('translations.definitions.KG.verseTypes.xref.0');
         $ref->trans = 4;
         $verseData = $parser->parse([$v, $ref], $book);
         $this->assertCount(2, $verseData->xrefs);

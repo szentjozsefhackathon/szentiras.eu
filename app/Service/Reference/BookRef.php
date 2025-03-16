@@ -35,4 +35,12 @@ class BookRef
     public function addChapterRange(ChapterRange $chapterRange) {
         $this->chapterRanges[] = $chapterRange;
     }
+
+    public function getIncludedChapters() {
+        $chapters = [];
+        foreach ($this->chapterRanges as $chapterRange) {
+            $chapters = array_merge($chapters, $chapterRange->getIncludedChapters());
+        }
+        return $chapters;
+    }
 }

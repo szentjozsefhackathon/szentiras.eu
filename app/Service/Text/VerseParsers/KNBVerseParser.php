@@ -9,7 +9,7 @@ use SzentirasHu\Http\Controllers\Display\VerseParsers\Xref;
 
 class KNBVerseParser extends DefaultVerseParser
 {
-    const XREF_REGEXP = '\s*\{([A-Z][^\}^\{]+)\}';
+    const XREF_REGEXP = '\s*\{([0-9\p{L}][^\}^\{]+)\}';
 
     protected function replaceTags($rawText) {
         $rawText = preg_replace('/<tv>/', ' ', $rawText);
@@ -17,8 +17,9 @@ class KNBVerseParser extends DefaultVerseParser
         $rawText = preg_replace('/<tk>/', '', $rawText);
         $rawText = preg_replace('/<br>/', '<br>', $rawText);
         $rawText = preg_replace('/<brx>/', '<br>', $rawText);
-        $rawText = preg_replace('/<i>/', '<em>', $rawText);
-        $rawText = preg_replace('/<\/i>/', '</em>', $rawText);
+        // the current KNB text <i> tags are terrible, they are not opened neither closed properly
+        $rawText = preg_replace('/<i>/', '', $rawText);
+        $rawText = preg_replace('/<\/i>/', '', $rawText);
         $rawText = preg_replace('/<fs>/', '', $rawText);
         $rawText = preg_replace('/<khiv>/', '', $rawText);
         $rawText = preg_replace('/<\/khiv>/', '', $rawText);
@@ -50,6 +51,8 @@ class KNBVerseParser extends DefaultVerseParser
         $verse->xrefs[]= $xref;
     }
 
+
+
     /**
      * @param $rawVerse
      * @param VerseData $verseData
@@ -63,7 +66,10 @@ class KNBVerseParser extends DefaultVerseParser
             $rawText = substr($rawText, 0, -4);
         }
         $this->parseXrefs($rawText, $verseData);
-        $versePart= new VersePart($verseData, $this->replaceTags($rawText), VersePartType::SIMPLE_TEXT, count($verseData->verseParts));
+        $rawText = $this->replaceTags($rawText);
+        $rawText = $this->fixEmTags($rawText);
+        $versePart= new VersePart($verseData, $rawText, VersePartType::SIMPLE_TEXT, count($verseData->verseParts));
+
         $versePart->newline = $containsBr;
         $verseData->verseParts[] = $versePart;
 

@@ -14,7 +14,6 @@ class CleanTdverse extends Migration {
     { 
         Schema::table('tdverse', function(Blueprint $table)
         {
-            $table->dropUnique('index_did_trans');
             $table->dropColumn('did');
             $table->dropColumn('hiv');
             $table->dropColumn('old');
@@ -32,23 +31,12 @@ class CleanTdverse extends Migration {
     {
         Schema::table('tdverse', function(Blueprint $table)
         {
-            $table->string('versesimple');
-            $table->string('jelenseg');
-            $table->integer('old');
-            $table->string('hiv',15);
-            $table->integer('did');  
+            $table->string('versesimple')->nullable();
+            $table->string('jelenseg')->nullable();
+            $table->integer('old')->nullable();
+            $table->string('hiv',15)->nullable();
+            $table->integer('did')->nullable();  
         });
-        // Sajnos csak tök kama adatokkal tölti fel. 
-        $verses = DB::table('tdverse')->get(); 
-        foreach($verses as $verse) {
-            DB::table('tdverse')->where('id', '=', $verse->id)
-                ->update(array('versesimple' => $verse->verse,'jelenseg'=>"jelenség: ".$verse->tip,'old'=>0,'hiv'=>"",'did'=>$verse->id));        
-        }
-        
-        Schema::table('tdverse', function(Blueprint $table)
-        {     
-            $table->unique(array('did','trans'),'index_did_trans');
-        }); 
     }
 
 }

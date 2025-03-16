@@ -3,6 +3,7 @@
 namespace SzentirasHu\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 class Kernel extends HttpKernel
 {
@@ -28,7 +29,7 @@ class Kernel extends HttpKernel
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \SzentirasHu\Http\Middleware\VerifyCsrfToken::class,
+        VerifyCsrfToken::class,
         \Illuminate\Http\Middleware\HandleCors::class
     ];
 

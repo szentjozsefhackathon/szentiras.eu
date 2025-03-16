@@ -1,8 +1,7 @@
 Szentírás.eu
 ========
 
-> [!WARNING]
-> **2025 januárjában átvette ennek a kódnak a helyét a [szentiras.hu](http://szentiras.hu) oldalon egy új (zárt) kód!**
+> 2025 feburárjától intenzív fejlesztések kezdődtek itt, mivel **2025 januárjában átvette ennek a kódnak a helyét a [szentiras.hu](http://szentiras.hu) oldalon egy új (zárt) kód!**
 > Az új helyen elveszett az API, az url-ek, a pdf generálás, a gyors kereső, stb., és koncepcionális változások is történtek.
 > Így jelenleg (és valószínűleg a jövőben) ez a repo más irányt vesz.
 > A változás oka részben az, hogy ennek a site-nak a rendszeres karbantartása és frissítése nem volt jól megoldott.

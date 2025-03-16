@@ -1,10 +1,11 @@
 .ui-autocomplete-loading {
-  background: white url('images/waiting.gif') no-repeat right center;
+  background: white url('/img/waiting.gif') no-repeat right center;
 }
 
 .ui-autocomplete {
+  font-family: var(--book-font);
+  overflow-y: auto;
   font-size: 12px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: absolute;
   top: 100%;
   left: 0;
@@ -12,7 +13,6 @@
   float: left;
   display: none;
   min-width: 160px;
-  _width: 160px;
   padding: 4px 0;
   margin: 2px 0 0 0;
   list-style: none;
@@ -30,17 +30,18 @@
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding;
   background-clip: padding-box;
-  *border-right-width: 2px;
-  *border-bottom-width: 2px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
 
   &.ui-menu {
-    width: 300px
+    max-width: 400px;
+    max-height: 400px;
   }
 
-  .ui-menu-item > a.ui-corner-all {
+  .ui-menu-item-wrapper {
     display: block;
-    padding: 3px 15px;
-    clear: both;
+    padding: 5px 5px;
+    // clear: both;
     font-weight: normal;
     line-height: 18px;
     color: #555555;
@@ -48,9 +49,6 @@
     &.ui-state-hover, &.ui-state-active, &.ui-state-focus {
       color: white;
       text-decoration: none;
-      border-radius: 0px;
-      -webkit-border-radius: 0px;
-      -moz-border-radius: 0px;
       background: #0088cc none;
     }
   }

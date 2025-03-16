@@ -1,7 +1,8 @@
 /bootstrap/compiled.php
 /vendor
 .env
-.env.local
+.env.docker
+.env.prod
 .DS_Store
 Thumbs.db
 .idea
@@ -23,3 +24,4 @@ PROVISIONED
 *.bak
 .phpunit.cache
 .vscode
+generated

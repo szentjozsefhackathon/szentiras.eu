@@ -55,11 +55,20 @@ class ChapterRange
                 }
             }
         }
-
+        // if it is indeed a range:
         if ($this->untilChapterRef) {
-            if ($chapter == $this->chapterRef->chapterId) {
-                if ($verse >= last($this->chapterRef->verseRanges)->verseRef->verseId) {
-                    return true;
+            if ($chapter == $this->chapterRef->chapterId) { // we are looking for the first chapter of the range
+                if ($verse >= last($this->chapterRef->verseRanges)->verseRef->verseId) { // the queried verse is after the first range setting, so far so good,
+                    // but it the untilChapter is the same, it might not be out
+                    if ($this->chapterRef->chapterId == $this->untilChapterRef->chapterId) {
+                        if ($verse <= head($this->untilChapterRef->verseRanges)->untilVerseRef->verseId) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return true;
+                    }
                 }
             } else if ($chapter == $this->untilChapterRef->chapterId) {
                 if ($verse <= head($this->untilChapterRef->verseRanges)->untilVerseRef->verseId) {
@@ -70,5 +79,15 @@ class ChapterRange
             }
         }
         return false;
+    }
+
+    public function getIncludedChapters() {
+        $chapters = [];
+        $chapter = $this->chapterRef->chapterId;
+        $untilChapter = $this->untilChapterRef ? $this->untilChapterRef->chapterId : $chapter;
+        for ($i = $chapter; $i <= $untilChapter; $i++) {
+            $chapters[] = $i;
+        }
+        return $chapters;
     }
 }

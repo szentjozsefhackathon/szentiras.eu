@@ -1,0 +1,38 @@
+{% extends 'layout' %}
+
+{% block meta %}
+    <meta name="robots" content="noindex,nofollow">
+{% endblock %}
+{% block content %}
+    <div>
+        <div class="alert alert-primary" role="alert">
+            {% set link = url("/profile/" ~ anonymousId.token) %}
+            <p>Az alábbi névtelen azonosítód segítségével tudsz belépni a rendszerbe, ha megnyitod ezt a hivatkozást bármilyen eszközön: <a href="{{ link }}">{{ link }}</a></p>
+            <p>Fontos, hogy ehhez az azonosítóhoz semmilyen személyes adatot nem tárolunk, ezért
+            nem tudjuk neked elküldeni emailben, és <b>ha elveszted, nem tudjuk visszaállítani</b>. 
+            <p>Kérjük, mentsd el ezt az azonosítót a könyvjelzőid közé (Ctrl+D), küldd el magadnak üzenetben stb., és ne tedd közzé mások számára!
+        </div>
+    <label for="tokenField" class="form-label">Névtelen azonosító:</label> 
+    <div class="input-group mb-2">        
+<input type="text" class="form-control" value="{{ anonymousId.token }}" id="tokenField" readonly>
+<button class="btn btn-primary" onclick="copyToken()"><i class="bi bi-clipboard"></i> Belépési link másolása</button>
+    </div>
+
+    <form method="get" action="/logout">
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Kilépés</button>           
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+{% block script %}
+    <script>
+function copyToken() {
+    var copyText = document.getElementById("tokenField");
+    navigator.clipboard.writeText(window.location.protocol + "://" + window.location.host+"/profile/"+copyText.value);
+    document.execCommand("copy");
+    alert("A belépési link a vágólapra került!");
+}
+</script>
+{% endblock %}

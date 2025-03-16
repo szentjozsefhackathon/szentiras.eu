@@ -1,0 +1,11 @@
+<button data-close-button-id="closePopover" type="button" class="btn-close"></button>
+<div class="scrollable-content">
+{% for  verseContainer in  verseContainers %}
+    <div class="xrefQuotation">
+        <a class="ref" href="/{{ verseContainer.book.translation.abbrev }}/{{ verseContainer.bookRef.toString() }}">{{verseContainer.bookRef.toString()}}</a>
+        {% for verse in verseContainer.parsedVerses %}
+            {{ verse.text|raw }}
+        {% endfor %}
+    </div>
+{% endfor %}
+</div>

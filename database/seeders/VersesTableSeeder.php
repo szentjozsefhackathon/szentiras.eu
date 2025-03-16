@@ -28,8 +28,9 @@ class VersesTableSeeder extends \Illuminate\Database\Seeder
         $v->chapter = $chapter;
         $v->numv = $numv;
         $v->tip = 6;
-        $v->verse = "verse " . $v->hiv;
-        $v->verseroot = "verseroot" . $v->hiv;
+        $v->verse = "verse " . $v->gepi;
+        $v->verseroot = "verseroot" . $v->gepi;
+        $v->ido = "2025-02-05";
         $v->save();
     }
 }

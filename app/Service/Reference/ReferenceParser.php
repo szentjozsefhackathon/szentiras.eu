@@ -2,6 +2,8 @@
 
 namespace SzentirasHu\Service\Reference;
 
+use Throwable;
+
 /**
  * Examples of possible formats:
  * - 1Kor - full book
@@ -37,9 +39,10 @@ class ReferenceParser
 
     public function __construct($referenceString)
     {
+        // the one and only unparseable reference with this implementation
+        $referenceString = str_replace('Ének.Én', 'ÉnekÉn', $referenceString);
         $this->lexer = new ReferenceLexer($referenceString);
         $this->input = $referenceString;
-        ////print("Parsing: $referenceString\n");
     }
 
     public function bookRefs()
@@ -50,7 +53,11 @@ class ReferenceParser
             if ($token['type'] == ReferenceLexer::T_NUMERIC
                 || $token['type'] == ReferenceLexer::T_TEXT
             ) {
-                $bookRefs[] = $this->bookRef();
+                try {
+                    $bookRefs[] = $this->bookRef();
+                } catch (Throwable $e) {
+                    $this->parsingError();
+                }                
             }
         }
         return $bookRefs;
@@ -146,7 +153,6 @@ class ReferenceParser
                 }
             }
         }
-        //print("Range chapterId: {$range->chapterRef->chapterId}\n");
         return $range;
     }
 

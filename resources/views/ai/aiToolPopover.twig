@@ -1,0 +1,58 @@
+{% macro similarity(value) %}
+  {% if value %}
+  <div class="quality" data-bs-toggle="tooltip" title="Becsült hasonlóság">
+        {% for i in 1..5 %}
+          {% if i+4 < value * 10 + 3 %}
+              <span class="star active">&#9733;</span>
+          {% else %}
+              <span class="star inactive">&#9734;</span>
+          {% endif %}
+      {% endfor %}
+  </div>
+  {% endif %}
+{% endmacro %}
+
+{% from 'macros' import similarityCircle %}
+
+<button data-close-button-id="closePopover" type="button" class="btn-close"></button>
+
+<ul class="nav nav-tabs ai-tools" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="parallel-tab" data-bs-toggle="tab" data-bs-target="#parallel{{ gepi }}" type="button" role="tab" aria-controls="home" aria-selected="true">Fordítások</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="similar-tab" data-bs-toggle="tab" data-bs-target="#similar{{ gepi }}" type="button" role="tab" aria-controls="profile" aria-selected="false">AI párhuzamok</button>
+    </li>
+  </ul>
+  
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane active parallel-tab scrollable-content" id="parallel{{ gepi }}" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+      {% for pureText in pureTexts %}
+        <div><a href="/{{ pureText.translationAbbrev }}/{{ pureText.reference }}">{{ pureText.translationAbbrev }}: {{ pureText.reference }}</a> {{ similarityCircle(pureText.similarity) }}
+        <span class="pureText">{{ pureText.text }}</span> {{ similarityCircle(pureText.greekSimilarity, 'grey', 'Becsült hasonlóság a göröghöz') }}
+    </div>
+      {% endfor %}
+      {% if greekText %}
+      <div class="greek greekSection" lang="grc">
+        {% for piece in greekText %}
+          <span class="greekWord" data-usx="{{ piece.usx_code }}" data-chapter="{{ piece.chapter }}" data-verse="{{ piece.verse }}" data-i="{{ piece.i }}" title="{{ piece.strong }} ({{ piece.translit }})">{{ piece.printed }}</span>
+        {% endfor %}
+        <div class="explanation"><div class="ps-2"><i class="bi bi-lightbulb"></i> Kattints a görög szavakra a jelentésük megjelenítéséhez.</div></div>
+      </div>
+
+      {% endif %}
+    </div>
+    <div class="tab-pane scrollable-content" id="similar{{ gepi }}" role="tabpanel" aria-labelledby="similar-tab" tabindex="0">
+      <div><a href="/{{ pureTexts[0].text }}/{{ pureText[0].reference }}">{{ pureTexts[0].reference }}</a>  
+      <span class="pureText">{{ pureTexts[0].text }}</span>
+      </div>
+      {% for similar in similars %}
+        <div>
+          <a href="/{{ similar.translationAbbrev }}/{{ similar.reference }}">{{ similar.reference }}</a> {{ similarityCircle(similar.similarity) }}
+          <span class="pureText">{{ similar.text }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>

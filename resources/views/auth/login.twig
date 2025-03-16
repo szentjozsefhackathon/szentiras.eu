@@ -1,0 +1,28 @@
+{% extends "layout" %}
+
+{% block content %}
+    <h2>Belépés</h2>
+    <p>Ha már regisztráltál, használd a névtelen azonosítódat.
+    <p>Ha még nem regiszráltál, <a href="/register"><i class="bi-arrow-right"></i> itt megteheted.</a></p>
+    <div class="mb-2">
+    <form action="login" method="post">
+        {{ csrf_field() }}
+        <div class="mb-2">
+        <input type="text" class="form-control {% if errors.any() %}is-invalid{% endif %}" placeholder="AbCdEfGhIjKlMnOpQrStUvWx" id="anonymous_token" method="get" name="anonymous_token" action="/login">
+        </div>
+        {% if errors.any() %}
+            <div class="">
+                <ul>
+                    {%  for error in errors.all() %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}    
+        <button class="btn btn-primary" type="submit">Belépés</button>
+    </form>
+    </div>
+    <div class="mb-3">Ha már nincs meg az azonosítód, akkor <a href="/register">regisztrálj újat</a>! (Mivel semmilyen személyes adatot nem kezelünk, nem tudjuk neked elküldeni.)</div>
+    
+    </div>
+{% endblock %}

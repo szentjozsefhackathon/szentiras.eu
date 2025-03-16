@@ -7,6 +7,7 @@ namespace SzentirasHu\Service\Reference;
 
 
 use Log;
+use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Data\Repository\BookRepository;
 use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
@@ -46,7 +47,7 @@ class ReferenceService
         foreach ($translations as $translation) {
             $storedBookRefs = [];
             foreach ($ref->bookRefs as $bookRef) {
-                $storedBookRef = $this->findStoredBookRef($bookRef, $translation->id);
+                $storedBookRef = $this->findStoredBookRef($bookRef, $translation);
                 if ($storedBookRef) {
                     $storedBookRefs[] = $storedBookRef;
                 }
@@ -59,12 +60,12 @@ class ReferenceService
         return [];
     }
 
-    private function findStoredBookRef($bookRef, $translationId, $refTranslationId = null)
+    private function findStoredBookRef($bookRef, Translation $translation, ?Translation $refTranslation = null)
     {
         $result = null;
-        $abbreviatedBook = $this->bookRepository->getByAbbrev($bookRef->bookId, $refTranslationId);
+        $abbreviatedBook = $this->bookRepository->getByAbbrev($bookRef->bookId, $refTranslation);
         if ($abbreviatedBook) {
-            $book = $this->bookRepository->getByUsxCodeForTranslation($abbreviatedBook->usx_code, $translationId);
+            $book = $this->bookRepository->getByUsxCodeForTranslation($abbreviatedBook->usx_code, $translation);
             if ($book) {
                 $result = new BookRef($book->abbrev);
                 $result->chapterRanges = $bookRef->chapterRanges;
@@ -82,9 +83,11 @@ class ReferenceService
      * @param refTranslationId The id of the translation the bookref is interpreted according to.
      * @return BookRef
      */
-    public function translateBookRef(BookRef $bookRef, $translationId, $refTranslationId = null)
+    public function translateBookRef(BookRef $bookRef, int $translationId, int $refTranslationId = null)
     {
-        $result = $this->findStoredBookRef($bookRef, $translationId, $refTranslationId);
+        $translation = $this->translationRepository->getById($translationId);
+        $refTranslation = $this->translationRepository->getById($refTranslationId);
+        $result = $this->findStoredBookRef($bookRef, $translation, $refTranslation);
         return $result ? $result : $bookRef;
     }
 
@@ -105,10 +108,22 @@ class ReferenceService
         return $url;
     }
 
+    public function getSeoUrl(CanonicalReference $ref, $translationId)
+    {
+        $translation = $this->translationRepository->getById($translationId);
+        $translatedRef = $this->translateReference($ref, $translationId);
+        $firstBook=$ref->bookRefs[0]->bookId;
+        $firstChapter=$ref->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
+        $url = "{$translation->abbrev}/{$firstBook}{$firstChapter}";
+        return $url;
+    }
+
+
     public function getBook($canonicalReference, $translationId)
     {
         $bookRef = $canonicalReference->bookRefs[0];
-        return $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translationId);
+        $translation = $this->translationRepository->getById($translationId);
+        return $this->bookRepository->getByAbbrevForTranslation($bookRef->bookId, $translation);
     }
 
     public function getChapterRange($book)
@@ -136,10 +151,10 @@ class ReferenceService
             $nextChapter = $chapterId + 1;
         }
         $prevRef = $prevChapter ?
-            CanonicalReference::fromString("{$bookRef->bookId} {$prevChapter}") :
+            CanonicalReference::fromString("{$bookRef->bookId} {$prevChapter}", $translationId) :
             false;
         $nextRef = $nextChapter ?
-            CanonicalReference::fromString("{$bookRef->bookId} {$nextChapter}") :
+            CanonicalReference::fromString("{$bookRef->bookId} {$nextChapter}", $translationId) :
             false;
 
         return [$prevRef, $nextRef];

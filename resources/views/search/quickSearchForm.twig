@@ -1,49 +1,34 @@
 
-<div class="panel-group" id="accordion">
-    <div class="panel panel-default">
-        <div class="panel-heading visible-lg-block visible-md-block">
-            <h4 class="panel-title">
-                    Keresés a Bibliában
-            </h4>
-        </div>
-        <div id="collapseOne" class="panel-collapse">
-            <div class="panel-body">
-                <form id="quickSearchForm" role="form" method="get" class="form-inline"
-                      action="/kereses/search">
-                    <div class="form-group" style="width:100%">
-                        <div class="input-group" style="width:100%">
-                            <input id="quickSearch" type="text" class="form-control" name="textToSearch" value="{{ form.textToSearch }}" placeholder="Gyorskeresés">
-                            <input id="grouping" type="hidden" class="form-control" name="grouping" value="verse">
-                            <a id="quickSearchButton" class="btn btn-default input-group-addon"><span class="glyphicon glyphicon-search"></span></a>
-                            <a href="/kereses/search" title="Részletes keresés" class="hidden-sm hidden-md hidden-lg btn btn-default input-group-addon"><span class="glyphicon glyphicon-cog"></span></a></span>
-
-                        </div>
+<div class="card" id="accordion">
+    <div class="card-header visible-lg visile-md">
+        Keresés a Bibliában
+    </div>
+    <div class="card-body">
+        <form id="quickSearchForm" role="form" method="post" class="form-inline"
+                action="/kereses/quicksearch" id="quickSearchForm">
+            <div class="form-group">
+                <div class="input-group">
+                    <input id="quickSearch" type="text" class="form-control" name="textToSearch" value="{{ form.textToSearch }}" placeholder="Gyorskeresés">
+                    <input id="grouping" type="hidden" class="form-control" name="grouping" value="verse">
+                    {{ csrf_field() }}
+                    <div class="input-group-append">
+                        <a href="javascript:void(0)" class="quickSearchButton btn btn-default btn-secondary"><i class="bi-search"></i></a>
                     </div>
-                </form>
-                <div class="hidden-xs row center-block" style="margin-top:5px">
-                    <a href="/kereses/search" class="btn btn-default center-block"><span class="glyphicon glyphicon-cog"></span> Részletes keresés</a>
+                    <div class="input-group-append">
+                        <a href="javascript:void(0)" title="Részletes keresés" class="quickSearchButton btn-primary d-md-none d-lg-none btn btn-default"><i class="bi-gear"></i></a></span>
+                    </div>
+                    <div class="input-group-append">
+                        <a href="/ai-search" title="AI keresés" class="btn-primary d-md-none d-lg-none btn btn-default"><i class="bi-robot"></i></a></span>                            
+                    </div>
+
                 </div>
             </div>
+        </form>
+        <div class="d-none d-md-block text-center mt-2">
+            <a href="javascript:void(0)" role="button" class="quickSearchButton btn btn-primary btn-default"><i class="bi-gear"></i> Részletes keresés</a>
+        </div>
+        <div class="d-none d-md-block text-center mt-2">
+            <a href="/ai-search" role="button" class="btn btn-primary btn-default"><i class="bi-robot"></i> AI keresés</a>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="btn-group">
-                <a href="javascript:void(0)" class="btn btn-default btn-sm active" id="toggleNumv">
-                    <span class="toggle glyphicon glyphicon-check active"></span>
-                    <span class="toggle glyphicon glyphicon-unchecked inactive"></span>
-                    Versszámozás</a>
-                <a href="javascript:void(0)" class="btn btn-default btn-sm active" id="toggleXrefs">
-                    <span class="toggle glyphicon glyphicon-check active"></span>
-                    <span class="toggle glyphicon glyphicon-unchecked inactive"></span>
-                    Hivatkozások</a>
-                <a href="javascript:void(0)" class="btn btn-default btn-sm active" id="toggleHeadings">
-                    <span class="toggle glyphicon glyphicon-check active"></span>
-                    <span class="toggle glyphicon glyphicon-unchecked inactive"></span>
-                    Címsorok</a>
-    
-            </div>
-        </div>
-    </div>
-
 </div>

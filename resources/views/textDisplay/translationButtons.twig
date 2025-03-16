@@ -1,11 +1,11 @@
 {% for otherTranslation in translationLinks %}
     {% if otherTranslation.id != translation.id %}
         {% if otherTranslation.enabled %}
-            <a class="btn btn-xs btn-default" href="/{{ otherTranslation.link }}">{{ otherTranslation.abbrev }}</a>
+            <a class="btn btn-sm btn-outline-primary" role="button" href="/{{ otherTranslation.link }}">{{ otherTranslation.abbrev }}</a>
         {% else %}
-            <a class="btn btn-xs btn-default disabled" title="A hivatkozás {{ otherTranslation.abbrev }} fordításban nem elérhető.">{{ otherTranslation.abbrev }}</a>
+            <a class="btn btn-sm btn-outline-primary disabled"  role="button" title="A hivatkozás {{ otherTranslation.abbrev }} fordításban nem elérhető.">{{ otherTranslation.abbrev }}</a>
         {% endif %}
     {% else %}
-        <a class="btn btn-xs btn-primary disabled">{{ otherTranslation.abbrev }}</a>
+        <a href="#" class="btn btn-sm btn-secondary disabled"  >{{ otherTranslation.abbrev }}</a>
     {% endif %}
 {% endfor %}

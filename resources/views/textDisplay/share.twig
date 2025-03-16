@@ -1,13 +1,12 @@
 {% set fullCanonicalUrl = url('/' ~ canonicalUrl) %}
 
 {% macro social(link, icon, color, label) %}
-    <a href="{{ link }}" class="btn btn-default" onclick="javascript:window.open(this.href,
-  '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa {{ icon }} fa-lg" style="color: {{ color }}"></i> {{ label }}</a>
+    <a href="{{ link }}" class="btn btn-outline-secondary" onclick="javascript:window.open(this.href,
+  '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="bi-{{ icon }}" style="color: {{ color }}"></i> {{ label }}</a>
 {% endmacro %}
-{% import _self as macros %}
 <div>
-    {{ macros.social('http://www.facebook.com/share.php?title=' ~ teaser ~ '&u=' ~ fullCanonicalUrl, 'fa-facebook', '#3b5999', 'Facebook') }}
-    {{ macros.social('https://twitter.com/share?lang=hu&text=' ~ teaser ~ '&url=' ~ fullCanonicalUrl, 'fa-twitter', '#55acee', 'Twitter') }}
-    <a href="/qr/dialog/{{ fullCanonicalUrl }}" rel="nofollow" data-target="#qrModal" data-toggle="modal" id="qrLink" class="btn btn-default"><i class="fa fa-qrcode fa-lg"></i> QR-kód</a></li>
-    <a href="/pdf/dialog/{{ canonicalUrl }}" rel="nofollow" data-target="#pdfModal" data-toggle="modal" id="pdfLink" class="btn btn-default"><i class="fa fa-print fa-lg"></i> PDF</a>
+  <a href="#" data-bs-view="/pdf/dialog/{{ canonicalUrl }}" rel="nofollow" data-bs-target="#pdfModal" data-bs-toggle="modal" id="pdfLink" class="btn btn-outline-secondary"><i class="bi-printer"></i> Nyomtatás/PDF</a>  
+  <a href="#" data-bs-view="/qr/dialog/{{ fullCanonicalUrl }}" rel="nofollow" data-bs-target="#qrModal" data-bs-toggle="modal" id="qrLink" class="btn btn-outline-secondary"><i class="bi-qr-code"></i> QR-kód</a></li>  
+    {{ _self.social('http://www.facebook.com/share.php?title=' ~ teaser ~ '&u=' ~ fullCanonicalUrl, 'facebook', '#3b5999', 'Facebook') }}
+    {{ _self.social('https://twitter.com/share?lang=hu&text=' ~ teaser ~ '&url=' ~ fullCanonicalUrl, 'twitter-x', '#55acee', 'Twitter') }}
 </div>

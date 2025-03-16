@@ -5,29 +5,24 @@
 
 namespace SzentirasHu\Http\ViewComposers;
 
-
-use SzentirasHu\Data\Repository\TranslationRepository;
+use SzentirasHu\Service\Text\BookService;
+use SzentirasHu\Service\Text\TranslationService;
 
 class BookAbbrevListComposer
 {
 
 
-    /**
-     * @var \SzentirasHu\Data\Repository\TranslationRepository
-     */
-    private $translationRepository;
-
-    function __construct(TranslationRepository $translationRepository)
+    function __construct(protected TranslationService $translationService, protected BookService $bookService)
     {
-        $this->translationRepository = $translationRepository;
+        
     }
 
     public function compose($view)
     {
         $translation = array_key_exists('translation', $view->getData()) ?
             $view['translation'] :
-            $this->translationRepository->getById(\Config::get('settings.defaultTranslationId'));
-        $books = $this->translationRepository->getBooks($translation);
+            $this->translationService->getDefaultTranslation();
+        $books = $this->bookService->getBooksForTranslation($translation);
         $view
             ->with(['books' => $books, 'translation' => $translation]);
     }

@@ -1,0 +1,130 @@
+{% extends 'layout' %}
+
+{% set pageTitle %}
+Keresés jelentés szerint mesterséges intelligencia segítségével | Szentírás
+{% endset %}
+
+{% block content %}
+    <h3>Keresés jelentés szerint, AI segítségével</h2>
+                <div class="card bg-light mb-2">
+                    <div class="card-header collapsible" data-bs-toggle="collapse" data-bs-target="#cardContent">
+                        <i class="bi bi-chevron-down"></i>
+                        Keresési útmutató
+                        
+                </div>
+                <div id="cardContent" class="collapse">
+                    <div class="card-body">
+                        <p>A „jelentés szerinti” keresés mesterséges intelligenciát használ a kereséshez, és <b>másképp működik, mint a hagyományos keresés</b>. A használatához néhány fontos szempont:</p>
+                        <ul>
+                            <li>Mivel nagy a számításigénye, mi is kísérletezünk a legjobb/leghatékonyabb működéssel. A pozitív és negatív visszajelzéseknek egyaránt örülünk.</li>
+                            <li>Pontos idézeteket, szavakat, mondatokat a <a href="/kereses">Részletes keresőben</a> keress!</li>   
+                            <li>Minél több kontextust adsz a keresésben, annál pontosabbak lesznek a találatok. A <i>Mit mond Jézus az ellenség szeretetéről?</i> sokkal jobb lehet, mint az <i>ellenségszeretet</i>.</li>
+                            <li>Ha idézetet keresel, csak nem tudod pontosan a szövegét, akkor próbáld meg idézőjelek között is.</li>
+                            <li>Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási részekkel (versekkel, nagyobb szakaszokkal és fejezetekkel) válaszol.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <div class="card-body">                    
+            <form role="form" class="form-horizontal" method="post"
+                  action="{{ action('Search\\SemanticSearchController@anySearch') }}" id="semanticSearchForm">
+                  {% if not session_get("anonymous_token") %}
+                    <div class="alert alert-primary" role="alert">
+                        Regisztráció/belépés nélkül is használhatod a szemantikus keresőt, de egy munkamenetben legfeljebb {{ config_get('settings.ai.unregisteredSearchLimit') }} keresést végezhetsz. 
+                        Eddig {{ session_get('semanticSearchCalls', 0) }} keresést végeztél.
+                        Ha többre van szükséged, <a href="/login">lépj be</a> vagy <a href="/register">regisztrálj</a>, ha még nem tetted</a>!
+                    </div>
+                    {%  if not form.captchaValidated %}
+                        <div class="cf-turnstile" data-sitekey="{{ config_get('services.cloudflare_turnstile.site_key') }}"></div>
+                    {% else %}
+                        <input type="hidden" name="captchaValidated" value="1"/>
+                    {% endif %}
+                {% endif %}                    
+                <div class="mb-2">
+                    <label for="textToSearchAi" class="form-label" required>Keresendő</label>
+                    <input required type="text" name="textToSearchAi" id="textToSearchAi" value="{{ form.textToSearchAi }}" class="form-control"/>                    
+                    {{ errors.first('textToSearchAi') }}
+                </div>
+                <div class="row g-3 mb-2">
+                    <div class="col">
+                        <label for="usxCode" class="form-label">Könyv</label>
+                        <select name="usxCode" class="form-control" id="usxCode">
+                            <option value="all" {{ 'all' == form.usxCode ? 'selected' }}>mind</option>
+                            <option value="old_testament" {{ 'old_testament' == form.usxCode ? 'selected' }}>Ószövetség</option>
+                            <option value="new_testament" {{ 'new_testament' == form.usxCode ? 'selected' }}>Újszövetség</option>
+                            {% for book in books %}
+                                <option value="{{ book.usx_code }}" {{ book.usx_code == form.usxCode ? 'selected' }}>{{ book.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="translationAbbrev" class="form-label">Fordítás</label>
+                        <select name="translationAbbrev" class="form-control" id="translationAbbrev">
+                            <option value="0" {{ form.translationAbbrev is not defined ? 'selected' }}>mind</option>
+                            {% for translation in translations %}
+                                <option value="{{ translation.abbrev }}" {{ translation.abbrev == form.translationAbbrev ? 'selected' }}>{{ translation.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {{ csrf_field() }}
+                <input type="submit" value="Keresés" class="btn btn-primary"/>
+            </form>
+        </div>
+    </div>          
+
+{% macro groupedResponseView(groupedResponseList) %}
+    {% from 'macros' import similarityCircle %}
+    <div class="mb-2"></div>
+    {% for gepi, result in groupedResponseList %}        
+        <blockquote class="searchResult blockquote mb-3">
+            {{ similarityCircle(result.similarity, color: 'grey', size: 20) }}
+            {%  for semanticSearchResult in result.items  %}       
+                <a data-target="#g{{ gepi }}_{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}" class="searchResultTranslationSelector btn btn-outline-secondary btn-sm {% if loop.first %}active{% endif %}">
+                    <i class="bi bi-book"></i> <span>{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}</span>
+                    <span class="header-bookabbrev {{ loop.first ? 'active d-sm-inline' : 'inactive d-md-inline'}}">{{ semanticSearchResult.embeddedExcerpt.reference   }}</span> 
+                </a>
+            {% endfor %}
+            <div>
+                {%  for semanticSearchResult in result.items  %}
+                    <div class="searchResultTranslationText searchResultVerse {% if loop.first %}active{% endif %}" id="g{{ gepi }}_{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}">
+                        <a href="/{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}/{{ semanticSearchResult.embeddedExcerpt.reference }}"><i class="bi-arrow-right-circle-fill float-start pe-2"></i></a>
+                        {% for verseContainer in semanticSearchResult.verseContainers %}
+                            {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' :  semanticSearchResult.embeddedExcerpt.translation, 'highlightedGepis' : semanticSearchResult.highlightedGepis } %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}                        
+            </div>
+        </blockquote>
+    {% endfor %}        
+{% endmacro %}
+
+    {% if groupedResponses is defined %}
+        <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="nav-item"><a class="nav-link active" role="tab" type="button" data-bs-target="#versek" data-bs-toggle="tab">Versek <span class="badge text-bg-primary">{{ groupedResponses|length }}</span></a></li>
+            <li role="presentation" class="nav-item"><a class="nav-link" role="tab" type="button" data-bs-target="#szakaszok" data-bs-toggle="tab" >Szakaszok <span class="badge text-bg-primary">{{ groupedRangeResponses|length }}</span></a></li>
+            <li role="presentation" class="nav-item"><a class="nav-link" role="tab" type="button" data-bs-target="#fejezetek" data-bs-toggle="tab">Fejezetek <span class="badge text-bg-primary">{{ groupedChapterResponses|length }}</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="versek">
+                {{ _self.groupedResponseView(groupedResponses) }}        
+            </div>
+            <div role="tabpanel" class="tab-pane" id="szakaszok">
+                {{ _self.groupedResponseView(groupedRangeResponses) }}        
+            </div>
+            <div role="tabpanel" class="tab-pane" id="fejezetek">
+                {{ _self.groupedResponseView(groupedChapterResponses) }}        
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block script %}
+    {% if not session_get("anonymous_token") %}
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    {% endif %}
+{%  endblock %}

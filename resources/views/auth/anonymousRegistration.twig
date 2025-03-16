@@ -1,0 +1,37 @@
+{% extends "layout" %}
+
+{% block content %}
+    <h2>Regisztráció</h2>
+    <form method="post" action="/register">
+        <div class="mb-2">
+            A regisztráció annyiból áll, hogy elfogadod az adatvédelmi szabályainkat, és kapsz egy névtelen azonosítót, amit használhatsz a belépéshez.
+            Az adatvédelmi szabályaink a következők: a belépett felhasználóknál elhelyezünk egy cookie-t (sütit), amivel a későbbi belépéseiket automatizáljuk. 
+            A legutolsó belépés időpontját rögzítjük. 
+            Semmilyen személyes adatot, semmilyen formában nem kezelünk, nem kérünk és nem tárolunk. Későbbiekben tervezzük, hogy  hasznos funkciókat hozzárendelünk 
+            a névtelen azonosítóhoz (könyvjelző, jegyzetek, kedvenc részek stb.), de ezek is anonim módon működnek majd.
+
+        </div>
+        <div class="mb-2">
+            {{ csrf_field() }}
+            <input type="checkbox"  class="form-check-input" name="approve" id="accept" required>
+            <label class="form-label {% if errors.first['approve']%}is-invalid{%  endif %}" for="accept">A regisztrációval elfogadom az adatvédelmi feltételeket.</a></label>
+            {% if errors.any() %}
+                <div class="">
+                    <ul>
+                        {%  for error in errors.all() %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}    
+        </div>
+        <div class="cf-turnstile" data-sitekey="{{ config_get('services.cloudflare_turnstile.site_key') }}"></div>
+
+            <button class="btn btn-primary" type="submit">Regisztráció</button>
+
+    </form>
+{% endblock %}
+
+{%  block script%}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+{% endblock %}

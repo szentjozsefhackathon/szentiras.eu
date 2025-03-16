@@ -2,9 +2,10 @@
 # Minimal Sphinx configuration sample (clean, simple, functional)
 #
 
+
 source verses_source
 {
-	type			= __DB_TYPE__
+	type			= pgsql
 	sql_host		= __DB_HOST__
 	sql_user		= __DB_USERNAME__
 	sql_pass		= __DB_PASSWORD__
@@ -12,24 +13,17 @@ source verses_source
 	sql_port		= __DB_PORT__
 
 	sql_query		= \
-		SELECT id, gepi, trans, usx_code, chapter, numv, tip, verse, verse as verse2, verse as verse3 \
+		SELECT id, gepi, trans, usx_code, chapter, tip, verse, verse as verse2, verse as verse3 \
 		FROM kar_tdverse \
     WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
 
-	sql_attr_uint = trans
-	sql_attr_string = usx_code
-	sql_attr_uint = chapter
-	sql_attr_bigint = gepi
-	sql_attr_uint = tip
-
-	sql_query_pre = SET NAMES utf8
-    sql_query_pre = SET CHARACTER_SET_RESULTS=utf8
 }
+
 
 source verses_root_source : verses_source
 {
     sql_query		= \
-    SELECT id, gepi, trans, usx_code, chapter, numv, tip, verseroot, verseroot as verse, verseroot as verse2, verseroot as verse3 \
+    SELECT id, gepi, trans, usx_code, chapter, tip, verseroot as verse, verseroot as verse2, verseroot as verse3 \
     FROM kar_tdverse \
     WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
 
@@ -38,7 +32,14 @@ source verses_root_source : verses_source
 index verse
 {
 	source	= verses_source
-	path = /tmp/sphinx_verse_index
+	
+	field = verse, verse2, verse3
+	attr_uint = trans
+	attr_string = usx_code
+	attr_uint = chapter
+	attr_string = gepi
+	attr_uint = tip
+
 	min_infix_len = 3
 	charset_table = \
 	    0..9, \
@@ -51,31 +52,29 @@ index verse
 	    U+0170->U+0171
 }
 
-index verse_root : verse
+index verseroot : verse
 {
     source = verses_root_source
-    path = /tmp/sphinx_verse_root_index
 }
 
 
 indexer
 {
-	mem_limit		= 32M
+	mem_limit		= 64M
 }
 
 
 searchd
 {
-	listen			= __SPHINX_PORT__
-	log			    = /var/log/sphinxsearch/searchd.log
-	query_log		= /var/log/sphinxsearch/query.log
 	read_timeout	= 5
 	max_children	= 30
-	pid_file		= /var/run/sphinxsearch/searchd.pid
-	max_matches		= 1000
 	seamless_rotate	= 1
 	preopen_indexes	= 1
 	unlink_old		= 1
 	workers			= threads # for RT to work
-	binlog_path		=
+}
+
+common
+{
+    datadir            = /opt/sphinx
 }

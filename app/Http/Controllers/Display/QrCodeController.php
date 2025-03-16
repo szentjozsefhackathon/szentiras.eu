@@ -5,7 +5,7 @@
 
 namespace SzentirasHu\Http\Controllers\Display;
 
-
+use Config;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Writer\PngWriter;
@@ -35,7 +35,7 @@ class QrCodeController extends Controller
             margin: 5
         );
 
-        $logoText = 'szentiras.hu';
+        $logoText = Config::get('settings.brand.domain');
         $margin = 10;
         $palette = new RGB();
         $font = new Font(

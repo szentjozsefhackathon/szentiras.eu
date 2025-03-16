@@ -9,18 +9,17 @@ use SzentirasHu\Data\Entity\Translation;
 interface TranslationRepository {
 
     /**
-     * @return Translation[]
+     * @return Collection<Translation>
      */
-    public function getAll();
+    public function getAll() : Collection;
 
 
     public function getAllOrderedByDenom() : Collection;
 
     /**
      * @param bool $denom
-     * @return Translation[]
      */
-    public function getByDenom($denom = false);
+    public function getByDenom($denom = false) : Collection;
 
     /**
      * @param Translation $translation

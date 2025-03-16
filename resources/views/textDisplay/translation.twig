@@ -5,7 +5,30 @@
 {% endset %}
 
 {% macro bookLink(translation, book) %}
-    <li><a href="/{{ translation.abbrev }}/{{ book.abbrev }}" class="link">{{ book.name }} ({{book.abbrev}})</a></li>
+    <div><a href="/{{ translation.abbrev }}/{{ book.abbrev }}" class="link">{{ book.name }} ({{book.abbrev}})</a></div>
+{% endmacro %}
+
+{% macro tocContent(translation, book, bookHeaders) %}
+    {% set headers =  bookHeaders[book.abbrev] %}
+    {% if headers %}
+        {% for chapterId, chapter in headers.headings %}
+        <div class="tocItem">            
+        {%set chapterLink %}/{{ translation.abbrev  }}/{{ book.abbrev }}{{ chapterId }}{% endset %}
+        {%set chapterText %}{{ chapterId }}{% endset %}
+            <div class="chapterNumber">
+                <strong><a href="{{ chapterLink}}">{{ chapterText }}</a></strong>
+            </div>
+        {% set chheadings = headers.headings[chapterId] %}
+        <div class="chapterHeadings">
+            {% if chheadings|length > 0 %}            
+                {%- for heading in chheadings -%}
+                        <a href='/{{ translation.abbrev }}/{{ book.abbrev }}{{ chapterId}}#heading_{{ heading.gepi }}_{{ heading.headingLevel }}' class='link'>{{ heading.content|striptags('<br><a>')|raw  }}</a>{% if not loop.last %} ● {% endif %}
+                {% endfor %}                        
+            {% endif %}        
+        </div>
+        </div>
+        {% endfor %}
+    {% endif %}
 {% endmacro %}
 
 {% block content %}
@@ -14,14 +37,18 @@
     {% include 'bookAbbrevList' with { 'translation' : translation } %}
       
     {% include 'quickChapterSelector' %}
-    
+    <div class="mb-2">
+    <a data-url="/{{ translation.abbrev }}?toc" tabindex="0" class="btn btn-info {{ toc ? "hidden" : "" }}" role="button" id="showToc"><i class="bi-bookmarks"></i> Teljes tartalomjegyzék</a>
+    <a data-url="/{{ translation.abbrev }}" tabindex="0" class="btn btn-info {{ not toc ? "hidden": '' }}" role="button" id="hideToc"><i class="bi-bookmark"></i> Csak könyvnevek</a>
+    </div>
+    <div class="mb-3">
                 <h4>Újszövetség</h4>
-                <ul class="list-unstyled">
                     {% for book in books|filter(book => not book.old_testament) %}
                         {{ _self.bookLink(translation, book) }}
+                        {{ _self.tocContent(translation, book, bookHeaders) }}
                     {% endfor %}
-                </ul>
-            </td>            
+    </div>
+                   
     {% for book in books|filter(book => book.old_testament) %}
         {% if loop.first %}
             <h4>Ószövetség</h4>
@@ -31,12 +58,10 @@
     <ul class="list-unstyled">
         {% for book in books|filter(book => book.old_testament) %}
             {{ _self.bookLink(translation, book) }}
+            {{ _self.tocContent(translation, book, bookHeaders) }}
         {% endfor %}
     </ul>
+    <span id="data" data-translation="{{ translation.abbrev }}"></span>
 {% endblock %}
 
-{% block script %}
-    document.addEventListener('DOMContentLoaded', () => {
-        quickChapterSelector("{{ translation.abbrev }}");
-    });
-{% endblock %}
+{% set js=['pages/translation'] %}

@@ -14,7 +14,7 @@ class AddOrderToTranslations extends Migration {
 	{
 		Schema::table('translations', function($table)
 		{
-		    $table->integer('order')->after('abbrev');
+		    $table->integer('order')->after('abbrev')->nullable();
 		});
 
         DB::table('translations')->where('id', 1)->update(array('order' => 3));

@@ -1,21 +1,20 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
+    "license": "AGPL-3.0",
     "type": "project",
     "require": {
         "php": "^8.2",
-        "barryvdh/laravel-ide-helper": "^3.5",
         "doctrine/dbal": "^3.0",
         "endroid/qr-code": "^6.0",
-        "gigablah/sphinxphp": "^2.0",
         "google/apiclient": "1.0.*@beta",
         "guzzlehttp/guzzle": "^7.0.1",
         "imagine/imagine": "1.5.0",
         "laravel/framework": "^11.0",
         "laravel/helpers": "^1.7",
-        "laravel/tinker": "^2.5",
+        "league/flysystem-aws-s3-v3": "^3.0",
+        "openai-php/laravel": "^0.10.2",
+        "pgvector/pgvector": "^0.2.1",
         "openspout/openspout": "^4.28",
         "phpoffice/phpspreadsheet": "^3.9",
         "predis/predis": "^1.0",
@@ -23,12 +22,15 @@
         "twig/twig": "~3.9"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.14",        
-        "spatie/laravel-ignition": "^2.0",
+        "barryvdh/laravel-debugbar": "^3.14",
+        "barryvdh/laravel-ide-helper": "^3.5",
         "fakerphp/faker": "^1.9.1",
+        "larastan/larastan": "^3.0",
+        "laravel/tinker": "^2.5",
         "mockery/mockery": "^1.3.1",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.0",
+        "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -43,8 +45,7 @@
         "psr-4": {
             "SzentirasHu\\Test\\": "tests/feature",
             "SzentirasHu\\Test\\Smoke\\": "tests/smoke",
-            "SzentirasHu\\Test\\Common\\": "tests/common"
-        }
+            "SzentirasHu\\Test\\Common\\": "tests/common"        }
 
     },
     "extra": {
@@ -62,10 +63,7 @@
         ],
         "post-update-cmd": [
             "@php artisan ide-helper:generate",
-            "@php artisan ide-helper:models --nowrite"
-        ],
-        "post-root-package-install": [
-            "php -r \"copy('.env.example', '.env');\""
+            "@php artisan ide-helper:models -W"
         ],
         "post-create-project-cmd": [
             "php artisan key:generate --ansi"
@@ -80,7 +78,8 @@
         "sort-packages": true,
         "optimize-autoloader": true,
         "allow-plugins": {
-            "kylekatarnls/update-helper": true
+            "kylekatarnls/update-helper": true,
+            "php-http/discovery": true
         }
     },
     "prefer-stable": true

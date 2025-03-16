@@ -19,7 +19,8 @@ class CreateSynonymsTable extends Migration {
         ["juhkapu", "Juh-kapu"],
         ["Beteszda","Betesdának","Betezdának","Bethesda", "Betezda", "Betesda"],
         ["nathanael","Nátánáel"],
-        ["Kain", "Káin"]
+        ["Kain", "Káin"],
+        ["fölment", "felment"]
     ];
 
 	/**
@@ -33,8 +34,8 @@ class CreateSynonymsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->timestamps();
-            $table->string('word');
-            $table->integer('group');
+            $table->string('word')->nullable();
+            $table->integer('group')->nullable();
 		});
 
         $this->addInitialData();

@@ -30,6 +30,9 @@ class BookTableSeeder extends \Illuminate\Database\Seeder
         $book->id = $id;
         $book->order = $order;
         $book->abbrev = $abbrev;
+        $book->name = "$abbrev.";
+        $book->link = "link";
+        $book->old_testament = 1;
         $book->usx_code = UsxCodes::getUsxFromBookAbbrevAndTranslation($abbrev);
         $book->translation()->associate($translation);
         $book->save();
@@ -42,6 +45,11 @@ class BookTableSeeder extends \Illuminate\Database\Seeder
         $translation->id = $id;
         $translation->name = $name;
         $translation->abbrev = $abbrev;
+        $translation->denom = "denom";
+        $translation->lang = "hu";
+        $translation->copyright = "copyright";
+        $translation->publisher = "publisher";
+        $translation->publisher_url = "publisher_url";
         $translation->save();
         return $translation;
     }

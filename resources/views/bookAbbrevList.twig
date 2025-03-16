@@ -1,6 +1,6 @@
 {% if books|length > 0 %}
-<div class="panel panel-default">
-    <div class="panel-body text-center">
+<div class="card mb-2">
+    <div class="card-body text-center">
         {{ 
             books|filter(b => b.old_testament == 0)
                 |map(b => (b == book) ? "<b>#{b.abbrev}</b>" :  "<a href=\"/#{translation.abbrev}/#{b.abbrev}\" class=\"minilink\">#{b.abbrev}</a>")

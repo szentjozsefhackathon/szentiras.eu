@@ -4,7 +4,7 @@ namespace SzentirasHu\Data;
 
 class UsxCodes
 {
-    private const OLD_TESTAMENT = [
+    public const OLD_TESTAMENT = [
         '1KI' => [
             'default' => [
                 '1Kir',
@@ -63,6 +63,23 @@ class UsxCodes
                 '2Mak',
                 '2Makk',
             ],
+        ],
+        '3MA' => [
+            'default' => [
+                '3Mak',
+                '3Makk',
+            ],
+        ],
+        '4MA' => [
+            'default' => [
+                '4Mak',
+                '4Makk',
+            ],
+        ],
+        'LJE' => [
+            'default' => [
+              'JerLev'
+            ]
         ],
         'EXO' => [
             'default' => [
@@ -143,6 +160,11 @@ class UsxCodes
                 'Bár',
             ],
         ],
+        'BEL' => [
+            'default' => [
+                'Bél', '(Bél)', 'BelTh'
+            ],
+        ],
         'JDG' => [
             'default' => [
                 'Bir',
@@ -150,6 +172,7 @@ class UsxCodes
                 'Birak',
                 'Birák',
                 'Bírák',
+                'JudgA'
             ],
         ],
         'WIS' => [
@@ -160,15 +183,16 @@ class UsxCodes
         'DAN' => [
             'default' => [
                 'Dán',
+                'DanTh'
             ],
         ],
         'SNG' => [
             'default' => [
                 'En',
                 'Én',
-                'Ének.Én',
                 'Énekek',
                 'ÉnekÉn',
+                'Ének.Én',
             ],
         ],
         'ISA' => [
@@ -186,20 +210,26 @@ class UsxCodes
         ],
         'EZR' => [
             'default' => [
-                'Ez',
                 'Ezd',
                 'Ezdr',
                 'Ezsd',
                 'Ezsdr',
             ],
         ],
+        '1ES' => [
+            'default' => [
+                'Ezd3',
+            ],
+        ],
         'EZK' => [
             'default' => [
+                'Ez',
                 'Ezek',
                 'Ezék',
                 'Ezekias',
                 'Ezekiás',
                 'Ezékiás',
+                'Ezekiel',
             ],
         ],
         'HAB' => [
@@ -212,6 +242,11 @@ class UsxCodes
                 'Hós',
                 'Oz',
                 'Óz',
+            ],
+        ],
+        'ODA' => [
+            'default' => [
+                'Ód',
             ],
         ],
         'JER' => [
@@ -243,6 +278,7 @@ class UsxCodes
                 'Jozsue',
                 'Józsue',
                 'Józsué',
+                'JoshA'
             ],
         ],
         'LAM' => [
@@ -261,6 +297,7 @@ class UsxCodes
                 'Sirák',
                 'Sirák fia',
                 'Ecclesiasticus',
+                'Sir'
             ],
             'SZIT' => [
                 'Sir'
@@ -275,6 +312,11 @@ class UsxCodes
             'SZIT' => [
                 'Jud',
             ]
+        ],
+        'SUS' => [
+            'default' => [
+                'Zsuzs', '(Zsuzs)', 'SusTh'
+            ],
         ],
         'MAL' => [
             'default' => [
@@ -325,6 +367,7 @@ class UsxCodes
         'TOB' => [
             'default' => [
                 'Tób',
+                'TobBA'
             ],
         ],
         'ZEC' => [
@@ -341,9 +384,12 @@ class UsxCodes
                 'Zsoltárok',
             ],
         ],
+        'PSS' => [
+            'default' => [ 'SalZsolt' ]
+        ]
     ];
 
-    private const NEW_TESTAMENT = [
+    public const NEW_TESTAMENT = [
         '1JN' => [
             'default' => [
                 '1Jan',
@@ -407,6 +453,7 @@ class UsxCodes
             'default' => [
                 'ApCsel',
                 'Csel',
+                'Acs'
             ],
         ],
         'ROM' => [

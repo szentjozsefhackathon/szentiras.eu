@@ -40,6 +40,7 @@ class DefaultVerseParser extends AbstractVerseParser
         $verse->verseParts[] = new VersePart($verse, $this->replaceTags($heading), VersePartType::HEADING, count($verse->verseParts), $level);   
     }
 
+    
     protected function parseFootnoteVerse(Verse $rawVerse, VerseData $verse) {
         $footnoteText = $rawVerse->verse;
         $footnoteSaved=false;
@@ -60,10 +61,56 @@ class DefaultVerseParser extends AbstractVerseParser
     protected function parsePoemLine($rawVerse, VerseData $verse)
     {
         $poemLine = $this->replaceTags($rawVerse->verse);
+        $poemLine = $this->fixEmTags($poemLine);
         $verse->verseParts[] = new VersePart($verse, $poemLine, VersePartType::POEM_LINE, count($verse->verseParts));
     }
 
 
+    protected function fixEmTags($rawText) {
+        $openTag = '<em>';
+        $closeTag = '</em>';
+    
+        $openTagCount = substr_count($rawText, $openTag);
+        $closeTagCount = substr_count($rawText, $closeTag);
+    
+        // If there are more opening tags than closing tags, add a closing tag at the end
+        if ($openTagCount > $closeTagCount) {
+            $rawText .= $closeTag;
+        }
+    
+        // If there are more closing tags than opening tags, add an opening tag at the beginning
+        if ($closeTagCount > $openTagCount) {
+            $rawText = $openTag . $rawText;
+        }
+    
+        // Ensure tags are properly nested
+        $fixedText = '';
+        $openTags = 0;
+        $length = strlen($rawText);
+        for ($i = 0; $i < $length; $i++) {
+            if (substr($rawText, $i, 4) === $openTag) {
+                $openTags++;
+                $fixedText .= $openTag;
+                $i += 3; // Skip the next 3 characters
+            } elseif (substr($rawText, $i, 5) === $closeTag) {
+                if ($openTags > 0) {
+                    $openTags--;
+                    $fixedText .= $closeTag;
+                }
+                $i += 4; // Skip the next 4 characters
+            } else {
+                $fixedText .= $rawText[$i];
+            }
+        }
+    
+        // If there are any unclosed tags, close them
+        while ($openTags > 0) {
+            $fixedText .= $closeTag;
+            $openTags--;
+        }
+    
+        return $fixedText;
+    }
     protected function replaceTags($rawVerse) {
         return $rawVerse;
     }

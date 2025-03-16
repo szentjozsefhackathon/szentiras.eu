@@ -1,20 +1,33 @@
 {% extends 'layout' %}
 
 {% block meta %}
-    <link rel="canonical" href="{{ url('/' ~ canonicalUrl ) }}" />
+    <link rel="canonical" href="{{ url('/' ~ seoUrl ) }}" />
+    {% if seoUrl != canonicalUrl %}
+        <meta name="robots" content="noindex,nofollow">
+    {% endif %}
 
     <meta property="og:url" content="{{ url('/' ~ canonicalUrl ) }}">
     <meta property="og:title" content="{{ metaTitle }}">
     <meta property="og:description" content="{{ teaser }}">
-	<meta property="og:image" content="{{ url('/pdf/preview/' ~ translation.id ~ '/' ~ canonicalRef ~ '?headings=true&nums=false&refs=&quantity=1') }}">
+	<meta property="og:image" content="{{ asset('img/biblia.jpg')}}">
 {% endblock %}
 
 {% block content %}
-    <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal fade" id="qrModal" tabindex="-1" role="dialog">
         <div class="modal-dialog"><div class="modal-content"></div></div>
     </div>
-    <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog"><div class="modal-content"></div></div>
+    <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nyomtatás/PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">  
+            <a tabindex="0" id="pdfDownload" class="btn btn-primary"><i class="bi-printer"></i> Nyomtatási kép létrehozása</a>    
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>        
+            </div>
+        </div></div>
     </div>
     {% if readingPlanDay %}
     <div>
@@ -36,56 +49,69 @@
         {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'link': book.abbrev } %}
     </div>
 
-    {% for verseContainer in verseContainers %}
-        <div>
-            {% include 'textDisplay.breadcrumb' with {'book': verseContainer.book, 'bookRef': verseContainer.bookRef } %}
-        </div>
-        <div class="parsedVerses">
-            <p>
-             {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' : translation} %}
-            </p>
-            <div class="translationButtons">
-                {% include 'textDisplay.translationButtons' with { 'translations' : translations, 'translation': translation, 'translationLinks' : translationLinks } %}
-            </div>
-                {% for verse in verseContainer.parsedVerses %}
-                    {% if verse.footnotes is not empty %}
-                        {% if not hasFootnote %}
-                        <div class = "footnotes">                            
-                            <h5>Jegyzetek</h5>
-                            {% set hasFootnote = true %}
-                        {% endif %}
-                        {% for footnote in verse.footnotes %}
-                            <p class="footnote"><strong>{{ verse.chapter }},{{ verse.numv }}</strong>
-                                {{ footnote.text|raw }}</p>
-                        {%endfor %}
-                    {% endif %}
-                    {% endfor %}
-                    {% if hasFootnote %}</div>{% endif %}
-            <p>
-                {% if chapterLinks.prevLink %}
-                    <a href="/{{ chapterLinks.prevLink }}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Előző {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}}</a>
-                {% endif %}
-                {% if chapterLinks.nextLink %}
-                    <a href="/{{ chapterLinks.nextLink }}" class="btn btn-default">Következő {{ verseContainer.book.number != 121 ? "fejezet" : "zsoltár"}} <span class="glyphicon glyphicon-chevron-right"></span></a>
-                {% endif %}
-            </p>
-            <p>
-                {% if previousDay %}
-                    <a href="/tervek/{{ previousDay.plan_id }}/{{ previousDay.day_number }}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Előző nap</a>
-                {% endif %}
-                {% if readingPlanDay %}
-                    <a href="/tervek/{{ readingPlanDay.plan_id }}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-up"></span> Olvasási terv</a>
-                {% endif %}
-                {% if nextDay %}
-                    <a href="/tervek/{{ nextDay.plan_id }}/{{ nextDay.day_number }}" class="btn btn-default">Következő nap <span class="glyphicon glyphicon-chevron-right"></span></a>
-                {% endif %}
-            </p>
-        </div>
+    {% if not fullChaptersIncluded and not fullContext %}
+    <a class="btn btn-info" id="fullContextButton" href="{{ url('/' ~ canonicalUrl ~ '?fullContext' ~ (mediaEnabled ? '&media' : '' )) }}" title="Teljes szövegkörnyezet megjelenítése">
+        <i class="bi-chevron-expand"></i> Teljes szövegkörnyezet megjelenítése</a>
+    {% endif %}
+    {% if fullContext %}
+        <a class="btn btn-info" id="fullContextButton" href="{{ url('/' ~ canonicalUrl ~ (mediaEnabled ? '?media' : '')) }}" title="Csak a hivatkozás szövegének megjelenítése">
+            <i class="bi-chevron-contract"></i> Csak a hivatkozás szövegének megjelenítése</a>
+    {% endif %}
+    {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers } %}
+    {% if mediaEnabled and otherMedia %}
+        <h5>További illusztrációk</h5>
+        {% for otherMediaItem in otherMedia %}
+            {% for image in otherMediaItem %}
+                <div class="card illustration otherMedia">
+                    <div class="card-body">
+                        <figure class="figure">
+                            <img src="/media/{{ image.uuid }}" class="figure-img img-fluid rounded">
+                            <figcaption class="figure-caption text-end"><small>Forrás: {{ image.mediaType.website }} ({{ image.mediaType.license }})</small></figcaption>
+                        </figure>
+                    </div>
+                </div>
+            {% endfor  %}
+        {% endfor %}
         <hr>
-    {% endfor %}
+    {% endif %}
+    <div class="translationButtons">
+        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'link': book.abbrev } %}
+    </div>
     {% include 'textDisplay.share' with { 'canonicalUrl' : canonicalUrl, 'teaser' : teaser } %}
+{% endblock %}
 
-{% endblock %}
-{% block script %}
-$('.footnote').popover()
-{% endblock %}
+{% block extramenu %}
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex flex-wrap">
+                        <a href="javascript:void(0)" role="button" class="btn btn-default btn-outline-primary btn-sm active m-1 flex-fill" id="toggleNumv">
+                            <i class="toggle bi-check-square active"></i>
+                            <i class="toggle bi-square inactive"></i>
+                            Versszámozás</a>
+                        <a href="javascript:void(0)" role="button" class="btn btn-default btn-outline-primary btn-sm active m-1 flex-fill" id="toggleXrefs">
+                            <i class="toggle bi-check-square active"></i>
+                            <i class="toggle bi-square inactive"></i>
+                            Hivatkozások</a>
+                        <a href="javascript:void(0)" role="button"  class="btn btn-default btn-outline-primary btn-sm active m-1 flex-fill" id="toggleHeadings">
+                            <i class="toggle bi-check-square active"></i>
+                            <i class="toggle bi-square inactive"></i>
+                            Címsorok</a>
+                        <a href="javascript:void(0)" role="button" class="btn btn-default btn-outline-primary btn-sm inactive m-1 flex-fill" id="toggleAiTools">
+                            <i class="toggle bi-check-square active"></i>
+                            <i class="toggle bi-square inactive"></i>
+                            AI eszközök</a>                    
+                            {% if not mediaEnabled %}
+                                <a class="btn-sm btn btn-info m-1 flex-fill {{ hasMedia ? '' : 'disabled' }}" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ '?media' ~ (fullContext ? '&fullContext' : '')) }}" title="Illusztrációk megjelenítése">
+                                    <i class="bi-images"></i> Illusztrációk megjelenítése</a>
+                                {% endif %}
+                            {% if mediaEnabled %}
+                                    <a class="btn-sm btn btn-info m-1 flex-fill {{ hasMedia ? '' : 'disabled' }}" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ (fullContext ? '?fullContext' : '')) }}" title="Illusztrációk elrejtése">
+                                        <i class="bi-images"></i> Illusztrációk elrejtése</a>
+                                {% endif %}    
+                        
+            </div>
+        </div>
+    </div>
+{% endblock %}    
+
+{% set js=['pages/verses'] %}

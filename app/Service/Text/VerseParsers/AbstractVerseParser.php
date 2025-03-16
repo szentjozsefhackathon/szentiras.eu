@@ -34,16 +34,16 @@ abstract class AbstractVerseParser implements VerseParser {
      */
     public function parse($rawVerses, $book)
     {
-        $verse = $this->initVerseData($rawVerses);
+        $verseData = $this->initVerseData($rawVerses);
         foreach ($rawVerses as $rawVerse) {
-            $this->parseRawVerses($book, $rawVerse, $verse);
+            $this->parseRawVerses($book, $rawVerse, $verseData);
         }
-        foreach ($verse->xrefs as $key => $xref) {
+        foreach ($verseData->xrefs as $key => $xref) {
             if (!$xref->text) {
-                unset($verse->xrefs[$key]);
+                unset($verseData->xrefs[$key]);
             }
         }
-        return $verse;
+        return $verseData;
     }
 
     /**

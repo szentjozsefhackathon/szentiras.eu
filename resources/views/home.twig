@@ -17,7 +17,7 @@
 
 {% block pageHeader %}
     <div class="page-header">
-        <h1>Szentírás.eu <small><span class="hidden-xs hidden-sm">A Szent József Hackathon honlapja a Szentírásról.</span></small></h1>
+        <h1>Szentírás.eu <span class="hidden-xs hidden-sm sitesubtitle">Digitális Biblia 2012 óta. (Régi <b>szentiras.hu</b>)</span></h1>
     </div>
 {%  endblock %}
 
@@ -25,27 +25,27 @@
 
     {% include 'quickChapterSelector' %}
 
-    {% for row in cathBibles %}
-        <h4><a href='/{{ row.abbrev }}'>{{ row.name }} ({{ row.denom }})</a></h4>
-        <p class="hidden-xs">{{ row.copyright|raw }}</p>
-    {% endfor %}
+    <div class="card mt-1">
+        <div class="card-header">Katolikus fordítások</div>        
+        <div class="card-body">
+        {% for row in cathBibles %}
+            <h4 class="card-title"> <a href='/{{ row.abbrev }}'>{{ row.name }}</a></h4>
+        {% endfor %}
+        </div>
+    </div>
 
-<br />
-
-{% include 'lectures' with { 'lectures': lectures } %}
-
-<h3><a href='/forditasok'>További fordítások</a></h3>
-    {% for row in otherBibles %}
-        <h4><a href='/{{ row.abbrev }}'>{{ row.name }} ({{ row.denom }})</a></h4>
-    {% endfor %}
+    <div class="card mt-1">
+        <div class="card-header">További fordítások</div>        
+        <div class="card-body">
+            {% for row in otherBibles %}
+                <h4 class="card-title"><a href='/{{ row.abbrev }}'>{{ row.name }}</a></h4>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block abbrevlist %}
     {% include 'bookAbbrevList' %}
 {% endblock %}
 
-{% block script %}
-    document.addEventListener('DOMContentLoaded', () => {
-        quickChapterSelector();
-    });
-{% endblock %}
+{% set js = ['pages/home'] %}

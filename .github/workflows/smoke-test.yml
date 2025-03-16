@@ -8,6 +8,72 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      - name: Dummy Step
-        run: echo "This action does nothing but will succeed."
+      - name: Check Out Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: xml,zip,gd,mbstring,curl,pgsql,gmp
+ 
+          ini-values: |
+            memory_limit = 512M
+          tools: composer
+
+      - name: Install Dependencies
+        run: php composer.phar install
+
+      - name: Install PostgreSQL Client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Create Databases
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h 127.0.0.1 -U postgres -c "CREATE USER homestead WITH PASSWORD 'secret';"                  
+          psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE bible OWNER homestead;"
+          psql -h 127.0.0.1 -U postgres -d bible -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+      - name: Set Environment Variables
+        run: |
+          echo "DB_HOST=127.0.0.1" >> .env.testing
+
+      - name: Run Migrations
+        run: php artisan migrate --env=testing
+
+      - name: Seed Database
+        run: php artisan db:seed --env=testing
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.x'
+        
+      - name: Install NPM Dependencies
+        run: npm install
+
+      - name: Install Vite
+        run: npm install vite
+
+      - name: Build Application
+        run: npm run build
+        
+      - name: Run Tests
+        run: php artisan test

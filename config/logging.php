@@ -76,6 +76,12 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'flysystem' => [
+        'driver' => 'single',
+        'path' => storage_path('logs/flysystem.log'),
+        'level' => 'debug',
+    ],
     ],
 
 ];

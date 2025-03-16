@@ -8,6 +8,7 @@ use SzentirasHu\Http\Controllers\Display\VerseParsers\VerseData;
 use SzentirasHu\Service\Text\VerseParsers\VerseParser;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Verse;
+use SzentirasHu\Service\Reference\BookRef;
 use SzentirasHu\Service\Text\VerseParsers\VerseParserService;
 
 /**
@@ -16,21 +17,19 @@ use SzentirasHu\Service\Text\VerseParsers\VerseParserService;
  */
 class VerseContainer
 {
-    /**
-     * @var Book
-     */
-    public $book;
-    public $bookRef;
+    public Book $book;
+    
+    public ?BookRef  $bookRef;
     /**
      * @var \SzentirasHu\Service\Text\VerseParsers\VerseParser
      */
     private $verseParser;
     /**
-     * @var string[Verse][]
+     * @var Verse[][]
      */
     public $rawVerses;
 
-    function __construct($book, $bookRef=null)
+    function __construct(Book $book, $bookRef=null)
     {
         $this->book = $book;
         $this->rawVerses = [];
@@ -60,6 +59,7 @@ class VerseContainer
             $verseData[] = $parsedVerseData;
         }
         return $verseData;
+
     }
 
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Vite;
+
 return [
 
     'name' => env('APP_NAME', 'szentiras.eu'),
@@ -124,7 +126,6 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
-        Laravel\Tinker\TinkerServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -134,7 +135,6 @@ return [
         SzentirasHu\Providers\EventServiceProvider::class,
         SzentirasHu\Providers\RouteServiceProvider::class,
         SzentirasHu\Providers\RepositoriesProvider::class,
-        SzentirasHu\Providers\SphinxSearchServiceProvider::class,
         SzentirasHu\Providers\ViewComposerServiceProvider::class,
         SzentirasHu\Service\Imagine\ImagineServiceProvider::class
 
@@ -183,11 +183,11 @@ return [
         'Schema'    => Illuminate\Support\Facades\Schema::class,
         'Session'   => Illuminate\Support\Facades\Session::class,
         'Storage'   => Illuminate\Support\Facades\Storage::class,
-        'Twig' => TwigBridge\Facade\Twig::class,
+        'Twig'      => TwigBridge\Facade\Twig::class,
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
-        'SphinxSearch' => SzentirasHu\Service\Sphinx\SphinxSearchFacade::class,
+        'Vite' => Vite::class,
         'Imagine' => SzentirasHu\Service\Imagine\ImagineFacade::class
 
     ],

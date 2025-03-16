@@ -24,7 +24,7 @@ class SynonymRepositoryEloquent implements SynonymRepository
     function addSynonyms($synonyms)
     {
         $existing = Synonym::whereIn('word', $synonyms)->first();
-        if ($existing) {
+        if (!empty($existing)) {
             $group = $existing->group;
             $existingWord = $existing->word;
             foreach ($synonyms as $newWord) {
@@ -37,7 +37,7 @@ class SynonymRepositoryEloquent implements SynonymRepository
             }
         } else {
             $firstSynonym = new Synonym();
-            $firstSynonym->save();
+            $firstSynonym->save(); // save to get the group ID
             $firstWord = array_pop($synonyms);
             $firstSynonym->word = $firstWord;
             $firstSynonym->group = $firstSynonym->id;

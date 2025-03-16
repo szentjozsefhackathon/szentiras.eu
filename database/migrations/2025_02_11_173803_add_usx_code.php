@@ -25,6 +25,10 @@ return new class extends Migration {
             $table->unique('abbrev');
         });
 
+        // change gepi column type to string
+        Schema::table('tdverse', function (Blueprint $table): void {
+            $table->string('gepi', 20)->change();
+        });
         DB::statement(
             "UPDATE {$prefix}tdverse SET gepi = CONCAT(usx_code, '_', chapter, '_', numv);"
         );
@@ -39,7 +43,7 @@ return new class extends Migration {
         });
 
         Schema::table('translations', function (Blueprint $table): void {
-            $table->dropUnique('abbrev');
+            $table->dropUnique('translations_abbrev_unique');
         });
 
         Schema::table('books', function (Blueprint $table): void {
@@ -48,7 +52,8 @@ return new class extends Migration {
         });
 
         Schema::table('tdverse', function (Blueprint $table): void {
-            $table->integer('book_number');
+            $table->integer('book_number')->nullable();
+            //$table->bigInteger('gepi')->nullable()->change();
         });
     }
 
@@ -66,20 +71,13 @@ return new class extends Migration {
     ): void {
         Schema::table('books', function (Blueprint $table): void {
             $table->renameColumn('number', 'order');
-            $table->string('usx_code', 3);
+            $table->string('usx_code', 3)->nullable();
         });
 
         Schema::table('tdverse', function (Blueprint $table): void {
             $table->string('usx_code', 3);
         });
 
-        $this->updateUsxCodeForBookNumberAndTranslation(
-            $prefix,
-            $bookNumberAndTranslationToUsxMapping,
-            'tdverse',
-            'book_number',
-            'trans'
-        );
         $this->updateUsxCodeForBookNumberAndTranslation(
             $prefix,
             $bookNumberAndTranslationToUsxMapping,
@@ -122,7 +120,7 @@ return new class extends Migration {
         string $transColumn
     ): void {
         $ids = [];
-        $caseStatement = "CASE CONCAT(`{$bookColumn}`, '|', `{$transColumn}`) ";
+        $caseStatement = "CASE CONCAT(\"{$bookColumn}\", '|', \"{$transColumn}\") ";
 
         foreach ($mapping as $encodedBookAndTranslation => $usxCode) {
             $ids[] = "'{$encodedBookAndTranslation}'";
@@ -133,7 +131,8 @@ return new class extends Migration {
 
         $idsList = implode(',', $ids);
 
-        $statement = "UPDATE {$prefix}{$tableName} SET usx_code = {$caseStatement} WHERE CONCAT(`{$bookColumn}`, '|', `{$transColumn}`) IN ({$idsList})";
+        $statement = "UPDATE {$prefix}{$tableName} SET usx_code = {$caseStatement} 
+            WHERE CONCAT(\"{$bookColumn}\", '|', \"{$transColumn}\") IN ({$idsList})";
         DB::statement($statement);
     }
 

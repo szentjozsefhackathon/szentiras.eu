@@ -9,6 +9,7 @@ use Config;
 use DB;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -49,7 +50,6 @@ class ImportScripture extends Command
     protected $description = 'Update texts from external source (xls)';
 
     private $translationRepository;
-    private $bookRepository;
     private $hunspellEnabled = false;
     private $newStems = 0;
     private $sourceDirectory;
@@ -72,23 +72,25 @@ class ImportScripture extends Command
         2 => ["pipe", "w"]  // stderr
     ];
 
+    private array $processedStems = ["_stems" => []];
+    const STEM_FILE = "database/preload/stems.json";
+
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository)
+    public function __construct(TranslationRepository $translationRepository)
     {
         parent::__construct();
         $this->translationRepository = $translationRepository;
-        $this->bookRepository = $bookRepository;
         $this->sourceDirectory = Config::get('settings.sourceDirectory');
     }
 
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
     public function handle(): int
     {
@@ -108,7 +110,7 @@ class ImportScripture extends Command
             $this->info("A fájl betöltése innen: " . $this->option('file'));
             $filePath = $this->ensureProperFile($filePath);
         } else {
-            $url = Config::get("translations.{$transAbbrevToImport}.textSource");
+            $url = Config::get("translations.definitions.{$transAbbrevToImport}.textSource");
             if (empty($url)) {
                 App::abort(500, "Nincs megadva a TEXT_SOURCE_{$transAbbrevToImport} konfiguráció.");
             }
@@ -141,13 +143,13 @@ class ImportScripture extends Command
         $this->info("Adatok mentése az adatbázisba...");
         Artisan::call('down');
         DB::transaction(function () use ($translation, $bookInserts, $verseInserts): void {
-            $this->info("Régi könyvek törlése...");
-            Book::where('translation_id', $translation->id)->delete();
-
             $this->info("Régi versek törlése...");
             Verse::whereHas('book', function ($query) use ($translation) {
                 $query->where('translation_id', $translation->id);
             })->delete();
+
+            $this->info("Régi könyvek törlése...");
+            Book::where('translation_id', $translation->id)->delete();
 
             $this->info("Könyvek tárolása...");
             $this->storeBooks($translation, $bookInserts);
@@ -162,18 +164,28 @@ class ImportScripture extends Command
     private function storeBooks(Translation $translation, array $bookInserts): void
     {
         foreach ($bookInserts as $bookInsert) {
-            $book = new Book([
-                'name' => $bookInsert['name'],
-                'abbrev' => $bookInsert['abbrev'],
-                'link' => $bookInsert['link'],
-                'old_testament' => $bookInsert['old_testament'],
-                'order' => $bookInsert['order'],
-                'usx_code' => $bookInsert['usx_code'],
-            ]);
-            $book->translation()->associate($translation);
-            $book->save();
-
-            Cache::add(
+            $book = Book::where('usx_code', $bookInsert['usx_code'])->where('translation_id', $translation->id)->first();
+            if ($book) {
+                $book->update([
+                    'name' => $bookInsert['name'],
+                    'abbrev' => $bookInsert['abbrev'],
+                    'link' => $bookInsert['link'],
+                    'old_testament' => $bookInsert['old_testament'],
+                    'order' => $bookInsert['order'],
+                ]);
+            } else {
+                $book = new Book([
+                    'name' => $bookInsert['name'],
+                    'abbrev' => $bookInsert['abbrev'],
+                    'link' => $bookInsert['link'],
+                    'old_testament' => $bookInsert['old_testament'],
+                    'order' => $bookInsert['order'],
+                    'usx_code' => $bookInsert['usx_code']
+                ]);
+                $book->translation()->associate($translation);
+                $book->save();
+            }
+            Cache::store("array")->add(
                 $this->getBookCacheKey(
                     $bookInsert['order'],
                     $translation->name
@@ -186,30 +198,31 @@ class ImportScripture extends Command
 
     private function storeVerses(Translation $translation, array $verseInserts): void
     {
+        $existingUsxCodes = [];
         $progressBar = $this->createProgressBar(count($verseInserts));
         $verseNumber = 1;
         foreach ($verseInserts as $verseInsert) {
-            $book = Cache::remember(
+            $book = Cache::store("array")->remember(
                 $this->getBookCacheKey($verseInsert['order'], $translation->name),
                 now()->addMinutes(10),
                 fn() => $this->fetchBook($verseInsert['order'], $translation)
             );
             $progressBar->setMessage(
                 "$verseNumber. vers mentése az adatbázisba... " .
-                "($translation->name/{$book->usx_code} " .
-                "{$verseInsert['chapter']}:{$verseInsert['numv']})"
+                    "($translation->name/{$book->usx_code} " .
+                    "{$verseInsert['chapter']}:{$verseInsert['numv']})"
             );
 
             if (!$book) {
                 App::abort(500, "Hiányzó Book az adatbázisban: {$translation->name}/{$verseInsert['order']}.");
             }
 
+            $existingUsxCodes[$book->usx_code] = true;
             $syntheticCode = $book->usx_code . "_" . $verseInsert['chapter'] . '_' . $verseInsert['numv'];
             $verse = new Verse([
                 'usx_code' => $book->usx_code,
                 BOOKCODE => $syntheticCode,
                 'verse' => $verseInsert['verse'],
-                // 'order' => $verseInsert['order'], -- we don't have this yet
                 'chapter' => $verseInsert['chapter'],
                 'numv' => $verseInsert['numv'],
                 'tip' => $verseInsert['tip'],
@@ -222,6 +235,10 @@ class ImportScripture extends Command
             $progressBar->advance();
             $verseNumber++;
         }
+        // delete all books from this translation which are not in the existingUsxCodes
+        Book::where('translation_id', $translation->id)
+            ->whereNotIn('usx_code', array_keys($existingUsxCodes))
+            ->delete();
         $progressBar->finish();
     }
 
@@ -252,10 +269,48 @@ class ImportScripture extends Command
         );
 
         $this->info("A '$transAbbrevToImport' lap betöltése..");
+        $versesSheet = $sheets[$transAbbrevToImport];
+        $verseRowIterator = $versesSheet->getRowIterator();
+        $verseSheetHeaders = $this->getHeaders($verseRowIterator);
+
+        $dbToHeaderMap = $this->mapVerseSheetHeadersToDbColumns($verseSheetHeaders);
+
+        $pipes = [];
+        if ($this->hunspellEnabled) {
+            $hunspellProcess = proc_open(
+                'stdbuf -oL hunspell -m -d hu_HU -i UTF-8',
+                $this->descriptorspec,
+                $pipes,
+                null,
+                null
+            );
+        }
+
+        // if the stems file exists, unserialize it
+        if (file_exists(ImportScripture::STEM_FILE)) {
+            $this->info("A szótövek fájl betöltése...");
+            $this->processedStems = json_decode(file_get_contents(ImportScripture::STEM_FILE), true);
+            // fill the cache with the processed stems
+            foreach ($this->processedStems as $word => $stems) {
+                Cache::store("array")->put("hunspell_{$word}", $stems, 60 * 60 * 24);
+            }
+        }
+
         $verseInserts = $this->readVerseSheetInserts(
             $sheets[$transAbbrevToImport],
+            $pipes
         );
         $reader->close();
+
+        if ($this->hunspellEnabled) {
+            fclose($pipes[0]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            if (isset($hunspellProcess)) {
+                proc_close($hunspellProcess);
+            }
+        }
+
         return [$bookInserts, $verseInserts];
     }
 
@@ -264,15 +319,20 @@ class ImportScripture extends Command
         try {
             $filePath = $this->sourceDirectory . "/{$transAbbrev}";
             $this->info("A fájl letöltése a $url címről...: $filePath");
-            $fp = fopen($filePath, 'w+');
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_FILE, $fp);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            if ($url == 's3') {
+                $file = Storage::disk('s3')->get("xlsx/{$transAbbrev}.xlsx");
+                file_put_contents($filePath, $file);
+            } else {
+                $fp = fopen($filePath, 'w+');
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_FILE, $fp);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
-            curl_exec($ch);
-            curl_close($ch);
-            fclose($fp);
+                curl_exec($ch);
+                curl_close($ch);
+                fclose($fp);
+            }
         } catch (Exception $ex) {
             App::abort(500, "Nem sikerült fáljt letölteni a megadott url-ről.");
         }
@@ -281,13 +341,13 @@ class ImportScripture extends Command
 
     private function runIndexer(): void
     {
-        $sphinxConfig = Config::get('settings.sphinxConfig');
-        $indexerProcess = new Process(["indexer", "--config", "{$sphinxConfig}", "--all", "--rotate"]);
-        try {
-            $indexerProcess->mustRun();
-            echo $indexerProcess->getOutput();
-        } catch (ProcessFailedException $e) {
-            echo $e->getMessage();
+        $indexerTrigger = Config::get('settings.sphinxIndexerTrigger');
+        // touch file
+        touch($indexerTrigger);
+        if (!touch($indexerTrigger)) {
+            $this->error("Nem sikerült az indexert triggerelni: $indexerTrigger");
+        } else {
+            $this->info("Indexer triggerelve.");
         }
     }
 
@@ -316,8 +376,9 @@ class ImportScripture extends Command
         return $sheets;
     }
 
-    private function readVerseSheetInserts(Sheet $versesSheet): array
+    private function readVerseSheetInserts(Sheet $versesSheet, array $pipes): array
     {
+        $verseInserts = [];
         $verseRowIterator = $versesSheet->getRowIterator();
         $verseSheetHeaders = $this->getHeaders($verseRowIterator);
         $dbToHeaderMap = $this->mapVerseSheetHeadersToDbColumns($verseSheetHeaders);
@@ -325,9 +386,8 @@ class ImportScripture extends Command
         $progressBar = $this->createProgressBar(ROW_NUMBER_ESTIMATE);
         $rowNumber = 0;
         foreach ($verseRowIterator as $verseRow) {
-            $rowNumber++;
             if ($this->isVerseHeaderRow($verseRow)) {
-                $this->info("Sor átugrása: $rowNumber. (fejlécnek tűnik)");
+                $this->info("Sor átugrása.");
                 continue;
             }
             if (empty($verseRow->getCellAtIndex($verseSheetHeaders[$dbToHeaderMap[BOOKCODE]])->getValue())) {
@@ -338,21 +398,29 @@ class ImportScripture extends Command
                 $newVerseInsert = $this->toVerseInsert(
                     $verseRow,
                     $verseSheetHeaders,
-                    $originalBookCode
+                    $originalBookCode,
+                    $pipes
                 );
                 $verseInserts[$rowNumber] = $newVerseInsert;
                 $rowNumber++;
-                $progressBar->setMessage(
-                    "$rowNumber. sor" .
-                    " - {$newVerseInsert['original_book_code']}" .
-                    " - új szavak: {$this->newStems}"
-                );
+                if ($rowNumber % 100 == 0) {
+                    $progressBar->setMessage(
+                        "$rowNumber. sor" .
+                            " - {$newVerseInsert['original_book_code']}" .
+                            " - új szavak: {$this->newStems}"
+                    );    
+                }
                 if ($rowNumber > $progressBar->getMaxSteps()) {
                     $progressBar->setMaxSteps($rowNumber);
                 }
                 $progressBar->advance();
             }
         }
+        $this->info("A szótövek fájl mentése...");
+        ksort($this->processedStems["_stems"]);
+        ksort($this->processedStems);
+        $serializedStems = json_encode($this->processedStems, JSON_PRETTY_PRINT);
+        file_put_contents(ImportScripture::STEM_FILE, $serializedStems);
         $progressBar->finish();
         return $verseInserts;
     }
@@ -361,11 +429,8 @@ class ImportScripture extends Command
         Row $row,
         array $verseSheetHeaders,
         string $originalBookCode,
+        array $pipes
     ): array {
-        $pipes = [];
-        if ($this->hunspellEnabled) {
-            $hunspellProcess = $this->startHunspell($pipes);
-        }
 
         $result['original_book_code'] = $originalBookCode;
         $result['order'] = (int) substr($originalBookCode, 0, 3);
@@ -381,11 +446,6 @@ class ImportScripture extends Command
             $idoValue = $row->getCellAtIndex($verseSheetHeaders['ido'])->getValue();
             $result['ido'] = $idoValue;
         }
-
-        if ($this->hunspellEnabled) {
-            $this->closeHunspell($hunspellProcess, $pipes);
-        }
-
         return $result;
     }
 
@@ -414,7 +474,9 @@ class ImportScripture extends Command
                 $bookRow,
                 $translationAbbrev
             );
-            $bookInserts[] = $newBookInsert;
+            if (!empty($newBookInsert)) {
+                $bookInserts[] = $newBookInsert;
+            }
         }
 
         return $bookInserts;
@@ -426,6 +488,9 @@ class ImportScripture extends Command
     ): array {
         $bookOrder = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKCODE])->getValue();
         $bookAbbrev = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKABBREV])->getValue();
+        if ($bookAbbrev == '-') {
+            return [];
+        }
         $bookName = $bookRow->getCellAtIndex($this->headerNameToColNum[$translationAbbrev][BOOKNAME])->getValue();
         $bookUsx = $this->bookAbbrevToUsxCode($bookAbbrev, $translationAbbrev);
         $this->info("{$bookOrder}. könyv: {$bookAbbrev} (usx: {$bookUsx})");
@@ -483,37 +548,51 @@ class ImportScripture extends Command
 
     private function executeStemming(string $verse, array $pipes): string
     {
-        $processedVerse = strip_tags($verse);
+        // actually replace the tags with a space
+        $processedVerse = str_replace('<', ' <', $verse);
+        $processedVerse = strip_tags($processedVerse);
         $processedVerse = preg_replace("/(,|:|\?|!|;|\.|„|”|»|«|\")/i", ' ', $processedVerse);
         $processedVerse = preg_replace(['/Í/i', '/Ú/i', '/Ő/i', '/Ó/i', '/Ü/i'], ['í', 'ú', 'ő', 'ó', 'ü'], $processedVerse);
 
         $verseroots = collect();
+        $collectedStems = collect();
         preg_match_all('/(\p{L}+)/u', $processedVerse, $words);
+        // take the first match as lower case
         foreach ($words[1] as $word) {
-            if (Cache::has("hunspell_{$word}")) {
-                $cachedStems = Cache::get("hunspell_{$word}");
+            $word = mb_strtolower($word);
+            if (Cache::store("array")->has("hunspell_{$word}")) {
+                $cachedStems = Cache::store("array")->get("hunspell_{$word}");
                 $verseroots = $verseroots->merge($cachedStems);
             } else {
                 fwrite($pipes[0], "{$word}\n"); // send start
                 $stems = collect();
                 while ($line = fgets($pipes[1])) {
                     if (trim($line) !== '') {
+                        // store only stems as stems, as we search for the original word as well, no need to search for that in the stems
                         if (preg_match_all("/st:(\p{L}+)/u", $line, $matches)) {
-                            $stems = $stems->merge($matches[1]);
-                        } else {
-                            $stems->push($word);
+                            $stem = $matches[1];
+                            if ($stem[0] !== $word) {
+                                $stems = $stems->merge($stem);
+                            } else {
+                                $collectedStems->add($word);
+                            }
                         }
                     } else {
-                        $cachedStems = $stems->unique();
-                        Cache::put("hunspell_{$word}", $cachedStems, 60 * 60 * 24);
-                        $verseroots = $verseroots->merge($stems);
+                        $cachedStems = array_values($stems->unique()->toArray());
+                        Cache::store("array")->put("hunspell_{$word}", $cachedStems, 60 * 60 * 24);
+                        $this->processedStems[$word] = $cachedStems;
+                        $verseroots = $verseroots->merge($stems)->unique();
+                        $collectedStems = $collectedStems->merge($verseroots);
                         $this->newStems++;
                         break;
                     }
                 }
             }
         }
-        return join(' ', $verseroots->unique()->toArray());
+        foreach ($collectedStems as $collectedStem) {
+            $this->processedStems["_stems"][$collectedStem] = true;
+        }
+        return join(' ', $verseroots->toArray());
     }
 
     private function bookAbbrevToUsxCode(string $bookAbbrev, string $translation): string
@@ -546,7 +625,7 @@ class ImportScripture extends Command
             App::abort(
                 500,
                 'Ennél a szövegforrásnál (' . $translationAbbrev . ') ' .
-                'nem tudjuk, hogy hol vannak a könyvek rövidítéseit feloldó oszlopok.'
+                    'nem tudjuk, hogy hol vannak a könyvek rövidítéseit feloldó oszlopok.'
             );
         }
     }
@@ -606,27 +685,6 @@ class ImportScripture extends Command
         $progressBar->setBarWidth(24);
         $progressBar->setFormat("[%bar%] %message%\n");
         return $progressBar;
-    }
-
-    private function startHunspell(array &$pipes)
-    {
-        return proc_open(
-            'stdbuf -oL hunspell -m -d hu_HU -i UTF-8',
-            $this->descriptorspec,
-            $pipes,
-            null,
-            null
-        );
-    }
-
-    private function closeHunspell($hunspellProcess, array $pipes): void
-    {
-        fclose($pipes[0]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        if (isset($hunspellProcess)) {
-            proc_close($hunspellProcess);
-        }
     }
 
     private function removeAccents($string): string

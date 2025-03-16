@@ -1,0 +1,46 @@
+{% for verseContainer in verseContainers %}
+    <div>
+        {% include 'textDisplay.breadcrumb' with {'book': verseContainer.book, 'bookRef': verseContainer.bookRef } %}
+    </div>
+        <div class="mb-2">
+         {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' : translation} %}
+            {% for verse in verseContainer.parsedVerses %}
+                {% if verse.footnotes is not empty %}
+                    {% if not hasFootnote %}
+                    <div class = "footnotes parsedVerses">                            
+                        <h5>Jegyzetek</h5>
+                        {% set hasFootnote = true %}
+                    {% endif %}
+                    {% for footnote in verse.footnotes %}
+                        <p class="footnote"><strong>{{ verse.chapter }},{{ verse.numv }}</strong>
+                            {{ footnote.text|raw }}</p>
+                    {%endfor %}
+                {% endif %}
+                {% endfor %}
+                {% if hasFootnote %}</div>{% endif %}
+            </div>
+            {%  if chapterLinks %}
+                <ul class="pagination">
+                    {% if chapterLinks.prevLink %}
+                        <li class="page-item">                        
+                            <a href="/{{ chapterLinks.prevLink }}" class="page-link"><i class="bi-chevron-left"></i> Előző {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}</a>
+                        </li>                        
+                    {% endif %}                            
+                        {% if chapterLinks.nextLink %}
+                            <li class="page-item">
+                            <a href="/{{ chapterLinks.nextLink }}" role="button" class="page-link">Következő {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}} <i class="bi bi-chevron-right"></i></a>
+                        </li>                            
+                        {% endif %}                    
+                  </ul>                
+            {% endif %}
+            {% if previousDay %}
+                <a href="/tervek/{{ previousDay.plan_id }}/{{ previousDay.day_number }}" class="btn btn-primary btn-default"><i class="bi bi-chevron-left"></i> Előző nap</a>
+            {% endif %}
+            {% if readingPlanDay %}
+                <a href="/tervek/{{ readingPlanDay.plan_id }}" class="btn btn-primary btn-default"><span class="btn-primary"><i class="bi bi-chevron-up"></i></span> Olvasási terv</a>
+            {% endif %}
+            {% if nextDay %}
+                <a href="/tervek/{{ nextDay.plan_id }}/{{ nextDay.day_number }}" class="btn btn-primary btn-default">Következő nap <i class="bi bi-chevron-right"></i></a>
+            {% endif %}
+    <hr>
+{% endfor %}

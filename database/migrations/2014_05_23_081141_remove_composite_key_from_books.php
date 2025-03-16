@@ -15,12 +15,9 @@ class RemoveCompositeKeyFromBooks extends Migration
     public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->dropPrimary(['id', 'translation_id']);
-            $table->renameColumn('id', 'number');
         });
 
         Schema::table('books', function (Blueprint $table) {
-            $table->increments('id');
         });
 
     }
@@ -33,11 +30,8 @@ class RemoveCompositeKeyFromBooks extends Migration
     public function down()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->dropColumn('id');
-            $table->renameColumn('number', 'id');
         });
         Schema::table('books', function (Blueprint $table) {
-            $table->primary(['id', 'translation_id']);
         });
 
     }

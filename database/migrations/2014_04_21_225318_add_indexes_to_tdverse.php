@@ -28,7 +28,6 @@ class AddIndexesToTdverse extends Migration {
 	{
 		Schema::table('tdverse', function(Blueprint $table)
 		{
-			$table->dropIndex('tdverse_book_index');
             $table->dropIndex('tdverse_gepi_index');
         });
 	}

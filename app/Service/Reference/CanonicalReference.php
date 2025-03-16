@@ -2,6 +2,9 @@
 
 namespace SzentirasHu\Service\Reference;
 
+use SzentirasHu\Data\Entity\Translation;
+use SzentirasHu\Data\UsxCodes;
+
 /**
  * Class CanonicalReference to represent a unique reference to some Bible verses.
  * This reference normally is agnostic to translation but to handle collisions, optionally can contain a translation id.
@@ -32,7 +35,7 @@ class CanonicalReference
         return count($ref->bookRefs) > 0;
     }
 
-    public static function fromString($s, $translationId = null)
+    public static function fromString(string $s, int $translationId = null)
     {
         $ref = new CanonicalReference();
         $parser = new ReferenceParser($s);
@@ -89,7 +92,7 @@ class CanonicalReference
 
     /**
      * @param ChapterRange $chapterRange
-     * @return array
+     * @return int[]
      */
     public static function collectChapterIds($chapterRange)
     {
@@ -104,6 +107,26 @@ class CanonicalReference
 
     public function addBookRef(BookRef $bookRef) {
         $this->bookRefs[] = $bookRef;
+    }
+
+    public function toGepi() {
+        return str_replace(':', '_', str_replace(' ', '_', $this->toUsxVerseId()));
+    }
+
+    public function toUsxVerseId() {
+        $s = '';
+        $lastBook = end($this->bookRefs);
+        foreach ($this->bookRefs as $bookRef) {
+            $newBookRef = clone $bookRef;
+            $abbrev = $this->translationId ? Translation::getAbbrevById($this->translationId) : 'default';
+            $newBookRef->bookId = UsxCodes::getUsxFromBookAbbrevAndTranslation($bookRef->bookId, $abbrev);
+            $s .= str_replace(',',':',$newBookRef->toString());
+            if ($lastBook !== $bookRef) {
+                $s .= "; ";
+            }
+        }
+        return $s;
+       
     }
 
 }
