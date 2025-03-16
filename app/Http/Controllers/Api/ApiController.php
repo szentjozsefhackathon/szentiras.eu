@@ -149,7 +149,7 @@ class ApiController extends Controller
         $verseDataList = [];
         foreach ($verses as $verse) {
             $translation = $verse->translation()->first();
-            if (in_array($verse->tip, \Config::get("translations.{$translation->abbrev}.verseTypes.text"))) {
+            if (in_array($verse->tip, \Config::get("translations.definitions.{$translation->abbrev}.verseTypes.text"))) {
                 $verseData['hely']['gepi'] = $verse->gepi;
                 $book = $verse->book;
                 $verseData['hely']['szep'] = "{$book->abbrev} {$verse->chapter},{$verse->numv}";
@@ -204,9 +204,8 @@ class ApiController extends Controller
         $params = new FullTextSearchParams();
         $params->text = $text;
         $results = $this->searchService->getDetailedResults($params);
-        $refResult = $this->searchRef($text, false);
         unset($results['resultsByBookNumber']); // don't use new search results view in the API yet
-        return $this->formatJsonResponse(["refResult" => $refResult, "fullTextResult" => $results]);
+        return $this->formatJsonResponse(["fullTextResult" => $results]);
     }
 
     public function getLegacyApiEndpoint()

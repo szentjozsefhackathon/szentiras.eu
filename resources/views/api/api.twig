@@ -3,13 +3,9 @@
 {% block content %}
     <h2>Fejlesztőknek</h2>
 
-    <p>A honlap forráskódja elérhető a <a href="https://github.com/borazslo/szentiras.hu">github.com/borazslo/szentiras.hu</a>
-        honlapon.
-        A bekapcsolódni vágyó fejlesztők itt találnak segítséget: <a
-                href="https://github.com/borazslo/szentiras.hu/wiki/Fejlesztői-tudnivalók">github.com/borazslo/szentiras.hu/wiki/Fejlesztői-tudnivalók</a>
-    </p>
+    <p>A honlap forráskódja elérhető a <a href="https://github.com/szentjozsefhackathon/szentiras.hu">GitHub-on</a>, szívesen látjuk azokat, akik részt vennének a fejlesztésben.</p>
     <h4>Widgetek, pluginek, stb.</h4>
-    <p>Elkészült egy <a href="http://molnarm.github.io/igemutato/">igemutató kiegészítő</a> ami a bibliai hivatkozásokat automatikusan átalakítja, hogy felugró ablkaban lehessen olvasni a teljes szöveget.</p>
+    <p>Elkészült egy <a href="http://molnarm.github.io/igemutato/">igemutató kiegészítő</a> ami a bibliai hivatkozásokat automatikusan átalakítja, hogy felugró ablakban lehessen olvasni a teljes szöveget.</p>
     <p> A script beilleszthető bármilyen honlapba vagy telepíthető <a
                 href="https://chrome.google.com/webstore/detail/szent%C3%ADr%C3%A1s/mooikajlieddnjlmlbodldompfifkoim">Google
             Chrome</a> és <a href=" https://addons.mozilla.org/hu/firefox/addon/szent%C3%ADr%C3%A1s/">Mozilla
@@ -25,7 +21,8 @@
     <h4>idezet</h4>
     Megadott szentírási hely(ek) megjelenítése alapértelmezett vagy megadott fordításban.
     {% set exampleUrl = url('api/idezet/1Kor13,10-13') %}
-    <p>Példa: <a href="{{ exampleUrl }}">{{ exampleUrl }}</a></p>
+    <p><a href="{{ exampleUrl }}">{{ exampleUrl }}</a><br>
+    <a href="{{ exampleUrl }}/SZIT">{{ exampleUrl }}/SZIT</a></p>
     <h5>Paraméterek:</h5>
     <dl>
         <dt>Hivatkozás*</dt>
@@ -39,12 +36,12 @@
     <a href="{{ exampleUrl }}">{{ url(exampleUrl) }}</a>
     <h5>Egyetlen szentírási vers megjelenítése az összes elérhető fordításban</h5>
     Példa:
-    {% set exampleUrl = 'api/forditasok/10100100100' %}
+    {% set exampleUrl = 'api/forditasok/JHN_13_34' %}
     <a href="{{ exampleUrl }}">{{ url(exampleUrl) }}</a></p>
 
-    <em>hivatkozas</em> (kötelező): pl. <i>10100100200</i> (Jelenleg csak az úgynevezett <i>gépi kód</i>dal lehet
-    verset keresni.
-    Ez 11 számjegyből áll: 1. Ószöv/Újszöv, 2-3. könyv, 4-6. fejezet, 7-9. vers, 10-11. alvers.)<br>
+    <em>hivatkozas</em> (kötelező): pl. <i>JHN_13_34</i> (Úgynevezett <i>gépi kód</i>dal lehet
+    verset keresni, amely a könyv <a href="https://ubsicap.github.io/usx/vocabularies.html#list-of-vocabularies">USX kódja</a>, a vers és a fejezet.
+    
 
     <h4>books</h4>
     Adott fordítás könyveinek listája.
@@ -66,7 +63,7 @@
     <h4>search</h4>
     <p>Szó vagy szórészlet keresése, pl.
     {% set example = 'bocsát' %}
-    <a href="/api/search/{{ example }}">{{ url('/api/ref/' ~ example) }}</a>
+    <a href="/api/search/{{ example }}">{{ url('/api/search/' ~ example) }}</a>
         </p>
 
 {% endblock %}

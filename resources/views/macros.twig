@@ -1,10 +1,10 @@
-{%  macro similarityCircle(value, color = 'blue', title = 'Becsült hasonlóság', size = 10) %}
+{%  macro similarityCircle(value, color = 'blue', title = 'Becsült hasonlóság', size = 12) %}
     {% if value > 0 %}
-        <div class="quality" data-bs-toggle="tooltip"  title="{{ title }}: {{ (value*100)|number_format(2, ',', ' ') }}">
+        <span class="quality" data-bs-toggle="tooltip"  title="{{ title }}: {{ (value*100)|number_format(2, ',', ' ') }}">
         <svg width="{{ size }}" height="{{ size }}" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="45" fill="#ddd" stroke="#ddd" stroke-width="10"/>
         <path d="M50,50 m0,-35 a35,35 0 1,1 0,70 a35,35 0 1,1 0,-70" fill="none" stroke="{{ color }}" stroke-width="20" stroke-dasharray="210" stroke-dashoffset="{{ (1 - value ) * 210 }}"/>
         </svg>        
-    </div>
+    </span>
     {% endif  %}
 {% endmacro similarityCircle %}

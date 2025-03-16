@@ -20,9 +20,10 @@ class CanonicalReference
 
     public $translationId;
 
-    public function __construct($bookRefs = [])
+    public function __construct($bookRefs = [], ?int $translationId = null)
     {
         $this->bookRefs = $bookRefs;
+        $this->translationId = $translationId;
     }
 
     public static function isValid($referenceString)
@@ -35,7 +36,7 @@ class CanonicalReference
         return count($ref->bookRefs) > 0;
     }
 
-    public static function fromString(string $s, int $translationId = null)
+    public static function fromString(string $s, ?int $translationId = null)
     {
         $ref = new CanonicalReference();
         $parser = new ReferenceParser($s);

@@ -14,7 +14,7 @@ class VerseRepositoryEloquent implements VerseRepository {
 
     public function getVerses($bookId)
     {
-        $verses = Book::find($bookId)->verses()->orderBy('gepi')->orderBy('tip')->orderBy('id')->get();
+        $verses = Book::find($bookId)->verses()->orderBy('chapter')->orderBy('numv')->orderBy('tip')->orderBy('id')->get();
         return $verses;
     }
 
@@ -30,7 +30,6 @@ class VerseRepositoryEloquent implements VerseRepository {
         return $verses
         ->orderBy('chapter')
         ->orderBy('numv')
-        ->orderBy('gepi')
         ->orderBy('tip')
         ->orderBy('id')
         ->get();
@@ -44,7 +43,6 @@ class VerseRepositoryEloquent implements VerseRepository {
             ->whereIn('numv', ['1', '2'])
             ->orderBy('chapter')
             ->orderBy('numv')
-            ->orderBy('gepi')
             ->orderBy('id')
             ->get();
     }
