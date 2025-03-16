@@ -4,18 +4,6 @@
 Keresés jelentés szerint mesterséges intelligencia segítségével | Szentírás
 {% endset %}
 
-{% macro quality(resultQuality) %}
-    <div class="quality" title="Becsült hasonlóság">
-        {% for i in 1..5 %}
-            {% if i <= resultQuality %}
-                <span class="star active">&#9733;</span>
-            {% else %}
-                <span class="star inactive">&#9734;</span>
-            {% endif %}
-        {% endfor %}
-    </div>
-{% endmacro %}
-
 {% block content %}
     <h3>Keresés jelentés szerint, AI segítségével</h2>
                 <div class="card bg-light mb-2">
@@ -84,13 +72,14 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
                 <input type="submit" value="Keresés" class="btn btn-primary"/>
             </form>
         </div>
-    </div>                     
+    </div>          
 
 {% macro groupedResponseView(groupedResponseList) %}
+    {% from 'macros' import similarityCircle %}
     <div class="mb-2"></div>
     {% for gepi, result in groupedResponseList %}        
         <blockquote class="searchResult blockquote mb-3">
-            {{ _self.quality( result.quality) }}
+            {{ similarityCircle(result.similarity, color: 'grey', size: 20) }}
             {%  for semanticSearchResult in result.items  %}       
                 <a data-target="#g{{ gepi }}_{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}" class="searchResultTranslationSelector btn btn-outline-secondary btn-sm {% if loop.first %}active{% endif %}">
                     <i class="bi bi-book"></i> <span>{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}</span>

@@ -7,6 +7,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use SzentirasHu\Models\DictionaryEntry;
+use SzentirasHu\Models\DictionaryMeaning;
+use SzentirasHu\Models\Etymology;
 use SzentirasHu\Models\StrongWord;
 use Throwable;
 
@@ -35,15 +38,18 @@ class GenerateStrongWordTranslations extends Command
     private $systemPrompt = '
         You are a catholic professor of New Testament studies. 
         You explain koine greek New Testament words for catholic lay Hungarian people, from a language perspective. 
-        Format your answer in JSON. 
+        Format your answer in JSON, respond with only this JSON, nothing else. 
         Json structure: 
         { 
             word: "the greek dictionary entry, including concise paradigm information, in Hungarian", 
             "meanings": [ { "meaning": "Hungarian meaning", "explanation": "Explanation in Hungarian." }, { "meaning": ..., "explanation": ... }, ... ], 
-            "etymology": "One sentence etymology in Hungarian." 
+            "etymology": "One sentence etymology in Hungarian.",
+            "notes" : "Include any notes in Hungarian if it is important. You can leave it empty." 
         }
     ';
 
+    private $folder;
+    private $apiKey;
     private $model;
 
     /**
@@ -52,13 +58,13 @@ class GenerateStrongWordTranslations extends Command
     public function handle()
     {
         $this->model=$this->option("model");
-        $folder = 'translation';
-        $apiKey = Config::get('services.anthropic.api_key');
+        $this->folder = 'translation';
+        $this->apiKey = Config::get('services.anthropic.api_key');
         if ($this->option('batch-result')) {
             $batchId = $this->option('batch-result');
             $apiUrl = "https://api.anthropic.com/v1/messages/batches/{$batchId}";
             $response = Http::withHeaders([
-                'x-api-key' => $apiKey,
+                'x-api-key' => $this->apiKey,
                 'Content-Type' => 'application/json',
                 'anthropic-version' => '2023-06-01'
             ])->get($apiUrl);
@@ -68,12 +74,12 @@ class GenerateStrongWordTranslations extends Command
                 return;
             }
             $responseFromResult = Http::withHeaders([
-                'x-api-key' => $apiKey,
+                'x-api-key' => $this->apiKey,
                 'Content-Type' => 'application/json',
                 'anthropic-version' => '2023-06-01'
             ])->get($resultsUrl);
             $jsonl = $responseFromResult->body();
-            Storage::put("{$folder}/{$batchId}.jsonl", $jsonl);
+            Storage::put("{$this->folder}/{$batchId}.jsonl", $jsonl);
             $lines = explode("\n", $jsonl);
             foreach ($lines as $line) {
                 if (empty($line)) {
@@ -81,12 +87,12 @@ class GenerateStrongWordTranslations extends Command
                 }
                 $json = json_decode($line, true);
                 $wordNumber = $json['custom_id'];
-                $path = "{$folder}/{$wordNumber}_{$this->model}.json";
+                $path = "{$this->folder}/{$wordNumber}_{$this->model}.json";
                 $responseString = $json['result']['message']['content'][0]['text'];
                 $this->decodeAndSaveResponseString($wordNumber, $responseString, $path);
             }
 
-            $this->info("Response saved to {$folder}/{$batchId}.jsonl");
+            $this->info("Response saved to {$this->folder}/{$batchId}.jsonl");
             return;
         }
 
@@ -96,6 +102,7 @@ class GenerateStrongWordTranslations extends Command
             $wordNumbers = StrongWord::all()->pluck("number");
         }
 
+        $progressBar = $this->output->createProgressBar(count($wordNumbers));
         $sourceStorage = null;
         if ($this->option('source') == 'filesystem') {
             $sourceStorage = Storage::disk('local');
@@ -104,7 +111,8 @@ class GenerateStrongWordTranslations extends Command
         }
 
         foreach ($wordNumbers as $wordNumber) {
-            $path = "{$folder}/{$wordNumber}_{$this->model}.json";
+            $progressBar->advance();
+            $path = "{$this->folder}/{$wordNumber}_{$this->model}.json";
             if ($sourceStorage) {
                 $file = $sourceStorage->get($path);
                 if (!$file) {
@@ -112,40 +120,41 @@ class GenerateStrongWordTranslations extends Command
                     continue;
                 }
                 $object = json_decode($file);
-                // delete all meanings and etimology for the given file
+                if ($object == null) {
+                    $progressBar->clear();
+                    $this->error("Error decoding $path");
+                    $progressBar->display();
+                    continue;
+                }
+                // delete all meanings and etimology for the given word and model
+                DictionaryEntry::where('strong_word_number', $wordNumber)->where('source', $this->model)->delete();
+                DictionaryMeaning::where('strong_word_number', $wordNumber)->where('source', $this->model)->delete();
+                $dictionaryEntry = new DictionaryEntry();
+                $dictionaryEntry->strong_word_number = $wordNumber;
+                $dictionaryEntry->source = $this->model;
+                $dictionaryEntry->paradigm=$object->word;
+                $dictionaryEntry->etymology=$object->etymology;
+                $dictionaryEntry->notes=$object->notes ?? null;
+                $dictionaryEntry->save();
+                foreach ($object->meanings as $i => $meaning) {
+                    $dictionaryMeaning = new DictionaryMeaning();
+                    $dictionaryMeaning->strong_word_number = $wordNumber;
+                    $dictionaryMeaning->source = $this->model;
+                    $dictionaryMeaning->meaning = $meaning->meaning;
+                    $dictionaryMeaning->explanation = $meaning->explanation;
+                    $dictionaryMeaning->order = $i;
+                    $dictionaryMeaning->save();
+                }
+            } else if ($this->option("batch")) {
+                $batchRequests = [];
+
             } else {
                 if (Storage::exists($path)) {
                     $this->info("{$wordNumber}: translation already exists. Skipping.");
                     continue;
                 }
-                $wordNumbersToGenerate[] = $wordNumber;
                 if (!$this->option("batch")) {
-                    $this->info("{$wordNumber}: Generate translation with AI.");
-                    $apiUrl = "https://api.anthropic.com/v1/messages";
-                    $data = [
-                        "model" => $this->model,
-                        "max_tokens" => 1024,
-                        "system" => $this->systemPrompt,
-                        "messages" => [
-                            [
-                                "role" => "user",
-                                "content" => StrongWord::where('number', $wordNumber)->first()->lemma
-                            ]
-                        ]
-                    ];
-                    $response = Http::withHeaders([
-                        'x-api-key' => $apiKey,
-                        'Content-Type' => 'application/json',
-                        'anthropic-version' => '2023-06-01'
-                    ])->post($apiUrl, $data);
-
-                    if ($response->successful()) {
-                        $responseData = $response->json();
-                        $responseString = $responseData['content'][0]['text'];
-                        $this->decodeAndSaveResponseString($wordNumber, $responseString, $path);
-                    } else {
-                        $this->error("Error: " . $response->status() . " - " . $response->body());
-                    }
+                    $this->sendDirectRequest($wordNumber, $path);
                 } else {
                     $batchRequests[] = [
                         "custom_id" => "$wordNumber",
@@ -160,16 +169,51 @@ class GenerateStrongWordTranslations extends Command
             }
         }
         if (isset($batchRequests)) {
-            $batchApiData = ["requests" => $batchRequests];
-            $batchEndpoint = 'https://api.anthropic.com/v1/messages/batches';
-            $response = Http::withHeaders([
-                'x-api-key' => $apiKey,
-                'Content-Type' => 'application/json',
-                'anthropic-version' => '2023-06-01'
-            ])->post($batchEndpoint, $batchApiData);
-            $responseData = $response->json();
-            Storage::put("{$folder}/{$responseData['id']}", json_encode($responseData));
+            $this->sendBatchRequests($batchRequests);
         }
+        $progressBar->finish();
+        $this->output->newline();
+    }
+
+    private function sendDirectRequest($wordNumber, $path) {
+        $this->info("{$wordNumber}: Generate translation with AI.");
+        $apiUrl = "https://api.anthropic.com/v1/messages";
+        $data = [
+            "model" => $this->model,
+            "max_tokens" => 1024,
+            "system" => $this->systemPrompt,
+            "messages" => [
+                [
+                    "role" => "user",
+                    "content" => StrongWord::where('number', $wordNumber)->first()->lemma
+                ]
+            ]
+        ];
+        $response = Http::withHeaders([
+            'x-api-key' => $this->apiKey,
+            'Content-Type' => 'application/json',
+            'anthropic-version' => '2023-06-01'
+        ])->post($apiUrl, $data);
+
+        if ($response->successful()) {
+            $responseData = $response->json();
+            $responseString = $responseData['content'][0]['text'];
+            $this->decodeAndSaveResponseString($wordNumber, $responseString, $path);
+        } else {
+            $this->error("Error: " . $response->status() . " - " . $response->body());
+        }
+    }
+
+    private function sendBatchRequests($batchRequests) {
+        $batchApiData = ["requests" => $batchRequests];
+        $batchEndpoint = 'https://api.anthropic.com/v1/messages/batches';
+        $response = Http::withHeaders([
+            'x-api-key' => $this->apiKey,
+            'Content-Type' => 'application/json',
+            'anthropic-version' => '2023-06-01'
+        ])->post($batchEndpoint, $batchApiData);
+        $responseData = $response->json();
+        Storage::put("{$this->folder}/{$responseData['id']}", json_encode($responseData));
     }
 
     private function decodeAndSaveResponseString($wordNumber, $responseString, $path)

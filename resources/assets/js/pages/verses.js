@@ -86,6 +86,8 @@ const initToggler = function () {
                             popover.tip.querySelector('.btn-close').addEventListener("click", () => {
                                 popover.hide();
                             });
+                            const tooltipTriggerList = popover.tip.querySelectorAll(".quality[data-bs-toggle='tooltip']");
+                            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
                             const greekWords = popover.tip.querySelectorAll('.greekWord');
                             [...greekWords].map(greekWord => {  
                                 greekWord.addEventListener("click", (event) => {
@@ -97,6 +99,8 @@ const initToggler = function () {
                                         .then(response => response.json())
                                         .then(data => {
                                             $(span).parent().find('.explanation').html(data);
+                                            const tooltipTriggerList = $(span).parent().find('.explanation')[0].querySelectorAll("[data-bs-toggle='tooltip']");
+                                            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
                                         })
                                         .catch((e) => {
                                             $(span).parent().find('.explanation').html('');

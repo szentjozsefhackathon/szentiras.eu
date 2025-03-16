@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('etymologies', function (Blueprint $table) {
+        Schema::create('dictionary_meanings', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->integer('strong_word_number');
-            $table->text('etymology');
+            $table->tinyInteger('order');
+            $table->text('meaning');
+            $table->text('explanation');
             $table->string('source');
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('etymologies');
+        Schema::dropIfExists('dictionary_meanings');
     }
 };

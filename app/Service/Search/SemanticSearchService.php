@@ -110,10 +110,9 @@ class SemanticSearchService {
             }
             $result = new SemanticSearchResult;
             $result->embeddedExcerpt = $neighbor;
-            $result->distance = $neighbor->neighbor_distance;
             $neighborTranslation = $this->translationService->getByAbbreviation($neighbor->translation_abbrev);
             $result->verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($neighbor->reference, $neighborTranslation->id), $neighborTranslation);
-            $result->quality=$this->getQualityScore($neighbor->neighbor_distance);
+            $result->similarity=1 - $neighbor->neighbor_distance;
             $highlightedGepis = [];
             foreach ($topVerseContainers as $verseContainer) {
                 $highlightedGepis = array_map(fn($k) => "{$k}",array_keys($verseContainer->rawVerses));
@@ -124,21 +123,6 @@ class SemanticSearchService {
         $response = new SemanticSearchResponse($results, $metric);
         return $response;
     }
-
-    public static function getQualityScore(float $distance) {                
-        $similarity = 1 - $distance;
-        if ($similarity > .6) {
-            return 5;
-        } else if ($similarity > .5) {
-            return 4;
-        } else if ($similarity >.4) {
-            return 3;
-        } else if ($similarity > .3) {
-            return 2;
-        }
-        return 1;
-    }
-
     /**
      * Returns the most similar verses in the same translation.
      */

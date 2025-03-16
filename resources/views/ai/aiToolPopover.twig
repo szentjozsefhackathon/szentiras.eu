@@ -1,6 +1,6 @@
 {% macro similarity(value) %}
   {% if value %}
-  <div class="quality" title="Becsült hasonlóság">
+  <div class="quality" data-bs-toggle="tooltip" title="Becsült hasonlóság">
         {% for i in 1..5 %}
           {% if i+4 < value * 10 + 3 %}
               <span class="star active">&#9733;</span>
@@ -12,34 +12,25 @@
   {% endif %}
 {% endmacro %}
 
-{%  macro similarityCircle(value) %}
-  {% if value > 0 %}
-  <span title="Göröghöz becsült hasonlóság: {{ (value*100)|round(2) }}">
-  <svg width="10" height="10" viewBox="0 0 100 100">
-    <circle cx="50" cy="50" r="45" fill="#ddd" stroke="#ddd" stroke-width="10"/>
-    <path d="M50,50 m0,-35 a35,35 0 1,1 0,70 a35,35 0 1,1 0,-70" fill="none" stroke="blue" stroke-width="20" stroke-dasharray="282.743" stroke-dashoffset="{{ (1 - value ) * 282.743 }}"/>
-  </svg>        
-</span>
-{% endif  %}
-{% endmacro %}
+{% from 'macros' import similarityCircle %}
 
 <button data-close-button-id="closePopover" type="button" class="btn-close"></button>
 
-<ul class="nav nav-tabs ai-tools" id="myTab{{ hash }}" role="tablist">
+<ul class="nav nav-tabs ai-tools" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="parallel-tab" data-bs-toggle="tab" data-bs-target="#parallel{{ hash }}" type="button" role="tab" aria-controls="home" aria-selected="true">Fordítások</button>
+      <button class="nav-link active" id="parallel-tab" data-bs-toggle="tab" data-bs-target="#parallel{{ gepi }}" type="button" role="tab" aria-controls="home" aria-selected="true">Fordítások</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="similar-tab" data-bs-toggle="tab" data-bs-target="#similar{{ hash }}" type="button" role="tab" aria-controls="profile" aria-selected="false">AI párhuzamok</button>
+      <button class="nav-link" id="similar-tab" data-bs-toggle="tab" data-bs-target="#similar{{ gepi }}" type="button" role="tab" aria-controls="profile" aria-selected="false">AI párhuzamok</button>
     </li>
   </ul>
   
   <!-- Tab panes -->
   <div class="tab-content">
-    <div class="tab-pane active" id="parallel{{ hash }}" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+    <div class="tab-pane active parallel-tab scrollable-content" id="parallel{{ gepi }}" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
       {% for pureText in pureTexts %}
-        <div><a href="/{{ pureText.translationAbbrev }}/{{ pureText.reference }}">{{ pureText.translationAbbrev }}: {{ pureText.reference }}</a> {{ _self.similarity(pureText.similarity * 0.7) }}
-        <span class="pureText">{{ pureText.text }}</span> {{ _self.similarityCircle(pureText.greekSimilarity) }}
+        <div><a href="/{{ pureText.translationAbbrev }}/{{ pureText.reference }}">{{ pureText.translationAbbrev }}: {{ pureText.reference }}</a> {{ similarityCircle(pureText.similarity) }}
+        <span class="pureText">{{ pureText.text }}</span> {{ similarityCircle(pureText.greekSimilarity, 'grey', 'Becsült hasonlóság a göröghöz') }}
     </div>
       {% endfor %}
       {% if greekText %}
@@ -52,13 +43,13 @@
 
       {% endif %}
     </div>
-    <div class="tab-pane scrollable-content" id="similar{{ hash }}" role="tabpanel" aria-labelledby="similar-tab" tabindex="0">
+    <div class="tab-pane scrollable-content" id="similar{{ gepi }}" role="tabpanel" aria-labelledby="similar-tab" tabindex="0">
       <div><a href="/{{ pureTexts[0].text }}/{{ pureText[0].reference }}">{{ pureTexts[0].reference }}</a>  
       <span class="pureText">{{ pureTexts[0].text }}</span>
       </div>
       {% for similar in similars %}
         <div>
-          <a href="/{{ similar.translationAbbrev }}/{{ similar.reference }}">{{ similar.reference }}</a> {{ _self.similarity(similar.similarity - 0.1) }}
+          <a href="/{{ similar.translationAbbrev }}/{{ similar.reference }}">{{ similar.reference }}</a> {{ similarityCircle(similar.similarity) }}
           <span class="pureText">{{ similar.text }}</span>
         </div>
       {% endfor %}

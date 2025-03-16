@@ -16,9 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('strong_word_number');
             $table->string("paradigm");
-            $table->text('meaning');
-            $table->text('explanation');
-            $table->integer('order');
+            $table->text('etymology');
+            $table->text('notes')->nullable();
             $table->string('source');
         });
     }

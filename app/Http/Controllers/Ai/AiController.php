@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Config;
 use League\CommonMark\Reference\Reference;
 use Pgvector\Vector;
 use SzentirasHu\Http\Controllers\Controller;
+use SzentirasHu\Models\DictionaryEntry;
+use SzentirasHu\Models\DictionaryMeaning;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Models\StrongWord;
 use SzentirasHu\Service\Reference\CanonicalReference;
@@ -30,13 +32,11 @@ class AiController extends Controller
 
     public function getAiToolPopover($translationAbbrev, $reference)
     {
-        $hash = md5($reference);
         $allTranslations = $this->translationService->getAllTranslations();
         $translation = $this->translationService->getByAbbreviation($translationAbbrev);
         $canonicalReference = CanonicalReference::fromString($reference, $translation->id);
-        $usxVerseId = $canonicalReference->toUsxVerseId();
-        $verseIdParts = explode('_', str_replace(':', '_', str_replace(' ', '_', $usxVerseId)));
-        $greekVerse = GreekVerse::where('usx_code', $verseIdParts[0])->where('chapter', $verseIdParts[1])->where('verse', $verseIdParts[2])->first();
+        $gepi = $canonicalReference->toGepi();
+        $greekVerse = GreekVerse::where('gepi', $gepi)->first();
         $greekVector = null;
         if ($greekVerse) {
             $annotatedGreekText = [];
@@ -110,7 +110,7 @@ class AiController extends Controller
             }
         }
 
-        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts, 'similars' => $similars ?? [], 'greekText' => $annotatedGreekText, 'greekSimilarity' => $greekSimilarity, 'hash' => $hash])->render();
+        $view = view("ai.aiToolPopover", ['pureTexts' => $pureTexts, 'similars' => $similars ?? [], 'greekText' => $annotatedGreekText, 'greekSimilarity' => $greekSimilarity, 'gepi' => $gepi])->render();
         return response()->json($view);
     }
 
@@ -118,7 +118,10 @@ class AiController extends Controller
     {
         $greekVerse = GreekVerse::where('usx_code', $usx_code)->where('chapter', $chapter)->where('verse', $verse)->first();
         $json = json_decode($greekVerse->json)[$i];
-        $strongWord = StrongWord::where('number', $json->strong)->first();
+        $strongNumber = $json->strong;
+        $strongWord = StrongWord::where('number', $strongNumber)->first();
+        $dictEntry = DictionaryEntry::where('strong_word_number', $strongNumber)->first();
+        $meanings = DictionaryMeaning::where('strong_word_number', $strongNumber)->orderBy('order')->get();
         $greekText = str_replace('¶', '', $greekVerse->text);
         $explodedText = explode(' ', $greekText);
         $printed = preg_replace('/[^\w]/u', '', $explodedText[$i]);
@@ -129,6 +132,9 @@ class AiController extends Controller
                 'morphology' => $morphology,
                 'strongWord' => $strongWord,
                 'printed' => $printed,
+                'dictEntry' => $dictEntry,
+                'meanings' => $meanings,
+                'gepi' => $greekVerse->gepi
             ]
         )->render();
         return response()->json($view);

@@ -58,7 +58,7 @@
     {{ _self.pagination(hitCount, offset, limit, strongWord) }}
     {% for instance in instances %}
         <blockquote class="mb-2">            
-            <div class="pureText"><a href="/{{ instance.book.translation.abbrev }}/{{ instance.ref.toString() }}">{{ instance.ref.toString() }}</a> {{ instance.pureText }}</div>
+            <div class="pureText label"><a href="/{{ instance.book.translation.abbrev }}/{{ instance.ref.toString() }}">{{ instance.ref.toString() }}</a> {{ instance.pureText }}</div>
             <div class="greek">{{ instance.greekText|raw }}</div>
         </blockquote>
     {% endfor %}

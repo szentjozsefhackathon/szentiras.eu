@@ -6,10 +6,10 @@ use SzentirasHu\Data\Entity\EmbeddedExcerpt;
 
 class SemanticSearchResult {
 
-    public $distance;
+    public $similarity;
     public EmbeddedExcerpt $embeddedExcerpt;
     public $verseContainers;
     public $topVerseContainers;
     public $highlightedGepis;
-    public $quality;
+
 }

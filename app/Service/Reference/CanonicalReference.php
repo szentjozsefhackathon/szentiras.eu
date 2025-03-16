@@ -109,6 +109,10 @@ class CanonicalReference
         $this->bookRefs[] = $bookRef;
     }
 
+    public function toGepi() {
+        return str_replace(':', '_', str_replace(' ', '_', $this->toUsxVerseId()));
+    }
+
     public function toUsxVerseId() {
         $s = '';
         $lastBook = end($this->bookRefs);

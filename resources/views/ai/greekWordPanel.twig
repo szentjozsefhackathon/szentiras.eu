@@ -1,7 +1,31 @@
 <div>
     <b>{{ printed }}</b> - <small>{{  morphology }}</small><br>
-    {{  strongWord.lemma }} ({{ strongWord.transliteration }}) - <a href="/ai-greek/find-all/{{ strongWord.number }}">Minden előfordulás</a>
+    {{  strongWord.lemma }} ({{ strongWord.transliteration }}) - <a href="/ai-greek/find-all/{{ strongWord.number }}"><i class="bi bi-search"></i> Minden előfordulás</a>
 </div>
-<div>
-    
+<div class="meaning-panel"><i class="bi bi-robot" data-bs-toggle="tooltip" title="AI által generált tartalom"></i>
+    {{  dictEntry.paradigm }}
+    <ul class="nav nav-tabs">
+        {%  for meaning in meanings %}
+        <li class="nav-item">
+          <button class="nav-link {{ loop.index == 1 ? 'active' : '' }}"  data-bs-toggle="tab" data-bs-target="#meaning_{{ gepi }}_{{ dictEntry.strong_word_number }}_{{ meaning.order }}">{{ meaning.meaning }}</a>
+        </li>
+        {%  endfor %}
+      </ul>
+      <div class="tab-content border-start border-bottom border-end">
+        {% for meaning in meanings %}
+        <div class="tab-pane {{ loop.index == 1 ? 'active' : '' }} meaning" id="meaning_{{ gepi }}_{{ dictEntry.strong_word_number }}_{{ meaning.order }}" role="tabpanel">
+          {{ meaning.explanation }}
+        </div>
+        {%  endfor %}
+      </div>      
+      {%  if dictEntry.etymology %}
+      <div class="etymology">
+        <i class="bi bi-tree"></i> {{  dictEntry.etymology }}
+      </div>
+      {% endif %}
+      <div>
+        {%  if dictEntry.notes %}
+        <i class="bi-sticky"></i> {{ dictEntry.notes }}
+        {% endif %}
+      </div>
 </div>

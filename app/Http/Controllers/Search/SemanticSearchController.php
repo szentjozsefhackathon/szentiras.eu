@@ -11,6 +11,7 @@ use SzentirasHu\Http\Controllers\Search\SemanticSearchForm;
 use SzentirasHu\Http\Requests\SemanticSearchFormRequest;
 use SzentirasHu\Rules\TurnstileValidationRule;
 use SzentirasHu\Service\Search\SemanticSearchParams;
+use SzentirasHu\Service\Search\SemanticSearchResult;
 use SzentirasHu\Service\Search\SemanticSearchService;
 use SzentirasHu\Service\Text\BookService;
 use SzentirasHu\Service\Text\TranslationService;
@@ -33,7 +34,7 @@ class SemanticSearchController extends Controller
         if (empty($textToSearch)) {
             return $this->getIndex($request);
         }
-        $form = $this->prepareForm($request, $textToSearch);
+        $form = $this->prepareForm($request);
 
         if (!session()->get('anonymous_token') && !$form->captchaValidated) {
             // validate captcha
@@ -88,6 +89,10 @@ class SemanticSearchController extends Controller
         return $form;
     }
 
+    /**
+     * @param SemanticSearchResult[] $results
+     * @return array
+     */
     private function groupResponses($results) {
         $groupedResponses = [];
         foreach ($results as $item) {
@@ -100,19 +105,19 @@ class SemanticSearchController extends Controller
                 $gepi = "{$embeddedExcerpt->usx_code}_{$embeddedExcerpt->chapter}_{$embeddedExcerpt->verse}_{$embeddedExcerpt->to_chapter}_{$embeddedExcerpt->to_verse}";
             }
             if (!isset($groupedResponses[$gepi])) {
-                $groupedResponses[$gepi] = [ 'items' => [], 'totalDistance' => 0, 'count' => 0];
+                $groupedResponses[$gepi] = [ 'items' => [], 'totalSimilarity' => 0, 'count' => 0];
             }
             $groupedResponses[$gepi]['items'][] = $item;
-            $groupedResponses[$gepi]['totalDistance'] += $item->distance;
+            $groupedResponses[$gepi]['totalSimilarity'] += $item->similarity;
             $groupedResponses[$gepi]['count']++;
         }
 
         foreach ($groupedResponses as $gepi => $data) {
-            $groupedResponses[$gepi]['averageDistance'] = $data['totalDistance'] / $data['count'];
-            $groupedResponses[$gepi]['quality'] = SemanticSearchService::getQualityScore($groupedResponses[$gepi]['averageDistance'] );            
+            $groupedResponses[$gepi]['averageSimilarity'] = $data['totalSimilarity'] / $data['count'];
+            $groupedResponses[$gepi]['similarity'] = $groupedResponses[$gepi]['averageSimilarity'];            
         }
         $groupedResponses = array_sort($groupedResponses, function ($value) {
-            return $value['averageDistance'];
+            return 1 - $value['averageSimilarity'];
         });
         return $groupedResponses;
     }

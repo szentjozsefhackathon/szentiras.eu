@@ -205,6 +205,9 @@ class ImportGreek extends Command
             $strongWord = new StrongWord();
             $strongWord->number = (int)$entry['strongs'];
             $strongWord->lemma = (string) $entry->greek['unicode'];
+            if (!$strongWord->lemma) {
+                continue;
+            }
             $strongWord->transliteration = (string) $entry->greek['translit'];
             $normalizedText = \Normalizer::normalize($strongWord->transliteration, \Normalizer::FORM_D);
             $cleanText = preg_replace('/\p{Mn}/u', '', $normalizedText);
