@@ -48,7 +48,7 @@ class BookRepositoryEloquent implements BookRepository
                 $books = Book::where('usx_code', $usxCode)
                     ->orderBy('translation_id', 'asc');
             }
-            return $books->first();
+            return $books->with('translation')->first();
         });
     }
 
