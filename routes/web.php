@@ -30,7 +30,7 @@ Route::post("/kereses/legacy", '\SzentirasHu\Http\Controllers\Search\SearchContr
 
 Route::get("/ai-search", '\SzentirasHu\Http\Controllers\Search\SemanticSearchController@getIndex');
 Route::post("/ai-search/search", '\SzentirasHu\Http\Controllers\Search\SemanticSearchController@anySearch')
-    ->middleware('throttle:10,1');
+    ->middleware('throttle:100,1');
 
 Route::get("/ai-tool/{translationAbbrev}/{refString}", [AiController::class, 'getAiToolPopover']);
 Route::get("/ai-greek/find-all/{strongNumber}/{offset?}", [AiController::class, 'getAllInstancesOfGreekWord']);
@@ -69,7 +69,7 @@ Route::get('/tervek', '\SzentirasHu\Http\Controllers\Display\\TextDisplayControl
 Route::get('/register', [AnonymousIdController::class, 'showAnonymousRegistrationForm']);
 Route::post('/register', [AnonymousIdController::class, 'registerAnonymousId']);
 Route::get('/profile/{PROFILE_ID}', [AnonymousIdController::class, 'showProfile'])
-    ->middleware('throttle:10,1');
+    ->middleware('throttle:100,1');
 Route::get('/profile', [AnonymousIdController::class, 'showProfile'])
     ->middleware('anonymousId');
 Route::get('/logout', [AnonymousIdController::class, 'logout'])
