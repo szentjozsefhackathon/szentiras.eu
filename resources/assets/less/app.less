@@ -222,7 +222,7 @@ blockquote.searchResult {
     }
     .scrollable-content {
         overflow-y: auto;
-        max-height: 400px;
+        max-height: 1000px;
     }
 }
 
@@ -297,6 +297,16 @@ h1 .sitesubtitle {
 
 .searchResultVerse {
     font-family: var(--book-font);
+    .numchapter {
+        font-size: var(--book-font-size);
+        float: none;
+        padding-right: 6px;
+        line-height: inherit;
+        color: var(--muted-text-color);
+        position: inherit;
+        top: 0rem;
+    
+    }
 }
 
 .searchResultTranslationSelector {
@@ -320,19 +330,23 @@ div.searchResult {
     }
 }
 
-.interstitial {
+#interstitial {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for element's own size */
+    width: auto; /* Adjust width to content */
+    max-width: 80%; /* Limit maximum width */
+    height: auto; /* Adjust height to content */
+    max-height: 80%; /* Limit maximum height */
     background: rgba(0, 0, 0, 0.5);
     z-index: 9999;
     color: white;
     text-align: center;
-    padding-top: 20%;
-    font-size: 2rem;
+    padding: 20px; /* Add padding around the content */
+    font-size: 1.5rem; /* Slightly smaller font size */
+    border-radius: 10px; /* Add rounded corners */
 }
 
 .form-control::placeholder {

@@ -110,6 +110,10 @@ class SemanticSearchController extends Controller
             $groupedResponses[$gepi]['items'][] = $item;
             $groupedResponses[$gepi]['totalSimilarity'] += $item->similarity;
             $groupedResponses[$gepi]['count']++;
+
+            usort($groupedResponses[$gepi]['items'], function ($a, $b) {
+                return $a->verseContainers[0]->book->translation->order <=> $b->verseContainers[0]->book->translation->order;
+            });
         }
 
         foreach ($groupedResponses as $gepi => $data) {

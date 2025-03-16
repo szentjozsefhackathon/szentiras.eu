@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Data\Entity;
 use Eloquent;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Description of Book
@@ -49,7 +50,8 @@ class Book extends Eloquent {
         return $this->hasMany(Verse::class);
     }
 
-    public function translation() {
+    
+    public function translation() : BelongsTo {
         return $this->belongsTo(Translation::class);
     }
 

@@ -18,12 +18,12 @@ $('#quickSearch').autocomplete({
   };
   
   $('.quickSearchButton').on('click', () => {
-    $('.interstitial').show();
+    $('#interstitial').show();
     $('#quickSearchForm').trigger("submit");
   });
 
   $(".translationHit").on('click', function() {    
-    $('.interstitial').show();
+    $('#interstitial').show();
     $(this).closest('form').trigger("submit");
   });
 

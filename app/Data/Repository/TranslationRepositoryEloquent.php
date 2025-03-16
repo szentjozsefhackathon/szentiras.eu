@@ -44,7 +44,10 @@ class TranslationRepositoryEloquent implements TranslationRepository
 
     public function getByAbbrev($abbrev)
     {
-        return Translation::byAbbrev($abbrev);
+        return \Cache::remember(
+            "translations_getByAbbrev_{$abbrev}", 120, function() use ($abbrev) {
+            return Translation::byAbbrev($abbrev);
+            });
     }
 
     public function getById($id)

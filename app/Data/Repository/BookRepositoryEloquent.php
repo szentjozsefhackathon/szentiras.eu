@@ -69,6 +69,7 @@ class BookRepositoryEloquent implements BookRepository
         return Cache::remember("getBookByUsxCodeForTranslation_{$usxCode}_{$translation->id}", 120, function () use ($translation, $usxCode) {
             $book = Book::where('usx_code', $usxCode)
                 ->whereBelongsTo($translation)
+                ->with('translation')
                 ->first();
             if ($book == null) {
                 return false;

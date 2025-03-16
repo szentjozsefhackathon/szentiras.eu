@@ -101,6 +101,9 @@ const initToggler = function () {
                                             $(span).parent().find('.explanation').html(data);
                                             const tooltipTriggerList = $(span).parent().find('.explanation')[0].querySelectorAll("[data-bs-toggle='tooltip']");
                                             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+                                            $(span).parent().find('a.find-all').on('click', (event) => {
+                                                $('#interstitial').show();
+                                            });
                                         })
                                         .catch((e) => {
                                             $(span).parent().find('.explanation').html('');

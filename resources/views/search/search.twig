@@ -140,6 +140,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
         <div role="tabpanel" class="tab-pane" id="oldstyle">
         
     {% if fullTextResults is defined %}
+
         <h4>Találatok a szövegben <span class="badge">{{ fullTextResults.hitCount }} találat</span></h4>
         {% for result in fullTextResults.results %}
             <h5><a href="/{{ result.translation.abbrev }}/{{ result.book.abbrev }}"><i class="bi bi-book"></i> {{ result.book.name }}

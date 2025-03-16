@@ -13,7 +13,7 @@
                 {% set prevOffset = offset - limit %}
                 {% if prevOffset >= 0 %}
                     <li class="page-item">
-                        <a class="page-link" href="/ai-greek/find-all/{{ strongWord.number }}/{{ prevOffset }}" aria-label="Previous">
+                        <a class="page-link interstitial" href="/ai-greek/find-all/{{ strongWord.number }}/{{ prevOffset }}" aria-label="Previous">
                             <span aria-hidden="true" class="bi bi-chevron-left"></span>
                         </a>
                     </li>
@@ -32,14 +32,14 @@
                         </li>
                     {% else %}
                         <li class="page-item">
-                            <a class="page-link" href="/ai-greek/find-all/{{ strongWord.number }}/{{ currentOffset }}">{{ i }}</a>
+                            <a class="page-link interstitial" href="/ai-greek/find-all/{{ strongWord.number }}/{{ currentOffset }}">{{ i }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 {% set nextOffset = offset + limit %}
                 {% if nextOffset < hitCount %}
                     <li class="page-item">
-                        <a class="page-link" href="/ai-greek/find-all/{{ strongWord.number }}/{{ nextOffset }}" aria-label="Next">
+                        <a class="page-link interstitial" href="/ai-greek/find-all/{{ strongWord.number }}/{{ nextOffset }}" aria-label="Next">
                             <span aria-hidden="true" class="bi bi-chevron-right"></span>
                         </a>
                     </li>
@@ -58,7 +58,7 @@
     {{ _self.pagination(hitCount, offset, limit, strongWord) }}
     {% for instance in instances %}
         <blockquote class="mb-2">            
-            <div class="pureText label"><a href="/{{ instance.book.translation.abbrev }}/{{ instance.ref.toString() }}">{{ instance.ref.toString() }}</a> {{ instance.pureText }}</div>
+            <div class="pureText"><a href="/{{ instance.book.translation.abbrev }}/{{ instance.ref.toString() }}"><span class="label">{{ instance.ref.toString() }}</span></a> {{ instance.pureText }}</div>
             <div class="greek">{{ instance.greekText|raw }}</div>
         </blockquote>
     {% endfor %}
