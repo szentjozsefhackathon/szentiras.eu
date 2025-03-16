@@ -14,11 +14,12 @@
         "laravel/helpers": "^1.7",
         "league/flysystem-aws-s3-v3": "^3.0",
         "openai-php/laravel": "^0.10.2",
-        "pgvector/pgvector": "^0.2.1",
         "openspout/openspout": "^4.28",
+        "pgvector/pgvector": "^0.2.1",
         "phpoffice/phpspreadsheet": "^3.9",
         "predis/predis": "^1.0",
         "rcrowe/twigbridge": "0.14.3",
+        "twig/markdown-extra": "^3.20",
         "twig/twig": "~3.9"
     },
     "require-dev": {

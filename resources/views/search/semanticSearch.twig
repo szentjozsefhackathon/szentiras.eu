@@ -5,7 +5,7 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
 {% endset %}
 
 {% block content %}
-    <h3>Keresés jelentés szerint, AI segítségével</h2>
+    <h3>Keresés jelentés szerint, AI segítségével</h3>
                 <div class="card bg-light mb-2">
                     <div class="card-header collapsible" data-bs-toggle="collapse" data-bs-target="#cardContent">
                         <i class="bi bi-chevron-down"></i>
@@ -14,14 +14,14 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
                 </div>
                 <div id="cardContent" class="collapse">
                     <div class="card-body">
-                        <p>A „jelentés szerinti” keresés mesterséges intelligenciát használ a kereséshez, és <b>másképp működik, mint a hagyományos keresés</b>. A használatához néhány fontos szempont:</p>
-                        <ul>
-                            <li>Mivel nagy a számításigénye, mi is kísérletezünk a legjobb/leghatékonyabb működéssel. A pozitív és negatív visszajelzéseknek egyaránt örülünk.</li>
-                            <li>Pontos idézeteket, szavakat, mondatokat a <a href="/kereses">Részletes keresőben</a> keress!</li>   
-                            <li>Minél több kontextust adsz a keresésben, annál pontosabbak lesznek a találatok. A <i>Mit mond Jézus az ellenség szeretetéről?</i> sokkal jobb lehet, mint az <i>ellenségszeretet</i>.</li>
-                            <li>Ha idézetet keresel, csak nem tudod pontosan a szövegét, akkor próbáld meg idézőjelek között is.</li>
-                            <li>Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási részekkel (versekkel, nagyobb szakaszokkal és fejezetekkel) válaszol.</li>
-                        </ul>
+                        {% apply markdown_to_html %}
+A „jelentés szerinti” keresés mesterséges intelligenciát használ a kereséshez, és **másképp működik, mint a hagyományos keresés**. A használatához néhány fontos szempont:
+- Mivel nagy a számításigénye, mi is kísérletezünk a legjobb/leghatékonyabb működéssel. A pozitív és negatív visszajelzéseknek egyaránt örülünk.</li>
+- Pontos idézeteket, szavakat, mondatokat a [Részletes keresőben](/kereses) keress!
+- Minél több kontextust adsz a keresésben, annál pontosabbak lesznek a találatok. A *Mit mond Jézus az ellenség szeretetéről?* sokkal jobb lehet, mint az *ellenségszeretet*.
+- Ha idézetet keresel, csak nem tudod pontosan a szövegét, akkor próbáld meg idézőjelek között is.
+- Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási részekkel (versekkel, nagyobb szakaszokkal és fejezetekkel) válaszol.
+                        {% endapply %}
                     </div>
                 </div>
             </div>
