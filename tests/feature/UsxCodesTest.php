@@ -45,11 +45,14 @@ class UsxCodesTest extends TestCase
         $this->checkReturnedkUsxCode('default', 'Ter', 'GEN');
         $this->checkReturnedkUsxCode('SZIT', 'Ter', 'GEN');
         $this->checkReturnedkUsxCode('default', '1Móz', 'GEN');
+        $this->checkReturnedkUsxCode('default', '1móz', 'GEN');
         $this->checkReturnedkUsxCode('default', 'Sirák', 'SIR');
         $this->checkReturnedkUsxCode('RUF', 'Sir', 'LAM');
+        $this->checkReturnedkUsxCode('RUF', 'sir', 'LAM');
         $this->checkReturnedkUsxCode('RUF', 'Sirák', null);
         $this->checkReturnedkUsxCode('SZIT', 'Sir', 'SIR');
         $this->checkReturnedkUsxCode('STL', 'Sir', 'SIR');
+        $this->checkReturnedkUsxCode('STL', 'sir', 'SIR');
         $this->checkReturnedkUsxCode('default', 'Zsuzs', 'SUS');
         $this->checkReturnedkUsxCode('STL', 'Zsuzs', 'SUS');
         $this->checkReturnedkUsxCode('default', 'Jud', 'JUD');

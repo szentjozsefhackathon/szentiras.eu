@@ -8,31 +8,45 @@ class UsxCodes
         '1KI' => [
             'default' => [
                 '1Kir',
+                '1kir'
             ],
         ],
         '1CH' => [
             'default' => [
                 '1Krón',
+                '1kron',
+                '1krón',
+                '1Kron'
             ],
         ],
         '1MA' => [
             'default' => [
                 '1Mak',
+                '1mak',
                 '1Makk',
+                '1makk',
             ],
         ],
         'GEN' => [
             'default' => [
                 'Ter',
+                'ter',
                 '1Móz',
+                '1móz',
                 '1Mozes',
+                '1mozes',
                 '1Mózes',
+                '1mózes',
                 '1Moz',
+                '1moz',
                 'Teremtes',
+                'teremtes',
                 'Teremtés',
+                'teremtés',
             ],
             'RUF' => [
                 '1Móz',
+                '1móz',
             ],
         ],
         '1SA' => [
@@ -46,39 +60,61 @@ class UsxCodes
                 'Sámuel1',
                 'SamuelI',
                 'SámuelI',
+                '1sam',
+                '1sám',
+                '1samuel',
+                '1sámuel',
+                '1sámuél',
+                'samuel1',
+                'sámuel1',
+                'samueli',
+                'sámueli',
             ],
         ],
         '2KI' => [
             'default' => [
                 '2Kir',
+                '2kir'
             ],
         ],
         '2CH' => [
             'default' => [
                 '2Krón',
+                '2krón',
+                '2kron',
+                '2Kron'
             ],
         ],
         '2MA' => [
             'default' => [
                 '2Mak',
+                '2mak',
                 '2Makk',
+                '2makk',
             ],
         ],
         '3MA' => [
             'default' => [
                 '3Mak',
+                '3mak',
                 '3Makk',
+                '3makk',
+
             ],
         ],
         '4MA' => [
             'default' => [
                 '4Mak',
+                '4mak',
                 '4Makk',
+                '4makk',
+
             ],
         ],
         'LJE' => [
             'default' => [
-              'JerLev'
+                'JerLev',
+                'jerlev',
             ]
         ],
         'EXO' => [
@@ -90,6 +126,17 @@ class UsxCodes
                 'Kiv',
                 'Kivonulas',
                 'Kivonulás',
+                '2moz',
+                '2móz',
+                '2mozes',
+                '2mózes',
+                'kiv',
+                'kivonulas',
+                'kivonulás',
+            ],
+            'RUF' => [
+                '2Móz',
+                '2móz',
             ],
         ],
         '2SA' => [
@@ -103,6 +150,15 @@ class UsxCodes
                 'Sámuel2',
                 'SamuelII',
                 'SámuelII',
+                '2sam',
+                '2sám',
+                '2samuel',
+                '2sámuel',
+                '2sámuél',
+                'samuel2',
+                'sámuel2',
+                'samuelii',
+                'sámuelii',
             ],
         ],
         'LEV' => [
@@ -113,6 +169,18 @@ class UsxCodes
                 '3Mózes',
                 'Lev',
                 'Leviták',
+                'Levitikus',
+                '3moz',
+                '3móz',
+                '3mozes',
+                '3mózes',
+                'lev',
+                'leviták',
+                'levitikus',
+            ],
+            'RUF' => [
+                '3Móz',
+                '3móz',
             ],
         ],
         'NUM' => [
@@ -125,6 +193,18 @@ class UsxCodes
                 'Szám',
                 'Szamok',
                 'Számok',
+                '4moz',
+                '4móz',
+                '4mozes',
+                '4mózes',
+                'szam',
+                'szám',
+                'szamok',
+                'számok',
+            ],
+            'RUF' => [
+                '4Móz',
+                '4móz',
             ],
         ],
         'DEU' => [
@@ -135,42 +215,68 @@ class UsxCodes
                 '5Mózes',
                 'Mtorv',
                 'MTörv',
+                '5moz',
+                '5móz',
+                '5mozes',
+                '5mózes',
+                'mtorv',
+                'mtörv',
+            ],
+            'RUF' => [
+                '5Móz',
+                '5móz',
             ],
         ],
         'OBA' => [
             'default' => [
                 'Abd',
+                'abd'
             ],
         ],
         'HAG' => [
             'default' => [
                 'Ag',
+                'ag',
                 'Agg',
+                'agg',
                 'Hag',
+                'hag',
             ],
         ],
         'AMO' => [
             'default' => [
                 'Ám',
+                'ám',
                 'Ámós',
+                'ámós',
+                'Ámosz',
+                'ámosz'
             ],
         ],
         'BAR' => [
             'default' => [
                 'Bár',
+                'bár'
             ],
         ],
         'BEL' => [
             'default' => [
-                'Bél', '(Bél)', 'BelTh'
+                'Bél',
+                '(Bél)',
+                'BelTh',
+                'bél'
             ],
         ],
         'JDG' => [
             'default' => [
                 'Bir',
+                'bir',
                 'Bír',
+                'bír',
                 'Birak',
+                'birak',
                 'Birák',
+                'bírák',
                 'Bírák',
                 'JudgA'
             ],
@@ -178,214 +284,289 @@ class UsxCodes
         'WIS' => [
             'default' => [
                 'Bölcs',
+                'bölcs'
             ],
         ],
         'DAN' => [
             'default' => [
                 'Dán',
+                'dan',
                 'DanTh'
             ],
         ],
         'SNG' => [
             'default' => [
                 'En',
+                'en',
                 'Én',
+                'én',
                 'Énekek',
+                'énekek',
                 'ÉnekÉn',
+                'énekén',
                 'Ének.Én',
+                'ének.én',
             ],
         ],
         'ISA' => [
             'default' => [
                 'Ésa',
+                'ésa',
                 'Ézs',
+                'ézs',
                 'Iz',
+                'iz'
             ],
         ],
         'EST' => [
             'default' => [
                 'Esz',
+                'esz',
                 'Eszt',
+                'eszt'
             ],
         ],
         'EZR' => [
             'default' => [
                 'Ezd',
+                'ezd',
                 'Ezdr',
+                'ezdr',
                 'Ezsd',
+                'ezsd',
                 'Ezsdr',
+                'ezsdr'
             ],
         ],
         '1ES' => [
             'default' => [
                 'Ezd3',
+                'ezd3'
             ],
         ],
         'EZK' => [
             'default' => [
                 'Ez',
+                'ez',
                 'Ezek',
+                'ezek',
                 'Ezék',
+                'ezék',
                 'Ezekias',
+                'ezekias',
                 'Ezekiás',
+                'ezekiás',
                 'Ezékiás',
+                'ezékiás',
                 'Ezekiel',
+                'ezekiel'
             ],
         ],
         'HAB' => [
             'default' => [
                 'Hab',
+                'hab'
             ],
         ],
         'HOS' => [
             'default' => [
                 'Hós',
+                'hós',
                 'Oz',
+                'oz',
                 'Óz',
+                'óz',
             ],
         ],
         'ODA' => [
             'default' => [
                 'Ód',
+                'ód'
             ],
         ],
         'JER' => [
             'default' => [
                 'Jer',
+                'jer'
             ],
         ],
         'JOB' => [
             'default' => [
                 'Jo',
+                'jo',
                 'Jób',
+                'job'
             ],
         ],
         'JOL' => [
             'default' => [
                 'Joel',
+                'joel',
                 'Jóel',
+                'jóel'
             ],
         ],
         'JON' => [
             'default' => [
                 'Jón',
+                'jón'
             ],
         ],
         'JOS' => [
             'default' => [
                 'Jozs',
+                'jozs',
                 'Józs',
+                'józs',
                 'Jozsue',
+                'jozsue',
                 'Józsue',
+                'józsue',
                 'Józsué',
+                'józsué',
                 'JoshA'
             ],
         ],
         'LAM' => [
             'default' => [
                 'Siralm',
+                'siralm',
                 'Jsir',
-                'Sír',
+                'jsir',
                 'Siral',
+                'siral'
             ],
             'RUF' => [
-                'Sir'
+                'Sir',
+                'sir'
             ]
         ],
         'SIR' => [
             'default' => [
                 'Sirák',
+                'sirák',
                 'Sirák fia',
+                'sirák fia',
                 'Ecclesiasticus',
-                'Sir'
+                'ecclesiasticus',
+                'Sir',
+                'sir',
+                'Sír',
+                'sír'
             ],
             'SZIT' => [
-                'Sir'
+                'Sir',
+                'sir'
             ],
-            'RUF' => [
-            ],
+            'RUF' => [],
         ],
         'JDT' => [
             'default' => [
                 'Judit',
+                'judit'
             ],
             'SZIT' => [
                 'Jud',
+                'jud',
             ]
         ],
         'SUS' => [
             'default' => [
-                'Zsuzs', '(Zsuzs)', 'SusTh'
+                'Zsuzs',
+                '(Zsuzs)',
+                'SusTh',
+                'zsuzs',
             ],
         ],
         'MAL' => [
             'default' => [
                 'Mal',
+                'mal',
                 'Malak',
+                'malak',
             ],
         ],
         'MIC' => [
             'default' => [
                 'Mik',
+                'mik',
             ],
         ],
         'NAM' => [
             'default' => [
                 'Náh',
+                'náh',
             ],
         ],
         'NEH' => [
             'default' => [
                 'Neh',
+                'neh',
             ],
         ],
         'PRO' => [
             'default' => [
                 'Péld',
+                'péld'
             ],
         ],
         'ECC' => [
             'default' => [
                 'Préd',
+                'préd'
             ],
         ],
         'RUT' => [
             'default' => [
                 'Rut',
+                'rut',
                 'Rút',
+                'rút',
                 'Ruth',
+                'ruth',
                 'Rúth',
+                'ruth',
             ],
         ],
         'ZEP' => [
             'default' => [
                 'Sof',
+                'sof',
                 'Szof',
+                'szof',
                 'Zof',
+                'zof'
             ],
         ],
         'TOB' => [
             'default' => [
                 'Tób',
+                'tob',
                 'TobBA'
             ],
         ],
         'ZEC' => [
             'default' => [
                 'Zak',
+                'zak',
             ],
         ],
         'PSA' => [
             'default' => [
                 'Zsolt',
+                'zsolt',
                 'Zsoltar',
+                'zsoltar',
                 'Zsoltár',
+                'zsoltár',
                 'Zsoltarok',
+                'zsoltarok',
                 'Zsoltárok',
+                'zsoltárok',
             ],
         ],
         'PSS' => [
-            'default' => [ 'SalZsolt' ]
+            'default' => ['SalZsolt', 'salzsolt',]
         ]
     ];
 
@@ -397,6 +578,11 @@ class UsxCodes
                 '1Janos',
                 '1János',
                 '1Jn',
+                '1jan',
+                '1ján',
+                '1janos',
+                '1jános',
+                '1jn',
             ],
         ],
         '2JN' => [
@@ -406,12 +592,23 @@ class UsxCodes
                 '2Janos',
                 '2János',
                 '2Jn',
+                '2jan',
+                '2ján',
+                '2janos',
+                '2jános',
+                '2jn',
             ],
         ],
         '3JN' => [
             'default' => [
                 '3Ján',
                 '3Jn',
+                '3Jan',
+                '3János',
+                '3jan',
+                '3ján',
+                '3jános',
+                '3jn',
             ],
         ],
         'MAT' => [
@@ -421,6 +618,11 @@ class UsxCodes
                 'Mate',
                 'Máté',
                 'Mt',
+                'mat',
+                'mát',
+                'mate',
+                'máté',
+                'mt',
             ],
         ],
         'MRK' => [
@@ -430,6 +632,9 @@ class UsxCodes
                 'Mark',
                 'Márk',
                 'Mk',
+                'mark',
+                'márk',
+                'mk',
             ],
         ],
         'LUK' => [
@@ -438,6 +643,10 @@ class UsxCodes
                 'Luk',
                 'Lukacs',
                 'Lukács',
+                'luk',
+                'lukacs',
+                'lukács',
+                'lk',
             ],
         ],
         'JHN' => [
@@ -447,122 +656,131 @@ class UsxCodes
                 'Janos',
                 'János',
                 'Jn',
+                'János',
+                'jan',
+                'ján',
+                'janos',
+                'jános',
+                'jn',
             ],
         ],
         'ACT' => [
             'default' => [
                 'ApCsel',
                 'Csel',
-                'Acs'
+                'Acs',
+                'apcsel',
+                'csel',
+                'acs',
             ],
         ],
         'ROM' => [
             'default' => [
-                'Rom',
-                'Róm',
+                'Rom', 'rom',
+                'Róm', 'róm',
             ],
         ],
         '1CO' => [
             'default' => [
-                '1Kor',
+                '1Kor', '1kor'
             ],
         ],
         '2CO' => [
             'default' => [
-                '2Kor',
+                '2Kor', '2kor'
             ],
         ],
         'GAL' => [
             'default' => [
-                'Gal',
+                'Gal', 'gal'
             ],
         ],
         'EPH' => [
             'default' => [
-                'Ef',
-                'Eféz',
+                'Ef', 'ef',
+                'Eféz', 'eféz'
             ],
         ],
         'PHP' => [
             'default' => [
-                'Fil',
+                'Fil', 'fil'
             ],
         ],
         'COL' => [
             'default' => [
-                'Kol',
+                'Kol', 'kol'
             ],
         ],
         '1TH' => [
             'default' => [
-                '1Tessz',
-                '1Tesz',
-                '1Thess',
-                '1Thessz',
+                '1Tessz', '1tessz',
+                '1Tesz', '1tesz',
+                '1Thess', '1thess',
+                '1Thessz', '1thessz',
             ],
         ],
         '2TH' => [
             'default' => [
-                '2Tessz',
-                '2Tesz',
-                '2Thess',
-                '2Thessz',
+                '2Tessz', '2tessz',
+                '2Tesz', '2tesz',
+                '2Thess', '2thess', 
+                '2Thessz', '2thessz'
             ],
         ],
         '1TI' => [
             'default' => [
-                '1Tim',
+                '1Tim', '1tim'
             ],
         ],
         '2TI' => [
             'default' => [
-                '2Tim',
+                '2Tim', '2tim'
             ],
         ],
         'TIT' => [
             'default' => [
-                'Tit',
-                'Tít',
+                'Tit', 'tit',
+                'Tít', 'tít'
             ],
         ],
         'PHM' => [
             'default' => [
-                'Filem',
+                'Filem', 'filem'
             ],
         ],
         'HEB' => [
             'default' => [
-                'Zs',
-                'Zsid',
+                'Zs', 'zs',
+                'Zsid', 'zsid'
             ],
         ],
         'JAS' => [
             'default' => [
-                'Jak',
+                'Jak', 'jak'
             ],
         ],
         '1PE' => [
             'default' => [
-                '1Pét',
-                '1Pt',
+                '1Pét', '1pét',
+                '1Pt', '1pt'
             ],
         ],
         '2PE' => [
             'default' => [
-                '2Pét',
-                '2Pt',
+                '2Pét', '2pét',
+                '2Pt', '2pt'
             ],
         ],
         'JUD' => [
             'default' => [
-                'Jud',
-                'Júd',
-                'Júdás',
+                'Jud', 'jud',
+                'Júd', 'júd',
+                'Júdás', 'júdás'
             ],
         ],
         'REV' => [
             'default' => [
-                'Jel',
+                'Jel', 'jel'
             ],
         ],
     ];
