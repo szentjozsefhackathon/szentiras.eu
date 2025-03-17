@@ -76,7 +76,7 @@ const initToggler = function () {
                         const popover = new bootstrap.Popover(aiTrigger, {
                             trigger: 'manual',
                             html: true,
-                            placement: "auto",
+                            placement: "bottom",
                             content: data,
                             sanitize: false
                         });
