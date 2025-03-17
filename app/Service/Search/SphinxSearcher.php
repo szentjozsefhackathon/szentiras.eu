@@ -85,12 +85,12 @@ class SphinxSearcher implements Searcher
         return $this->sphinxClient->buildExcerpts($verses, trim($this->params->text));
     }
 
-    public function get()
+    public function get() : ?FullTextSearchResult
     {
         $sphinxResult = $this->sphinxClient->get();
         if ($sphinxResult) {
             $fullTextSearchResult = new FullTextSearchResult();
-            if (array_has($sphinxResult[0], "count(*)")) {
+            if (array_key_exists("count(*)", $sphinxResult[0])) {
                 $fullTextSearchResult->hitCount = $sphinxResult[0]["count(*)"];
             } else {
                 $fullTextSearchResult->verseIds = array_map(fn ($elem) => $elem['id'], $sphinxResult);

@@ -50,10 +50,10 @@ class SphinxSearch
   }
 
   /**
-   * @return array|false|static[]
+   * @return array
    * @throws \ErrorException
    */
-  public function get()
+  public function get() : array
   {
     foreach ($this->_filters as $filter) {
       if (is_array($filter[1])) {
@@ -83,7 +83,7 @@ class SphinxSearch
       }
     }
 
-   $query->execute();
+    $query->execute();
     $result = $query->fetchAll(\PDO::FETCH_ASSOC);
 
     return $result;
@@ -109,9 +109,7 @@ class SphinxSearch
 
   /**
    * @param $verses
-   * @param $index
-   * @param $words
-   * @param array $opts
+   * @param $text
    * @return array|false
    */
   public function buildExcerpts($verses, $text)
@@ -122,10 +120,35 @@ class SphinxSearch
     $words = explode(' ', $text);
     $excerpts = [];
     foreach ($verses as $id => $verse) {
-      $excerpts[$id] = preg_replace_callback('/(' . implode('|', array_map('preg_quote', $words)) . ')/iu', function ($matches) {
-        return '<b>' . $matches[0] . '</b>';
-      }, $verse);
+      $excerpt = $this->boldWords($words, $verse);
+      $excerpts[$id] = $excerpt;
     }
+
     return $excerpts;
   }
+
+  function boldWords(array $words, string $text): string {
+    // Sort the words descending by length.
+    // This ensures that if one word is a substring of another,
+    // the longest one is matched first.
+    usort($words, function($a, $b) {
+        return strlen($b) - strlen($a);
+    });
+
+    // Escape each word for safe regex use (using '/' as our delimiter).
+    $escapedWords = array_map(function($word) {
+        return preg_quote($word, '/');
+    }, $words);
+
+    // Create a pattern by joining the words with alternation.
+    // For example, "/planet|plane|net/".
+    $pattern = '/' . implode('|', $escapedWords) . '/';
+
+    // Use preg_replace_callback to wrap each match with <b> tags.
+    $result = preg_replace_callback($pattern, function($match) {
+        return '<b>' . $match[0] . '</b>';
+    }, $text);
+
+    return $result;
+}
 }
