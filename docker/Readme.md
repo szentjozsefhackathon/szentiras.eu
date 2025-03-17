@@ -10,7 +10,7 @@ The idea is that you can have a working development environment, set up for effe
 
 It something is not right for you, don't hesitate to create an issue.
 
-It won't start up without a proper `.env` file and a `.env.docker` file (latter contains customizations for the built containers). So first
+It won't start up without a proper `.env` file. The `.env.docker.example`file needed on Windows with Docker Desktop. So first
 
 ```
 cp .env.local.dist .env && cp .env.docker.example .env.docker
@@ -123,75 +123,3 @@ Then
 ```
 docker compose -f docker-compose.prod.yml up -d
 ```
-
-
-# [Deprecated] docker/Dockerfile (one box to rule them all)
-
-## Build the image
-Run this from the `<szentiras-repo-root>` folder.
-
-```sh
-docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t szentiras-dev . -f docker/Dockerfile
-```
-
-Your local UID and GID need to be propagated to the image.
-
-# Start the image the first time
-
-This is just for the first start (initialization). Be sure to run this from the Szentiras repo root.
-
-```sh
-docker run -it --name szentiras-dev -v "$(pwd):/app" --net=host szentiras-dev
-
-source docker/init.sh
-```
-
-# Use the image
-
-```sh
-docker start -ai szentiras-dev
-```
-
-Then, in the Docker interactive shell session, you may have to start the MySQL server:
-
-```sh
-service mysql start
-```
-
-Then, you need to start the indexer service:
-
-```
-service sphinxsearch start
-```
-
-To serve the website:
-
-```sh
-php artisan serve --port 1024
-```
-
-To "open a second terminal" to this Docker container:
-
-```sh
-docker exec -it szentiras-dev /bin/bash
-```
-
-To connect to the database setting the right character encoding:
-
-```sh
-mysql -u homestead -p
-# password: secret
-SET character_set_client = 'utf8mb4';
-SET character_set_connection = 'utf8mb4';
-SET character_set_results = 'utf8mb4';
-```
-
-To reindex:
-
-```sh
-indexer --config /etc/sphinxsearch/sphinx.conf --all --rotate
-```
-
-# Why this version of Ubuntu?
-
-Because for this version, Python2 was still available (needed by something else :).

@@ -1,5 +1,0 @@
-suites:
-    main:
-        namespace: SzentirasHu
-        psr4_prefix: SzentirasHu
-        src_path: app

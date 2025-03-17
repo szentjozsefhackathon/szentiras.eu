@@ -9,14 +9,16 @@ services:
         UID: ${HOST_UID:-1000}
         GID: ${HOST_GID:-1000}
     env_file:
-      - ./.env.docker        
+      - path: ./.env.docker        
+        required: false
     volumes:
       - .:/var/www/html
     command: touch .devcontainer/.bash_history
   app:
     image: szeu-app-dev
     env_file:
-      - ./.env.docker
+      - path: ./.env.docker
+        required: false
     volumes:
       - .:/var/www/html
       - .devcontainer/.bash_history:/home/laravel/.bash_history
@@ -41,7 +43,8 @@ services:
     image: pgvector/pgvector:pg17
     env_file:
       - ./.env # for the database credentials    
-      - ./.env.docker
+      - path: ./.env.docker
+        required: false
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -63,7 +66,8 @@ services:
     image: pgvector/pgvector:pg17
     env_file:
       - ./.env.testing # for the database credentials    
-      - ./.env.docker
+      - path: ./.env.docker
+        required: false
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -88,7 +92,8 @@ services:
       - sphinx_trigger:/opt/sphinx/trigger
     env_file:
       - ./.env
-      - ./.env.docker
+      - path: ./.env.docker
+        required: false
     depends_on:
       database:
         condition: service_healthy
@@ -104,7 +109,8 @@ services:
   composer:
     image: szeu-app-dev
     env_file:
-      - ./.env.docker
+      - path: ./.env.docker
+        required: false
     environment:
       - XDEBUG_CONFIG="mode=off"
     volumes:
@@ -116,7 +122,8 @@ services:
   migrator:
     image: szeu-app-dev
     env_file:
-      - ./.env.docker
+      - path: ./.env.docker
+        required: false
     environment:
       - XDEBUG_CONFIG="mode=off"
     volumes:
@@ -132,7 +139,8 @@ services:
   migrator_testing:
     image: szeu-app-dev
     env_file:
-      - ./.env.docker
+      - path: ./.env.docker
+        required: false
     environment:
       - XDEBUG_CONFIG="mode=off"
     volumes:
