@@ -237,8 +237,20 @@ function footnotePopovers() {
     [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
 }
 
+function scrollToVerse() {
+    const scrollTo  = $('#data').data('scroll-to');
+    if (scrollTo) {
+        const element = document.getElementById('v_'+scrollTo);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+}
+
 initToggler();
 footnotePopovers();
 xrefPopovers();
 initQrModal();
 initPdfModal();
+
+scrollToVerse();

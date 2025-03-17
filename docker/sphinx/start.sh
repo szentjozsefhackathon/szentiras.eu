@@ -18,4 +18,4 @@ mkdir -p /opt/sphinx/trigger
 chmod a+w /opt/sphinx/trigger
 
 echo "Start watcher for trigger"
-watch -n 30 "sh /opt/sphinx/reindex.sh"
+watch -n 30 "sh /opt/sphinx/reindex.sh" > /dev/null

@@ -54,12 +54,10 @@ class KGVerseParser extends DefaultVerseParser
                 $refString = str_replace($xrefSign, '', $part[0]);
                 $refString = str_replace("rész", $book->abbrev, $refString);
                 $refString = str_replace("vers", "{$book->abbrev},{$rawVerse->chapter}", $refString);
-                Log::debug("Adding refstring as xref: ", ['refstring' => $refString]);
                 try {
                     $verse->xrefs[$xrefSign]->text = CanonicalReference::fromString($refString)->toString();
                 } catch (ParsingException $e) {
                     $verse->xrefs[$xrefSign]->text = trim($refString);
-                    Log::debug('Error in ref text', [$verse->xrefs[$xrefSign]->text]);
                 }
             }
         }

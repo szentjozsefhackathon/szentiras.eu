@@ -100,11 +100,13 @@ class SearchService
                 foreach ($excerpts as $i => $excerpt) {
                     $verse = $verses[$i];
                     $linkLabel = "{$verse->book->abbrev}&nbsp;{$verse->chapter},{$verse->numv}";
+                    $heading = strpos($verse->getType(), 'heading') !== false;
                     $result[] = [
                         'cat' => 'verse',
                         'label' => $excerpt,
-                        'link' => "/{$verse->translation->abbrev}/{$verse->book->abbrev} {$verse->chapter},{$verse->numv}",
-                        'linkLabel' => $linkLabel
+                        'link' => "/{$verse->translation->abbrev}/{$verse->book->abbrev} {$verse->chapter},{$verse->numv}" . ($heading ? '?fullContext' : ''),
+                        'linkLabel' => $linkLabel,
+                        'heading' => $heading
                     ];
                 }
             }

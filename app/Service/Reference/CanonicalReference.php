@@ -46,14 +46,15 @@ class CanonicalReference
         return $ref;
     }
 
-    public static function fromBookChapterVerse($bookAbbrev, $chapterNumber, int $verseNumber) {
+    public static function fromBookChapterVerse($bookAbbrev, $chapterNumber, int $verseNumber)
+    {
         $ref = new CanonicalReference();
         $bookRef = new BookRef($bookAbbrev);
         $verseRef = new VerseRef($verseNumber);
         $verseRange = new VerseRange($verseRef);
         $chapterRef = new ChapterRef($chapterNumber);
         $chapterRef->addVerseRange($verseRange);
-        $chapterRange = new ChapterRange($chapterRef);        
+        $chapterRange = new ChapterRange($chapterRef);
         $bookRef->addChapterRange($chapterRange);
         $ref->addBookRef($bookRef);
         return $ref;
@@ -86,8 +87,8 @@ class CanonicalReference
     {
         $result = count($this->bookRefs) == 1 &&
             count($this->bookRefs[0]->chapterRanges) == 1 &&
-                !$this->bookRefs[0]->chapterRanges[0]->untilChapterRef &&
-                count($this->bookRefs[0]->chapterRanges[0]->chapterRef->verseRanges)==0;
+            !$this->bookRefs[0]->chapterRanges[0]->untilChapterRef &&
+            count($this->bookRefs[0]->chapterRanges[0]->chapterRef->verseRanges) == 0;
         return $result;
     }
 
@@ -106,28 +107,26 @@ class CanonicalReference
         return $searchedChapters;
     }
 
-    public function addBookRef(BookRef $bookRef) {
+    public function addBookRef(BookRef $bookRef)
+    {
         $this->bookRefs[] = $bookRef;
     }
 
-    public function toGepi() {
+    public function toGepi()
+    {
         return str_replace(':', '_', str_replace(' ', '_', $this->toUsxVerseId()));
     }
 
-    public function toUsxVerseId() {
-        $s = '';
-        $lastBook = end($this->bookRefs);
-        foreach ($this->bookRefs as $bookRef) {
-            $newBookRef = clone $bookRef;
-            $abbrev = $this->translationId ? Translation::getAbbrevById($this->translationId) : 'default';
-            $newBookRef->bookId = UsxCodes::getUsxFromBookAbbrevAndTranslation($bookRef->bookId, $abbrev);
-            $s .= str_replace(',',':',$newBookRef->toString());
-            if ($lastBook !== $bookRef) {
-                $s .= "; ";
-            }
-        }
-        return $s;
-       
+    /**
+     * @return string The USX ID of the first verse in the reference
+     */
+    public function toUsxVerseId()
+    {
+        $firstBookRef = $this->bookRefs[0];
+        $abbrev = $this->translationId ? Translation::getAbbrevById($this->translationId) : 'default';
+        $usxCode = UsxCodes::getUsxFromBookAbbrevAndTranslation($firstBookRef->bookId, $abbrev);
+        $chapter = $firstBookRef->chapterRanges[0]->chapterRef->chapterId ?? '';
+        $verse = $firstBookRef->chapterRanges[0]->chapterRef->verseRanges[0]->verseRef->verseId ?? '';
+        return $usxCode . ($chapter ? ' ' . $chapter : '') . ($verse ? ':' . $verse : '');
     }
-
 }

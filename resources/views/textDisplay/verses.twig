@@ -57,6 +57,7 @@
         <a class="btn btn-info" id="fullContextButton" href="{{ url('/' ~ canonicalUrl ~ (mediaEnabled ? '?media' : '')) }}" title="Csak a hivatkozás szövegének megjelenítése">
             <i class="bi-chevron-contract"></i> Csak a hivatkozás szövegének megjelenítése</a>
     {% endif %}
+    <span id="data" {% if scrollTo %} data-scroll-to="{{ scrollTo }}" {% endif %}></span>    
     {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers } %}
     {% if mediaEnabled and otherMedia %}
         <h5>További illusztrációk</h5>

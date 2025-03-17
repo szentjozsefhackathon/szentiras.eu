@@ -226,11 +226,14 @@ class TextDisplayController extends Controller
                 }
             }
 
+            $scrollTo = $canonicalRef->toGepi();
+
             $translations = $this->translationRepository->getAllOrderedByDenom();
             return View::make('textDisplay.verses')->with([
                 'fullChaptersIncluded' => $fullChaptersIncluded,
                 'highlightedGepis' => $highlightedGepis ?? [],
                 'fullContext' => $fullContext,
+                'scrollTo' => $fullContext ? $scrollTo : null,
                 'mediaEnabled' => $mediaEnabled,
                 'hasMedia' => $hasMedia,
                 'previousDay' => $previousDay,

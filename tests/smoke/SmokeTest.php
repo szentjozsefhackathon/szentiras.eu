@@ -43,9 +43,8 @@ class SmokeTest extends TestCase
         $this->app->instance(SearcherFactory::class, $searcherFactory);
         $searcherFactory->shouldReceive('createSearcherFor')->andReturn(new SearcherStub());
 
-        \Config::set('translations', 
-            array_merge_recursive(\Config::get('translations'),
-            ['definitions' => ['TESTTRANS' => [
+        $currentConfig = \Config::get('translations');
+        $currentConfig['definitions']['TESTTRANS'] = [
                 'verseTypes' =>
                 [
                     'text' => [6, 901],
@@ -55,10 +54,10 @@ class SmokeTest extends TestCase
                     'xref' => [920]
                 ],
                 'textSource' => env('TEXT_SOURCE_KNB'),
-                'id' => 1001]
-                ]
-            ]
-            ));
+                'id' => 1001];
+        $currentConfig['ids'][1001] = 'TESTTRANS' ;
+        \Config::set('translations', $currentConfig);
+
     }
 
 

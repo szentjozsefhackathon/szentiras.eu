@@ -95,7 +95,7 @@ class ImportScripture extends Command
     public function handle(): int
     {
         Artisan::call("cache:clear");
-        if (!$this->option('nohunspell')) {
+        if (!$this->option('no-hunspell')) {
             $this->testHunspell();
         }
         $transAbbrevToImport = $this->choice('Melyik fordítást töltsük be?', $this->importableTranslations);
@@ -133,7 +133,7 @@ class ImportScripture extends Command
     {
         return [
             ['file', null, InputOption::VALUE_OPTIONAL, 'Ha fájlból szeretnéd betölteni, nem dropboxból, az importálandó fájl elérési útja', null],
-            ['nohunspell', null, InputOption::VALUE_NONE, 'Szótöveket ne állítsa elő'],
+            ['no-hunspell', null, InputOption::VALUE_NONE, 'Szótöveket ne állítsa elő'],
             ['filter', null, InputOption::VALUE_OPTIONAL, 'Szűrés `gepi` (regex) szerint', null],
         ];
     }
@@ -355,11 +355,11 @@ class ImportScripture extends Command
     {
         $hunspellInstalledReturnVal = shell_exec("which hunspell");
         if (empty($hunspellInstalledReturnVal)) {
-            App::abort(500, 'Hunspell-hu is not installed. Please install it or use \'--nohunspell\' instead.');
+            App::abort(500, 'Hunspell-hu is not installed. Please install it or use \'--no-hunspell\' instead.');
         }
         $hunspellHasDictionaryReturnVal = shell_exec("echo medve | hunspell -d hu_HU -i UTF-8 -m  2>&1");
         if (preg_match('/Can\'t open affix or dictionary files for dictionary/i', $hunspellHasDictionaryReturnVal)) {
-            App::abort(500, 'Can\'t open the hu_HU dictionary. Try to install hunspell-hu or use \'--nohunspell\' instead.');
+            App::abort(500, 'Can\'t open the hu_HU dictionary. Try to install hunspell-hu or use \'--no-hunspell\' instead.');
         }
         $this->hunspellEnabled = true;
     }
@@ -416,11 +416,14 @@ class ImportScripture extends Command
                 $progressBar->advance();
             }
         }
-        $this->info("A szótövek fájl mentése...");
-        ksort($this->processedStems["_stems"]);
-        ksort($this->processedStems);
-        $serializedStems = json_encode($this->processedStems, JSON_PRETTY_PRINT);
-        file_put_contents(ImportScripture::STEM_FILE, $serializedStems);
+        // in production we don't replace the stem file
+        if ('production' != Config::get("app.env")) {        
+            $this->info("A szótövek fájl mentése...");
+            ksort($this->processedStems["_stems"]);
+            ksort($this->processedStems);
+            $serializedStems = json_encode($this->processedStems, JSON_PRETTY_PRINT);
+            file_put_contents(ImportScripture::STEM_FILE, $serializedStems);
+        }
         $progressBar->finish();
         return $verseInserts;
     }
