@@ -3,12 +3,17 @@ class PdfDialog {
     init() {
 
         const options = () => {
-            return $.param({
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            const fullContext = params.has('fullContext'); 
+            const options = {
                 'headings': $('#pdfHeadings').prop('checked'),
                 'nums': $('#pdfNums').prop('checked'),
                 'refs': $('#pdfRefs').prop('checked'),
-                'quantity': $('#pdfQuantity').val()
-            });
+                'quantity': $('#pdfQuantity').val(),
+                'fullContext': fullContext ? 'true' : 'false'
+            }
+            return $.param(options);
         };
 
         $('#pdfModal').on('shown.bs.modal', (event) => {
