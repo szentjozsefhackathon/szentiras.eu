@@ -102,11 +102,11 @@
                             <i class="toggle bi-square inactive"></i>
                             AI eszközök</a>                    
                             {% if not mediaEnabled %}
-                                <a class="btn-sm btn btn-info m-1 flex-fill {{ hasMedia ? '' : 'disabled' }}" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ '?media' ~ (fullContext ? '&fullContext' : '')) }}" title="Illusztrációk megjelenítése">
+                                <a class="btn-sm btn btn-info m-1 flex-fill {{ hasMedia ? '' : 'd-none' }}" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ '?media' ~ (fullContext ? '&fullContext' : '')) }}" title="Illusztrációk megjelenítése">
                                     <i class="bi-images"></i> Illusztrációk megjelenítése</a>
                                 {% endif %}
                             {% if mediaEnabled %}
-                                    <a class="btn-sm btn btn-info m-1 flex-fill {{ hasMedia ? '' : 'disabled' }}" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ (fullContext ? '?fullContext' : '')) }}" title="Illusztrációk elrejtése">
+                                    <a class="btn-sm btn btn-info m-1 flex-fill {{ hasMedia ? '' : 'd-none' }}" id="mediaButton" href="{{ url('/' ~ canonicalUrl ~ (fullContext ? '?fullContext' : '')) }}" title="Illusztrációk elrejtése">
                                         <i class="bi-images"></i> Illusztrációk elrejtése</a>
                                 {% endif %}    
                         
