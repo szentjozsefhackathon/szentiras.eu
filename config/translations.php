@@ -53,6 +53,8 @@ return [
             'textSource' => env('TEXT_SOURCE_KNB', 's3'),
             'id' => 3,
             'order' => 1,
+            'copyright' => 'A Szent Jeromos Katolikus Bibliatársulat engedélyével. Megújítva 2013. február.',
+            'publisher' => [ 'name' => 'Szent Jeromos Katolikus Bibliatársulat', 'url' => 'https://www.biblia-tarsulat.hu']
         ],
 
         'KG' => [
@@ -65,6 +67,9 @@ return [
             'textSource' => env('TEXT_SOURCE_KG', 's3'),
             'id' => 4,
             'order' => 11,
+            'copyright' => 'A szöveg nem jogvédett.',
+            'publisher' => [ 'name' => '', 'url' => 'https//theword.net']
+
         ],
         'SZIT' => [
             'verseTypes' =>
@@ -76,6 +81,8 @@ return [
             'textSource' => env('TEXT_SOURCE_SZIT', 's3'),
             'id' => 1,
             'order' => 3,
+            'copyright' => 'A Szent István Társulat Szentírás-Bizottságának fordítása, új bevezetőkkel és magyarázatokkal; sajtó alá rendezte Rózsa Huba.  (Megújítva: 2025. február).',
+            'publisher' => [ 'name' => 'Szent István Társulat', 'url' => 'https://szitkonyvek.hu/']
         ],
         'UF' => [
             'verseTypes' =>
@@ -96,6 +103,9 @@ return [
             'textSource' => env('TEXT_SOURCE_BD', 's3'),
             'id' => 5,
             'order' => 5,
+            'copyright' => 'A Bencés Kiadó engedélyével. (Megújítva: 2025. február).',
+            'publisher' => [ 'name' => 'Bencés Kiadó', 'url' => 'https://www.benceskiado.hu']
+
         ],
         'RUF' => [
             'verseTypes' =>
@@ -108,6 +118,9 @@ return [
             'textSource' => env('TEXT_SOURCE_RUF', 's3'),
             'id' => 6,
             'order' => 9,
+            'copyright' => 'A 2014-es revidált Bibliát a Magyar Bibliatársulat ideiglenes engedélyével publikáljuk. A hivatalos változat http://abibliamindenkie.hu/ oldalon  látható</a>.',
+            'publisher' => [ 'name' => 'Magyar Bibliatársulat', 'url' => 'https://bibliatarsulat.hu']
+
         ],
         'STL' => [
             'verseTypes' =>
@@ -118,6 +131,8 @@ return [
             'textSource' => env('TEXT_SOURCE_STL', 's3'),
             'id' => 7,
             'order' => 4,
+            'copyright' => 'A Bencés Kiadó engedélyével. (Megújítva: 2025. február).',
+            'publisher' => [ 'name' => 'Bencés Kiadó', 'url' => 'https://www.benceskiado.hu']
         ]
     ],
     'ids' => [
