@@ -15,3 +15,7 @@ $('#semanticSearchForm').on('submit', function(event) {
 $('a.interstitial').on('click', () =>
     $('#interstitial').show()
 );
+
+window.addEventListener('pageshow', (event) => {
+        $('#interstitial').hide()
+  });
