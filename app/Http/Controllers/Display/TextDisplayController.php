@@ -74,7 +74,12 @@ class TextDisplayController extends Controller
 
     public function showTranslation($translationAbbrev)
     {
+        $allTranslation = $this->translationRepository->getAll();
         $translation = $this->translationRepository->getByAbbrev($translationAbbrev);
+        if (!$allTranslation->contains($translation)) {
+            // handle disabled translations
+            abort(404);
+        }
         $books = $this->translationRepository->getBooks($translation);
         $bookHeaders = [];
         $toc = request()->has("toc");
@@ -118,6 +123,11 @@ class TextDisplayController extends Controller
     {
         try {
             $translation = $this->translationRepository->getByAbbrev($translationAbbrev ? $translationAbbrev : Config::get('settings.defaultTranslationAbbrev'));
+            $allTranslation = $this->translationRepository->getAll();
+            if (!$allTranslation->contains($translation)) {
+                // handle disabled translations
+                abort(404);
+            }    
             $canonicalRef = CanonicalReference::fromString($reference, $translation->id);
             if ($canonicalRef->isBookLevel()) {
                 return $this->bookView($translationAbbrev, $canonicalRef);
