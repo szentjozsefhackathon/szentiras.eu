@@ -47,9 +47,6 @@ class BookTableSeeder extends \Illuminate\Database\Seeder
         $translation->abbrev = $abbrev;
         $translation->denom = "denom";
         $translation->lang = "hu";
-        $translation->copyright = "copyright";
-        $translation->publisher = "publisher";
-        $translation->publisher_url = "publisher_url";
         $translation->save();
         return $translation;
     }
