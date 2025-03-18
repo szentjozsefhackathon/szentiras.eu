@@ -565,6 +565,7 @@ class ImportScripture extends Command
             $word = mb_strtolower($word);
             if (Cache::store("array")->has("hunspell_{$word}")) {
                 $cachedStems = Cache::store("array")->get("hunspell_{$word}");
+                $cachedStems[] = $word;
                 $verseroots = $verseroots->merge($cachedStems);
             } else {
                 fwrite($pipes[0], "{$word}\n"); // send start
