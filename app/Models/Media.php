@@ -3,6 +3,7 @@
 namespace SzentirasHu\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 
@@ -37,7 +38,7 @@ class Media extends Model
 {
     protected $fillable = ['filename', 'mime_type', 'media_type_id', 'usx_code', 'chapter', 'verse', 'uuid'];
 
-    public function mediaType()
+    public function mediaType() : BelongsTo
     {
         return $this->belongsTo('SzentirasHu\Models\MediaType');
     }
