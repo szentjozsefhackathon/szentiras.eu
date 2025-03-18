@@ -36,10 +36,7 @@ class ApiController extends Controller
      * @var \SzentirasHu\Service\Text\TextService
      */
     private $textService;
-    /**
-     * @var \SzentirasHu\Http\Controllers\Home\LectureSelector
-     */
-    private $lectureSelector;
+
     /**
      * @var \SzentirasHu\Data\Repository\TranslationRepository
      */
@@ -48,18 +45,12 @@ class ApiController extends Controller
      * @var \SzentirasHu\Data\Repository\BookRepository
      */
     private $bookRepository;
-    /**
-     * @var \SzentirasHu\Data\Repository\VerseRepository
-     */
-    private $verseRepository;
+    
     /**
      * @var \SzentirasHu\Service\Reference\ReferenceService
      */
     private $referenceService;
-    /**
-     * @var \SzentirasHu\Service\Search\SearcherFactory
-     */
-    private $searcherFactory;
+    
     /**
      * @var SearchService
      */
@@ -67,10 +58,8 @@ class ApiController extends Controller
 
     function __construct(
         TextService $textService,
-        LectureSelector $lectureSelector,
         TranslationRepository $translationRepository,
         BookRepository $bookRepository,
-        VerseRepository $verseRepository,
         ReferenceService $referenceService,
         SearchService $searchService,
         protected TranslationService $translationService,
@@ -78,10 +67,8 @@ class ApiController extends Controller
         protected SemanticSearchService $semanticSearchService
     ) {
         $this->textService = $textService;
-        $this->lectureSelector = $lectureSelector;
         $this->translationRepository = $translationRepository;
         $this->bookRepository = $bookRepository;
-        $this->verseRepository = $verseRepository;
         $this->referenceService = $referenceService;
         $this->searchService = $searchService;
     }
@@ -148,6 +135,7 @@ class ApiController extends Controller
         $verses = Verse::where('gepi', $gepi)->get();
         $verseDataList = [];
         foreach ($verses as $verse) {
+            /** @var Translation $translation */
             $translation = $verse->translation()->first();
             if (in_array($verse->tip, \Config::get("translations.definitions.{$translation->abbrev}.verseTypes.text"))) {
                 $verseData['hely']['gepi'] = $verse->gepi;
@@ -183,7 +171,7 @@ class ApiController extends Controller
             }
             $data = [
                 'translation' => ['abbrev' => $translation->abbrev, 'id' => $translation->id],
-                'books' => $bookData
+                'books' => $bookData ?? []
             ];
         return    $this->formatJsonResponse($data);
         });

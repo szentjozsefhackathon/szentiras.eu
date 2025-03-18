@@ -80,10 +80,10 @@ class ReferenceService
      * Takes a bookref and get an other bookref according
      * to the given translation.
      *
-     * @param ?int refTranslationId The id of the translation the bookref is interpreted according to.
+     * @param ?int $refTranslationId The id of the translation the bookref is interpreted according to.
      * @return BookRef
      */
-    public function translateBookRef(BookRef $bookRef, int $translationId, ?int $refTranslationId = null)
+    public function translateBookRef(BookRef $bookRef, int $translationId, ?int $refTranslationId = null) : BookRef
     {
         $translation = $this->translationRepository->getById($translationId);
         $refTranslation = $this->translationRepository->getById($refTranslationId);

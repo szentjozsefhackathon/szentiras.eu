@@ -203,12 +203,6 @@ class SearchService
                         $verseData['numv'] = $verse->numv;
                         $verseData['text'] = preg_replace('/<[^>]*>/', ' ', $verse->verse);
                         $verseData['greekText'] = $sphinxResults->verses[$verse->id]['greekText'] ?? null;
-                        if ($verse->headings) { // Ez nem üzemel, mert nem volt getParsedVerse mert nem volt VerseContainer, mert book-onként kall azt csináni.
-                            echo "bizony";
-                            foreach ($verse->headings as $heading) {
-                                $verseData['text'] .= "<small>" . $heading . '</small> ';
-                            }
-                        }
 
                         if ($verse->chapter > $currentChapter) {
                             $verseData['chapterStart'] = true;
@@ -328,9 +322,7 @@ class SearchService
             $translatedBookRefs = [];
             foreach ($storedBookRefs as $storedBookRef) {
                 $bookRef = $this->referenceService->translateBookRef($storedBookRef, $translation->id);
-                if ($bookRef !== null) {
-                    $translatedBookRefs[] = $bookRef;
-                }
+                $translatedBookRefs[] = $bookRef;
             }
             return $translatedBookRefs;
         } catch (ParsingException $e) {

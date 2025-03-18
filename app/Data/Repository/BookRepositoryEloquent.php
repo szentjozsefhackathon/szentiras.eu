@@ -28,7 +28,7 @@ class BookRepositoryEloquent implements BookRepository
      * If translationId is null, abbrevs not associated with anything are preferred..
      *
      */
-    public function getByAbbrev(string $bookAbbrev, ?Translation $translation)
+    public function getByAbbrev(string $bookAbbrev, ?Translation $translation) : ?Book
     {
         $translationAbbrev = $translation->abbrev ?? "default";
         return Cache::remember("book_getByAbbrev_{$bookAbbrev}_{$translationAbbrev}", 120, function () use ($bookAbbrev, $translationAbbrev, $translation) {
@@ -58,7 +58,7 @@ class BookRepositoryEloquent implements BookRepository
      * @param Translation $translation
      * @return Book
      */
-    public function getByAbbrevForTranslation($abbrev, Translation $translation)
+    public function getByAbbrevForTranslation($abbrev, Translation $translation) : ?Book
     {
         $usxCode = UsxCodes::getUsxFromBookAbbrevAndTranslation($abbrev, $translation->abbrev);
         return $this->getByUsxCodeForTranslation($usxCode, $translation);

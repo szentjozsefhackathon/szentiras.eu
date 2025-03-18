@@ -89,25 +89,7 @@ class SphinxSearch
     return $result;
   }
 
-  /**
-   * @param $id
-   * @param $result
-   * @return bool|int|string
-   */
-  private function getResultKeyByID($id, $result)
-  {
-    if (count($result) > 0) {
-      foreach ($result as $k => $result_item) {
-
-        if ($result_item->id == $id) {
-          return $k;
-        }
-      }
-    }
-    return false;
-  }
-
-  /**
+    /**
    * @param $verses
    * @param $text
    * @return array|false

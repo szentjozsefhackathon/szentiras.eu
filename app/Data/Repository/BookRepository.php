@@ -14,14 +14,14 @@ interface BookRepository {
      * @param $bookAbbrev
      * @return Book The first book of the given abbrev.
      */
-    public function getByAbbrev(string $bookAbbrev, ?Translation $translation);
+    public function getByAbbrev(string $bookAbbrev, ?Translation $translation) : ?Book;
 
     /**
      * @param string $abbrev
      * @param Translation $translation
      * @return Book
      */
-    public function getByAbbrevForTranslation($abbrev, Translation $translation);
+    public function getByAbbrevForTranslation($abbrev, Translation $translation) : ?Book;
 
     public function getByUsxCodeForTranslation(string $usxCode, Translation $translation);
 

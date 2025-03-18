@@ -12,7 +12,6 @@ use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ReferenceService;
 use SzentirasHu\Service\VerseContainer;
 use SzentirasHu\Data\Repository\BookRepository;
-use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
 use SzentirasHu\Http\Controllers\Display\VerseParsers\VersePart;
 use SzentirasHu\Service\Reference\ChapterRange;
@@ -31,17 +30,12 @@ class TextService
      * @var \SzentirasHu\Data\Repository\VerseRepository
      */
     private $verseRepository;
-    /**
-     * @var \SzentirasHu\Data\Repository\TranslationRepository
-     */
-    private $translationRepository;
 
-    function __construct(ReferenceService $referenceService, BookRepository $bookRepository, VerseRepository $verseRepository, TranslationRepository $translationRepository)
+    function __construct(ReferenceService $referenceService, BookRepository $bookRepository, VerseRepository $verseRepository)
     {
         $this->referenceService = $referenceService;
         $this->bookRepository = $bookRepository;
         $this->verseRepository = $verseRepository;
-        $this->translationRepository = $translationRepository;
     }
 
 

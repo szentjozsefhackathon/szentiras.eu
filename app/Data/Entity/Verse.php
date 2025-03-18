@@ -68,7 +68,7 @@ class Verse extends Eloquent
 
     public function translation() : BelongsTo
     {
-        return $this->belongsTo('SzentirasHu\Data\Entity\Translation', 'trans');
+        return $this->belongsTo(\SzentirasHu\Data\Entity\Translation::class, 'trans');
     }
 
     public static function getTypeMap()

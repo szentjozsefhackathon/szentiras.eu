@@ -209,7 +209,7 @@ class TextDisplayController extends Controller
                 foreach ($chapterMedia as $book_chapter => $mediaItems) {
                     $bookNumber = explode("_", $book_chapter)[0];
                     $book = $this->bookService->getBookByUsxCodeTranslation($bookNumber, $translation->abbrev);
-                    $chapterNumber = explode("_", $book_chapter)[1];
+                    $chapterNumber = (int) explode("_", $book_chapter)[1];
                     $verseMedia = [];
                     foreach ($mediaItems as $mediaItem) {
                         $verseMedia[$mediaItem->verse] = $mediaItem;

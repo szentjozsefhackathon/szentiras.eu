@@ -114,6 +114,7 @@ class GenerateStrongWordTranslations extends Command
             $progressBar->advance();
             $path = "{$this->folder}/{$wordNumber}_{$this->model}.json";
             if ($sourceStorage) {
+                // load the translation from the source file
                 $file = $sourceStorage->get($path);
                 if (!$file) {
                     $this->error("{$path} doesn't exist");
@@ -145,10 +146,8 @@ class GenerateStrongWordTranslations extends Command
                     $dictionaryMeaning->order = $i;
                     $dictionaryMeaning->save();
                 }
-            } else if ($this->option("batch")) {
-                $batchRequests = [];
-
-            } else {
+            } else  {
+                // we are generating now, not loading                
                 if (Storage::exists($path)) {
                     $this->info("{$wordNumber}: translation already exists. Skipping.");
                     continue;

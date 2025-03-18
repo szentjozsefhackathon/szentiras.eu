@@ -17,9 +17,9 @@ interface TranslationRepository {
     public function getAllOrderedByDenom() : Collection;
 
     /**
-     * @param bool $denom
+     * @param string $denom
      */
-    public function getByDenom($denom = false) : Collection;
+    public function getByDenom($denom = "katolikus") : Collection;
 
     /**
      * @param Translation $translation

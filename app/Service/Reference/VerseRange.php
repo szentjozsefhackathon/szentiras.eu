@@ -7,14 +7,14 @@ class VerseRange
     /**
      * @var VerseRef
      */
-    public $verseRef;
+    public ?VerseRef $verseRef;
 
     /**
      * @var VerseRef
      */
-    public $untilVerseRef;
+    public ?VerseRef $untilVerseRef;
 
-    public function __construct(VerseRef $verseRef = null, VerseRef $untilVerseRef = null) {
+    public function __construct(?VerseRef $verseRef = null, ?VerseRef $untilVerseRef = null) {
         $this->verseRef = $verseRef;
         $this->untilVerseRef = $untilVerseRef;
     }
