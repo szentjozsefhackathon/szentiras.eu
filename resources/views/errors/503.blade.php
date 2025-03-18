@@ -40,7 +40,7 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">Karbantartás van, kérünk, látogass vissza később!</div>
+                <div class="title">Karbantartás van, kis türelmet kérünk!</div>
             </div>
         </div>
     </body>
