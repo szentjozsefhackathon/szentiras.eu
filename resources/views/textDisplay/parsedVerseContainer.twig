@@ -1,4 +1,5 @@
 {% macro numv(verse, mark = false) -%}
+    <a id="v_{{ verse.gepi }}"></a>
 {% if verse.footnotes is not empty %}
     {% set currentFootnote %}
     <p class='popover-footnote'>
@@ -7,9 +8,9 @@
     {% endfor %}
     </p>
     {% endset %}
-    <a tabindex="0" class="footnote" data-bs-placement="auto" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-html="true" data-bs-content="{{ currentFootnote }}" tabindex="0"><span id="v_{{ verse.gepi }}" class="numv footnote"><sup>{{ verse.numv }}</sup></span></a>
+    <a tabindex="0" class="footnote" data-bs-placement="auto" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-html="true" data-bs-content="{{ currentFootnote }}" tabindex="0"><span class="numv footnote"><sup>{{ verse.numv }}</sup></span></a>
 {%- else -%}
-     <span id="v_{{ verse.gepi }}" class="numv hidden {{ mark ? 'mark' : '' }}"><sup>{{ verse.numv }}</sup></span>
+     <span class="numv hidden {{ mark ? 'mark' : '' }}"><sup>{{ verse.numv }}</sup></span>
 {%- endif -%}
 <a class="numvai" data-bs-placement="auto" tabindex="0" data-bs-custom-class="ai-tool-popover" data-link="{{ verse.book.translation.abbrev }}/{{ verse.book.abbrev}}{{ verse.chapter }},{{ verse.numv }}"><span class="numvai hidden">{{ verse.numv }}&nbsp;</span></a>
 {%- endmacro %}
