@@ -71,11 +71,7 @@ class BookRepositoryEloquent implements BookRepository
                 ->whereBelongsTo($translation)
                 ->with('translation')
                 ->first();
-            if ($book == null) {
-                return false;
-            } else {
                 return $book;
-            }
         });
     }
 }
