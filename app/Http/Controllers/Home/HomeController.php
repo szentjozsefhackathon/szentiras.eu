@@ -14,19 +14,8 @@ use SzentirasHu\Data\Repository\TranslationRepository;
 class HomeController extends Controller
 {
 
-    /**
-     * @var LectureSelector
-     */
-    private $lectureSelector;
-    /**
-     * @var \SzentirasHu\Data\Repository\TranslationRepository
-     */
-    private $translationRepository;
-
-    function __construct(TranslationRepository $translationRepository, LectureSelector $lectureSelector)
+    function __construct(protected TranslationRepository $translationRepository)
     {
-        $this->lectureSelector = $lectureSelector;
-        $this->translationRepository = $translationRepository;
     }
 
     public function index()

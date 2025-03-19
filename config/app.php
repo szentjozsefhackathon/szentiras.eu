@@ -131,8 +131,6 @@ return [
          * Application Service Providers...
          */
         SzentirasHu\Providers\AppServiceProvider::class,
-        SzentirasHu\Providers\AuthServiceProvider::class,
-        SzentirasHu\Providers\EventServiceProvider::class,
         SzentirasHu\Providers\RouteServiceProvider::class,
         SzentirasHu\Providers\RepositoriesProvider::class,
         SzentirasHu\Providers\ViewComposerServiceProvider::class,

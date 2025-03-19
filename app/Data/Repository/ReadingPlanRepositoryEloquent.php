@@ -17,7 +17,7 @@ class ReadingPlanRepositoryEloquent implements ReadingPlanRepository {
 		});
 	}
 
-	public function getReadingPlanByPlanId($id) {
+	public function getReadingPlanByPlanId($id) : ?ReadingPlan{
 		return Cache::remember("reading_plan_{$id}", 60, function () use ($id) {
 			return ReadingPlan::find($id);
 		});

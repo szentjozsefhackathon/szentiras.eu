@@ -4,7 +4,6 @@ namespace SzentirasHu\Test\Smoke;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
-use SzentirasHu\Service\LectureDownloader;
 use SzentirasHu\Service\Search\SearcherFactory;
 use SzentirasHu\Service\Text\TextService;
 use SzentirasHu\Service\VerseContainer;
@@ -29,10 +28,6 @@ class SmokeTest extends TestCase
         Artisan::call('config:clear');
         Artisan::call('view:clear');
         Artisan::call('cache:clear');
-
-        $downloader = Mockery::mock(LectureDownloader::class);
-        $this->app->instance(LectureDownloader::class, $downloader);
-        $downloader->shouldReceive('getReferenceString')->andReturn('Ter 4,5; Kiv 3,4');
 
         // $textService = Mockery::mock(TextService::class);
         // $this->app->instance(TextService::class, $textService);

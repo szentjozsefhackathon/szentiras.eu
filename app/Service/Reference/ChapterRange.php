@@ -4,16 +4,11 @@ namespace SzentirasHu\Service\Reference;
 
 class ChapterRange
 {
-    /**
-     * @var ChapterRef
-     */
-    public $chapterRef;
-    /**
-     * @var ChapterRef
-     */
-    public $untilChapterRef;
 
-    public function __construct(ChapterRef $chapterRef, ChapterRef $untilChapterRef = null) {
+    public ChapterRef $chapterRef;
+    public ?ChapterRef $untilChapterRef;
+
+    public function __construct(ChapterRef $chapterRef, ?ChapterRef $untilChapterRef = null) {
         $this->chapterRef = $chapterRef;
         $this->untilChapterRef = $untilChapterRef;
     }

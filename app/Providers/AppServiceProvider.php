@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
             public function load($class) {
                 if (MarkdownRuntime::class === $class) {
                     return new MarkdownRuntime(new DefaultMarkdown());
+                } else {
+                    return null;
                 }
             }
         });

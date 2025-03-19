@@ -20,7 +20,7 @@ class TranslationRepositoryEloquent implements TranslationRepository
         return $allTranslations;
     }
 
-    public function getByDenom($denom = false) : Collection
+    public function getByDenom($denom = "katolikus") : Collection
     {
         $q = $denom ? Translation::where('denom', $denom) : Translation::all();
         return $q->orderBy('denom')->orderBy('order')->orderBy('name')->whereIn('id', \Config::get('settings.enabledTranslations'))->get();

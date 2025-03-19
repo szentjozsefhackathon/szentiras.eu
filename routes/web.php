@@ -39,7 +39,8 @@ Route::get("/ai-greek/{usx_code}/{chapter}/{verse}/{i}", [AiController::class, '
 Route::post('/searchbible.php', ' \SzentirasHu\Http\Controllers\Search\SearchController@postLegacy');
 
 /** API */
-Route::get("/api", '\SzentirasHu\Http\Controllers\Api\ApiController@getIndex');
+Route::get("/api", '\SzentirasHu\Http\Controllers\Api\ApiController@getIndex')
+    ->middleware('throttle:600,1');
 
 Route::get('/info', '\SzentirasHu\Http\Controllers\Home\InfoController@getIndex');
 

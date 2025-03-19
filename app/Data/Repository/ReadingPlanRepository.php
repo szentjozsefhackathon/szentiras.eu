@@ -20,5 +20,5 @@ interface ReadingPlanRepository {
      * @param int $id
      * @return ReadingPlan
      */
-    public function getReadingPlanByPlanId($id);
+    public function getReadingPlanByPlanId($id) : ?ReadingPlan;
 }
