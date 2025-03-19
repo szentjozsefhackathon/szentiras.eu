@@ -13,16 +13,9 @@ source verses_source
 	sql_port		= __DB_PORT__
 
 	sql_query		= \
-		SELECT id, gepi, trans, usx_code, chapter, numv, tip, verse, verse as verse2, verse as verse3 \
+		SELECT id, gepi, trans, usx_code, chapter, tip, verse, verse as verse2, verse as verse3 \
 		FROM kar_tdverse \
-    WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704) \
-    AND trans IN (1,3,4,5,6,7)
-
-	sql_attr_uint = trans
-	sql_attr_string = usx_code
-	sql_attr_uint = chapter
-	sql_attr_string = gepi
-	sql_attr_uint = tip
+    WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
 
 }
 
@@ -30,7 +23,7 @@ source verses_source
 source verses_root_source : verses_source
 {
     sql_query		= \
-    SELECT id, gepi, trans, usx_code, chapter, numv, tip, verseroot, verseroot as verse, verseroot as verse2, verseroot as verse3 \
+    SELECT id, gepi, trans, usx_code, chapter, tip, verseroot as verse, verseroot as verse2, verseroot as verse3 \
     FROM kar_tdverse \
     WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
 
@@ -39,6 +32,14 @@ source verses_root_source : verses_source
 index verse
 {
 	source	= verses_source
+	
+	field = verse, verse2, verse3
+	attr_uint = trans
+	attr_string = usx_code
+	attr_uint = chapter
+	attr_string = gepi
+	attr_uint = tip
+
 	min_infix_len = 3
 	charset_table = \
 	    0..9, \
@@ -59,7 +60,7 @@ index verseroot : verse
 
 indexer
 {
-	mem_limit		= 48M
+	mem_limit		= 96M
 }
 
 

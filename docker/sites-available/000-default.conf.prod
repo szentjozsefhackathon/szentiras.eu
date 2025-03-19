@@ -1,3 +1,5 @@
+ServerTokens Prod
+
 <Directory /var/www/html/public>
     Options -Indexes +FollowSymLinks
     AllowOverride All
@@ -6,8 +8,6 @@
 </Directory>
 
 <VirtualHost *>
-    ServerTokens Prod
-    ServerSignature Off
     Header unset X-Powered-By    
     Header set Content-Security-Policy "default-src 'self'; frame-ancestors 'none';"
     DocumentRoot /var/www/html/public
