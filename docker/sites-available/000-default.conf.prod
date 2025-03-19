@@ -6,8 +6,13 @@
 </Directory>
 
 <VirtualHost *>
+    ServerTokens Prod
+    ServerSignature Off
+    Header unset X-Powered-By    
+    Header set Content-Security-Policy "default-src 'self'; frame-ancestors 'none';"
     DocumentRoot /var/www/html/public
     ErrorLog ${APACHE_LOG_DIR}/error.log
     LogFormat '{"host":"%v","remote_hostname":"%{X-Forwarded-For}i","time":"%{sec}t","request":"%r","status":"%>s","response_size":"%b","referer":"%{Referer}i","user_agent":"%{User-Agent}i","render_time_ms":"%{ms}T"}' json
     CustomLog ${APACHE_LOG_DIR}/access.log json
 </VirtualHost>
+
