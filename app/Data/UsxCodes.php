@@ -214,6 +214,7 @@ class UsxCodes
                 '5Mozes',
                 '5Mózes',
                 'Mtorv',
+                'MTorv',
                 'MTörv',
                 '5moz',
                 '5móz',
