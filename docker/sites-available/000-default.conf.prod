@@ -5,11 +5,11 @@ ServerTokens Prod
     AllowOverride All
     AuthType None
     Require all granted
+    Header unset X-Powered-By
+    Header set Content-Security-Policy "default-src 'self' data: https://code.jquery.com https://cdn.jsdelivr.net https://challenges.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'none';"
 </Directory>
 
 <VirtualHost *>
-    Header unset X-Powered-By    
-    Header set Content-Security-Policy "default-src 'self'; frame-ancestors 'none';"
     DocumentRoot /var/www/html/public
     ErrorLog ${APACHE_LOG_DIR}/error.log
     LogFormat '{"host":"%v","remote_hostname":"%{X-Forwarded-For}i","time":"%{sec}t","request":"%r","status":"%>s","response_size":"%b","referer":"%{Referer}i","user_agent":"%{User-Agent}i","render_time_ms":"%{ms}T"}' json
