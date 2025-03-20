@@ -19,14 +19,12 @@ use View;
 
 class SemanticSearchController extends Controller
 {
-    
-    public function __construct(
-        protected SemanticSearchService $semanticSearchService, 
-        protected TranslationService $translationService, 
-        protected BookService $bookService)
-    {
 
-    }
+    public function __construct(
+        protected SemanticSearchService $semanticSearchService,
+        protected TranslationService $translationService,
+        protected BookService $bookService
+    ) {}
 
     public function anySearch(SemanticSearchFormRequest $request)
     {
@@ -36,11 +34,13 @@ class SemanticSearchController extends Controller
         }
         $form = $this->prepareForm($request);
 
-        if (!session()->get('anonymous_token') && !$form->captchaValidated) {
-            // validate captcha
-            $request->validate([
-                'cf-turnstile-response' => ['required', new TurnstileValidationRule()],
-            ]);
+        if (!session()->get('anonymous_token')) {
+            if (!$form->captchaValidated) {
+                // validate captcha
+                $request->validate([
+                    'cf-turnstile-response' => ['required', new TurnstileValidationRule()],
+                ]);
+            }
 
             if (Config::get('settings.ai.unregisteredSearchLimit') != -1) {
                 $key = 'semanticSearchCalls';
@@ -48,10 +48,10 @@ class SemanticSearchController extends Controller
                 if ($count > Config::get('settings.ai.unregisteredSearchLimit')) {
                     return view('search.semanticSearchThrottle');
                 }
-                $request->session()->put($key, $count);            
-            }        
+                $request->session()->put($key, $count);
+            }
         }
-        
+
         $form->captchaValidated = true;
         $view = $this->getView($form);
         $view = $this->semanticSearch($form, $view);
@@ -75,13 +75,13 @@ class SemanticSearchController extends Controller
     }
 
 
-    private function prepareForm($request) : SemanticSearchForm
+    private function prepareForm($request): SemanticSearchForm
     {
         $form = new SemanticSearchForm();
         $form->textToSearchAi = $request->get('textToSearchAi');
         $form->usxCode =  $request->get('usxCode');
         $form->captchaValidated =  $request->get('captchaValidated');
-                
+
         if ($request->get('translationAbbrev') != '0') {
             $form->translationAbbrev = $request->get('translationAbbrev');
         }
@@ -93,7 +93,8 @@ class SemanticSearchController extends Controller
      * @param SemanticSearchResult[] $results
      * @return array
      */
-    private function groupResponses($results) {
+    private function groupResponses($results)
+    {
         $groupedResponses = [];
         foreach ($results as $item) {
             $embeddedExcerpt = $item->embeddedExcerpt;
@@ -105,7 +106,7 @@ class SemanticSearchController extends Controller
                 $gepi = "{$embeddedExcerpt->usx_code}_{$embeddedExcerpt->chapter}_{$embeddedExcerpt->verse}_{$embeddedExcerpt->to_chapter}_{$embeddedExcerpt->to_verse}";
             }
             if (!isset($groupedResponses[$gepi])) {
-                $groupedResponses[$gepi] = [ 'items' => [], 'totalSimilarity' => 0, 'count' => 0];
+                $groupedResponses[$gepi] = ['items' => [], 'totalSimilarity' => 0, 'count' => 0];
             }
             $groupedResponses[$gepi]['items'][] = $item;
             $groupedResponses[$gepi]['totalSimilarity'] += $item->similarity;
@@ -118,7 +119,7 @@ class SemanticSearchController extends Controller
 
         foreach ($groupedResponses as $gepi => $data) {
             $groupedResponses[$gepi]['averageSimilarity'] = $data['totalSimilarity'] / $data['count'];
-            $groupedResponses[$gepi]['similarity'] = $groupedResponses[$gepi]['averageSimilarity'];            
+            $groupedResponses[$gepi]['similarity'] = $groupedResponses[$gepi]['averageSimilarity'];
         }
         $groupedResponses = array_sort($groupedResponses, function ($value) {
             return 1 - $value['averageSimilarity'];
@@ -143,6 +144,4 @@ class SemanticSearchController extends Controller
 
         return $view;
     }
-
-
 }
