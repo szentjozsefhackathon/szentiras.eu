@@ -6,7 +6,7 @@ ServerTokens Prod
     AuthType None
     Require all granted
     Header unset X-Powered-By
-    Header set Content-Security-Policy "default-src 'self' data: https://code.jquery.com https://cdn.jsdelivr.net https://challenges.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'none';"
+    Header set Content-Security-Policy "frame-ancestors 'none';"
 </Directory>
 
 <VirtualHost *>
