@@ -1,13 +1,13 @@
 import('./quickSearch.js');
 
-$('#searchForm').on('submit', function(event) {
-    event.preventDefault(); 
+$('#searchForm').on('submit', function (event) {
+    event.preventDefault();
     $('#interstitial').show();
     event.target.submit(); // Submit the form after showing the interstitial
 });
 
-$('#semanticSearchForm').on('submit', function(event) {
-    event.preventDefault(); 
+$('#semanticSearchForm').on('submit', function (event) {
+    event.preventDefault();
     $('#interstitial').show();
     event.target.submit(); // Submit the form after showing the interstitial
 });
@@ -17,5 +17,9 @@ $('a.interstitial').on('click', () =>
 );
 
 window.addEventListener('pageshow', (event) => {
-        $('#interstitial').hide()
-  });
+    $('#interstitial').hide()
+});
+
+$("#greekTranslit").autocomplete({
+    source: '/kereses/suggestGreek',
+});

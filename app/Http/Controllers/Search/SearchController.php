@@ -63,6 +63,31 @@ class SearchController extends Controller
         return $this->getView($this->prepareForm());
     }
 
+    public function suggestGreek() {
+        $term = Request::get('term');
+        $previousWords = "";
+        if (str_contains($term, " ")) {
+            $previousWords = substr($term, 0, strrpos($term, " ")) . " ";
+        }
+        $word = str_replace($previousWords, "", strtolower($term));
+        $query = GreekVerse::query()->limit(20);
+        $query->where('strong_normalizations', '~', "{$word}");
+        $foundWords = [];
+        // for each greek verse find the words in the strong_normalizations field which match $word
+        foreach ($query->get()->toArray() as $greekVerse) {
+            $normalizedWords = explode(" ", $greekVerse['strong_normalizations']);
+            $strongWords = explode(" ", $greekVerse['strongs']);
+            $transliteratedWords = explode(" ", $greekVerse['strong_transliterations']);
+            foreach ($normalizedWords as $i => $normalizedWord) {
+                if (str_contains($normalizedWord, $word)) {
+                    $foundWords[$normalizedWord] = ["value" => $previousWords . $normalizedWord, "label" => "{$strongWords[$i]} ({$transliteratedWords[$i]})"];
+                }
+            }
+        }
+        ksort($foundWords);
+        return Response::json(array_values($foundWords));
+    }
+
     public function anySuggest()
     {
         $result = [];
