@@ -84,6 +84,7 @@ services:
       retries: 3      
   sphinx:
     image: macbre/sphinxsearch:3.7.1
+    platform: linux/amd64
     volumes:
       - ./deploy/local/sphinx/sphinx.conf.in:/etc/sphinxsearch/sphinx.conf.in
       - ./docker/sphinx/start.sh:/opt/sphinx/start.sh
@@ -118,7 +119,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    command: php composer.phar install --no-interaction
+    command: bash -c "source $$NVM_DIR/nvm.sh && npm install && npm run build && php composer.phar install --no-interaction"
   migrator:
     image: szeu-app-dev
     env_file:
