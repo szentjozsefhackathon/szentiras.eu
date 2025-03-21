@@ -60,6 +60,8 @@ class UsxCodesTest extends TestCase
         $this->checkReturnedkUsxCode('default', 'Judit', 'JDT');
         $this->checkReturnedkUsxCode('SZIT', 'Jud', 'JDT');
         $this->checkReturnedkUsxCode('SZIT', 'Júd', 'JUD');
+        $this->checkReturnedkUsxCode('SZIT', 'Jo', 'JOL');
+        $this->checkReturnedkUsxCode('SZIT', 'Job', 'JOB');
     }
 
     public function testGetUsxFromBookAbbrevAndTranslationEdgeCases(): void

@@ -396,7 +396,8 @@ class UsxCodes
                 'Jo',
                 'jo',
                 'Jób',
-                'job'
+                'job',
+                'Job'
             ],
         ],
         'JOL' => [
@@ -406,6 +407,7 @@ class UsxCodes
                 'Jóel',
                 'jóel'
             ],
+            'SZIT' => [ 'Jo', 'jo' ]
         ],
         'JON' => [
             'default' => [
@@ -460,6 +462,7 @@ class UsxCodes
                 'sir'
             ],
             'RUF' => [],
+            'KG' => []
         ],
         'JDT' => [
             'default' => [

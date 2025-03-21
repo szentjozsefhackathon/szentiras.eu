@@ -133,9 +133,6 @@ class TextDisplayController extends Controller
             if ($canonicalRef->isBookLevel()) {
                 return $this->bookView($translationAbbrev, $canonicalRef);
             }
-            $chapterLinks = $canonicalRef->isOneChapter() ?
-                $this->createChapterLinks($canonicalRef, $translation)
-                : false;
             $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation);
             if (empty($verseContainers) || sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {
                 $defaultTranslation = $this->translationService->getDefaultTranslation();
@@ -149,11 +146,14 @@ class TextDisplayController extends Controller
                         [
                             'translation' => $defaultTranslation,
                             'requestedTranslation' => $translation,
-                            'canonicalRef' => str_replace(" ", "%20", $defaultCanonicalRef->toString())
+                            'canonicalRef' => str_replace(" ", "", $defaultCanonicalRef->toString())
                         ]
                     );
                 }
             }
+            $chapterLinks = $canonicalRef->isOneChapter() ?
+                $this->createChapterLinks($canonicalRef, $translation)
+                : false;
             $fullChaptersIncluded = true;
             foreach ($verseContainers as $verseContainer) {
                 $bookRef = $verseContainer->bookRef;
@@ -346,7 +346,16 @@ class TextDisplayController extends Controller
         if ($book) {
             return View::make('textDisplay.book', $this->getBookViewArray($book, $this->textService->getTranslatedVerses($canonicalRef, $translation), $translation, $canonicalRef, $translatedRef));
         } else {
-            abort(404);
+            $defaultTranslation = $this->translationService->getDefaultTranslation();
+            $defaultCanonicalRef = $this->referenceService->translateReference($canonicalRef, $defaultTranslation->id);
+            return view(
+                "textDisplay.referenceFallback",
+                [
+                    'translation' => $defaultTranslation,
+                    'requestedTranslation' => $translation,
+                    'canonicalRef' => str_replace(" ", "", $defaultCanonicalRef->toString())
+                ]
+            );
         }
     }
 

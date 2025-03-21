@@ -61,7 +61,11 @@ class BookRepositoryEloquent implements BookRepository
     public function getByAbbrevForTranslation($abbrev, Translation $translation) : ?Book
     {
         $usxCode = UsxCodes::getUsxFromBookAbbrevAndTranslation($abbrev, $translation->abbrev);
-        return $this->getByUsxCodeForTranslation($usxCode, $translation);
+        if ($usxCode) {
+            return $this->getByUsxCodeForTranslation($usxCode, $translation);
+        } else {
+            return null;
+        }
     }
 
     public function getByUsxCodeForTranslation(string $usxCode, Translation $translation)

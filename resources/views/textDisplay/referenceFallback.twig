@@ -5,8 +5,15 @@
 {% endblock %}
 
 {% block content %}
-Ez a hivatkozás nem elérhető a kért <b>{{ requestedTranslation.abbrev }} ({{ requestedTranslation.name }})</b> fordításban, viszont elérhető itt: 
-<div>
-<a href="/{{ translation.abbrev }}/{{ canonicalRef }}">{{ translation.name }}, /{{ translation.abbrev }}/{{ canonicalRef }}</a>
-</div>
+        <div class="card bg-light mb-3">
+                <div class="card-body">
+                        <p class="card-text">
+                                Ez a hivatkozás nem elérhető a kért <b>{{ requestedTranslation.abbrev }} ({{ requestedTranslation.name }})</b> fordításban, viszont elérhető itt: 
+                                <div>
+                                        <a href="/{{ translation.abbrev }}/{{ canonicalRef }}"><i class="bi bi-arrow-right-circle"></i> {{ translation.name }} – /{{ translation.abbrev }}/{{ canonicalRef }}</a>
+                                </div>
+                        </p>
+                </div>
+              </div>
+              
 {% endblock %}
