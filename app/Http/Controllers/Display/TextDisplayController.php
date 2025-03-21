@@ -171,12 +171,12 @@ class TextDisplayController extends Controller
                     sort($chapterNumbers[$verseContainer->bookRef->bookId]);
                 }
                 // Create a new canonical reference with the collected chapter numbers
-                $chapterReferenceString = '';
+                // ["Mt" => [1,2], "Mk" => [2,3]] should be "Mt1;2;3;Mk3"
+                $chapterReferences = [];
                 foreach ($chapterNumbers as $bookId => $chapters) {
-                    // ["Mt" => [1,2], "Mk" => [2,3]] should be "Mt1;2;3;Mk3"
-                    $chapterReferenceString .= $bookId;
-                    $chapterReferenceString .= implode(';', $chapters);
+                    $chapterReferences[] = $bookId . implode(';', $chapters);
                 }
+                $chapterReferenceString = implode(';', $chapterReferences);
                 $fullContextVerseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($chapterReferenceString, $translation->id), $translation);
                 $highlightedGepis = [];
                 foreach ($verseContainers as $verseContainer) {

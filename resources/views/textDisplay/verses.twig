@@ -2,7 +2,7 @@
 
 {% block meta %}
     <link rel="canonical" href="{{ url('/' ~ seoUrl ) }}" />
-    {% if seoUrl != canonicalUrl or mediaEnabled %}
+    {% if seoUrl != canonicalUrl or mediaEnabled or fullContext %}
         <meta name="robots" content="noindex,nofollow">
     {% endif %}
 
