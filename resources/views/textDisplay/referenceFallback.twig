@@ -1,0 +1,12 @@
+{% extends 'layout' %}
+
+{% block meta %}
+        <meta name="robots" content="noindex,nofollow">
+{% endblock %}
+
+{% block content %}
+Ez a hivatkozás nem elérhető a kért <b>{{ requestedTranslation.abbrev }} ({{ requestedTranslation.name }})</b> fordításban, viszont elérhető itt: 
+<div>
+<a href="/{{ translation.abbrev }}/{{ canonicalRef }}">{{ translation.name }}, /{{ translation.abbrev }}/{{ canonicalRef }}</a>
+</div>
+{% endblock %}

@@ -20,6 +20,7 @@ use SzentirasHu\Data\Repository\VerseRepository;
 use SzentirasHu\Data\Repository\ReadingPlanRepository;
 use SzentirasHu\Models\Media;
 use SzentirasHu\Service\Text\BookService;
+use SzentirasHu\Service\Text\TranslationService;
 use View;
 
 
@@ -54,7 +55,7 @@ class TextDisplayController extends Controller
      */
     private $textService;
 
-    function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository, VerseRepository $verseRepository, ReadingPlanRepository $readingPlanRepository, ReferenceService $referenceService, TextService $textService, protected BookService $bookService)
+    function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository, VerseRepository $verseRepository, ReadingPlanRepository $readingPlanRepository, ReferenceService $referenceService, TextService $textService, protected BookService $bookService, protected TranslationService $translationService)
     {
         $this->translationRepository = $translationRepository;
         $this->bookRepository = $bookRepository;
@@ -127,7 +128,7 @@ class TextDisplayController extends Controller
             if (!$allTranslation->contains($translation)) {
                 // handle disabled translations
                 abort(404);
-            }    
+            }
             $canonicalRef = CanonicalReference::fromString($reference, $translation->id);
             if ($canonicalRef->isBookLevel()) {
                 return $this->bookView($translationAbbrev, $canonicalRef);
@@ -136,8 +137,22 @@ class TextDisplayController extends Controller
                 $this->createChapterLinks($canonicalRef, $translation)
                 : false;
             $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation);
-            if (sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {
-                abort(404);
+            if (empty($verseContainers) || sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {
+                $defaultTranslation = $this->translationService->getDefaultTranslation();
+                $defaultCanonicalRef = $this->referenceService->translateReference($canonicalRef, $defaultTranslation->id);
+                $verseContainers = $this->textService->getTranslatedVerses($defaultCanonicalRef, $defaultTranslation);
+                if (empty($verseContainers)) {
+                    abort(404);
+                } else {
+                    return view(
+                        "textDisplay.referenceFallback",
+                        [
+                            'translation' => $defaultTranslation,
+                            'requestedTranslation' => $translation,
+                            'canonicalRef' => str_replace(" ", "%20", $defaultCanonicalRef->toString())
+                        ]
+                    );
+                }
             }
             $fullChaptersIncluded = true;
             foreach ($verseContainers as $verseContainer) {
@@ -187,7 +202,7 @@ class TextDisplayController extends Controller
             $hasMedia = false;
             foreach ($verseContainers as $verseContainer) {
                 foreach ($verseContainer->getParsedVerses() as $verseData) {
-                    $key = "{$verseData->book->usx_code}_{$verseData->chapter}";                    
+                    $key = "{$verseData->book->usx_code}_{$verseData->chapter}";
                     if (array_key_exists($key, $chapterMedia)) {
                         continue;
                     }
@@ -215,7 +230,7 @@ class TextDisplayController extends Controller
                         }
                     }
                 }
-                
+
                 foreach ($chapterMedia as $book_chapter => $mediaItems) {
                     if (is_bool($mediaItems)) {
                         continue;
