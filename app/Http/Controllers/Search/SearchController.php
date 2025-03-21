@@ -21,6 +21,7 @@ use SzentirasHu\Data\Repository\BookRepository;
 use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
 use SzentirasHu\Models\GreekVerse;
+use SzentirasHu\Models\StrongWord;
 use SzentirasHu\Service\Text\TranslationService;
 use View;
 
@@ -67,22 +68,16 @@ class SearchController extends Controller
         $term = Request::get('term');
         $previousWords = "";
         if (str_contains($term, " ")) {
-            $previousWords = substr($term, 0, strrpos($term, " ")) . " ";
+            $previousWords = mb_substr($term, 0, strrpos($term, " ")) . " ";
         }
         $word = str_replace($previousWords, "", strtolower($term));
-        $query = GreekVerse::query()->limit(20);
-        $query->where('strong_normalizations', '~', "{$word}");
+        $query = StrongWord::query()->limit(20);
+        $query->where('normalized', '~', "{$word}");
+        $normalizations = $query->get();
         $foundWords = [];
         // for each greek verse find the words in the strong_normalizations field which match $word
-        foreach ($query->get()->toArray() as $greekVerse) {
-            $normalizedWords = explode(" ", $greekVerse['strong_normalizations']);
-            $strongWords = explode(" ", $greekVerse['strongs']);
-            $transliteratedWords = explode(" ", $greekVerse['strong_transliterations']);
-            foreach ($normalizedWords as $i => $normalizedWord) {
-                if (str_contains($normalizedWord, $word)) {
-                    $foundWords[$normalizedWord] = ["value" => $previousWords . $normalizedWord, "label" => "{$strongWords[$i]} ({$transliteratedWords[$i]})"];
-                }
-            }
+        foreach ($normalizations as $strongWord) {
+            $foundWords[$strongWord->normalized] = ["value" => $previousWords . $strongWord->normalized, "label" => "{$strongWord->lemma} ($strongWord->transliteration)"];
         }
         ksort($foundWords);
         return Response::json(array_values($foundWords));
