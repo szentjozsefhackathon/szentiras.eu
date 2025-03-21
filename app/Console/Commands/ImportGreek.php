@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Normalizer;
 use Pgvector\Laravel\Vector;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Models\GreekVerseEmbedding;
@@ -65,6 +66,34 @@ class ImportGreek extends Command
         '3JO' => '3JN',
         'JUD' => 'JUD',
         'REV' => 'REV'
+    ];
+
+    const GREEK_TRANSLITERATIONS = [
+        'α' => 'a',
+        'β' => 'b',
+        'γ' => 'g',
+        'δ' => 'd',
+        'ε' => 'e',
+        'ζ' => 'z',
+        'η' => 'ē',
+        'θ' => 'th',
+        'ι' => 'i',
+        'κ' => 'k',
+        'λ' => 'l',
+        'μ' => 'm',
+        'ν' => 'n',
+        'ξ' => 'x',
+        'ο' => 'o',
+        'π' => 'p',
+        'ρ' => 'r',
+        'σ' => 's',
+        'ς' => 's',
+        'τ' => 't',
+        'υ' => 'u',
+        'φ' => 'ph',
+        'χ' => 'ch',
+        'ψ' => 'ps',
+        'ω' => 'ō',
     ];
 
     const SOURCE = 'BMT';
@@ -168,6 +197,9 @@ class ImportGreek extends Command
                         $strongNormals[] = $this->strongWords[$strongNumber]->normalized;
                     }
 
+                    $transliteration = $this->transliterate($unparsedText);
+                    $normalization = $this->normalize($transliteration);
+
                     $greekVerse = new GreekVerse();
                     $greekVerse->source = self::SOURCE;
                     $greekVerse->usx_code = $usxCode;
@@ -175,6 +207,8 @@ class ImportGreek extends Command
                     $greekVerse->chapter = $chapter;
                     $greekVerse->verse = $verse;
                     $greekVerse->text = $unparsedText;
+                    $greekVerse->transliteration = $transliteration;
+                    $greekVerse->normalization = $normalization;
                     $greekVerse->json = json_encode($jsonElements);
                     $greekVerse->strongs = implode(' ', $strongElements);
                     $greekVerse->strong_transliterations = implode(' ', $strongTranslits);
@@ -209,7 +243,7 @@ class ImportGreek extends Command
                 continue;
             }
             $strongWord->transliteration = (string) $entry->greek['translit'];
-            $normalizedText = \Normalizer::normalize($strongWord->transliteration, \Normalizer::FORM_D);
+            $normalizedText = $this->normalize($strongWord->transliteration);
             $cleanText = preg_replace('/\p{Mn}/u', '', $normalizedText);
             $normalized = strtolower($cleanText);
             $strongWord->normalized = $normalized;
@@ -220,10 +254,79 @@ class ImportGreek extends Command
         $this->output->newline();
     }
 
+    private function normalize($text)
+    {
+        $normalizedText = \Normalizer::normalize($text, \Normalizer::FORM_D);
+        $cleanText = preg_replace('/\p{Mn}/u', '', $normalizedText);
+        $normalized = strtolower($cleanText);
+        return $normalized;
+    }
+
+    private function transliterate($text)
+    {
+        $text = str_replace('¶', '', $text);
+        $text = mb_strtolower(Normalizer::normalize($text, Normalizer::NFKD));
+        $words = explode(' ', $text);
+        $transliteratedWords = [];
+        foreach ($words as $word) {
+            $transliteratedWords[] = $this->transliterateWord($word);
+        }
+        return implode(' ', $transliteratedWords);
+    }
+
+    private function transliterateWord($word)
+    {
+
+        $unused = "/[xu{00B7}\x{0300}\x{0301}\x{0304}\x{0306}\x{0313}\x{0342}\x{0345}]/u";
+        $word = preg_replace($unused, "", $word);
+      
+        $word = str_replace("γγ", 'ng', $word);
+        $word = str_replace("γκ", 'ng', $word);
+        $word = str_replace("γξ", 'nx', $word);
+        $word = str_replace("γχ", 'nch', $word);
+        $word = str_replace("ρ\u{0314}", "rh", $word);
+        $word = str_replace("ρ\u{0314}", "rh", $word);
+        $word = str_replace("ρρ", "rr", $word);
+
+        $diaeresisPos = mb_strpos($word, "\u{0308}");
+        if ($diaeresisPos !== false) {
+            $part1 = mb_substr($word, 0, $diaeresisPos - 1);
+            $part2 = mb_substr($word, $diaeresisPos - 1, 1);
+            $part3 = mb_substr($word, $diaeresisPos);
+            $word = $part1 . "\u{0308}" . $part2 . $part3;
+        }
+
+        $breathingMark = "\u{0314}";
+        $pos = mb_strpos($word, $breathingMark);
+        if ($pos !== false) {
+            $before = mb_substr($word, 0, $pos, 'UTF-8');
+            $after  = mb_substr($word, $pos + mb_strlen($breathingMark, 'UTF-8'), null, 'UTF-8');
+            $word = 'h' . $before . $after;
+        }        
+        $word = str_replace("αυ", 'au', $word);
+        $word = str_replace("ευ", 'eu', $word);
+        $word = str_replace("ēυ", 'eu', $word);
+        $word = str_replace("ου", 'ou', $word);
+        $word = str_replace("υι", 'ui', $word);
+
+        if ($diaeresisPos !== false) {
+            $word = str_replace("\u{0308}", "", $word);
+        }
+
+        foreach (self::GREEK_TRANSLITERATIONS as $letter => $replacement) {
+            $word = str_replace($letter, $replacement, $word);
+        }
+
+        return $word;
+    }
+
     private function downloadFiles()
     {
-        $parsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/strongs/with-parsing/';
+        // contains the Greek text with punctuation etc.
         $unparsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/ccat/no-variants/';
+        // contains the Strong words with grammatical analysis
+        $parsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/strongs/with-parsing/';
+
         $dictionaryFile = 'https://raw.githubusercontent.com/briff/strongs-dictionary-xml/refs/heads/master/strongsgreek.xml';
         foreach (self::ABBREVIATION_MAPPING as $abbrev => $usxCode) {
             if (!Storage::exists("greek/parsed/{$usxCode}.csv")) {
@@ -253,15 +356,15 @@ class ImportGreek extends Command
         foreach (self::ABBREVIATION_MAPPING as $abbrev => $usxCode) {
             $progressBar = $this->output->createProgressBar(50);
             $progressBar->setFormat("[%bar%] %message%");
-            $progressBar->setMessage("{$usxCode} {$currentChapter}");            
+            $progressBar->setMessage("{$usxCode} {$currentChapter}");
             $progressBar->start();
             do {
-                $greekVerses = GreekVerse::where('usx_code', $usxCode)->where('chapter', $currentChapter)->get();            
+                $greekVerses = GreekVerse::where('usx_code', $usxCode)->where('chapter', $currentChapter)->get();
                 if ($greekVerses->isEmpty()) {
                     $currentChapter = 1;
                     break;
                 }
-                $vectorFileName = "vectors_greek/".self::SOURCE."_{$usxCode}_{$this->model}_{$this->dimensions}.{$currentChapter}";
+                $vectorFileName = "vectors_greek/" . self::SOURCE . "_{$usxCode}_{$this->model}_{$this->dimensions}.{$currentChapter}";
                 $currentDeserializedVectors = null;
                 if ($this->option('source')) {
                     $storage = $this->selectInputStorage();
@@ -322,7 +425,7 @@ class ImportGreek extends Command
                             ];
                         }
                     }
-                }                
+                }
                 // now we have all the vectors for the current chapter, let's load to the db if the target is db. Otherwise save to the file.
                 if ($this->option('target') == 'db') {
                     GreekVerseEmbedding::where('usx_code', $usxCode)->where('chapter', $currentChapter)->delete();
@@ -346,7 +449,7 @@ class ImportGreek extends Command
                 $progressBar->advance();
             } while (true);
             $progressBar->finish();
-            $this->output->newline();    
+            $this->output->newline();
         }
         $this->info("Vectors created");
     }
@@ -374,12 +477,13 @@ class ImportGreek extends Command
     }
 
 
-    private static function unserialize($file) {
+    private static function unserialize($file)
+    {
         return json_decode(gzdecode($file), true);
     }
 
-    private static function serialize($object) {
+    private static function serialize($object)
+    {
         return gzencode(json_encode($object));
     }
-
 }

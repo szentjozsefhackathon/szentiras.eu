@@ -102,7 +102,7 @@ services:
       - szeu-network
     healthcheck:
       test: ["CMD-SHELL", "searchd --config /etc/sphinxsearch/sphinx.conf --status"]
-      start_period: 1m
+      start_period: 20s
       interval: 10s
       timeout: 5s
       retries: 3      
