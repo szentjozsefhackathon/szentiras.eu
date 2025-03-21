@@ -141,7 +141,7 @@ class TextDisplayController extends Controller
                 $defaultTranslation = $this->translationService->getDefaultTranslation();
                 $defaultCanonicalRef = $this->referenceService->translateReference($canonicalRef, $defaultTranslation->id);
                 $verseContainers = $this->textService->getTranslatedVerses($defaultCanonicalRef, $defaultTranslation);
-                if (empty($verseContainers)) {
+                if (empty($verseContainers) || sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {
                     abort(404);
                 } else {
                     return view(
