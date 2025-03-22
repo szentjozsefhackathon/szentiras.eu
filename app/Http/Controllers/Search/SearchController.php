@@ -137,6 +137,7 @@ class SearchController extends Controller
         $view = $this->getView($form);
         $searchParams = $this->createFullTextSearchParams($form);
         $gepis = [];
+        $greekVersesPerGepi = [];
         if ($form->greekTranslit) {
             $greekVerses = [];
             $explodedGreekText = explode(" ", strtolower($form->greekTranslit));
@@ -207,6 +208,7 @@ class SearchController extends Controller
                 $results->verses[$verse->id]['tip'] = $verse->tip;
                 $results->verses[$verse->id]['weight()'] = 1;
                 $results->verses[$verse->id]['greekText'] = str_replace('¶', '', $greekVersesPerGepi[$verse->gepi]['text']);
+                $results->verses[$verse->id]['greekTransliteration'] = $greekVersesPerGepi[$verse->gepi]['transliteration'];
             }
             if (!$verses->isEmpty()) {
                 $results->hitCount = count($verses);

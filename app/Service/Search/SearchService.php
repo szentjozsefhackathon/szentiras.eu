@@ -203,6 +203,7 @@ class SearchService
                         $verseData['numv'] = $verse->numv;
                         $verseData['text'] = preg_replace('/<[^>]*>/', ' ', $verse->verse);
                         $verseData['greekText'] = $sphinxResults->verses[$verse->id]['greekText'] ?? null;
+                        $verseData['greekTransliteration'] = $sphinxResults->verses[$verse->id]['greekTransliteration'] ?? null;
 
                         if ($verse->chapter > $currentChapter) {
                             $verseData['chapterStart'] = true;

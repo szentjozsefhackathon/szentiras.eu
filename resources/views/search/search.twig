@@ -163,7 +163,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                                 <a href="/{{ group.trans.abbrev }}/{{ group.book.abbrev }}{{ verse.chapter }}">{{ verse.chapter }}</a></strong> {% endif %}{% endif %}
                             {% if verse.ellipseBefore %} [...] {% endif %}{% if form.grouping == 'book' or  form.grouping == 'chapter' %}<sup>
                                 <a href="/{{ group.trans.abbrev}}/{{ group.book.abbrev }} {{ verse.chapter }},{{ verse.numv }}">{{ verse.numv }}</a></sup>{% endif %}{{ verse.text|raw }}
-                                {% if verse.greekText %}<div class="greek">{{ verse.greekText }}</div>{% endif %}
+                                {% if verse.greekText %}<div class="greek">{{ verse.greekText }}</div><div class="greek">{{ verse.greekTransliteration }}</div>{% endif %}
                         {% endfor %}
                         <div class="greek">{{ chapters.greekText }}</div>
                         </div>

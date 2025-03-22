@@ -18,6 +18,7 @@ use SzentirasHu\Service\Search\SemanticSearchService;
 use SzentirasHu\Service\Text\BookService;
 use SzentirasHu\Service\Text\TextService;
 use SzentirasHu\Service\Text\TranslationService;
+use Illuminate\Support\Collection;
 
 class AiController extends Controller
 {
@@ -148,6 +149,9 @@ class AiController extends Controller
         $strongWord = StrongWord::where('number', $strongNumber)->first();
         $hitCount = $strongWord->greekVerses()->count();
 
+        /**
+         * @var Collection<GreekVerse>
+         */
         $otherGreekVerses = $strongWord->greekVerses()
             ->join('books', function ($join) use ($translation) {
                 $join->on('greek_verses.usx_code', '=', 'books.usx_code')
@@ -163,7 +167,7 @@ class AiController extends Controller
 
 
         $instances = [];
-        if (!empty($otherGreekVerses)) {
+        if (!$otherGreekVerses->isEmpty()) {
             foreach ($otherGreekVerses as $greekVerse) {
                 $greekText = str_replace('¶', '', $greekVerse->text);
                 $explodedStrongs = explode(' ', $greekVerse->strongs);
