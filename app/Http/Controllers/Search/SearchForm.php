@@ -11,6 +11,7 @@ class SearchForm {
     
     public $textToSearch;
     public $greekTranslit;
+    public $greekText;
     public $translation;
     public $book;
     public $grouping;

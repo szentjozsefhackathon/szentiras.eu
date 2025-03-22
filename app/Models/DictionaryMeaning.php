@@ -30,5 +30,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DictionaryMeaning extends Model
 {
-    //
+    
+    public function strongWord() {
+        return $this->belongsTo(StrongWord::class, 'strong_word_number', 'number');
+    }
+
+
 }

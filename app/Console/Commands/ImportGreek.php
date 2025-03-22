@@ -94,6 +94,31 @@ class ImportGreek extends Command
         'χ' => 'ch',
         'ψ' => 'ps',
         'ω' => 'ō',
+
+        'Α' => 'A',
+        'Β' => 'B',
+        'Γ' => 'G',
+        'Δ' => 'D',
+        'Ε' => 'E',
+        'Ζ' => 'Z',
+        'Η' => 'Ē',
+        'Θ' => 'Th',
+        'Ι' => 'I',
+        'Κ' => 'K',
+        'Λ' => 'L',
+        'Μ' => 'M',
+        'Ν' => 'N',
+        'Ξ' => 'X',
+        'Ο' => 'O',
+        'Π' => 'P',
+        'Ρ' => 'R',
+        'Σ' => 'S',
+        'Τ' => 'T',
+        'Υ' => 'U',
+        'Φ' => 'Ph',
+        'Χ' => 'Ch',
+        'Ψ' => 'Ps',
+        'Ω' => 'Ō',
     ];
 
     const SOURCE = 'BMT';
@@ -242,7 +267,7 @@ class ImportGreek extends Command
             if (!$strongWord->lemma) {
                 continue;
             }
-            $strongWord->transliteration = (string) $entry->greek['translit'];
+            $strongWord->transliteration = $this->transliterate($strongWord->lemma);
             $normalizedText = $this->normalize($strongWord->transliteration);
             $cleanText = preg_replace('/\p{Mn}/u', '', $normalizedText);
             $normalized = strtolower($cleanText);
@@ -265,7 +290,7 @@ class ImportGreek extends Command
     private function transliterate($text)
     {
         $text = str_replace('¶', '', $text);
-        $text = mb_strtolower(Normalizer::normalize($text, Normalizer::NFKD));
+        $text = Normalizer::normalize($text, Normalizer::NFKD);
         $words = explode(' ', $text);
         $transliteratedWords = [];
         foreach ($words as $word) {
@@ -274,19 +299,27 @@ class ImportGreek extends Command
         return implode(' ', $transliteratedWords);
     }
 
+    /**
+     * Transliteration inspired by https://github.com/charlesLoder/greek-transliteration 
+     * Original is MIT License: https://github.com/charlesLoder/greek-transliteration/blob/main/LICENSE
+     * Copyright 2020 Charles Loder
+     * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+     * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+     */
     private function transliterateWord($word)
     {
-
         $unused = "/[xu{00B7}\x{0300}\x{0301}\x{0304}\x{0306}\x{0313}\x{0342}\x{0345}]/u";
         $word = preg_replace($unused, "", $word);
-      
+
         $word = str_replace("γγ", 'ng', $word);
         $word = str_replace("γκ", 'ng', $word);
         $word = str_replace("γξ", 'nx', $word);
         $word = str_replace("γχ", 'nch', $word);
         $word = str_replace("ρ\u{0314}", "rh", $word);
-        $word = str_replace("ρ\u{0314}", "rh", $word);
         $word = str_replace("ρρ", "rr", $word);
+        $word = str_replace("Ρ\u{0314}", "Rh", $word);
+        $word = str_replace("Ρρ", "Rr", $word);
 
         $diaeresisPos = mb_strpos($word, "\u{0308}");
         if ($diaeresisPos !== false) {
@@ -302,12 +335,17 @@ class ImportGreek extends Command
             $before = mb_substr($word, 0, $pos, 'UTF-8');
             $after  = mb_substr($word, $pos + mb_strlen($breathingMark, 'UTF-8'), null, 'UTF-8');
             $word = 'h' . $before . $after;
-        }        
+        }
         $word = str_replace("αυ", 'au', $word);
         $word = str_replace("ευ", 'eu', $word);
-        $word = str_replace("ēυ", 'eu', $word);
+        $word = str_replace("ηυ", 'ēu', $word);
         $word = str_replace("ου", 'ou', $word);
         $word = str_replace("υι", 'ui', $word);
+        $word = str_replace("Αυ", 'Au', $word);
+        $word = str_replace("Ευ", 'Eu', $word);
+        $word = str_replace("Ηυ", 'Ēu', $word);
+        $word = str_replace("Ου", 'Ou', $word);
+        $word = str_replace("Υι", 'Ui', $word);
 
         if ($diaeresisPos !== false) {
             $word = str_replace("\u{0308}", "", $word);
