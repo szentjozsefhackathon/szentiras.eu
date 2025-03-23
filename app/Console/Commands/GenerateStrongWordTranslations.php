@@ -35,18 +35,9 @@ class GenerateStrongWordTranslations extends Command
      */
     protected $description = 'Generate Strong word translations. If source is not set, target is the local storage. Only generate if the file doesn\'t exist yet.';
 
-    private $systemPrompt = '
-        You are a catholic professor of New Testament studies. 
-        You explain koine greek New Testament words for catholic lay Hungarian people, from a language perspective. 
-        Format your answer in JSON, respond with only this JSON, nothing else. 
-        Json structure: 
-        { 
-            word: "the greek dictionary entry, including concise paradigm information, in Hungarian", 
-            "meanings": [ { "meaning": "Hungarian meaning", "explanation": "Explanation in Hungarian." }, { "meaning": ..., "explanation": ... }, ... ], 
-            "etymology": "One sentence etymology in Hungarian.",
-            "notes" : "Include any notes in Hungarian if it is important. You can leave it empty." 
-        }
-    ';
+    private $systemPrompt = "You create Koine Greek New Testament dictionary for catholic lay Hungarian people. Format your answer in JSON. Json structure: { word: \"the greek dictionary form (for nouns: the lemma and the genitive, and gender (gender denoted in parenthesis, expressed with a Hungarian word (hímnem for masculine, nőnem for feminine and semlegesnem for neuter); for verbs: nothing)\", \"meanings\": [ { \"meaning\": \"Hungarian meaning\", \"explanation\": \"Explanation in Hungarian.\" }, { \"meaning\": ..., \"explanation\": ... }, ... ], \"etymology\": \"One sentence etymology in Hungarian.\", \"notes\" : \"Include any notes in Hungarian if there are important and well established aspects regarding the word's usage in the new testament. You can leave it empty.\" } Meaning should be one word.    ";
+
+    private $examplePrompt = "<examples>\n<example>\n<word>\nἸησοῦς\n</word>\n<ideal_output>\n{\n  \"word\": \"Ἰησοῦς, -οῦ (hímnem)\",\n  \"meanings\": [\n    {\n      \"meaning\": \"Jézus\",\n      \"explanation\": \"A názáreti Jézus Krisztus.\"\n    },\n    {\n      \"meaning\": \"Józsué\",\n      \"explanation\": \"Az Ószövetségben szereplő vezető, aki Mózes után az izraelitákat az Ígéret földjére vezette.\"\n    }\n  ],\n  \"etymology\": \"A héber יְהוֹשֻׁעַ (Jehosua, 'Jahve a szabadítás') névből származik, amelynek rövidebb formája יֵשׁוּעַ (Jesua), amelyet görögösítettek.\",\n  \"notes\": \"Az Újszövetségben elsősorban Jézus Krisztusra utal, bár az Apostolok Cselekedeteiben (7:45) és a Zsidókhoz írt levélben (4:8) Józsuét is jelölheti. A név jelentése ('Jahve megment' vagy 'Jahve a szabadítás') összefügg Jézus küldetésével, ahogy Máté 1:21-ben is olvasható.\"\n}\n</ideal_output>\n</example>\n<example>\n<word>\nγεννάω\n</word>\n<ideal_output>\n{\n  \"word\": \"γεννάω\",\n  \"meanings\": [\n    {\n      \"meaning\": \"nemz\",\n      \"explanation\": \"Férfi általi nemzés, utód létrehozása biológiai értelemben.\"\n    },\n    {\n      \"meaning\": \"szül\",\n      \"explanation\": \"Női általi szülés, gyermek világra hozása.\"\n    },\n    {\n      \"meaning\": \"létrehoz\",\n      \"explanation\": \"Valaminek vagy valakinek a létrehozása átvitt értelemben.\"\n    },\n    {\n      \"meaning\": \"keletkezik\",\n      \"explanation\": \"Valaminek a létrejötte, keletkezése.\"\n    }\n  ],\n  \"etymology\": \"A γένος (nemzetség, család) szóból származik, rokon a γίνομαι (létrejönni, születni) igével.\",\n  \"notes\": \"Az Újszövetségben gyakran használják Jézus származásának leírásánál (Máté evangéliumának nemzetségtáblájában), illetve a lelki újjászületés metaforájaként János evangéliumában és leveleiben.\"\n}\n</ideal_output>\n</example>\n</examples>\n\n";
 
     private $folder;
     private $apiKey;
@@ -57,7 +48,7 @@ class GenerateStrongWordTranslations extends Command
      */
     public function handle()
     {
-        $this->model=$this->option("model");
+        $this->model = $this->option("model");
         $this->folder = 'translation';
         $this->apiKey = Config::get('services.anthropic.api_key');
         if ($this->option('batch-result')) {
@@ -133,9 +124,9 @@ class GenerateStrongWordTranslations extends Command
                 $dictionaryEntry = new DictionaryEntry();
                 $dictionaryEntry->strong_word_number = $wordNumber;
                 $dictionaryEntry->source = $this->model;
-                $dictionaryEntry->paradigm=$object->word;
-                $dictionaryEntry->etymology=$object->etymology;
-                $dictionaryEntry->notes=$object->notes ?? null;
+                $dictionaryEntry->paradigm = $object->word;
+                $dictionaryEntry->etymology = $object->etymology;
+                $dictionaryEntry->notes = $object->notes ?? null;
                 $dictionaryEntry->save();
                 foreach ($object->meanings as $i => $meaning) {
                     $dictionaryMeaning = new DictionaryMeaning();
@@ -146,7 +137,7 @@ class GenerateStrongWordTranslations extends Command
                     $dictionaryMeaning->order = $i;
                     $dictionaryMeaning->save();
                 }
-            } else  {
+            } else {
                 // we are generating now, not loading                
                 if (Storage::exists($path)) {
                     $this->info("{$wordNumber}: translation already exists. Skipping.");
@@ -160,8 +151,16 @@ class GenerateStrongWordTranslations extends Command
                         "params" => [
                             "model" => $this->model,
                             "max_tokens" => 1024,
-                            "system" => [ [ "type" => "text", "text" =>$this->systemPrompt, "cache_control" => [ "type" => "ephemeral" ] ] ],
-                            "messages" => [["role" => "user", "content" => StrongWord::where('number', $wordNumber)->first()->lemma]]
+                            "system" => [["type" => "text", "text" => $this->systemPrompt, "cache_control" => ["type" => "ephemeral"]]],
+                            "messages" => [
+                                [
+                                    "role" => "user",
+                                    "content" => [
+                                        ["type" => "text", "text" => $this->examplePrompt, "cache_control" => ["type" => "ephemeral"]],
+                                        ["type" => "text", "text" => "The Greek word is: " . StrongWord::where('number', $wordNumber)->first()->lemma]
+                                    ]
+                                ]
+                            ]
                         ]
                     ];
                 }
@@ -174,7 +173,8 @@ class GenerateStrongWordTranslations extends Command
         $this->output->newline();
     }
 
-    private function sendDirectRequest($wordNumber, $path) {
+    private function sendDirectRequest($wordNumber, $path)
+    {
         $this->info("{$wordNumber}: Generate translation with AI.");
         $apiUrl = "https://api.anthropic.com/v1/messages";
         $data = [
@@ -184,7 +184,10 @@ class GenerateStrongWordTranslations extends Command
             "messages" => [
                 [
                     "role" => "user",
-                    "content" => StrongWord::where('number', $wordNumber)->first()->lemma
+                    "content" => [
+                        ["type" => "text", "text" => $this->examplePrompt, "cache_control" => ["type" => "ephemeral"]],
+                        ["type" => "text", "text" => "The Greek word is: " . StrongWord::where('number', $wordNumber)->first()->lemma]
+                    ]
                 ]
             ]
         ];
@@ -203,7 +206,8 @@ class GenerateStrongWordTranslations extends Command
         }
     }
 
-    private function sendBatchRequests($batchRequests) {
+    private function sendBatchRequests($batchRequests)
+    {
         $batchApiData = ["requests" => $batchRequests];
         $batchEndpoint = 'https://api.anthropic.com/v1/messages/batches';
         $response = Http::withHeaders([
@@ -212,11 +216,16 @@ class GenerateStrongWordTranslations extends Command
             'anthropic-version' => '2023-06-01'
         ])->post($batchEndpoint, $batchApiData);
         $responseData = $response->json();
-        Storage::put("{$this->folder}/{$responseData['id']}", json_encode($responseData));
+        $responseId = $responseData['id'];
+        Storage::put("{$this->folder}/{$responseId}", json_encode($responseData));
+        $this->output->newLine();
+        $this->info("Get results with: php artisan szentiras:generate-strong-word-translations --batch-result={$responseId}");
     }
 
     private function decodeAndSaveResponseString($wordNumber, $responseString, $path)
     {
+        $responseString = str_replace('```json', '', $responseString);
+        $responseString = str_replace('```', '', $responseString);
         $translation  = json_decode($responseString, true);
         if ($translation == NULL) {
             $this->error("Bad response from AI: " . $responseString);
