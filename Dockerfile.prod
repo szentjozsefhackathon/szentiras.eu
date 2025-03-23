@@ -3,7 +3,9 @@ FROM node:${NODE_VERSION} AS node
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-COPY . .
+COPY resources resources
+COPY public public
+COPY vite.config.js vite.config.js
 RUN npm run build
 RUN rm -rf node_modules
 RUN npm install --omit=dev
@@ -21,6 +23,7 @@ RUN install-php-extensions gd gmp memcached pdo_mysql pdo_pgsql zip
 
 COPY docker/sites-available/000-default.conf.prod /etc/apache2/sites-available/000-default.conf
 COPY docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
+COPY . .
 COPY --from=node /app .
 
 RUN php composer.phar install --no-dev --no-interaction --no-cache
