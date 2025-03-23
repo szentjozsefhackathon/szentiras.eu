@@ -1,0 +1,9 @@
+{% extends 'layout' %}
+
+{% block content %}
+    <h1><span class="bi bi-emoji-frown"></span></h1>
+    <div class="alert alert-danger">
+<p>Sajnos a <b>{{ translationInfo.publisher.name }}</b> jelenleg nem engedélyezte az általad kért <b>{{translation.abbrev}} – {{ translation.name }}</b> fordítás közzétételét a <b>{{ config_get("settings.brand.domain") }}</b> oldalon. 
+<p>Kérjük, vedd fel velük a kapcsolatot: <a href="{{ translationInfo.publisher.url }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> {{ translationInfo.publisher.url }}</a>
+    </div>
+{% endblock %}

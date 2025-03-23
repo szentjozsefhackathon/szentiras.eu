@@ -91,6 +91,7 @@ return [
                 'heading' => [703 => 3]
             ],
             'textSource' => env('TEXT_SOURCE_UF', 's3'),
+            'publisher' => [ 'name' => 'Magyar Bibliatársulat', 'url' => 'https://bibliatarsulat.hu'],
             'id' => 2,
             'order' => 10,
         ],

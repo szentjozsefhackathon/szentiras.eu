@@ -78,8 +78,7 @@ class TextDisplayController extends Controller
         $allTranslation = $this->translationRepository->getAll();
         $translation = $this->translationRepository->getByAbbrev($translationAbbrev);
         if (!$allTranslation->contains($translation)) {
-            // handle disabled translations
-            abort(404);
+            return $this->handleDisabledTranslations($translation);
         }
         $books = $this->translationRepository->getBooks($translation);
         $bookHeaders = [];
@@ -120,14 +119,17 @@ class TextDisplayController extends Controller
         return response()->json($view);
     }
 
+    private function handleDisabledTranslations($translation) {
+        return response()->view("textDisplay.translationNotEnabled", ['translation' => $translation, 'translationInfo' => \Config::get("translations.definitions.{$translation->abbrev}")], 404);
+    }
+
     public function showTranslatedReferenceText($translationAbbrev, $reference, $previousDay = null, $readingPlanDay = null, $nextDay = null)
     {
         try {
             $translation = $this->translationRepository->getByAbbrev($translationAbbrev ? $translationAbbrev : Config::get('settings.defaultTranslationAbbrev'));
             $allTranslation = $this->translationRepository->getAll();
             if (!$allTranslation->contains($translation)) {
-                // handle disabled translations
-                abort(404);
+                return $this->handleDisabledTranslations($translation);
             }
             $canonicalRef = CanonicalReference::fromString($reference, $translation->id);
             if ($canonicalRef->isBookLevel()) {
