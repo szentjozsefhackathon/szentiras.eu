@@ -141,14 +141,7 @@ class TextDisplayController extends Controller
                 if (empty($verseContainers) || sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {
                     abort(404);
                 } else {
-                    return view(
-                        "textDisplay.referenceFallback",
-                        [
-                            'translation' => $defaultTranslation,
-                            'requestedTranslation' => $translation,
-                            'canonicalRef' => str_replace(" ", "", $defaultCanonicalRef->toString())
-                        ]
-                    );
+                    return $this->referenceFallback($translation, $defaultTranslation, $defaultCanonicalRef);
                 }
             }
             $chapterLinks = $canonicalRef->isOneChapter() ?
@@ -348,15 +341,20 @@ class TextDisplayController extends Controller
         } else {
             $defaultTranslation = $this->translationService->getDefaultTranslation();
             $defaultCanonicalRef = $this->referenceService->translateReference($canonicalRef, $defaultTranslation->id);
-            return view(
-                "textDisplay.referenceFallback",
-                [
-                    'translation' => $defaultTranslation,
-                    'requestedTranslation' => $translation,
-                    'canonicalRef' => str_replace(" ", "", $defaultCanonicalRef->toString())
-                ]
-            );
+            return $this->referenceFallback($translation, $defaultTranslation, $defaultCanonicalRef);
         }
+    }
+
+    private function referenceFallback(Translation $requestedTranslation, Translation $defaultTranslation, CanonicalReference $defaultCanonicalRef) {
+        return response()->view(
+            "textDisplay.referenceFallback",
+            [
+                'translation' => $defaultTranslation,
+                'requestedTranslation' => $requestedTranslation,
+                'canonicalRef' => str_replace(" ", "", $defaultCanonicalRef->toString())
+            ],
+            404
+        );
     }
 
     /**
