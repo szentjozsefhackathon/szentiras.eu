@@ -46,7 +46,7 @@
             </div> #}
     {% endif %}
     <div class="translationButtons">
-        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'link': book.abbrev } %}
+        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation} %}
     </div>
 
     {% if not fullChaptersIncluded and not fullContext %}
@@ -59,6 +59,21 @@
     {% endif %}
     <span id="data" {% if scrollTo %} data-scroll-to="{{ scrollTo }}" {% endif %}></span>    
     {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers } %}
+    {% if fullChaptersIncluded and not fullContext %}
+    <div class="card bg-light mb-2">
+        <div class="card-header collapsible" data-bs-toggle="collapse" data-bs-target="#cardContent">
+            <i class="bi bi-chevron-down"></i>
+            Minden {{ verseContainers[0].book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}...
+        </div>
+        <div id="cardContent" class="collapse">
+            <div class="card-body">
+                <div class="chapterButtons">
+                    {% include 'textDisplay.chapterButtons' with { 'translationAbbrev': translation.abbrev, 'bookAbbrev': verseContainers[0].book.abbrev, 'maxChapter': chapterLinks.chapterCount, 'actualChapter': verseContainers[0].parsedVerses[0].chapter } %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     {% if mediaEnabled and otherMedia %}
         <h5>További illusztrációk</h5>
         {% for otherMediaItem in otherMedia %}
@@ -76,7 +91,7 @@
         <hr>
     {% endif %}
     <div class="translationButtons">
-        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'link': book.abbrev } %}
+        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation } %}
     </div>
     {% include 'textDisplay.share' with { 'canonicalUrl' : canonicalUrl, 'teaser' : teaser } %}
 {% endblock %}

@@ -1,0 +1,11 @@
+<div class="dropdown bookChapterSelector mb-1">
+    <button class="btn btn-info  dropdown-toggle" type="button" data-bs-toggle="dropdown" id="corpusSelectorButton" aria-haspopup="true" aria-expanded="false">
+Fejezetválasztás <span class="caret"></span></button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        {% for chapterId, chapter in chapters %}    
+        {% set chheadings = headings[chapterId] %}
+        {% set headingText = chheadings ? chheadings|map (h => "#{h.content}" )|join(", ") : ""%}
+        <li><a href="/{{ translation.abbrev }}/{{ book.abbrev }}{{ chapterId}}"  class="dropdown-item"><b>{{ chapterId }}</b> <small>{{ headingText|str_limit(50, '…') }}</small></a>        
+        {% endfor %}
+    </ul>
+</div>
