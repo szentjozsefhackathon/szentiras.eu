@@ -4,7 +4,7 @@
 Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %} | Szentírás
 {% endset %}
 
-{% macro filterRow(form, books) %}
+{% macro filterRow(form, books, translations) %}
     <div class="mb-2 row">
         <div class="col">
             <label for="book" class="form-label">Könyv</label>                        
@@ -53,7 +53,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                         <input type="text" name="textToSearch" id="textToSearch" value="{{ form.textToSearch }}" class="form-control"/>
                     </div>
                 </div>
-                {{ _self.filterRow(form, books) }}
+                {{ _self.filterRow(form, books, translations) }}
                 <div class="row">
                     <div>
                         {{ csrf_field() }}                
@@ -63,39 +63,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
             </form>
         </div>
         <div role="tabpanel" class="tab-pane {{ greekSearch ? 'active': ''}}" id="grc">
-            <form role="form" class="form-horizontal" method="post"
-                  action="{{ action('Search\\SearchController@greekSearch') }}" id="searchForm">
-            <div class="row">
-                <div class="alert alert-info">
-                    Ékezetek nélküli latin betűs átírást használj! <span class="greek">θ → th, φ → ph, χ → ch, ψ → ps</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label for="greekTranslit" class="control-label">Keresendő görög szó(tő) (a magyar jelentést is gépelheted, felajánljuk a görög megfelelőt).  <a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Itt a szentírási versek Strong szavai között keresünk."><span></a></label>
-                    <div>
-                        <input type="text" name="greekTranslit" id="greekTranslit" value="{{ form.greekTranslit }}" class="form-control"/>
-                    </div>
-                    <div class="alert alert-info">Ha több szónak is szerepelnie kell, szóközzel elválasztva add meg őket, pl. <b>episkiazo agape</b>!</div>
-                </div>
-            </div>
-            <div class="row"><div class="col"><i>vagy</i> (csak az egyiket add meg!)</div></div>
-                <div class="mb-2 row">
-                    <div class="col">
-                        <label for="greekText" class="control-label">Keresendő görög szövegű részlet <a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Itt a szentírási versek görög szövegében keresünk részleteket."><span></a></label>
-                        <input type="text" name="greekText" id="greekText" value="{{ form.greekText }}" class="form-control"/>
-                        <div class="alert alert-info">Alapértelmezés szerint minden szónak szerepelnie kell az adott versben. Ha bármelyik szerepeljen, használd a <b>|</b> jelet, ha szórészlet szerepljen, használd a <b>*</b> jelet, pl. <b>meta* | *christ*</b>
-                    </div>
-                </div>
-                {{  _self.filterRow(form, books) }}
-                <div class="row">
-                    <div class="col">
-                        {{ csrf_field() }}
-                        <input type="submit" value="Keresés" class="btn btn-primary"/>
-                    </div>
-                </div>
-            </div>
-            </form>                
+            {{ include('search.greekSearchForm') }}
         </div>
     </div>
 

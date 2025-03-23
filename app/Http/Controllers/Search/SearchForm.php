@@ -15,5 +15,6 @@ class SearchForm {
     public $translation;
     public $book;
     public $grouping;
+    public $mode;
 
 }

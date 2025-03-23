@@ -138,7 +138,7 @@ class SearchController extends Controller
         $searchParams = $this->createFullTextSearchParams($form);
         $gepis = [];
         $greekVersesPerGepi = [];
-        if ($form->greekTranslit) {
+        if ($form->mode == 'lemma') {
             $greekVerses = [];
             $explodedGreekText = explode(" ", strtolower($form->greekTranslit));
             $query = GreekVerse::query();
@@ -148,15 +148,12 @@ class SearchController extends Controller
             $greekVerses = $query->get()->toArray();
             $gepis = array_map(fn($greekVerse) => "{$greekVerse['usx_code']}_{$greekVerse['chapter']}_{$greekVerse['verse']}", $greekVerses);
             $greekVersesPerGepi = array_combine($gepis, $greekVerses);
-        } else if ($form->greekText) {
+        } else if ($form->mode == 'verse') {
             // use SphinxSearch to find the greek verses
             $sphinxClient = new SphinxSearch(implode(' ', explode(' ', $form->greekText)));
             $limit = 1000;
             $sphinxClient->limit($limit);
 
-            if ($searchParams->translationId) {
-                $sphinxClient->filter('trans', $searchParams->translationId);
-            }
             if (!empty($searchParams->usxCodes)) {
                 $sphinxClient->filter('usx_code', array_keys($searchParams->usxCodes));
             }
@@ -234,6 +231,7 @@ class SearchController extends Controller
         $form->greekText = Request::get('greekText');
         $form->grouping = Request::get('grouping');
         $form->book = Request::get('book');
+        $form->mode = Request::get('mode');
         if (Request::get('translation') > 0) {
             $form->translation = $this->translationRepository->getById(Request::get('translation'));
         }

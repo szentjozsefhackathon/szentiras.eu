@@ -1,0 +1,62 @@
+    <div class="row">
+        <div class="alert alert-info">
+        Ékezetek nélküli latin betűs átírást használj! <span class="greek">θ → th, φ → ph, χ → ch, ψ → ps</span>
+        </div>
+    </div>
+    <div class="accordion" id="greekAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button {{ form.mode != 'lemma' ? 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                    Keresés görög szó(tő) alapján (magyar szótár segítségével)
+                  </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse {{ form.mode == 'lemma' ? 'show' }}" data-bs-parent="#greekAccordion">
+                <div class="accordion-body">
+                    <form role="form" class="form-horizontal" method="post" action="{{ action('Search\\SearchController@greekSearch') }}" id="searchForm"> 
+                            <input type="hidden" name="mode" value="lemma">                   
+                            <label for="greekTranslit" class="control-label">Keresendő görög szó(tő) (a magyar jelentést is gépelheted, felajánljuk a görög megfelelőt).  <a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Itt a szentírási versek Strong szavai között keresünk."><span></a></label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text"><span id="greekSpinner1" class="hideSpinner spinner-border spinner-border-sm"></span></span>
+                                <input type="text" name="greekTranslit" id="greekTranslit" value="{{ form.greekTranslit }}" class="form-control"/>
+                            </div>
+                        <div class="alert alert-info">Ha több szónak is szerepelnie kell, szóközzel elválasztva add meg őket, pl. <b>episkiazo agape</b>!</div>                        
+                </div>
+                {% from "search.search" import filterRow %}
+                {{  filterRow(form, books, translations) }}
+                <div class="row">
+                    <div class="col">
+                        {{ csrf_field() }}
+                        <input type="submit" value="Keresés" class="btn btn-primary"/>
+                    </div>
+                </div>    
+            </form>    
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button {{ form.mode != 'verse' ? 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                    Keresés pontos görög szöveg vagy szövegrészlet alapján
+                  </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse {{ form.mode == 'verse' ? 'show' }}" data-bs-parent="#greekAccordion">
+                <div class="accordion-body">
+                    <form role="form" class="form-horizontal" method="post" action="{{ action('Search\\SearchController@greekSearch') }}" id="searchForm">                    
+                    <input type="hidden" name="mode" value="verse">                    
+                    <label for="greekText" class="control-label">Keresendő görög szövegű részlet <a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Itt a szentírási versek görög szövegében keresünk részleteket."><span></a></label>
+                    <input type="text" name="greekText" id="greekText" value="{{ form.greekText }}" class="form-control"/>
+                    <div class="alert alert-info">Alapértelmezés szerint minden szónak szerepelnie kell az adott versben. Ha bármelyik szerepeljen, használd a <b>|</b> jelet, ha szórészlet szerepljen, használd a <b>*</b> jelet, pl. <b>meta* | *christ*</b></div>
+                    {% from "search.search" import filterRow %}
+                    {{  filterRow(form, books, translations) }}
+                    <div class="row">
+                        <div class="col">
+                            {{ csrf_field() }}
+                            <input type="submit" value="Keresés" class="btn btn-primary"/>
+                        </div>
+                    </div>
+                    </form>            
+            </div>
+        </div>
+
+    </div>
+        </div>
+    </div>
