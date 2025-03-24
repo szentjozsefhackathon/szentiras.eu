@@ -52,7 +52,8 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                 <div class="row">
                     <div>
                         {{ csrf_field() }}
-                        <input type="submit" value="Keresés" class="btn btn-primary"/>
+                        <input type="hidden" name="offset" value="{{ form.offset }}">
+                        <input type="submit" value="Keresés" class="btn btn-primary">
                     </div>    
                 </div>
             </form>
@@ -90,7 +91,71 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     {% endfor %}
     </div>
     {% endif %}
-        
+   
+{% macro pagination(form, results) %}
+    {% set limit = form.limit %}
+    {% set offset = form.offset %}
+    {% set hitCount = results|length %}
+    {% set fields %}
+        <input type="hidden" name="book" value="{{ form.book }}">
+        <input type="hidden" name="textToSearch" value="{{ form.textToSearch }}">
+        <input type="hidden" name="grouping" value="{{ form.grouping }}">
+        <input type="hidden" name="translation" value="{{ form.translation is not defined ? 0 : form.translation.id }}">            
+        {{  csrf_field() }}
+    {% endset %}
+    {% if hitCount > limit %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% set prevOffset = offset - limit %}
+                {% if prevOffset >= 0 %}
+                    <li class="page-item">
+                        <form action="{{ action('Search\\SearchController@anySearch') }}" method="POST">
+                            {{ fields }}
+                            <input type="hidden" name="offset" value="{{ nextOffset }}">
+                            <button class="page-link interstitial" type="submit"><span aria-hidden="true" class="bi bi-chevron-left"></span></button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                            <span aria-hidden="true" class="page-link bi bi-chevron-left"></span>
+                    </li>
+                {% endif %}
+                {% set currentPage = (offset / limit) + 1 %}
+                {% set totalPages = (hitCount / limit)|round(0, 'ceil') %}
+                {% for i in range(1, totalPages) %}
+                    {% set currentOffset = (i - 1) * limit %}
+                    {% if i == currentPage %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <form action="{{ action('Search\\SearchController@anySearch') }}" method="POST">
+                                {{ fields }}
+                                <input type="hidden" name="offset" value="{{ currentOffset }}">
+                                <button class="page-link interstitial" type="submit">{{ i }}</button>
+                            </form>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% set nextOffset = offset + limit %}
+                {% if nextOffset < hitCount %}
+                    <li class="page-item">
+                        <form action="{{ action('Search\\SearchController@anySearch') }}" method="POST">
+                            {{ fields }}
+                            <input type="hidden" name="offset" value="{{ nextOffset }}">
+                            <button class="page-link interstitial" type="submit"><span aria-hidden="true" class="bi bi-chevron-right"></span></button>
+                        </form>
+                    </li>
+                {%  else %}
+                    <li class="page-item disabled">
+                        <span aria-hidden="true" class="page-link bi bi-chevron-right"></span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endmacro %}
    
     {% if fullTextResults.resultsByBookNumber is defined or  fullTextResults is defined %}
         <ul class="nav nav-tabs" role="tablist">
@@ -102,8 +167,11 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     
     {% if fullTextResults.resultsByBookNumber is defined %}
         {% set results =  fullTextResults.resultsByBookNumber %}
-       
-        {% for key, chapters in results %}                        
+
+        {{ _self.pagination(form, results) }}
+
+        {% for key, chapters in results %}
+            {% if loop.index >= form.offset and loop.index < form.offset + form.limit %}
             <div class="searchResult">
                 {% for abbrev,group in chapters.translations %}
                         <a data-target="#g{{ key }}_{{ group.trans.abbrev }}" class="searchResultTranslationSelector btn btn-outline-secondary btn-sm {% if loop.first %}active{% endif %}">
@@ -130,10 +198,10 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                         {% endfor %}
                         <div class="greek">{{ chapters.greekText }}</div>
                         </div>
-
                     {% endfor %}
                 </div>
-            </div>                                    
+            </div>                   
+            {% endif %}                 
         {% endfor %}
     {% endif %}
     

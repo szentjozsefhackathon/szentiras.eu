@@ -16,5 +16,7 @@ class SearchForm {
     public $book;
     public $grouping;
     public $mode;
+    public $limit = 100;
+    public $offset = 0;
 
 }

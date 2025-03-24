@@ -12,7 +12,7 @@ $('#semanticSearchForm').on('submit', function (event) {
     event.target.submit(); // Submit the form after showing the interstitial
 });
 
-$('a.interstitial').on('click', () =>
+$('.interstitial').on('click', () =>
     $('#interstitial').show()
 );
 

@@ -232,6 +232,8 @@ class SearchController extends Controller
         $form->grouping = Request::get('grouping');
         $form->book = Request::get('book');
         $form->mode = Request::get('mode');
+        $form->limit = Request::get('limit') ?? 100;
+        $form->offset = Request::get('offset') ?? 0;
         if (Request::get('translation') > 0) {
             $form->translation = $this->translationRepository->getById(Request::get('translation'));
         }
