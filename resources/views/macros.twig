@@ -8,3 +8,11 @@
     </span>
     {% endif  %}
 {% endmacro similarityCircle %}
+
+{% macro urlParams(context) %}
+    {%- if context.fullContext or context.mediaEnabled -%}
+        ?
+        {{- context.fullContext ? '&fullContext' -}}
+        {{- context.mediaEnabled ? '&media' -}}
+    {%- endif -%}
+{% endmacro %}

@@ -1,7 +1,9 @@
+{% from 'macros' import urlParams %}
+
 {% for otherTranslation in translationLinks %}
     {% if otherTranslation.id != translation.id %}
         {% if otherTranslation.enabled %}
-            <a class="btn btn-sm btn-outline-primary" role="button" href="/{{ otherTranslation.link }}{{ fullContext ? '?fullContext' :'' }}{{ mediaEnabled ? (fullContext ? '&media' : '') : '' }}">{{ otherTranslation.abbrev }}</a>
+            <a class="btn btn-sm btn-outline-primary" role="button" href="/{{ otherTranslation.link }}{{ urlParams(_context) }}">{{ otherTranslation.abbrev }}</a>
         {% else %}
             <a class="btn btn-sm btn-outline-primary disabled"  role="button" title="A hivatkozás {{ otherTranslation.abbrev }} fordításban nem elérhető.">{{ otherTranslation.abbrev }}</a>
         {% endif %}

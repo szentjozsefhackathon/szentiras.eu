@@ -58,7 +58,7 @@
             <i class="bi-chevron-contract"></i> Csak a hivatkozás szövegének megjelenítése</a>
     {% endif %}
     <span id="data" {% if scrollTo %} data-scroll-to="{{ scrollTo }}" {% endif %}></span>    
-    {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers, 'mediaEnabled': mediaEnabled } %}
+    {{ include('textDisplay.verseContainers') }}
     {% if fullChaptersIncluded and not fullContext %}
     <div class="card bg-light mb-2">
         <div class="card-header collapsible" data-bs-toggle="collapse" data-bs-target="#cardContent">
@@ -68,7 +68,7 @@
         <div id="cardContent" class="collapse">
             <div class="card-body">
                 <div class="chapterButtons">
-                    {% include 'textDisplay.chapterButtons' with { 'translationAbbrev': translation.abbrev, 'bookAbbrev': verseContainers[0].book.abbrev, 'maxChapter': chapterLinks.chapterCount, 'actualChapter': verseContainers[0].parsedVerses[0].chapter, 'mediaEnabled': mediaEnabled } %}
+                    {{ include('textDisplay.chapterButtons', { 'bookAbbrev': verseContainers[0].book.abbrev, 'maxChapter': chapterLinks.chapterCount, 'actualChapter': verseContainers[0].parsedVerses[0].chapter}) }}
                 </div>
             </div>
         </div>
@@ -91,9 +91,9 @@
         <hr>
     {% endif %}
     <div class="translationButtons">
-        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'mediaEnabled': mediaEnabled, 'fullContext': fullContext } %}
+        {{ include('textDisplay.translationButtons') }}
     </div>
-    {% include 'textDisplay.share' with { 'canonicalUrl' : canonicalUrl, 'teaser' : teaser } %}
+    {{ include('textDisplay.share') }}
 {% endblock %}
 
 {% block extramenu %}

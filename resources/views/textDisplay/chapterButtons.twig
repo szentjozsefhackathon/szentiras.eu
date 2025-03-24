@@ -1,6 +1,6 @@
 {% for chapter in 1..maxChapter %}
     {% if actualChapter != chapter %}
-        <a class="btn btn-sm btn-outline-primary interstitial" role="button" href="/{{ translationAbbrev }}/{{ bookAbbrev }}{{ chapter }}{{ mediaEnabled ? '?media' : '' }}">{{ chapter }}</a>
+        <a class="btn btn-sm btn-outline-primary interstitial" role="button" href="/{{ translation.abbrev }}/{{ bookAbbrev }}{{ chapter }}{{ mediaEnabled ? '?media' : '' }}">{{ chapter }}</a>
     {% else %}
         <a href="javascript:void(0)" class="btn btn-sm btn-secondary disabled"  >{{ actualChapter }}</a>
     {% endif %}
