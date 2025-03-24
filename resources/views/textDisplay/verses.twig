@@ -46,7 +46,7 @@
             </div> #}
     {% endif %}
     <div class="translationButtons">
-        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation} %}
+        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'mediaEnabled': mediaEnabled} %}
     </div>
 
     {% if not fullChaptersIncluded and not fullContext %}
@@ -58,7 +58,7 @@
             <i class="bi-chevron-contract"></i> Csak a hivatkozás szövegének megjelenítése</a>
     {% endif %}
     <span id="data" {% if scrollTo %} data-scroll-to="{{ scrollTo }}" {% endif %}></span>    
-    {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers } %}
+    {% include 'textDisplay.verseContainers' with  { 'verseContainers' : verseContainers, 'mediaEnabled': mediaEnabled } %}
     {% if fullChaptersIncluded and not fullContext %}
     <div class="card bg-light mb-2">
         <div class="card-header collapsible" data-bs-toggle="collapse" data-bs-target="#cardContent">
@@ -68,7 +68,7 @@
         <div id="cardContent" class="collapse">
             <div class="card-body">
                 <div class="chapterButtons">
-                    {% include 'textDisplay.chapterButtons' with { 'translationAbbrev': translation.abbrev, 'bookAbbrev': verseContainers[0].book.abbrev, 'maxChapter': chapterLinks.chapterCount, 'actualChapter': verseContainers[0].parsedVerses[0].chapter } %}
+                    {% include 'textDisplay.chapterButtons' with { 'translationAbbrev': translation.abbrev, 'bookAbbrev': verseContainers[0].book.abbrev, 'maxChapter': chapterLinks.chapterCount, 'actualChapter': verseContainers[0].parsedVerses[0].chapter, 'mediaEnabled': mediaEnabled } %}
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
         <hr>
     {% endif %}
     <div class="translationButtons">
-        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation } %}
+        {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'mediaEnabled': mediaEnabled, 'fullContext': fullContext } %}
     </div>
     {% include 'textDisplay.share' with { 'canonicalUrl' : canonicalUrl, 'teaser' : teaser } %}
 {% endblock %}
