@@ -22,10 +22,4 @@ window.addEventListener('pageshow', (event) => {
 
 $("#greekTranslit").autocomplete({
     source: '/kereses/suggestGreek',
-    search: (event, ui) => {
-        $('#greekSpinner1').removeClass("hideSpinner");
-    },
-    response: (event, ui) => {
-        $('#greekSpinner1').addClass("hideSpinner");
-    }
 });

@@ -92,7 +92,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     </div>
     {% endif %}
    
-{% macro pagination(form, results) %}
+{% macro pagination(form, results, action) %}
     {% set limit = form.limit %}
     {% set offset = form.offset %}
     {% set hitCount = results|length %}
@@ -101,6 +101,9 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
         <input type="hidden" name="textToSearch" value="{{ form.textToSearch }}">
         <input type="hidden" name="grouping" value="{{ form.grouping }}">
         <input type="hidden" name="translation" value="{{ form.translation is not defined ? 0 : form.translation.id }}">            
+        <input type="hidden" name="greekTranslit" value="{{ form.greekTranslit }}">
+        <input type="hidden" name="greekText" value="{{ form.greekText }}">
+        <input type="hidden" name="mode" value="{{ form.mode }}">
         {{  csrf_field() }}
     {% endset %}
     {% if hitCount > limit %}
@@ -109,7 +112,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                 {% set prevOffset = offset - limit %}
                 {% if prevOffset >= 0 %}
                     <li class="page-item">
-                        <form action="{{ action('Search\\SearchController@anySearch') }}" method="POST">
+                        <form action="{{ action('Search\\SearchController@' ~ action) }}" method="POST">
                             {{ fields }}
                             <input type="hidden" name="offset" value="{{ nextOffset }}">
                             <button class="page-link interstitial" type="submit"><span aria-hidden="true" class="bi bi-chevron-left"></span></button>
@@ -130,7 +133,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                         </li>
                     {% else %}
                         <li class="page-item">
-                            <form action="{{ action('Search\\SearchController@anySearch') }}" method="POST">
+                            <form action="{{ action('Search\\SearchController@'  ~ action) }}" method="POST">
                                 {{ fields }}
                                 <input type="hidden" name="offset" value="{{ currentOffset }}">
                                 <button class="page-link interstitial" type="submit">{{ i }}</button>
@@ -141,7 +144,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                 {% set nextOffset = offset + limit %}
                 {% if nextOffset < hitCount %}
                     <li class="page-item">
-                        <form action="{{ action('Search\\SearchController@anySearch') }}" method="POST">
+                        <form action="{{ action('Search\\SearchController@'  ~ action) }}" method="POST">
                             {{ fields }}
                             <input type="hidden" name="offset" value="{{ nextOffset }}">
                             <button class="page-link interstitial" type="submit"><span aria-hidden="true" class="bi bi-chevron-right"></span></button>
@@ -168,7 +171,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     {% if fullTextResults.resultsByBookNumber is defined %}
         {% set results =  fullTextResults.resultsByBookNumber %}
 
-        {{ _self.pagination(form, results) }}
+        {{ _self.pagination(form, results, greekSearch ? 'greekSearch' : 'anySearch') }}
 
         {% for key, chapters in results %}
             {% if loop.index >= form.offset and loop.index < form.offset + form.limit %}

@@ -11,8 +11,7 @@
                             <input type="hidden" name="mode" value="lemma">                   
                             <div class="input-group mb-2">
                                 <span class="input-group-text"><a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Keresendő görög szó(tő). A magyar jelentést is gépelheted, felajánljuk a görög megfelelőt. Itt a szentírási versek Strong szavai között keresünk. "><span></a></span>
-                                <span class="input-group-text"><span id="greekSpinner1" class="hideSpinner spinner-border spinner-border-sm"></span></span>
-                                <input type="text" placeholder="Használj latin betűs átírást!" name="greekTranslit" id="greekTranslit" value="{{ form.greekTranslit }}" class="form-control" />
+                                <input type="text" placeholder="Latin átírás / magyar jelentés" name="greekTranslit" id="greekTranslit" value="{{ form.greekTranslit }}" class="form-control" />
                             </div>
                 </div>
                 {% from "search.search" import filterRow %}
@@ -37,10 +36,9 @@
                     <form role="form" class="form-horizontal" method="post" action="{{ action('Search\\SearchController@greekSearch') }}" id="searchForm">                    
                     <input type="hidden" name="mode" value="verse">                    
                     <div class="input-group mb-2">
-                        <span class="input-group-text"><a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Itt a szentírási versek görög szövegében keresünk részleteket."><span></a></span>
+                        <span class="input-group-text"><a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Itt a szentírási versek görög szövegében keresünk részleteket. Alapértelmezés szerint minden szónak szerepelnie kell az adott versben. Ha bármelyik szerepeljen, használd a | jelet, ha szórészlet szerepeljen, használd a * jelet, pl. meta* | *christ*"><span></a></span>
                         <input type="text" name="greekText" id="greekText" value="{{ form.greekText }}" placeholder="Keresendő görög szövegrészlet(ek)" class="form-control"/>
                     </div>
-                    <div class="alert alert-info">Alapértelmezés szerint minden szónak szerepelnie kell az adott versben. Ha bármelyik szerepeljen, használd a <b>|</b> jelet, ha szórészlet szerepeljen, használd a <b>*</b> jelet, pl. <b>meta* | *christ*</b></div>
                     {% from "search.search" import filterRow %}
                     {{  filterRow(form, books, translations) }}
                     <div class="row">
