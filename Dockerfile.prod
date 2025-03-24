@@ -12,7 +12,6 @@ RUN npm install --omit=dev
 
 FROM php:8.2-apache AS php
 WORKDIR /var/www/html
-ARG GIT_COMMIT_HASH
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
@@ -28,6 +27,7 @@ COPY --from=node /app .
 
 RUN php composer.phar install --no-dev --no-interaction --no-cache
 
+ARG GIT_COMMIT_HASH
 ENV GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
 RUN echo "<?php return [ 'hash' => '$GIT_COMMIT_HASH' ];" > config/version.php
 

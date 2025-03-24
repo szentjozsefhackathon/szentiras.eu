@@ -19,6 +19,7 @@ use SzentirasHu\Service\Text\BookService;
 use SzentirasHu\Service\Text\TextService;
 use SzentirasHu\Service\Text\TranslationService;
 use Illuminate\Support\Collection;
+use Log;
 
 class AiController extends Controller
 {
@@ -146,7 +147,7 @@ class AiController extends Controller
         $limit = 50;
         $translation = $this->translationService->getDefaultTranslation();
 
-        $strongWord = StrongWord::where('number', $strongNumber)->first();
+        $strongWord = StrongWord::where('number', $strongNumber)->with('dictionaryMeanings')->with('dictionaryEntry')->first();
         $hitCount = $strongWord->greekVerses()->count();
 
         /**
@@ -179,7 +180,11 @@ class AiController extends Controller
                 }
                 $explodedGreekText = explode(' ', $greekText);
                 foreach ($strongIndexes as $index) {
-                    $explodedGreekText[$index] = "<mark>{$explodedGreekText[$index]}</mark>";
+                    if (array_key_exists($index, $explodedGreekText)) {
+                        $explodedGreekText[$index] = "<mark>{$explodedGreekText[$index]}</mark>";
+                    } else {
+                        Log::debug('Wrong strong index in verse');
+                    }
                 }
                 $greekText = implode(' ', $explodedGreekText);
                 $book = $this->bookService->getBookByUsxCodeTranslation($greekVerse->usx_code, $translation->abbrev);

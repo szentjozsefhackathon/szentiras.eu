@@ -3,8 +3,10 @@
 namespace SzentirasHu\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 
@@ -39,6 +41,10 @@ class StrongWord extends Model
 
     public function dictionaryMeanings() : HasMany {
         return $this->hasMany(DictionaryMeaning::class, 'strong_word_number', 'number');
+    }
+
+    public function dictionaryEntry() : HasOne {
+        return $this->hasOne(DictionaryEntry::class, 'strong_word_number', 'number');
     }
 
 }

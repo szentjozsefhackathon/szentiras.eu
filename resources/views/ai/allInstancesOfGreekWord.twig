@@ -55,6 +55,18 @@
 
 {% block content %}
     <h5 class="greek">{{ strongWord.lemma }} ({{ strongWord.transliteration }}) <span class="badge text-bg-primary">{{  hitCount  }} előfordulás</span></h3>
+    <div class="card greek mb-2">
+        <div class="card-body">
+            <i class="bi bi-robot text-secondary" data-bs-toggle="tooltip" title="AI által generált tartalom"></i> {{  strongWord.dictionaryEntry.paradigm }}
+        {% for meaning in strongWord.dictionaryMeanings %}
+            {{ loop.index }}.&nbsp;<b>{{ meaning.meaning }}</b> {{ meaning.explanation }}
+            {% endfor %}
+
+            <i class="bi bi-tree-fill text-success"></i> {{ strongWord.dictionaryEntry.etymology }} 
+            <i class="bi bi-sticky-fill text-warning"></i> {{ strongWord.dictionaryEntry.notes }}
+        </div>
+        </div>
+    </div>
     {{ _self.pagination(hitCount, offset, limit, strongWord) }}
     {% for instance in instances %}
         <blockquote class="mb-2">            

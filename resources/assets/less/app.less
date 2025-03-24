@@ -4,13 +4,13 @@
     --text-color: #2e2e2e;
     --muted-text-color: #6c757d;
     --link-color: #0056b3;
-    --link-hover-color: #007BFF;    
+    --link-hover-color: #007BFF;
     --button-color: #0056b3;
-    --button-hover-color: #007BFF;        
+    --button-hover-color: #007BFF;
     --footnote-link-color: #0056b3;
     --footnote-hover-color: #007BFF;
     --text-font: 'Noto Sans', sans-serif;
-    --book-font: 'Noto Serif', serif; 
+    --book-font: 'Noto Serif', serif;
 }
 
 @import url(autocomplete.less);
@@ -28,6 +28,7 @@ body {
 a {
     text-decoration: none;
     color: var(--link-color);
+
     &:hover {
         color: var(--link-hover-color);
     }
@@ -44,16 +45,19 @@ a.xref {
 
 a.footnote {
     outline: none;
+
     .numv {
         color: var(--footnote-link-color);
         font-style: italic;
-    }    
+    }
+
     cursor: pointer;
-    text-decoration: none;    
+    text-decoration: none;
+
     &:hover {
         .numv {
             color: var(--footnote-hover-color);
-        }    
+        }
     }
 }
 
@@ -71,13 +75,13 @@ p.popover-footnote {
     h4 {
         margin-top: 1rem;
     }
-    
+
     h5 {
         font-weight: bold;
         color: var(--muted-text-color);
-        margin-top:1rem;
+        margin-top: 1rem;
     }
-    
+
     h6 {
         font-size: calc(var(--book-font-size) * 0.875);
         font-weight: bold;
@@ -85,8 +89,9 @@ p.popover-footnote {
         margin-top: 0.6rem;
         margin-bottom: 0.3rem;
     }
-    
-    span.heading7, span.heading8 {
+
+    span.heading7,
+    span.heading8 {
         display: inline;
         font-size: calc(var(--book-font-size) * 0.875);
         margin-top: 3px;
@@ -94,7 +99,7 @@ p.popover-footnote {
         font-weight: bold;
         color: var(--muted-text-color);
 
-    }  
+    }
 
     .mark {
         background-color: rgba(255, 255, 0, 0.25);
@@ -124,6 +129,7 @@ div.translationButtons {
 div.chapterButtons {
     font-family: var(--text-font);
     margin-bottom: 6px;
+
     a {
         margin-bottom: 2px;
     }
@@ -136,19 +142,21 @@ div.chapterButtons {
     line-height: 40px;
     color: var(--muted-text-color);
     position: relative;
-    top:0.4rem;
+    top: 0.4rem;
 }
 
 
 span.numv {
-  color: var(--muted-text-color);
+    color: var(--muted-text-color);
 }
 
 div.footnotes {
     margin-top: 12px;
+
     h5 {
         margin-top: 6px;
     }
+
     border-top: 1px solid grey;
 }
 
@@ -177,11 +185,12 @@ div.quickSelector {
         max-height: 400px;
         overflow-y: auto;
     }
-    
+
 }
 
 div.bookChapterSelector {
     display: inline-block;
+
     .dropdown-menu {
         max-height: 400px;
         overflow-y: auto;
@@ -210,9 +219,10 @@ blockquote.searchResult {
     padding-left: 6px;
     height: 100%;
     border-left: 2px solid gray;
-    
+
 
 }
+
 .searchResultSource {
     font-size: calc(var(--book-font-size) * 0.875);
     background-color: white;
@@ -220,14 +230,16 @@ blockquote.searchResult {
 }
 
 .ai-tool-popover {
-    font-family: var(--text-font);   
+    font-family: var(--text-font);
     --bs-popover-font-size: 0.9rem;
     --bs-popover-max-width: 500px;
+
     .btn-close {
         width: 0.5em;
         height: 0.5em;
         float: right;
     }
+
     .scrollable-content {
         overflow-y: auto;
         max-height: 400px;
@@ -263,11 +275,13 @@ p.footnote {
 
 .xref-popover {
     --bs-popover-max-width: 500px;
+
     .btn-close {
         width: 0.5em;
         height: 0.5em;
         float: right;
     }
+
     .scrollable-content {
         overflow-y: auto;
         max-height: 300px;
@@ -276,16 +290,24 @@ p.footnote {
 
 
 div.xrefQuotation {
-    h1, h2, h3, h4, h5, h6 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         display: inline-block;
         margin: 0;
         font-weight: bold;
         font-size: 0.8rem;
     }
+
     a.ref {
         font-family: var(--text-font);
         font-weight: bold;
     }
+
     font-family: var(--book-font);
 }
 
@@ -297,6 +319,7 @@ h1 .sitesubtitle {
 .btn-primary {
     background-color: var(--button-color);
     border-color: var(--button-color);
+
     &:hover {
         background-color: var(--button-hover-color);
         border-color: var(--button-hover-color);
@@ -305,6 +328,7 @@ h1 .sitesubtitle {
 
 .searchResultVerse {
     font-family: var(--book-font);
+
     .numchapter {
         font-size: var(--book-font-size);
         float: none;
@@ -313,14 +337,16 @@ h1 .sitesubtitle {
         color: var(--muted-text-color);
         position: inherit;
         top: 0rem;
-    
+
     }
 }
 
 .search-panel {
-    background-color: white;    
+    background-color: white;
+
     div {
-        margin: 2px;    }
+        margin: 2px;
+    }
 }
 
 .searchResultTranslationSelector {
@@ -338,7 +364,7 @@ div.searchResult {
 
 .searchResultTranslationText {
     display: none;
-    
+
     &.active {
         display: block;
     }
@@ -347,20 +373,34 @@ div.searchResult {
 #interstitial {
     display: none;
     position: fixed;
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust for element's own size */
-    width: auto; /* Adjust width to content */
-    max-width: 80%; /* Limit maximum width */
-    height: auto; /* Adjust height to content */
-    max-height: 80%; /* Limit maximum height */
+    top: 50%;
+    /* Center vertically */
+    left: 50%;
+    /* Center horizontally */
+    transform: translate(-50%, -50%);
+    /* Adjust for element's own size */
+    width: auto;
+    /* Adjust width to content */
+    max-width: 80%;
+    /* Limit maximum width */
+    height: auto;
+    /* Adjust height to content */
+    max-height: 80%;
+    /* Limit maximum height */
     background: rgba(0, 0, 0, 0.5);
     z-index: 9999;
     color: white;
     text-align: center;
-    padding: 20px; /* Add padding around the content */
-    font-size: 1.5rem; /* Slightly smaller font size */
-    border-radius: 10px; /* Add rounded corners */
+    padding: 20px;
+    /* Add padding around the content */
+    font-size: 1.5rem;
+    /* Slightly smaller font size */
+    border-radius: 10px;
+    /* Add rounded corners */
+}
+
+.form-floating>label {
+    color: rgba(var(--bs-body-color-rgb), .65)
 }
 
 .form-control::placeholder {
@@ -368,7 +408,7 @@ div.searchResult {
 }
 
 div.tocItem {
-    margin-left: 1rem;    
+    margin-left: 1rem;
     display: flex;
     align-items: flex-start;
 
@@ -378,6 +418,7 @@ div.tocItem {
         min-width: 15px;
         text-align: right;
     }
+
     .chapterHeadings {
         flex: 1;
     }
@@ -388,7 +429,7 @@ div.illustration {
         @media screen and (min-width: 768px) {
             max-width: 70%;
             margin: 10px;
-        }    
+        }
     }
 
     &.otherMedia {
@@ -404,6 +445,7 @@ div.illustration {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -427,7 +469,7 @@ div.illustration {
 }
 
 .pureText {
-    font-family: var(--book-font);   
+    font-family: var(--book-font);
 }
 
 .collapsible {
@@ -438,18 +480,21 @@ div.illustration {
     .greekWord {
         cursor: pointer;
     }
+
     .nav-link {
         padding: 0px 6px 0px 6px;
     }
+
     .meaning {
         padding: 0px 6px 0px 6px;
     }
+
     .meaning-panel {
         padding: 2px;
         margin: 2px;
         background-color: white;
-        box-shadow: 0 0 2px rgba(0,0,0,0.1);
-        border: 1px solid #ddd;    
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
     }
 }
 
