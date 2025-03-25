@@ -228,6 +228,7 @@ return
 		'N-NSF' => [ 'partOfSpeech' => 'főnév', 'case' => 'alanyeset', 'number' => 'egyes szám', 'gender' => 'nőnem', ],
 		'N-NSM' => [ 'partOfSpeech' => 'főnév', 'case' => 'alanyeset', 'number' => 'egyes szám', 'gender' => 'hímnem', ],
 		'N-NSM-C' => [ 'partOfSpeech' => 'főnév', 'case' => 'alanyeset', 'number' => 'egyes szám', 'gender' => 'hímnem', 'form' => 'összeolvadás', ],
+		'N-NSM-P' => [ 'partOfSpeech' => 'főnév', 'case' => 'alanyeset', 'number' => 'egyes szám', 'gender' => 'hímnem', 'form' => 'személy' ],
 		'N-NSN' => [ 'partOfSpeech' => 'főnév', 'case' => 'alanyeset', 'number' => 'egyes szám', 'gender' => 'semlegesnem', ],
 		'N-OI' => [ 'partOfSpeech' => ': Egyéb típusú nem ragozható főnév', ],
 		'N-PRI' => [ 'partOfSpeech' => 'Nem ragozható tulajdonnév', ],
