@@ -56,7 +56,7 @@ class AiController extends Controller
                     'i' => $i
                 ];
             }
-            $greekVector = $this->semanticSearchService->retrieveGreekVector($greekVerse->gepi);
+            $greekVector = $this->semanticSearchService->retrieveGreekVector($greekVerse->gepi, $greekVerse->source);
         } else {
             $annotatedGreekText = null;
         }
