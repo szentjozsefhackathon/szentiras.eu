@@ -143,7 +143,7 @@ class SearchController extends Controller
             $explodedGreekText = explode(" ", strtolower($form->greekTranslit));
             $query = GreekVerse::query();
             foreach ($explodedGreekText as $i => $word) {
-                $query->where('strong_normalizations', '~', "{$word}");
+                $query->where('strong_normalizations', '~*', "\\y{$word}\\y");
             }
             $greekVerses = $query->get()->toArray();
             $gepis = array_map(fn($greekVerse) => "{$greekVerse['usx_code']}_{$greekVerse['chapter']}_{$greekVerse['verse']}", $greekVerses);

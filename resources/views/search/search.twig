@@ -42,20 +42,13 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     </ul>
     <div class="tab-content border-start border-bottom border-end search-panel">
         <div role="tabpanel" class="tab-pane {{ greekSearch ? '': 'active'}}" id="hun">
-            <form role="form" class="form-horizontal" method="post"
-                  action="{{ action('Search\\SearchController@anySearch') }}" id="searchForm">
-                <div class="form-floating">
-                        <input type="text" name="textToSearch" id="textToSearch" value="{{ form.textToSearch }}" placeholder="" class="form-control"/>
-                    <label for="textToSearch" ><i class="bi bi-search"></i> Keresendő szöveg</label>                    
+            <form role="form" class="form-horizontal" method="post" action="{{ action('Search\\SearchController@anySearch') }}" id="textSearchForm">
+                {{ csrf_field() }}                
+                <div class="input-group mb-2">
+                <input type="text" autocomplete="off" name="textToSearch" id="textToSearch" value="{{ form.textToSearch }}" placeholder="Keresendő szöveg" class="form-control"/>
+                <input type="submit" value="Keresés" class="btn btn-primary">                
                 </div>
                 {{ _self.filterRow(form, books, translations) }}
-                <div class="row">
-                    <div>
-                        {{ csrf_field() }}
-                        <input type="hidden" name="offset" value="{{ form.offset }}">
-                        <input type="submit" value="Keresés" class="btn btn-primary">
-                    </div>    
-                </div>
             </form>
         </div>
         <div role="tabpanel" class="tab-pane {{ greekSearch ? 'active': ''}}" id="grc">
@@ -181,8 +174,8 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                             <i class="bi bi-book"></i>{% if form.translation is not defined or form.translation.id < 1 %}
                             <span title="{{ group.trans.name }}">{{ group.trans.abbrev }}</span>
                         {% endif %}                        
-                            <span class="header-bookabbrev {{ loop.first ? 'active d-sm-inline' : 'inactive d-md-inline'}}" title="{{ group.book.name }}">{{ group.book.abbrev }}</span>
-                            <span class="header-ref {{ loop.first ? 'active' : 'd-sm-none'}}">
+                            <span class="header-bookabbrev {{ loop.first ? 'active d-sm-inline' : 'inactive d-none d-md-inline'}}" title="{{ group.book.name }}">{{ group.book.abbrev }}</span>
+                            <span class="header-ref {{ loop.first ? 'active' : 'd-none d-md-inline'}}">
                                 {% if form.grouping == 'verse' or  form.grouping == 'chapter' %}{{ group.verses[0].chapter }}{% endif %}
                                 {%- if form.grouping == 'verse' %},{{ group.verses[0].numv }}{% endif %}
                             </span>                                                                                                      
