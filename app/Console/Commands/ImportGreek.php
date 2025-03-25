@@ -30,7 +30,7 @@ class ImportGreek extends Command
         {--create-vectors : Create the vectors based on the existing verses }
         {--source= : filesystem or s3. Must be given if target is db.}        
         {--target=db : filesystem, s3 or db }
-        {--text-source=BMT : BMT or OpenGNT }
+        {--text-source=OpenGNT : BMT or OpenGNT }
     ';
 
     /**
@@ -198,7 +198,7 @@ class ImportGreek extends Command
                         continue;
                     }
 
-                    $parsedTextRegex = '/(\p{L}+) (\d+) \{([^\}]+)\}/u';
+                    $parsedTextRegex = '/([^ ]+) (\d+) \{([^\}]+)\}/u';
                     $matches = [];
                     preg_match_all($parsedTextRegex, $parsedText, $matches, PREG_SET_ORDER);
 
