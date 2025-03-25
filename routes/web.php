@@ -6,6 +6,7 @@ use SzentirasHu\Http\Controllers\Auth\AnonymousIdController;
 use SzentirasHu\Http\Controllers\Display\TextDisplayController;
 use SzentirasHu\Http\Controllers\Home\HomeController;
 use SzentirasHu\Http\Controllers\MediaController;
+use SzentirasHu\Http\Middleware\RedirectLowerCaseTranslationAbbrev;
 use SzentirasHu\Models\Media;
 
 /*
@@ -85,14 +86,17 @@ Route::get('/media/{uuid}', [MediaController::class, 'show'])->name('media.show'
 
 /** These should come at the end to not collide with other routes! */
 Route::get('/{TRANSLATION_ABBREV}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showTranslation')
+    ->middleware(RedirectLowerCaseTranslationAbbrev::class)
     ->where('TRANSLATION_ABBREV', Config::get('settings.translationAbbrevRegex'));
 
 Route::get('/{TRANSLATION_ABBREV}/{REFERENCE}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showTranslatedReferenceText')
+    ->middleware(RedirectLowerCaseTranslationAbbrev::class)
     ->where(['TRANSLATION_ABBREV' => Config::get('settings.translationAbbrevRegex'),
         'REFERENCE' => '[^/]+']);
 
 Route::get('/{REFERENCE}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showReferenceText')
      ->where('REFERENCE', '[^/]+');
 Route::get('/xref/{TRANSLATION_ABBREV}/{REFERENCE}', [TextDisplayController::class, 'showXrefText'])
+    ->middleware(RedirectLowerCaseTranslationAbbrev::class)
     ->where(['TRANSLATION_ABBREV' => Config::get('settings.translationAbbrevRegex'),
         'REFERENCE' => '[^/]+']);
