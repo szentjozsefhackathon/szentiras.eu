@@ -1,0 +1,29 @@
+{% extends 'layout' %}
+{% set pageTitle='Rólunk | Szentírás' %}
+
+{% block content %}
+{% apply markdown_to_html %}
+### Impresszum
+
+A Szentírás.eu oldalt fejleszti és üzemelteti a [Szent József Hackathon](https://szentjozsef.jezsuita.hu/szent-jozsef-hackathon/).
+
+A honlapon megjelenő valamennyi szöveg a Szerzői Jogi Törvénynek megfelelően használható fel.
+
+### Küldetésünk
+
+> Az Isten játssza a világot, a történelmet széles jókedvében, _ex abundantia cordis_. Minket, embereket partnereknek kér fel, hogy játsszunk vele. 
+Játékban nem keresem, érdemes-e, megéri-e, nem fáj-e, nem fárasztó-e, mire jó stb. 
+A játékhoz az _abundantia cordis_ kell. Az pedig megvan az Istenben.
+Az Isten dobta labdát elfogadni és az emberek felé tovább passzolni. Játékos
+jókedvében mennyi _gratia gratis data_-t vág hozzám az Úristen, hogy rólam tovább pattanjon.
+Isten a játékában nem ellenfélként kezel bennünket, mint pl. a sakkban, a malomban, pingpongban,
+labdarúgásban a két játszófél. Nem, Ő nem
+ellenfél. Ő a _Spassmacher_, a játékcsináló, és mi vagyunk a játékosok, mint valami akadályversenyben.
+Akadályversenyen, ha éjjel, ha nappal van, tudja a gyerek, hogy ez csak mese, de úgy beleéli magát, mintha igazán komoly volna.
+Pedig tudja, hogy ez csak ideig-óráig tartó játék. Az életünk nem ilyen-e az Isten kezében? Akadályversenyt kell végigcsinálnunk, 
+teljes játékos kedvvel, jó kedvvel verekedjük végig, hiszen úgyis csak ideig-óráig tart, míg le nem fújják.
+>
+> -- [László Gábor, Pater](https://hu.wikipedia.org/wiki/L%C3%A1szl%C3%B3_G%C3%A1bor_%28katolikus_pap%29)
+
+{% endapply %}
+{% endblock %}

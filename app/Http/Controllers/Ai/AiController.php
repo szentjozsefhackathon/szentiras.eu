@@ -5,7 +5,6 @@ namespace SzentirasHu\Http\Controllers\Ai;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use League\CommonMark\Reference\Reference;
 use Pgvector\Vector;
 use SzentirasHu\Http\Controllers\Controller;
 use SzentirasHu\Models\DictionaryEntry;

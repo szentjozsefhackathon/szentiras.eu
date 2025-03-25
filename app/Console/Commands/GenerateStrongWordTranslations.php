@@ -91,7 +91,6 @@ class GenerateStrongWordTranslations extends Command
             $wordNumbers = array_map("trim", explode(",", $this->option("word")));
         } else {
             // get only those words that have usage
-
             $wordNumbers = StrongWord::has('greekVerses')->pluck("number");
         }
 

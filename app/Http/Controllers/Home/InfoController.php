@@ -21,4 +21,10 @@ class InfoController extends Controller
         ]);
     }
 
+    public function mission()
+    {
+        return view("info.mission");
+    }
+
+
 }

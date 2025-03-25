@@ -971,6 +971,7 @@ return
 		'V-RPP-NSN' => [ 'partOfSpeech' => 'ige', 'tense' => 'befejezett', 'voice' => 'passzív', 'mood' => 'melléknévi igenév', 'case' => 'alanyeset', 'number' => 'egyes szám', 'gender' => 'semlegesnem', ],
 		'V-RPP-NSN-ATT' => [ 'partOfSpeech' => 'ige', 'tense' => 'befejezett', 'voice' => 'passzív', 'mood' => 'melléknévi igenév', 'case' => 'alanyeset', 'number' => 'egyes szám', 'gender' => 'semlegesnem', 'form' => 'attikai alak', ],
 		'V-RPP-VSM' => [ 'partOfSpeech' => 'ige', 'tense' => 'befejezett', 'voice' => 'passzív', 'mood' => 'melléknévi igenév', 'case' => 'megszólító', 'number' => 'egyes szám', 'gender' => 'hímnem', ],
+		'V-RPP-VSF' => [ 'partOfSpeech' => 'ige', 'tense' => 'befejezett', 'voice' => 'passzív', 'mood' => 'melléknévi igenév', 'case' => 'megszólító', 'number' => 'egyes szám', 'gender' => 'nőnem', ],
 		'X-APF' => [ 'partOfSpeech' => 'határozatlan névmás', 'case' => 'tárgyeset', 'number' => 'többes szám', 'gender' => 'nőnem', ],
 		'X-APM' => [ 'partOfSpeech' => 'határozatlan névmás', 'case' => 'tárgyeset', 'number' => 'többes szám', 'gender' => 'hímnem', ],
 		'X-APN' => [ 'partOfSpeech' => 'határozatlan névmás', 'case' => 'tárgyeset', 'number' => 'többes szám', 'gender' => 'semlegesnem', ],

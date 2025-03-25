@@ -74,7 +74,7 @@ class SearchController extends Controller
             $previousWords = mb_substr($term, 0, strrpos($term, " ")) . " ";
         }
         $word = mb_strtolower(str_replace($previousWords, "", $term));
-        $query = StrongWord::query()->limit(20)->with('dictionaryMeanings');
+        $query = StrongWord::query()->has('greekVerses')->limit(20)->with('dictionaryMeanings');
         $query->where('normalized', '~', "{$word}")
             ->orWhereHas('dictionaryMeanings', function ($query) use ($word) {
                 $query->where('meaning', 'ILIKE', "%{$word}%");

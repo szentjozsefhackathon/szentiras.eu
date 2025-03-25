@@ -47,6 +47,7 @@ Route::get("/api", '\SzentirasHu\Http\Controllers\Api\ApiController@getIndex')
     ->middleware('throttle:600,1');
 
 Route::get('/info', '\SzentirasHu\Http\Controllers\Home\InfoController@getIndex');
+Route::get('/impresszum', '\SzentirasHu\Http\Controllers\Home\InfoController@mission');
 
 Route::get('/pdf/dialog/{translationAbbrev}/{refString}', '\SzentirasHu\Http\Controllers\Display\PdfController@getDialog');
 Route::get('/pdf/ref/{translationId}/{refString}', '\SzentirasHu\Http\Controllers\Display\PdfController@getRef');
