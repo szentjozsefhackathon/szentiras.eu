@@ -3,9 +3,11 @@
 namespace SzentirasHu\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Log;
 use Normalizer;
 use Pgvector\Laravel\Vector;
 use SzentirasHu\Models\GreekVerse;
@@ -13,6 +15,7 @@ use SzentirasHu\Models\GreekVerseEmbedding;
 use SzentirasHu\Models\StrongWord;
 use SzentirasHu\Service\Search\SemanticSearchService;
 use Throwable;
+use ZipArchive;
 
 class ImportGreek extends Command
 {
@@ -27,6 +30,7 @@ class ImportGreek extends Command
         {--create-vectors : Create the vectors based on the existing verses }
         {--source= : filesystem or s3. Must be given if target is db.}        
         {--target=db : filesystem, s3 or db }
+        {--text-source=BMT : BMT or OpenGNT }
     ';
 
     /**
@@ -121,7 +125,7 @@ class ImportGreek extends Command
         'Ω' => 'Ō',
     ];
 
-    const SOURCE = 'BMT';
+    private string $textSource;
     private string $model;
     private int $dimensions;
 
@@ -140,6 +144,7 @@ class ImportGreek extends Command
      */
     public function handle()
     {
+        $this->textSource = $this->option('text-source');
         if (!$this->option('skip-verses')) {
             GreekVerse::truncate();
             $this->downloadFiles();
@@ -165,7 +170,7 @@ class ImportGreek extends Command
         $parsedVerses = [];
         $unparsedVerses = [];
         foreach (self::ABBREVIATION_MAPPING as $abbrev => $usxCode) {
-            $file = Storage::readStream("greek/parsed/{$usxCode}.csv");
+            $file = Storage::readStream("greek/{$this->textSource}/parsed/{$usxCode}.csv");
             $header = fgetcsv($file);
             while (($row = fgetcsv($file)) !== false) {
                 $data = array_combine($header, $row);
@@ -173,7 +178,7 @@ class ImportGreek extends Command
                 $verse = (int)$data['verse'];
                 $parsedVerses[$usxCode][$chapter][$verse] = $data['text'];
             }
-            $file = Storage::readStream("greek/unparsed/{$usxCode}.csv");
+            $file = Storage::readStream("greek/{$this->textSource}/unparsed/{$usxCode}.csv");
             $header = fgetcsv($file);
             while (($row = fgetcsv($file)) !== false) {
                 $data = array_combine($header, $row);
@@ -217,16 +222,23 @@ class ImportGreek extends Command
                             'morphology' => $morphology
                         ];
                         $strongNumbers[] = $strongNumber;
-                        $strongElements[] = $this->strongWords[$strongNumber]->lemma;
-                        $strongTranslits[] = $this->strongWords[$strongNumber]->transliteration;
-                        $strongNormals[] = $this->strongWords[$strongNumber]->normalized;
+                        if (!array_key_exists($strongNumber, $this->strongWords)) {
+                            $this->warn("Unknown Strong number: {$strongNumber} in {$usxCode}");
+                            $strongElements[] = "X";
+                            $strongTranslits[] = "X";
+                            $strongNormals[] = "X";
+                        } else {
+                            $strongElements[] = $this->strongWords[$strongNumber]->lemma;
+                            $strongTranslits[] = $this->strongWords[$strongNumber]->transliteration;
+                            $strongNormals[] = $this->strongWords[$strongNumber]->normalized;
+                        }
                     }
 
                     $transliteration = $this->transliterate($unparsedText);
                     $normalization = $this->normalize($transliteration);
 
                     $greekVerse = new GreekVerse();
-                    $greekVerse->source = self::SOURCE;
+                    $greekVerse->source = $this->textSource;
                     $greekVerse->usx_code = $usxCode;
                     $greekVerse->gepi = "{$usxCode}_{$chapter}_{$verse}";
                     $greekVerse->chapter = $chapter;
@@ -242,7 +254,9 @@ class ImportGreek extends Command
 
                     $strongWordsToAttach = [];
                     foreach ($strongNumbers as $position => $strongNumber) {
-                        $strongWordsToAttach[$this->strongWords[$strongNumber]->id] = ['position' => $position];
+                        if (array_key_exists($strongNumber, $this->strongWords)) {
+                            $strongWordsToAttach[$this->strongWords[$strongNumber]->id] = ['position' => $position];
+                        }                        
                     }
                     $greekVerse->strongWords()->attach($strongWordsToAttach);
                 }
@@ -253,7 +267,7 @@ class ImportGreek extends Command
         $this->output->newline();
     }
 
-    private function fillStrongWordsTable()
+    private function fillStrongWordsTableXml()
     {
         $xmlFile = Storage::get("greek/dictionary.xml");
         $this->info('Fill Strong words');
@@ -275,6 +289,55 @@ class ImportGreek extends Command
             $strongWord->save();
             $progressBar->advance();
         }
+        $progressBar->finish();
+        $this->output->newline();
+    }
+
+    private function fillStrongWordsTable()
+    {
+        $txtFile = Storage::get("greek/dictionary.txt");
+        $this->info('Fill Strong words');
+        // parse the TSV file
+        // skip first rows up until the string "============================================================================================================="
+        $lines = explode("\n", $txtFile);
+        $start = false;
+        $strongWords = [];      
+        foreach ($lines as $line) {
+            if (empty($line)) {
+                continue;
+            }
+            if (str_contains($line, "=============================================================================================================")) {
+                $start = true;
+                continue;
+            }
+            if (!$start) {
+                continue;
+            }
+            $parts = explode("\t", $line);
+            $strongNumber = (int)str_replace("G", "", $parts[0]);
+            $lemma = $parts[3];
+            $transliteration = $this->transliterate($lemma);
+            $normalizedText = $this->normalize($transliteration);
+            $cleanText = preg_replace('/\p{Mn}/u', '', $normalizedText);
+            $normalized = strtolower($cleanText);
+            $strongWords[$strongNumber] = [
+                'number' => $strongNumber,
+                'lemma' => $lemma,
+                'transliteration' => $transliteration,
+                'normalized' => $normalized
+            ];
+        }
+        $progressBar = $this->output->createProgressBar(count($strongWords));
+        foreach ($strongWords as $strongWordData) {
+            $progressBar->advance();
+            $strongWord = new StrongWord();
+            $strongWord->number = $strongWordData['number'];
+            $strongWord->lemma = $strongWordData['lemma'];
+            $strongWord->transliteration = $strongWordData['transliteration'];
+            $strongWord->normalized = $strongWordData['normalized'];
+            $strongWord->save();
+        }
+
         $progressBar->finish();
         $this->output->newline();
     }
@@ -360,30 +423,93 @@ class ImportGreek extends Command
 
     private function downloadFiles()
     {
-        // contains the Greek text with punctuation etc.
-        $unparsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/ccat/no-variants/';
-        // contains the Strong words with grammatical analysis
-        $parsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/strongs/with-parsing/';
-
-        $dictionaryFile = 'https://raw.githubusercontent.com/briff/strongs-dictionary-xml/refs/heads/master/strongsgreek.xml';
-        foreach (self::ABBREVIATION_MAPPING as $abbrev => $usxCode) {
-            if (!Storage::exists("greek/parsed/{$usxCode}.csv")) {
-                $filePath = $parsedFileDir . $abbrev . '.csv';
-                $this->info("Download {$filePath}");
-                $fileContents = Http::get($filePath)->body();
-                Storage::put("greek/parsed/{$usxCode}.csv", $fileContents);
+        $storagePrefix = "greek/{$this->textSource}";
+        if ($this->textSource == 'BMT') {
+            // contains the Greek text with punctuation etc.
+            $unparsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/ccat/no-variants/';
+            // contains the Strong words with grammatical analysis
+            $parsedFileDir = 'https://raw.githubusercontent.com/briff/byzantine-majority-text/refs/heads/master/csv-unicode/strongs/with-parsing/';
+            foreach (self::ABBREVIATION_MAPPING as $abbrev => $usxCode) {
+                if (!Storage::exists("{$storagePrefix}/parsed/{$usxCode}.csv")) {
+                    $filePath = $parsedFileDir . $abbrev . '.csv';
+                    $this->info("Download {$filePath}");
+                    $fileContents = Http::get($filePath)->body();
+                    Storage::put("{$storagePrefix}/parsed/{$usxCode}.csv", $fileContents);
+                }
+                if (!Storage::exists("{$storagePrefix}/unparsed/{$usxCode}.csv")) {
+                    $filePath = $unparsedFileDir . $abbrev . '.csv';
+                    $this->info("Download {$filePath}");
+                    $fileContents = Http::get($filePath)->body();
+                    Storage::put("{$storagePrefix}/unparsed/{$usxCode}.csv", $fileContents);
+                }
             }
-            if (!Storage::exists("greek/unparsed/{$usxCode}.csv")) {
-                $filePath = $unparsedFileDir . $abbrev . '.csv';
-                $this->info("Download {$filePath}");
-                $fileContents = Http::get($filePath)->body();
-                Storage::put("greek/unparsed/{$usxCode}.csv", $fileContents);
+        } else if ($this->textSource == 'OpenGNT') {
+            if (!Storage::exists("{$storagePrefix}/OpenGNT.zip")) {
+                $zippedFile = "https://github.com/briff/OpenGNT/raw/refs/heads/master/OpenGNT_BASE_TEXT.zip";
+                $this->info("Download {$zippedFile}");
+                $fileContents = Http::get($zippedFile)->body();
+                Storage::put("{$storagePrefix}/OpenGNT.zip", $fileContents);
             }
-            if (!Storage::exists("greek/dictionary.xml")) {
-                $this->info("Download {$dictionaryFile}");
-                $fileContents = Http::get($dictionaryFile)->body();
-                Storage::put("greek/dictionary.xml", $fileContents);
+            $zip = new ZipArchive;
+            $zip->open(Storage::path("{$storagePrefix}/OpenGNT.zip"));
+            $zip->extractTo(Storage::path($storagePrefix), "OpenGNT_version3_3.csv");
+            $zip->close();
+            // go through each line in this csv file
+            $file = Storage::readStream("{$storagePrefix}/OpenGNT_version3_3.csv");
+            $header = fgetcsv($file, separator: "\t");
+            $parsedVerses = [];
+            while (($row = fgetcsv($file, separator: "\t")) !== false) {
+                $data = array_combine($header, $row);
+                $verseRef = explode("｜", trim($data["〔Book｜Chapter｜Verse〕"], "〔〕"));
+                $wordRef = explode("｜", trim($data["〔OGNTk｜OGNTu｜OGNTa｜lexeme｜rmac｜sn〕"], "〔〕"));
+                $postfix = preg_replace('/<\/?pm>/', "", explode("｜", trim($data["〔PMpWord｜PMfWord〕"], "〔〕"))[1]);
+                $book = (int) $verseRef[0];
+                $chapter = $verseRef[1];
+                $verse = $verseRef[2];
+                $word = $wordRef[2];
+                $strongNumber = str_replace("G", "", $wordRef[5]);
+                $parsing = "{" . $wordRef[4] . "}";
+                $parsedVerses[$book][$chapter][$verse]["parsed"][] = "{$word} {$strongNumber} {$parsing}";
+                $parsedVerses[$book][$chapter][$verse]["unparsed"][] = "{$word}{$postfix}";
             }
+            $this->info("Loaded text, generating files");
+            $parsedFileContent = [];
+            $unparsedFileContent = [];
+            foreach ($parsedVerses as $book => $parsedChapters) {
+                $usxCode = array_values(self::ABBREVIATION_MAPPING)[$book - 40];
+                foreach ($parsedChapters as $chapter => $verses) {
+                    foreach ($verses as $verse => $parsedTexts) {
+                        $unparsedText = implode(" ", $parsedTexts["unparsed"]);
+                        $parsedText = implode(" ", $parsedTexts["parsed"]);
+                        $parsedFileContent[$usxCode][] = ["chapter" => $chapter, "verse" => $verse, "text" => $parsedText];
+                        $unparsedFileContent[$usxCode][] = ["chapter" => $chapter, "verse" => $verse, "text" => $unparsedText];
+                    }
+                }
+            }
+            foreach ($parsedFileContent as $usxCode => $parsedVerses) {
+                Storage::makeDirectory("{$storagePrefix}/parsed");
+                Storage::makeDirectory("{$storagePrefix}/unparsed");
+                $file = fopen(Storage::path("{$storagePrefix}/parsed/{$usxCode}.csv"), 'w');
+                fputcsv($file, ["chapter", "verse", "text"]);
+                foreach ($parsedVerses as $parsedVerse) {
+                    fputcsv($file, $parsedVerse);
+                }
+                fclose($file);
+                $file = fopen(Storage::path("{$storagePrefix}/unparsed/{$usxCode}.csv"), 'w');
+                fputcsv($file, ["chapter", "verse", "text"]);
+                foreach ($unparsedFileContent[$usxCode] as $unparsedVerse) {
+                    fputcsv($file, $unparsedVerse);
+                }
+                fclose($file);
+            }
+        } else {
+            throw new \RuntimeException("Invalid text source: {$this->textSource}");
+        }
+        $dictionaryFile = 'https://github.com/briff/STEPBible-Data/raw/refs/heads/master/Lexicons/TBESG%20-%20Translators%20Brief%20lexicon%20of%20Extended%20Strongs%20for%20Greek%20-%20STEPBible.org%20CC%20BY.txt';
+        if (!Storage::exists("greek/dictionary.txt")) {
+            $this->info("Download {$dictionaryFile}");
+            $fileContents = Http::get($dictionaryFile)->body();
+            Storage::put("greek/dictionary.txt", $fileContents);
         }
     }
 
@@ -402,7 +528,7 @@ class ImportGreek extends Command
                     $currentChapter = 1;
                     break;
                 }
-                $vectorFileName = "vectors_greek/" . self::SOURCE . "_{$usxCode}_{$this->model}_{$this->dimensions}.{$currentChapter}";
+                $vectorFileName = "vectors_greek/" . $this->textSource . "_{$usxCode}_{$this->model}_{$this->dimensions}.{$currentChapter}";
                 $currentDeserializedVectors = null;
                 if ($this->option('source')) {
                     $storage = $this->selectInputStorage();
@@ -453,7 +579,7 @@ class ImportGreek extends Command
                         }
                         if (!empty($response)) {
                             $currentDeserializedVectors[$greekVerse->gepi] = [
-                                "source" => self::SOURCE,
+                                "source" => $this->textSource,
                                 "model" => $this->model,
                                 "dimensions" => $this->dimensions,
                                 "usx_code" => $greekVerse->usx_code,

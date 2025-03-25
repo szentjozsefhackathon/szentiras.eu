@@ -4,10 +4,12 @@
 {%  apply markdown_to_html %}
 ## Ismertetés a fordításokról
 
+***A honlapon megjelenő valamennyi szöveg a Szerzői Jogi Törvény szerinti védelem alatt áll. A törvény szerint engedélyhez kötött felhasználás esetén a jogtulajdonosok engedélye szükséges.***
+
  ### A honlapon megjelenő magyar bibliafordítások
 
 {% for translation in translations %}
-#### <a href='/{{ translation.abbrev }}'>{{ translation.name }} ({{ translation.denom }})</a></h4>
+#### <a href='/{{ translation.abbrev }}'>{{ translation.name }} ({{ translation.denom }})</a>
 
 {{ config_get('translations.definitions.' ~ translation.abbrev ~ '.copyright') }}
 
@@ -18,9 +20,20 @@
 
 #### A görög szövegforrás
 
-A honlapon megjelenített újszövetségi görög szöveg a bizánci típusú források közé tartozik, [Dr. Maurice A. Robinson](https://byzantinetext.com/) szabadon felhasználható munkája.
+A honlapon megjelenített újszövetségi görög szöveghez a következőket használtuk:
 
-A szószedetet AI modell segítségével készítettük, ezért számos hiba lehet benne, a visszajelzéseket megköszönjük.
+- az OpenGNT projekt CC licenszű munkája, amely az NA28-hoz képest mintegy 60 különbséget tartalmaz. [Ezek ide kattintva láthatók.](https://github.com/eliranwong/OpenGNT/blob/master/mapping_BGB/compare_OGNT_NA28/diff_main.tsv)
+- [Dr. Maurice A. Robinson](https://byzantinetext.com/) szabadon felhasználható munkája, amely a bizánci szövegforrások közé tartozik
+
+A szószedetet a STEPBible Strong szótára alapján AI modell segítségével készítettük, ezért számos hiba lehet benne, a visszajelzéseket megköszönjük.
+
+#### CC licenszek
+
+##### OpenGNT
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Open Greek New Testament Project</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://marvel.bible" property="cc:attributionName" rel="cc:attributionURL">Eliran Wong</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/eliranwong/OpenGNT" rel="dct:source">https://github.com/eliranwong/OpenGNT</a>.<br>Online Readers are available at <a href='https://marvel.bible'>https://Marvel.Bible</a> and <a href='https://OpenGNT.com'>https://OpenGNT.com</a>.<br />Permissions beyond the scope of this license may be available at <a xmlns:cc="http://creativecommons.org/ns#" href="https://marvel.bible/contact/contactform.php" rel="cc:morePermissions">https://marvel.bible/contact/contactform.php</a>.
+
+##### STEPBible
+CC BY 4.0 [www.STEPBible.org](https://www.STEPBible.org)
 
 {% endapply %}
 {% include 'bookAbbrevList' %}

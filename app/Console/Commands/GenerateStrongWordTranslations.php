@@ -90,7 +90,9 @@ class GenerateStrongWordTranslations extends Command
         if ($this->option("word")) {
             $wordNumbers = array_map("trim", explode(",", $this->option("word")));
         } else {
-            $wordNumbers = StrongWord::all()->pluck("number");
+            // get only those words that have usage
+
+            $wordNumbers = StrongWord::has('greekVerses')->pluck("number");
         }
 
         $progressBar = $this->output->createProgressBar(count($wordNumbers));
