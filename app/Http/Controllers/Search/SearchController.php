@@ -74,12 +74,12 @@ class SearchController extends Controller
             $previousWords = mb_substr($term, 0, strrpos($term, " ")) . " ";
         }
         $word = mb_strtolower(str_replace($previousWords, "", $term));
-        $query = StrongWord::query()->has('greekVerses')->limit(20)->with('dictionaryMeanings');
+        $query = StrongWord::query()->has('greekVerses')->with('dictionaryMeanings');
         $query->where('normalized', '~', "{$word}")
             ->orWhereHas('dictionaryMeanings', function ($query) use ($word) {
                 $query->where('meaning', 'ILIKE', "%{$word}%");
             });
-        $normalizations = $query->get();
+        $normalizations = $query->limit(20)->get();
         $foundWords = [];
         // for each greek verse find the words in the strong_normalizations field which match $word
         foreach ($normalizations as $strongWord) {

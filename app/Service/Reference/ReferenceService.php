@@ -112,8 +112,8 @@ class ReferenceService
     {
         $translation = $this->translationRepository->getById($translationId);
         $translatedRef = $this->translateReference($ref, $translationId);
-        $firstBook=$ref->bookRefs[0]->bookId;
-        $firstChapter=$ref->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
+        $firstBook=$translatedRef->bookRefs[0]->bookId;
+        $firstChapter=$translatedRef->bookRefs[0]->chapterRanges[0]->chapterRef->chapterId;
         $url = "{$translation->abbrev}/{$firstBook}{$firstChapter}";
         return $url;
     }
