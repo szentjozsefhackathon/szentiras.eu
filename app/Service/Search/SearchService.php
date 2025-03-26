@@ -49,6 +49,7 @@ class SearchService
     function getSuggestionsFor($term)
     {
         $result = [];
+        
         $searchParams = new FullTextSearchParams;
         $searchParams->text = $term;
         $searchParams->limit = 40; // increase the limit, as due to grouping there might be more

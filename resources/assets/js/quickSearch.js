@@ -8,7 +8,19 @@ $('#quickSearch').autocomplete({
     select: (event, ui) => {
       window.location = ui.item.link;
       return false;
+    },
+    search: (event, ui) => {
+      $("#quickSearchHitsButtonContent").html('<span class="spinner-border-sm spinner-border"></span>');
+  },
+  response: (event, ui) => {
+    if (ui.content[0]) {
+      const hitCount = ui.content[0].hitCount;
+      $("#quickSearchHitsButtonContent").html(hitCount + " találat");
+    } else {
+      $("#quickSearchHitsButtonContent").html("Nincs találat");
     }
+  }
+
   }).data("ui-autocomplete")._renderItem = (ul, item) => {
     if (item.cat === 'ref') {
       return $("<li>").append("<a><b>Igehely: </b>" + item.label + "</a>").appendTo(ul);
@@ -17,7 +29,19 @@ $('#quickSearch').autocomplete({
     }
   };
   
+
+  $('#quickSearch').on('input', (event) => {
+    if (!event.target.value) {
+      $("#quickSearchHitsButtonContent").html('<i class="bi bi-search"></i>');
+    }
+  });
+
   $('.quickSearchButton').on('click', () => {
+    $('#interstitial').show();
+    $('#quickSearchForm').trigger("submit");
+  });
+
+  $('#quickSearchHitsButton').on('click', () => {
     $('#interstitial').show();
     $('#quickSearchForm').trigger("submit");
   });

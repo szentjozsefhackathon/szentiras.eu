@@ -107,9 +107,14 @@ class SearchController extends Controller
                 'link' => "/{$concatenatedLabel}"
             ];
         }
-        $suggestions = $this->searchService->getSuggestionsFor($term);
+        $searchParamsForHit =  new FullTextSearchParams();
+        $searchParamsForHit->text = $term;
+        $suggestions = $this->searchService->getSuggestionsFor($term);        
         if (is_array($suggestions)) {
+            $translationHits = $this->retrieveTranslationHits($searchParamsForHit);
+            $hitCount = max(array_pluck($translationHits, 'hitCount'));            
             $result = array_merge($result, $suggestions);
+            $result[0]['hitCount'] = $hitCount;
         }
         return Response::json($result);
     }
@@ -321,6 +326,11 @@ class SearchController extends Controller
      */
     private function addTranslationHits($view, $searchParams)
     {
+        $view = $view->with('translationHits', $this->retrieveTranslationHits($searchParams));
+        return $view;
+    }
+
+    private function retrieveTranslationHits($searchParams) {
         $translationHits = [];
         foreach ($this->translationRepository->getAll() as $translation) {
             $params = clone $searchParams;
@@ -331,8 +341,7 @@ class SearchController extends Controller
                 $translationHits[] = ['translation' => $translation, 'hitCount' => $searchHits->hitCount];
             }
         }
-        $view = $view->with('translationHits', $translationHits);
-        return $view;
+        return $translationHits;
     }
 
     /**
