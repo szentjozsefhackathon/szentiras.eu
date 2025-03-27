@@ -93,7 +93,7 @@ class SearchController extends Controller
     public function anySuggest()
     {
         $result = [];
-        $term = Request::get('term');
+        $term = Request::input('term');
         $refs = $this->searchService->findTranslatedRefs($term);
         if (!empty($refs)) {
             $labels = [];
@@ -108,11 +108,17 @@ class SearchController extends Controller
                 'link' => "/{$concatenatedLabel}"
             ];
         }
-        $searchParamsForHit =  new FullTextSearchParams();
-        $searchParamsForHit->text = $term;
-        $suggestions = $this->searchService->getSuggestionsFor($term);        
+        $searchParams =  new FullTextSearchParams();
+        $searchParams->text = $term;
+        $searchParams->translationId = (int)(request()->input('translation') ?? null);
+        $book = request()->input('book');
+        if ($book) {
+            $searchParams->usxCodes = $this->extractBookUsxCodes($book);
+        }
+
+        $suggestions = $this->searchService->getSuggestionsFor($searchParams);        
         if (!empty($suggestions)) {
-            $translationHits = $this->retrieveTranslationHits($searchParamsForHit);
+            $translationHits = $this->retrieveTranslationHits($searchParams);
             $hitCount = max(array_pluck($translationHits, 'hitCount'));            
             $result = array_merge($result, $suggestions);
             $result[0]['hitCount'] = $hitCount;
@@ -334,6 +340,9 @@ class SearchController extends Controller
     private function retrieveTranslationHits($searchParams) {
         $translationHits = [];
         foreach ($this->translationRepository->getAll() as $translation) {
+            if ($searchParams->translationId && $searchParams->translationId != $translation->id) {
+                continue;
+            }
             $params = clone $searchParams;
             $params->countOnly = true;
             $params->translationId = $translation->id;

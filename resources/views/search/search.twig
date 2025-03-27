@@ -4,10 +4,10 @@
 Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %} | Szentírás
 {% endset %}
 
-{% macro filterRow(form, books, translations) %}
+{% macro filterRow(form, books, translations, idPrefix = '') %}
     <div class="mb-2 row">
         <div class="col">
-            <select name="book" class="form-control" id="book">
+            <select name="book" class="form-control" id="{{ idPrefix }}book">
                 <option value="all" {{ 'all' == form.book ? 'selected' }}>könyv: mind</option>
                 <option value="old_testament" {{ 'old_testament' == form.book ? 'selected' }}>Ószövetség</option>
                 <option value="new_testament" {{ 'new_testament' == form.book ? 'selected' }}>Újszövetség</option>
@@ -17,7 +17,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
             </select>
         </div>
         <div class="col">
-            <select name="translation" class="form-control" id="translation">
+            <select name="translation" class="form-control" id="{{ idPrefix }}translation">
                 <option value="0" {{ form.translation is not defined ? 'selected' }}>fordítás: mind</option>
                 {% for translation in translations %}
                     <option value="{{ translation.id }}" {{ translation.id == form.translation.id ? 'selected' }}>{{ translation.name }}</option>
@@ -25,7 +25,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
             </select>
         </div>
         <div class="col">
-            <select name="grouping" class="form-control" id="grouping">
+            <select name="grouping" class="form-control" id="{{ idPrefix }}grouping">
                 <option value="verse" {{ form.grouping == 'verse' ? 'selected' }}>versenként</option>
                 <option value="chapter" {{ form.grouping == 'chapter' ? 'selected' }}>fejezetenként</option>                            
                 <option value="book" {{ form.grouping == 'book' ? 'selected' }}>könyvenként</option>
@@ -45,10 +45,10 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
             <form role="form" class="form-horizontal" method="post" action="{{ action('Search\\SearchController@anySearch') }}" id="textSearchForm">
                 {{ csrf_field() }}                
                 <div class="input-group mb-2">
-                <input type="text" autocomplete="off" name="textToSearch" id="textToSearch" value="{{ form.textToSearch }}" placeholder="Keresendő szöveg" class="form-control"/>
-                <input type="submit" value="Keresés" class="btn btn-primary">                
+                <input type="text" autocomplete="off" name="textToSearch" id="searchInput" value="{{ form.textToSearch }}" placeholder="Keresendő szöveg" class="form-control"/>
+                <a href="javascript:void(0)" id="searchButton" class="btn btn-default btn-primary"><span id="searchHitsButtonContent"><i class="bi-search"></i> Keresés</span></a>
                 </div>
-                {{ _self.filterRow(form, books, translations) }}
+                {{ _self.filterRow(form, books, translations, 'text-search-') }}
             </form>
         </div>
         <div role="tabpanel" class="tab-pane {{ greekSearch ? 'active': ''}}" id="grc">

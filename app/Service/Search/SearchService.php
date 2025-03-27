@@ -46,12 +46,9 @@ class SearchService
         $this->referenceService = $referenceService;
     }
 
-    function getSuggestionsFor($term)
+    function getSuggestionsFor($searchParams)
     {
         $result = [];
-        
-        $searchParams = new FullTextSearchParams;
-        $searchParams->text = $term;
         $searchParams->limit = 40; // increase the limit, as due to grouping there might be more
         $searchParams->grouping = 'verse';
         $searchParams->groupGepi = false; // at the moment I found no way to order the translations, so I need to this an other way
