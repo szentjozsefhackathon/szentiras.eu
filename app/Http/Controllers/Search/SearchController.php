@@ -102,6 +102,7 @@ class SearchController extends Controller
             }
             $concatenatedLabel = implode(';', $labels);
             $result[] = [
+                'hitCount' => 1,
                 'cat' => 'ref',
                 'label' => $concatenatedLabel,
                 'link' => "/{$concatenatedLabel}"
@@ -110,7 +111,7 @@ class SearchController extends Controller
         $searchParamsForHit =  new FullTextSearchParams();
         $searchParamsForHit->text = $term;
         $suggestions = $this->searchService->getSuggestionsFor($term);        
-        if (is_array($suggestions)) {
+        if (!empty($suggestions)) {
             $translationHits = $this->retrieveTranslationHits($searchParamsForHit);
             $hitCount = max(array_pluck($translationHits, 'hitCount'));            
             $result = array_merge($result, $suggestions);
