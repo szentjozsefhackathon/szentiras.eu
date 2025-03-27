@@ -1,4 +1,4 @@
-import {itemRender} from './quickSearch.js';
+import { itemRender } from './quickSearch.js';
 
 $('#textSearchForm').on('submit', function (event) {
     event.preventDefault();
@@ -30,7 +30,7 @@ $("#greekTranslit").autocomplete({
 });
 
 $('#searchInput').autocomplete({
-    source: function(request, response) {
+    source: function (request, response) {
         $.ajax({
             url: "/kereses/suggest",
             dataType: "json",
@@ -40,7 +40,7 @@ $('#searchInput').autocomplete({
                 translation: $('#text-search-translation').val(),
                 grouping: $('#text-search-grouping').val()
             },
-            success: function(data) {
+            success: function (data) {
                 response(data);
             }
         });
@@ -53,24 +53,30 @@ $('#searchInput').autocomplete({
     select: (event, ui) => {
         window.location = ui.item.link;
         return false;
-      },
-      response: (event, ui) => {
+    },
+    response: (event, ui) => {
         if (ui.content[0]) {
-          const hitCount = ui.content[0].hitCount;
-          $("#searchHitsButtonContent").html(`${hitCount} találat <i class="bi bi-chevron-right"></i>`);
+            const hitCount = ui.content[0].hitCount;
+            $("#searchHitsButtonContent").html(`${hitCount} találat <i class="bi bi-chevron-right"></i>`);
         } else {
-          $("#searchHitsButtonContent").html("Nincs találat");
+            $("#searchHitsButtonContent").html("Nincs találat");
         }
     }
-  
+
 }).data("ui-autocomplete")._renderItem = (ul, item) => {
     return itemRender(ul, item);
-  };
+};
 
-$('#text-search-book').on('change', function(event) {
+$('#searchInput').on('input', (event) => {
+    if (!event.target.value) {
+        $("#searchHitsButtonContent").html('<i class="bi bi-search"></i> Keresés');
+    }
+});
+
+$('#text-search-book').on('change', function (event) {
     $('#searchInput').autocomplete('search');
 });
 
-$('#text-search-translation').on('change', function(event) {
+$('#text-search-translation').on('change', function (event) {
     $('#searchInput').autocomplete('search');
 });

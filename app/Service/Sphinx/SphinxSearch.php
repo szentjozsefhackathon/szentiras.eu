@@ -163,7 +163,7 @@ class SphinxSearch
 
     // Create a pattern by joining the words with alternation.
     // For example, "/planet|plane|net/".
-    $pattern = '/' . implode('|', $escapedWords) . '/';
+    $pattern = '/' . implode('|', $escapedWords) . '/i';
 
     // Use preg_replace_callback to wrap each match with <b> tags.
     $result = preg_replace_callback($pattern, function ($match) {
