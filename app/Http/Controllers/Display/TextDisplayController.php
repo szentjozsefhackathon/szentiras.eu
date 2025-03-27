@@ -235,15 +235,15 @@ class TextDisplayController extends Controller
                     $chapterNumber = (int) explode("_", $book_chapter)[1];
                     $verseMedia = [];
                     foreach ($mediaItems as $mediaItem) {
-                        $verseMedia[$mediaItem->verse] = $mediaItem;
+                        $verseMedia[$mediaItem->verse][] = $mediaItem;
                     }
                     // now we have media items for all verses in the chapter
                     foreach ($verseMedia as $verse => $mediaItems) {
                         $chapterLength = $this->bookService->getVerseCount($book, $chapterNumber, $translation);
                         if ($verse <= $chapterLength) {
-                            $mediaVerses["{$bookNumber}_{$chapterNumber}_{$verse}"][] = $mediaItems;
+                            $mediaVerses["{$bookNumber}_{$chapterNumber}_{$verse}"] = $mediaItems;
                         } else {
-                            $otherMedia["{$bookNumber}_{$chapterNumber}"][] = $mediaItems;
+                            $otherMedia["{$bookNumber}_{$chapterNumber}"] = array_merge($otherMedia["{$bookNumber}_{$chapterNumber}"] ?? [], $mediaItems);
                         }
                     }
                 }

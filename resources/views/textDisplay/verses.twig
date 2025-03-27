@@ -75,17 +75,11 @@
     </div>
     {% endif %}
     {% if mediaEnabled and otherMedia %}
+        {% from 'macros' import image %}
         <h5>További illusztrációk</h5>
         {% for otherMediaItem in otherMedia %}
             {% for image in otherMediaItem %}
-                <div class="card illustration otherMedia">
-                    <div class="card-body">
-                        <figure class="figure">
-                            <img src="/media/{{ image.uuid }}" class="figure-img img-fluid rounded">
-                            <figcaption class="figure-caption text-end"><small>Forrás: {{ image.mediaType.website }} ({{ image.mediaType.license }})</small></figcaption>
-                        </figure>
-                    </div>
-                </div>
+                {{ image(image) }}
             {% endfor  %}
         {% endfor %}
         <hr>

@@ -16,3 +16,16 @@
         {{- context.mediaEnabled ? '&media' -}}
     {%- endif -%}
 {% endmacro %}
+
+{% macro image(image) %}
+    <div class="d-flex justify-content-center illustration">
+        <div class="card ">
+            <div class="card-body">
+                <figure class="figure">
+                    <img src="/media/{{ image.uuid }}" class="figure-img img-fluid rounded" data-id="{{ image.id }}">
+                    <figcaption class="figure-caption text-end"><small>Forrás: {{ image.mediaType.website }} ({{ image.mediaType.license }})</small></figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
