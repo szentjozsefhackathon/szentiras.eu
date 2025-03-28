@@ -18,5 +18,6 @@ class SearchForm {
     public $mode;
     public $limit = 100;
     public $offset = 0;
+    public $rule;
 
 }

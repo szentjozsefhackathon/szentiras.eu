@@ -154,8 +154,14 @@ class SearchController extends Controller
             $greekVerses = [];
             $explodedGreekText = explode(" ", strtolower($form->greekTranslit));
             $query = GreekVerse::query();
-            foreach ($explodedGreekText as $i => $word) {
-                $query->where('strong_normalizations', '~*', "\\y{$word}\\y");
+            if ($form->rule == 'all') {
+                foreach ($explodedGreekText as $i => $word) {
+                    $query->where('strong_normalizations', '~*', "\\y{$word}\\y");
+                }    
+            } else {
+                foreach ($explodedGreekText as $i => $word) {
+                    $query->orWhere('strong_normalizations', '~*', "\\y{$word}\\y");
+                }    
             }
             $greekVerses = $query->get()->toArray();
             $gepis = array_map(fn($greekVerse) => "{$greekVerse['usx_code']}_{$greekVerse['chapter']}_{$greekVerse['verse']}", $greekVerses);
@@ -246,6 +252,7 @@ class SearchController extends Controller
         $form->mode = Request::get('mode');
         $form->limit = Request::get('limit') ?? 100;
         $form->offset = Request::get('offset') ?? 0;
+        $form->rule = Request::get('rule');
         if (Request::get('translation') > 0) {
             $form->translation = $this->translationRepository->getById(Request::get('translation'));
         }

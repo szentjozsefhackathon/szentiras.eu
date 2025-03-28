@@ -5,7 +5,7 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
 {% endset %}
 
 {% block content %}
-    <h3>Keresés jelentés szerint, AI segítségével</h3>
+    <h4>Jelentés szerinti keresés</h4>
             <div class="card mb-2">
                 <div class="card-body">                    
             <form role="form" class="form-horizontal" method="post"
@@ -24,7 +24,7 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
                 {% endif %}                    
                 <div class="mb-2">
                     <label for="textToSearchAi" class="form-label" required>Keresendő</label>
-                    <input required type="text" name="textToSearchAi" id="textToSearchAi" value="{{ form.textToSearchAi }}" class="form-control"/>                    
+                    <input required type="text" autocomplete="off" name="textToSearchAi" id="textToSearchAi" value="{{ form.textToSearchAi }}" class="form-control"/>                    
                     {{ errors.first('textToSearchAi') }}
                 </div>
                 <div class="row g-3 mb-2">

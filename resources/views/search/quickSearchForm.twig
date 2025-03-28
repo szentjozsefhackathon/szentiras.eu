@@ -8,7 +8,7 @@
                 action="/kereses/quicksearch" id="quickSearchForm">
             <div class="form-group">
                 <div class="input-group">
-                    <input id="quickSearch" type="text" class="form-control" name="textToSearch" value="{{ form.textToSearch }}" placeholder="Gyorskeresés">
+                    <input id="quickSearch" autocomplete="off" type="text" class="form-control" name="textToSearch" value="{{ form.textToSearch }}" placeholder="Gyorskeresés">
                     <input id="grouping" type="hidden" class="form-control" name="grouping" value="verse">
                     {{ csrf_field() }}
                     <div class="input-group-append">
@@ -18,7 +18,7 @@
                         <a href="javascript:void(0)" title="Részletes keresés" class="quickSearchButton btn-secondary d-md-none d-lg-none btn btn-default"><i class="bi-gear"></i></a></span>
                     </div>
                     <div class="input-group-append">
-                        <a href="/ai-search" title="AI keresés" class="btn-secondary d-md-none d-lg-none btn btn-default"><i class="bi-robot"></i></a></span>                            
+                        <a href="/ai-search" title="MI keresés" class="btn-secondary d-md-none d-lg-none btn btn-default"><i class="bi-robot"></i></a></span>                            
                     </div>
 
                 </div>
@@ -28,7 +28,7 @@
             <a href="javascript:void(0)" role="button" class="quickSearchButton btn btn-secondary btn-default"><i class="bi-gear"></i> Részletes keresés</a>
         </div>
         <div class="d-none d-md-block text-center mt-2">
-            <a href="/ai-search" role="button" class="btn btn-secondary btn-default"><i class="bi-robot"></i> AI keresés</a>
+            <a href="/ai-search" role="button" class="btn btn-secondary btn-default"><i class="bi-robot"></i> MI keresés</a>
         </div>
     </div>
 </div>

@@ -13,7 +13,11 @@
                             <div class="input-group mb-2">
                                 <span class="input-group-text"><a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Keresendő görög szó(tő). A magyar jelentést is gépelheted, felajánljuk a görög megfelelőt. Itt a szentírási versek Strong szavai között keresünk. "><span></a></span>
                                 <input type="text" autocomplete="off" placeholder="Latin átírás / magyar jelentés" name="greekTranslit" id="greekTranslit" value="{{ form.greekTranslit }}" class="form-control" />
-                                <input type="submit" value="Keresés" class="btn btn-primary"/>                                
+                                <select name="rule" class="form-select" id="greekTranslitRule" data-bs-toggle="tooltip" data-bs-placement="top" title="+ mindegyik, | bármelyik">
+                                    <option value="all" {{ 'all' == form.rule ? 'selected' }}>+</option>
+                                    <option value="any" {{ 'any' == form.rule ? 'selected' }}>|</option>
+                                </select>
+                                <input type="submit" value="Keresés" class="btn btn-primary"/>
                             </div>
                 </div>
                 {% from "search.search" import filterRow %}
