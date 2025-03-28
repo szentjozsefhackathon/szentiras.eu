@@ -30,7 +30,7 @@ class ReadingPlan extends Eloquent {
     protected $fillable = ['name', 'description'];
 
     public function days() {
-        return $this->hasMany('SzentirasHu\\Data\\Entity\\ReadingPlanDay', 'plan_id');
+        return $this->hasMany('SzentirasHu\\Data\\Entity\\ReadingPlanDay', 'plan_id')->orderBy('day_number');
     }
 
 }
