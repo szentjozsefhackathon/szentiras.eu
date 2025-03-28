@@ -119,7 +119,7 @@ class SearchController extends Controller
         $suggestions = $this->searchService->getSuggestionsFor($searchParams);        
         if (!empty($suggestions)) {
             $translationHits = $this->retrieveTranslationHits($searchParams);
-            $hitCount = max(array_pluck($translationHits, 'hitCount'));            
+            $hitCount = array_sum(array_pluck($translationHits, 'hitCount'));            
             $result = array_merge($result, $suggestions);
             $result[0]['hitCount'] = $hitCount;
         }
@@ -178,8 +178,8 @@ class SearchController extends Controller
             $sphinxResult = $sphinxClient->getGreekNormalizations();
             if ($sphinxResult) {
                 $fullTextSearchResult = new FullTextSearchResult();
-                if (array_key_exists("count(*)", $sphinxResult[0])) {
-                    $fullTextSearchResult->hitCount = $sphinxResult[0]["count(*)"];
+                if (array_key_exists("hitcount", $sphinxResult[0])) {
+                    $fullTextSearchResult->hitCount = $sphinxResult[0]["hitcount"];
                 } else {
                     $fullTextSearchResult->verseIds = array_map(fn($elem) => $elem['id'], $sphinxResult);
                     // transform sphinxResult to id => element

@@ -69,7 +69,13 @@ class SphinxSearch
     $this->_filters[] = ["MATCH(?)", $this->_search_string];
     $filters[] = "MATCH(?)";
     $filterString = implode(' AND ', $filters);
-    $query = $this->_pdo->prepare("SELECT " . ($this->_countOnly ? "count(*)" : " *, WEIGHT() ") . " FROM verse, verseroot WHERE {$filterString} " . ($this->_groupGepi ? "GROUP BY gepi" : "") . " ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit} OPTION field_weights=(verse=100,verseroot=10),index_weights=(verse=2,verseroot=1)");
+    if ($this->_countOnly) {
+      $queryString = "SELECT count(distinct id) as hitcount FROM verse, verseroot WHERE {$filterString}";
+    } else {
+      $queryString = "SELECT *, WEIGHT() FROM verse, verseroot WHERE {$filterString} " . ($this->_groupGepi ? "GROUP BY gepi" : "") . " ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit} OPTION field_weights=(verse=100,verseroot=10),index_weights=(verse=2,verseroot=1)";
+    }
+    $query = $this->_pdo->prepare($queryString);
+    
     $i = 1;
     foreach ($this->_filters as $filter) {
       if (is_array($filter[1])) {
@@ -105,7 +111,12 @@ class SphinxSearch
     $this->_filters[] = ["MATCH(?)", $this->_search_string];
     $filters[] = "MATCH(?)";
     $filterString = implode(' AND ', $filters);
-    $queryString = "SELECT " . ($this->_countOnly ? "count(*)" : " *, WEIGHT() ") . " FROM greekverse WHERE {$filterString} " . ($this->_groupGepi ? "GROUP BY gepi" : "") . " ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit}";
+    if ($this->_countOnly) {
+      $queryString = "SELECT count(distinct id) as hitcount FROM greekverse WHERE {$filterString}";
+    } else {
+      $queryString = "SELECT " . ($this->_countOnly ? "count(distinct id) as hitcount" : " *, WEIGHT() ") . " FROM greekverse WHERE {$filterString} " . ($this->_groupGepi ? "GROUP BY gepi" : "") . " ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit}";
+    }
+    
     $query = $this->_pdo->prepare($queryString);
     $i = 1;
     foreach ($this->_filters as $filter) {

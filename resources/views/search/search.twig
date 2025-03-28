@@ -78,7 +78,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
         <form class="translationHitForm" action="/kereses/search?textToSearch={{ form.textToSearch }}&translation={{ translationHit.translation.id }}&book={{ form.book }}&grouping={{ form.grouping }}" method="post">
             {{ csrf_field() }}
         <a 
-           role="button" class="btn btn-info btn-sm translationHit">{{ translationHit.translation.abbrev }} <sup>{% if translationHit.hitCount > 999 %}&gt;{% endif %}{{ translationHit.hitCount }}</sup>
+           role="button" class="btn btn-info btn-sm translationHit">{{ translationHit.translation.abbrev }} <sup>{{ translationHit.hitCount }}</sup>
         </a>
         </form>
     {% endfor %}
