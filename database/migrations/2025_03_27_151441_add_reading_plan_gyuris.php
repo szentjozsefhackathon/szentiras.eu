@@ -24,6 +24,8 @@ return new class extends Migration
 	{
 		DB::table('reading_plans')->where('id', 2)->delete();
         DB::table('reading_plans')->where('id', 3)->delete();
+		DB::table('reading_plan_days')->where('plan_id', 2)->delete();		
+		DB::table('reading_plan_days')->where('plan_id', 3)->delete();
     }
 
     private function addInitialData() {
@@ -36,14 +38,14 @@ return new class extends Migration
         	[
         		'id' => 2,
         		'name' => '365 napos logikus terv (teljes Szentírás)',
-        		'description' => 'A teljes katolikus Biblia szövege logikusan sorba rendezve egy évre, napi 3–4 fejezet. https://halld.ujevangelizacio.hu, Gyuris Gellért',
+        		'description' => 'A teljes katolikus Biblia szövege logikusan sorba rendezve egy évre, napi 3–4 fejezet. <a href="https://halld.ujevangelizacio.hu" target="_blank">halld.ujevangelizacio.hu</a>',
             ]
         );
         DB::table('reading_plans')->insert(
         	[
         		'id' => 3,
         		'name' => '365 napos logikus terv (Újszövetség + Zsoltárok)',
-        		'description' => 'Újszövetség és Zsoltárok könyve 1 év alatt kényelmesen. https://halld.ujevangelizacio.hu, Gyuris Gellért',
+        		'description' => 'Újszövetség és Zsoltárok könyve 1 év alatt kényelmesen. <a href="https://halld.ujevangelizacio.hu" target="_blank">halld.ujevangelizacio.hu</a>',
             ]
         );
 

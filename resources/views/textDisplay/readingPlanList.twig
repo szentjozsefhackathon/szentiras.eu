@@ -10,7 +10,7 @@
                     <a href="/tervek/{{ readingPlan.id }}" class="list-group-item-action">
                         {{ readingPlan.name }}
                     </a>
-                    <p class="mb-1">{{ readingPlan.description }}</p>
+                    <p class="mb-1">{{ readingPlan.description|raw }}</p>
                 </li>
             {% endfor %}
         </ul>
