@@ -67,7 +67,7 @@ class AddTranslationRUF2014 extends Migration {
         DB::table('translations')->where('id', 2)->update(
         	array(
         		'name' => 'Magyar Bibliatársulat újfordítású Bibliája',
-        		'copyright' => 'A <a href="http://bibliatarsulat.hu/">Magyar Bibliatársulat</a> ideiglenes engedélyével. A szöveg revíziója a Bibliatársulatnál jelenleg zajlik, hivatalos változat <a href="http://bibliatarsulat.hu/">ott látható</a>. Közeli tervünk a revideált szöveg teljes átvétele, amiről a Bibliatársulattal megegyeztünk.'
+        		'copyright' => '...'
         		)
         );		
 	}
