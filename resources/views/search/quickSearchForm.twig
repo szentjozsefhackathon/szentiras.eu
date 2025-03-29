@@ -15,20 +15,22 @@
                         <a href="javascript:void(0)" class="quickSearchButton btn btn-default btn-primary"><span id="quickSearchHitsButtonContent"><i class="bi-search"></i></span></a>
                     </div>
                     <div class="input-group-append">
-                        <a href="javascript:void(0)" title="Részletes keresés" class="quickSearchButton btn-secondary d-md-none d-lg-none btn btn-default"><i class="bi-gear"></i></a></span>
+                        <a href="javascript:void(0)" title="Részletes keresés" class="quickSearchButton btn-secondary {{ fullQuickSearch ? 'd-none' : 'd-md-none d-lg-none' }} btn btn-default"><i class="bi-gear"></i></a></span>
                     </div>
                     <div class="input-group-append">
-                        <a href="/ai-search" title="MI keresés" class="btn-secondary d-md-none d-lg-none btn btn-default"><i class="bi-robot"></i></a></span>                            
+                        <a href="/ai-search" title="MI keresés" class="btn-secondary {{ fullQuickSearch ? 'd-none' : 'd-md-none d-lg-none' }} btn btn-default"><i class="bi-robot"></i></a></span>                            
                     </div>
 
                 </div>
             </div>
         </form>
-        <div class="d-none d-md-block text-center mt-2">
+        <div class="d-flex flex-wrap">
+        <div class="{{ fullQuickSearch ? '' : 'd-none d-md-block' }} text-center mt-2 flex-fill">
             <a href="javascript:void(0)" role="button" class="quickSearchButton btn btn-secondary btn-default"><i class="bi-gear"></i> Részletes keresés</a>
         </div>
-        <div class="d-none d-md-block text-center mt-2">
+        <div class="{{ fullQuickSearch ? '' : 'd-none d-md-block' }} text-center mt-2 flex-fill">
             <a href="/ai-search" role="button" class="btn btn-secondary btn-default"><i class="bi-robot"></i> MI keresés</a>
         </div>
+    </div>
     </div>
 </div>

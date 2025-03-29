@@ -1,20 +1,5 @@
 {% extends "layout" %}
 
-{% block extraHead %}
-    <script type="application/ld+json">
-{
-   "@context": "http://schema.org",
-   "@type": "WebSite",
-   "url": "{{ url('/') }}",
-   "potentialAction": {
-     "@type": "SearchAction",
-     "target": "{{ url('/kereses/search?textToSearch={search_term_string}')}}",
-     "query-input": "required name=search_term_string"
-   }
-}
-</script>
-{% endblock %}
-
 {% block pageHeader %}
     <div class="page-header">
         <h1>Szentírás.eu <span class="hidden-xs hidden-sm sitesubtitle">Digitális Biblia 2012 óta. (Régi <b>szentiras.hu</b>)</span></h1>

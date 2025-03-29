@@ -57,7 +57,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
     </div>
 
     {% set noResultText %}
-        Nem találod, amit keresel? Próbáld MI alapú keresőnket. <a href="/ai-search?textToSearchAi={{ form.textToSearch }}" class="btn btn-primary" id="aiSearchLink"><i class="bi bi-robot"></i> MI keresés</a>
+        Nem találod, amit keresel? Próbáld MI alapú keresőnket! <a href="/ai-search?textToSearchAi={{ form.textToSearch }}" class="btn btn-primary" id="aiSearchLink"><i class="bi bi-robot"></i> MI keresés</a>
     {% endset %}
 
     {% if bookRef is not defined and fullTextResults is not defined and form.textToSearch != '' %} 

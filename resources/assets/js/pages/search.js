@@ -44,7 +44,7 @@ $('#searchInput').autocomplete({
     response: (event, ui) => {
         if (ui.content[0]) {
             const hitCount = ui.content[0].hitCount;
-            $("#searchHitsButtonContent").html(`${hitCount} találat <i class="bi bi-chevron-right"></i>`);
+            $("#searchHitsButtonContent").html(`${hitCount} találat <i class="bi bi-caret-right"></i>`);
             $("#noResultAutocomplete").addClass("hidden");
         } else {
             $("#searchHitsButtonContent").html("Nincs találat");

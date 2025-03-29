@@ -25,7 +25,7 @@ function quickSearch() {
     response: (event, ui) => {
       if (ui.content[0]) {
         const hitCount = ui.content[0].hitCount;
-        $("#quickSearchHitsButtonContent").html(hitCount + " találat");
+        $("#quickSearchHitsButtonContent").html(`${hitCount} találat <i class="bi bi-caret-right"></i>`);
       } else {
         $("#quickSearchHitsButtonContent").html("Nincs találat");
       }
