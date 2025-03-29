@@ -28,6 +28,7 @@ Route::post("/kereses/quicksearch", '\SzentirasHu\Http\Controllers\Search\Search
 Route::get("/kereses/suggest", '\SzentirasHu\Http\Controllers\Search\SearchController@anySuggest');
 Route::post("/kereses/suggest", '\SzentirasHu\Http\Controllers\Search\SearchController@anySuggest');
 Route::post("/kereses/legacy", '\SzentirasHu\Http\Controllers\Search\SearchController@postLegacy');
+Route::get("/kereses/suggestStrong", [ \SzentirasHu\Http\Controllers\Search\SearchController::class, 'suggestStrong']);
 Route::get("/kereses/suggestGreek", [ \SzentirasHu\Http\Controllers\Search\SearchController::class, 'suggestGreek']);
 Route::post("/kereses/greekSearch", '\SzentirasHu\Http\Controllers\Search\SearchController@greekSearch');
 

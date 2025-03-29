@@ -164,7 +164,7 @@ class ReferenceService
         if ($translation == null) {
             $translation = $this->translationService->getDefaultTranslation();
         }
-        $book = $this->bookRepository->getByUsxCodeForTranslation($usxCode, $translation->id);
+        $book = $this->bookRepository->getByUsxCodeForTranslation($usxCode, $translation);
         $ref = CanonicalReference::fromBookChapterVerse($book->abbrev, $chapterNumber, $verseNumber);
         return $ref;
     }

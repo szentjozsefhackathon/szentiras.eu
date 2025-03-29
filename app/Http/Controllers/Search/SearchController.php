@@ -53,7 +53,7 @@ class SearchController extends Controller
      */
     private $searchService;
 
-    function __construct(BookRepository $bookRepository, TranslationRepository $translationRepository, TextService $textService, SearchService $searchService, protected TranslationService $translationService)
+    function __construct(BookRepository $bookRepository, TranslationRepository $translationRepository, TextService $textService, SearchService $searchService, protected TranslationService $translationService, protected ReferenceService $referenceService)
     {
         $this->bookRepository = $bookRepository;
         $this->translationRepository = $translationRepository;
@@ -64,30 +64,6 @@ class SearchController extends Controller
     public function getIndex()
     {
         return $this->getView($this->prepareForm());
-    }
-
-    public function suggestGreek()
-    {
-        $term = Request::get('term');
-        $previousWords = "";
-        if (str_contains($term, " ")) {
-            $previousWords = mb_substr($term, 0, strrpos($term, " ")) . " ";
-        }
-        $word = mb_strtolower(str_replace($previousWords, "", $term));
-        $query = StrongWord::query()->has('greekVerses')->with('dictionaryMeanings');
-        $query->where('normalized', '~', "{$word}")
-            ->orWhereHas('dictionaryMeanings', function ($query) use ($word) {
-                $query->where('meaning', 'ILIKE', "%{$word}%");
-            });
-        $normalizations = $query->limit(20)->get();
-        $foundWords = [];
-        // for each greek verse find the words in the strong_normalizations field which match $word
-        foreach ($normalizations as $strongWord) {
-            $meanings = $strongWord->dictionaryMeanings->pluck('meaning')->join(', ');
-            $foundWords[$strongWord->normalized] = ["value" => $previousWords . $strongWord->normalized, "label" => "{$strongWord->lemma} ($strongWord->transliteration - {$meanings})"];
-        }
-        ksort($foundWords);
-        return Response::json(array_values($foundWords));
     }
 
     public function anySuggest()
@@ -116,10 +92,10 @@ class SearchController extends Controller
             $searchParams->usxCodes = $this->extractBookUsxCodes($book);
         }
 
-        $suggestions = $this->searchService->getSuggestionsFor($searchParams);        
+        $suggestions = $this->searchService->getSuggestionsFor($searchParams);
         if (!empty($suggestions)) {
             $translationHits = $this->retrieveTranslationHits($searchParams);
-            $hitCount = array_sum(array_pluck($translationHits, 'hitCount'));            
+            $hitCount = array_sum(array_pluck($translationHits, 'hitCount'));
             $result = array_merge($result, $suggestions);
             $result[0]['hitCount'] = $hitCount;
         }
@@ -140,6 +116,89 @@ class SearchController extends Controller
         return $view;
     }
 
+    public function suggestStrong()
+    {
+        $term = Request::get('term');
+        $previousWords = "";
+        if (str_contains($term, " ")) {
+            $previousWords = mb_substr($term, 0, strrpos($term, " ")) . " ";
+        }
+        $word = mb_strtolower(str_replace($previousWords, "", $term));
+        $query = StrongWord::query()->has('greekVerses')->with('dictionaryMeanings');
+        $query->where('normalized', '~', "{$word}")
+            ->orWhereHas('dictionaryMeanings', function ($query) use ($word) {
+                $query->where('meaning', 'ILIKE', "%{$word}%");
+            });
+        $normalizations = $query->limit(20)->get();
+        $foundWords = [];
+        foreach ($normalizations as $strongWord) {
+            $meanings = $strongWord->dictionaryMeanings->pluck('meaning')->join(', ');
+            $foundWords[$strongWord->normalized] = ["value" => $previousWords . $strongWord->normalized, "label" => "{$strongWord->lemma} ($strongWord->transliteration - {$meanings})"];
+        }
+        ksort($foundWords);
+        return Response::json(array_values($foundWords));
+    }
+
+
+    public function suggestGreek()
+    {
+        $term = Request::input('term');
+        $searchParams =  new FullTextSearchParams();
+        $searchParams->text = "{$term}";
+
+        $book = request()->input('book');
+        if ($book) {
+            $searchParams->usxCodes = $this->extractBookUsxCodes($book);
+        }
+        $sphinxClient = new SphinxSearch($searchParams->text);
+        if (!empty($searchParams->usxCodes)) {
+            $sphinxClient->filter('usx_code', array_keys($searchParams->usxCodes));
+        }
+        $limit = 10;
+        $sphinxClient->limit($limit);
+        $sphinxResult = $sphinxClient->getGreekNormalizations();
+        $sphinxClient = new SphinxSearch($searchParams->text);
+        if (!empty($searchParams->usxCodes)) {
+            $sphinxClient->filter('usx_code', array_keys($searchParams->usxCodes));
+        }
+        $sphinxClient->countOnly(true);
+        $countResult = $sphinxClient->getGreekNormalizations();
+        $items = [];
+        if ($sphinxResult) {
+            foreach ($sphinxResult as $result) {
+                $verse = GreekVerse::whereId($result['id'])->first();
+                $text = str_replace('¶', '', $verse->text);
+                $positions = $this->findWordPositions($term, $verse->normalization);
+                $textWords = explode(' ', $text);
+                foreach ($positions as $position) {
+                    $textWords[$position] = "<b>" . $textWords[$position] . "</b>";
+                }
+                $text = implode(' ', $textWords);
+                $ref = $this->referenceService->createReferenceFromNumbers($verse->usx_code, $verse->chapter, $verse->verse);
+                $items[] = ['label' => $text, 'link' => "/{$ref->toString()}", 'linkLabel' => $ref->toString(), 'value' => $verse->id];
+            }
+            $items[0]['hitCount'] = $countResult[0]['hitcount'];
+        }
+        return Response::json($items);
+    }
+
+    private function findWordPositions($searchTerm, $normalizedText)
+    {
+        $positions = [];
+        $words = explode(' ', strtolower($searchTerm));
+        $normalizedText = explode(' ', $normalizedText);
+        foreach ($normalizedText as $i => $normalizedWord) {
+            foreach ($words as $word) {
+                $pattern = str_ends_with($word, "*") ? '/^' . preg_quote(substr($word, 0, -1), '/') . '/i' : '/\b' . preg_quote($word, '/') . '\b/i';
+                if (preg_match($pattern, preg_replace('/[^\w]/', '', $normalizedWord))) {
+                    $positions[] = $i;
+                }
+            }
+        }
+        return $positions;
+    }
+
+
     public function greekSearch()
     {
         if (Request::get('greekTranslit') == null && Request::get('greekText') == null) {
@@ -157,11 +216,11 @@ class SearchController extends Controller
             if ($form->rule == 'all') {
                 foreach ($explodedGreekText as $i => $word) {
                     $query->where('strong_normalizations', '~*', "\\y{$word}\\y");
-                }    
+                }
             } else {
                 foreach ($explodedGreekText as $i => $word) {
                     $query->orWhere('strong_normalizations', '~*', "\\y{$word}\\y");
-                }    
+                }
             }
             $greekVerses = $query->get()->toArray();
             $gepis = array_map(fn($greekVerse) => "{$greekVerse['usx_code']}_{$greekVerse['chapter']}_{$greekVerse['verse']}", $greekVerses);
@@ -174,12 +233,6 @@ class SearchController extends Controller
 
             if (!empty($searchParams->usxCodes)) {
                 $sphinxClient->filter('usx_code', array_keys($searchParams->usxCodes));
-            }
-            if ($searchParams->groupGepi) {
-                $sphinxClient->groupGepi(true);
-            }
-            if ($searchParams->countOnly) {
-                $sphinxClient->countOnly(true);
             }
             $sphinxResult = $sphinxClient->getGreekNormalizations();
             if ($sphinxResult) {
@@ -344,7 +397,8 @@ class SearchController extends Controller
         return $view;
     }
 
-    private function retrieveTranslationHits($searchParams) {
+    private function retrieveTranslationHits($searchParams)
+    {
         $translationHits = [];
         foreach ($this->translationRepository->getAll() as $translation) {
             if ($searchParams->translationId && $searchParams->translationId != $translation->id) {

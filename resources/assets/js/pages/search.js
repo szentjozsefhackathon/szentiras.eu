@@ -13,8 +13,50 @@ $('#searchButton').on('click', function (event) {
 
 
 $("#greekTranslit").autocomplete({
-    source: '/kereses/suggestGreek',
+    source: '/kereses/suggestStrong',
 });
+
+$('#greekTextSearchButton').on('click', function (event) {
+    event.preventDefault();
+    $('#greekTextSearchForm').submit();
+});
+
+$("#greekText").autocomplete({
+    source: function (request, response) {
+        $.ajax({
+            url: "/kereses/suggestGreek",
+            dataType: "json",
+            data: {
+                term: request.term,
+                book: $('#greek-search-book').val()
+            },
+            success: function (data) {
+                response(data);
+            }
+        });
+    },
+    minLength: 2,
+    search: (event, ui) => {
+        $("#greekTextSearchHitsButtonContent").html('<span class="spinner-border-sm spinner-border"></span> Keresés');
+    },
+    response: (event, ui) => {
+        if (ui.content[0]) {
+            const hitCount = ui.content[0].hitCount;
+            $("#greekTextSearchHitsButtonContent").html(`${hitCount} találat <i class="bi bi-caret-right"></i>`);
+        } else {
+            $("#greekTextSearchHitsButtonContent").html("Nincs találat");
+        }
+    },
+    select: (event, ui) => {
+        window.location = ui.item.link;
+        return false;
+    }
+}).data("ui-autocomplete")._renderItem = (ul, item) => {
+    return itemRender(ul, item);
+};
+
+
+
 
 $('#searchInput').autocomplete({
     source: function (request, response) {

@@ -114,7 +114,7 @@ class SphinxSearch
     if ($this->_countOnly) {
       $queryString = "SELECT count(distinct id) as hitcount FROM greekverse WHERE {$filterString}";
     } else {
-      $queryString = "SELECT " . ($this->_countOnly ? "count(distinct id) as hitcount" : " *, WEIGHT() ") . " FROM greekverse WHERE {$filterString} " . ($this->_groupGepi ? "GROUP BY gepi" : "") . " ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit}";
+      $queryString = "SELECT *, WEIGHT() FROM greekverse WHERE {$filterString} " . ($this->_groupGepi ? "GROUP BY gepi" : "") . " ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit}";
     }
     
     $query = $this->_pdo->prepare($queryString);

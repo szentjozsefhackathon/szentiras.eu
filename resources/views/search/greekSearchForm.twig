@@ -21,7 +21,7 @@
                             </div>
                 </div>
                 {% from "search.search" import filterRow %}
-                {{  filterRow(form, books, translations) }}
+                {{  filterRow(form, books, translations, 'strong-search-') }}
             </form>    
             </div>
         </div>
@@ -39,10 +39,10 @@
                     <div class="input-group mb-2">
                         <span class="input-group-text"><a href="javascript:void(0)" class="link-primary"><span class="bi bi-info-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" title="Itt a szentírási versek görög szövegében keresünk részleteket. Alapértelmezés szerint minden szónak szerepelnie kell az adott versben. Ha bármelyik szerepeljen, használd a | jelet, ha szórészlet szerepeljen, használd a * jelet, pl. meta* | *christ*"><span></a></span>
                         <input type="text" autocomplete="off" name="greekText" id="greekText" value="{{ form.greekText }}" placeholder="Keresendő szövegrészlet(ek)" class="form-control"/>
-                        <input type="submit" value="Keresés" class="btn btn-primary"/>                        
+                        <a href="javascript:void(0)" id="greekTextSearchButton" class="btn btn-default btn-primary"><span id="greekTextSearchHitsButtonContent"><i class="bi-search"></i> Keresés</span></a>
                     </div>
                     {% from "search.search" import filterRow %}
-                    {{  filterRow(form, books, translations) }}
+                    {{  filterRow(form, books, translations, 'greek-search-') }}
                     </form>            
             </div>
         </div>
