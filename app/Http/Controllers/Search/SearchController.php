@@ -170,8 +170,11 @@ class SearchController extends Controller
                 $text = str_replace('¶', '', $verse->text);
                 $positions = $this->findWordPositions($term, $verse->normalization);
                 $textWords = explode(' ', $text);
+                $textWords = array_values(array_filter($textWords));
                 foreach ($positions as $position) {
-                    $textWords[$position] = "<b>" . $textWords[$position] . "</b>";
+                    if (array_key_exists($position, $textWords)) {
+                        $textWords[$position] = "<b>" . $textWords[$position] . "</b>";
+                    }
                 }
                 $text = implode(' ', $textWords);
                 $ref = $this->referenceService->createReferenceFromNumbers($verse->usx_code, $verse->chapter, $verse->verse);
@@ -185,8 +188,8 @@ class SearchController extends Controller
     private function findWordPositions($searchTerm, $normalizedText)
     {
         $positions = [];
-        $words = explode(' ', strtolower($searchTerm));
-        $normalizedText = explode(' ', $normalizedText);
+        $words = array_filter(explode(' ', strtolower($searchTerm)));
+        $normalizedText = array_values(array_filter(explode(' ', $normalizedText)));
         foreach ($normalizedText as $i => $normalizedWord) {
             foreach ($words as $word) {
                 $pattern = str_ends_with($word, "*") ? '/^' . preg_quote(substr($word, 0, -1), '/') . '/i' : '/\b' . preg_quote($word, '/') . '\b/i';
