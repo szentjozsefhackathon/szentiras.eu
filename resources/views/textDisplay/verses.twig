@@ -31,8 +31,12 @@
     </div>
     {% if readingPlanDay %}
     <div>
-        <h1><a href="/tervek/{{ readingPlanDay.plan_id }}">{{ readingPlan.name }}</a> - {{ readingPlanDay.day_number }}. nap</h1>
-        <h4>{{ readingPlanDay.description|raw }}, {{ readingPlanDay.verses|replace({';': ', '}) }}</h4>
+        <h1>
+            <a href="/tervek/{{ readingPlanDay.plan_id }}">{{ readingPlan.name }}</a> - {{ readingPlanDay.day_number }}. nap
+        </h1>
+        <h4>
+            {{ (readingPlanDay.description|raw ~ (readingPlanDay.description ? ', ' : '') ~ readingPlanDay.verses|replace({';': ', '}))|trim }}
+        </h4>
         <br>
     </div>
             {# <div class="col-12">
@@ -59,6 +63,15 @@
     {% endif %}
     <span id="data" {% if scrollTo %} data-scroll-to="{{ scrollTo }}" {% endif %}></span>    
     {{ include('textDisplay.verseContainers') }}
+    {% if previousDay %}
+        <a href="/tervek/{{ previousDay.plan_id }}/{{ previousDay.day_number }}" class="btn btn-primary btn-default"><i class="bi bi-chevron-left"></i> Előző nap</a>
+    {% endif %}
+    {% if readingPlanDay %}
+        <a href="/tervek/{{ readingPlanDay.plan_id }}" class="btn btn-primary btn-default"><span class="btn-primary"><i class="bi bi-chevron-up"></i></span> Olvasási terv</a>
+    {% endif %}
+    {% if nextDay %}
+        <a href="/tervek/{{ nextDay.plan_id }}/{{ nextDay.day_number }}" class="btn btn-primary btn-default">Következő nap <i class="bi bi-chevron-right"></i></a>
+    {% endif %}
     {% if fullChaptersIncluded and not fullContext %}
     <div class="card bg-light mb-2">
         <div class="card-header collapsible" data-bs-toggle="collapse" data-bs-target="#cardContent">
