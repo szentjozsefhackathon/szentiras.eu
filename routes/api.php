@@ -1,6 +1,7 @@
 <?php
 
-Route::get("idezet/{refString}/{translationAbbrev?}", 'Api\ApiController@getIdezet');
+Route::get("idezet/{refString}/{translationAbbrev?}", 'Api\ApiController@getIdezet')
+    ->middleware('throttle:60,1');
 Route::get("forditasok", 'Api\ApiController@getTranslationList');
 Route::get("forditasok/{gepi}", 'Api\ApiController@getForditasok');
 Route::get("books/{translationAbbrev?}", 'Api\ApiController@getBooks');
