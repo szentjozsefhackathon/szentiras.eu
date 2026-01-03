@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Pgvector\Laravel\Vector;
 
 /**
- * 
- *
  * @property int $id
  * @property string $source
  * @property string $gepi

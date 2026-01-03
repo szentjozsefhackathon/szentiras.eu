@@ -75,7 +75,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
                 <footer>
                     <a href="{{ bookRef.link }}">{{ bookRef.label }}</a>
                 </footer>
-                {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' :  translation } %}
+                {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' :  translation, "hideXrefs": true } %}
             </blockquote>
         {% endfor %}
     {% endif %}
@@ -207,6 +207,7 @@ Keresés{% if form.textToSearch is defined %}: {{ form.textToSearch }}{% endif %
             </div>                   
             {% endif %}                 
         {% endfor %}
+        {{ _self.pagination(form, results, greekSearch ? 'greekSearch' : 'anySearch') }}
     {% endif %}
     
         </div>                   

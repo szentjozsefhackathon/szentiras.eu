@@ -5,8 +5,6 @@ namespace SzentirasHu\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -38,6 +36,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereVerse($value)
  * @property string $gepi
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereGepi($value)
+ * @property string|null $transliteration
+ * @property string|null $normalization
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereNormalization($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereTransliteration($value)
  * @mixin \Eloquent
  */
 class GreekVerse extends Model

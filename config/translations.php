@@ -53,7 +53,7 @@ return [
             'textSource' => env('TEXT_SOURCE_KNB', 's3'),
             'id' => 3,
             'order' => 1,
-            'copyright' => 'A Szent Jeromos Katolikus Bibliatársulat engedélyével. Megújítva 2013. február.',
+            'copyright' => 'A Szent Jeromos Katolikus Bibliatársulat ideiglenes engedélyével. (Megújítva: 2025. április)',
             'publisher' => [ 'name' => 'Szent Jeromos Katolikus Bibliatársulat', 'url' => 'https://www.biblia-tarsulat.hu']
         ],
 

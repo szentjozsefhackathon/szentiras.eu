@@ -11,8 +11,10 @@ class ViewComposerServiceProvider extends ServiceProvider
 {
 
     public function boot() {
-        view()->composer('menu', 'SzentirasHu\Http\ViewComposers\MenuComposer');
-        view()->composer('bookAbbrevList', '\SzentirasHu\Http\ViewComposers\BookAbbrevListComposer');
+        view()->composer('menu', 'SzentirasHu\\Http\\ViewComposers\\MenuComposer');
+        view()->composer('bookAbbrevList', '\\SzentirasHu\\Http\\ViewComposers\\BookAbbrevListComposer');
+        // Add RufAdComposer to all views
+        view()->composer('*', 'SzentirasHu\\Http\\ViewComposers\\RufAdComposer');
     }
 
 

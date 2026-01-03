@@ -7,8 +7,6 @@ use Pgvector\Laravel\HasNeighbors;
 use Pgvector\Laravel\Vector;
 
 /**
- * 
- *
  * @property float $neighbor_distance
  * @property int $id
  * @property string $hash

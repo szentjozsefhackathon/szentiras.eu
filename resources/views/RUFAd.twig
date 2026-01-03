@@ -1,0 +1,22 @@
+{# resources/views/RUFAd.twig #}
+<div class="alert alert-warning text-center" style="margin-top: 1em;">
+    <img src="/img/Hungary-BS-Logo-150x150.png" alt="Magyar Bibliatársulat logó" style="width:64px;height:64px;object-fit:contain;margin-bottom:0.5em;" />
+    <br />    
+    {% if rufFeedItems is defined and rufFeedItems|length > 0 %}
+        <strong>A <a href="https://bibliatarsulat.hu/" target="_blank" rel="noopener">Magyar Bibliatársulat</a> híreiből:</strong>
+        <div class="mt-2 text-start" style="max-width: 500px; margin: 0 auto;">
+            <ul>
+                {% for item in rufFeedItems %}
+                    <li>
+                        <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+                        ({{ item.date_diff_hu }})
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>        
+    {% else %}
+        <div class="mt-2">
+            A Magyar Bibliatársulat híreiért<br /> keresse fel <a href="https://bibliatarsulat.hu/" target="_blank" rel="noopener">honlapjukat</a>.
+        </div>        
+    {% endif %}
+</div>

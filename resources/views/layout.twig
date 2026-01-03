@@ -39,9 +39,14 @@
                 <div class="col-lg-3 col-md-4">
                      {% include 'menu' %}
                      {% block extramenu %}{% endblock %}
-                     
+                     {% if showRufAd %}
+                        <div class="d-none d-md-block">{# Only show on medium and up #}
+                            {% include 'RUFAd.twig' %}
+                        </div>
+                     {% endif %}  
                 </div>
                 <div class="col-lg-9 col-md-8">
+                   
                     {% block pageHeader %}{% endblock %}
                     <div class="mt-1">
                         <main>
@@ -52,6 +57,11 @@
                     </div>
                     <div>
                         {% block comments %}{% endblock %}
+                        {% if showRufAd %}
+                            <div class="d-block d-md-none">{# Only show on small screens #}
+                                {% include 'RUFAd.twig' %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

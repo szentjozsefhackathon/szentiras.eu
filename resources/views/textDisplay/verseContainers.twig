@@ -33,14 +33,5 @@
                         {% endif %}                    
                   </ul>                
             {% endif %}
-            {% if previousDay %}
-                <a href="/tervek/{{ previousDay.plan_id }}/{{ previousDay.day_number }}" class="btn btn-primary btn-default"><i class="bi bi-chevron-left"></i> Előző nap</a>
-            {% endif %}
-            {% if readingPlanDay %}
-                <a href="/tervek/{{ readingPlanDay.plan_id }}" class="btn btn-primary btn-default"><span class="btn-primary"><i class="bi bi-chevron-up"></i></span> Olvasási terv</a>
-            {% endif %}
-            {% if nextDay %}
-                <a href="/tervek/{{ nextDay.plan_id }}/{{ nextDay.day_number }}" class="btn btn-primary btn-default">Következő nap <i class="bi bi-chevron-right"></i></a>
-            {% endif %}
     <hr>
 {% endfor %}

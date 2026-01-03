@@ -15,8 +15,8 @@
 <a class="numvai" data-bs-placement="auto" tabindex="0" data-bs-custom-class="ai-tool-popover" data-link="{{ verse.book.translation.abbrev }}/{{ verse.book.abbrev}}{{ verse.chapter }},{{ verse.numv }}"><span class="numvai hidden">{{ verse.numv }}&nbsp;</span></a>
 {%- endmacro %}
 
-{% macro xrefs(verse, translation, mark) %}
-    {% if verse.xrefs is not empty %}
+{% macro xrefs(verse, translation, mark, hideXrefs = false) %}
+    {% if verse.xrefs is not empty and not(hideXrefs) %}
         <span class="xref {{ mark ? 'mark' : '' }}">
             <sup>
                 ({%- for xref in verse.xrefs -%}
@@ -51,7 +51,7 @@
             {% if (lastChapterNumber != verse.chapter) and verse.numv == 1 %}    {% set lastChapterNumber = verse.chapter %}<span class="numchapter">{{ verse.chapter }}</span>{% endif %}
             {% if not inPoem %}<p class="poem {{ mark ? 'mark' : '' }}">{% set inPoem = true %}{%endif%}
             {%- if not verseNumberWritten %}{{ _self.numv(verse, mark) }}{% set verseNumberWritten = true %}{% endif %}
-            {{ versePart.content|raw }}{% if versePart.last %}{{ _self.xrefs(verse, translation, mark) }}</p>{%else%}<br>{%endif%}
+            {{ versePart.content|raw }}{% if versePart.last %}{{ _self.xrefs(verse, translation, mark, hideXrefs) }}</p>{%else%}<br>{%endif%}
         {% elseif  versePart.heading %}
             {%- if inPoem %}</p>{% set inPoem =false %}{% endif -%}
             {%- if versePart.headingLevel < 6 -%}
@@ -66,7 +66,7 @@
             {%- if inPoem %}</p>{% set inPoem =false %}{% endif -%}
             {%- if not verseNumberWritten %}{{ _self.numv(verse, mark) }}{% set verseNumberWritten=true %}{% endif -%}
             <span class="{{ mark ? 'mark' : '' }}">{{ versePart.content|raw }} </span>
-            {%- if versePart.last %}{{ _self.xrefs(verse, translation, mark) }}{% endif -%}
+            {%- if versePart.last %}{{ _self.xrefs(verse, translation, mark, hideXrefs) }}{% endif -%}
             {%- if versePart.newline %}<br>{% endif -%}
         {%- endif -%}                
     {%- endfor -%}

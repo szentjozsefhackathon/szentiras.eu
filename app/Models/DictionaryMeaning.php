@@ -5,8 +5,6 @@ namespace SzentirasHu\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -26,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DictionaryMeaning whereUpdatedAt($value)
  * @property int $order
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DictionaryMeaning whereOrder($value)
+ * @property-read \SzentirasHu\Models\StrongWord|null $strongWord
  * @mixin \Eloquent
  */
 class DictionaryMeaning extends Model

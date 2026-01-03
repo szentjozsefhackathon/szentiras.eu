@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 
- *
  * @property int $id
  * @property int $number
  * @property string $lemma
@@ -30,6 +28,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StrongWord whereNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StrongWord whereTransliteration($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StrongWord whereUpdatedAt($value)
+ * @property-read \SzentirasHu\Models\DictionaryEntry|null $dictionaryEntry
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \SzentirasHu\Models\DictionaryMeaning> $dictionaryMeanings
+ * @property-read int|null $dictionary_meanings_count
  * @mixin \Eloquent
  */
 class StrongWord extends Model
