@@ -13,6 +13,7 @@ use SzentirasHu\Http\Controllers\Contact\ContactController;
 use SzentirasHu\Http\Controllers\Contact\InboxController;
 use SzentirasHu\Http\Controllers\Home\HomeController;
 use SzentirasHu\Http\Controllers\MediaController;
+use SzentirasHu\Http\Controllers\Tools\ToolsController;
 use SzentirasHu\Http\Middleware\RedirectLowerCaseTranslationAbbrev;
 use SzentirasHu\Models\Media;
 
@@ -96,6 +97,11 @@ Route::get('/login', [AnonymousIdController::class, 'showLoginForm']);
 Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 Route::get('/contact/thankyou', [ContactController::class, 'thankYou'])->name('contact.thankyou');
+
+// Tools routes
+Route::get('/tools', [ToolsController::class, 'index'])->name('tools.index');
+Route::get('/tools/memorygame', [ToolsController::class, 'memoryGameCreator'])->name('tools.memoryGame');
+Route::post('/tools/memorygame', [ToolsController::class, 'memoryGameCreator'])->name('tools.memoryGame.process');
 
 // User inbox routes (require anonymous login)
 Route::middleware('anonymousId')->group(function () {

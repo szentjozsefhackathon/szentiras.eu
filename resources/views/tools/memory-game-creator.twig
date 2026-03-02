@@ -1,0 +1,330 @@
+{% extends "layout" %}
+
+{% block pageHeader %}
+    <div class="page-header">
+        <h1><i class="bi bi-puzzle"></i> Memóriajáték készítő</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-12">
+                <p class="lead">Készítsen memóriajátékot bibliai igékből! Adjon meg igehelyeket soronként, és az eszköz automatikusan létrehozza a játékkártyákat.</p>
+                <div class="alert alert-info mt-3">
+                    <h6><i class="bi bi-lightbulb"></i> Használati útmutató</h6>
+                    <p class="mb-0">
+                        A táblázat sorait kinyomtathatja, és a cellák tartalma alapján készíthet memóriajáték kártyákat. 
+                        Minden sor két kártyát jelent: az első felet az egyik kártyára, a második felet a másikra írva. 
+                        A játékosoknak össze kell párosítaniuk az összetartozó feleket.
+                    </p>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Hogyan működik?</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol>
+                            <li><strong>Írja be az igehelyeket:</strong> Minden igét külön sorba írjon (pl. Mt 5,14-16)</li>
+                            <li><strong>Kattintson a "Memóriajáték létrehozása" gombra:</strong> Az eszköz lekéri az igék szövegét</li>
+                            <li><strong>Automatikus felosztás:</strong> Minden ige szövege kettéosztásra kerül szó határon</li>
+                            <li><strong>Táblázat megjelenítése:</strong> Az eredmény táblázatos formában jelenik meg</li>
+                            <li><strong>Nyomtatás:</strong> A táblázatot kinyomtathatja és használhatja memóriajátékhoz</li>
+                        </ol>
+                        
+                        <div class="alert alert-light mt-3">
+                            <strong>Tipp:</strong> Rövidebb igéket válasszon (1-2 vers), hogy a kártyák ne legyenek túl hosszúak.
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Igehelyek megadása</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/tools/memorygame">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            
+                            <div class="mb-3">
+                                <label for="translation_abbrev" class="form-label">
+                                    <i class="bi bi-book"></i> Fordítás kiválasztása:
+                                </label>
+                                <select class="form-select" id="translation_abbrev" name="translation_abbrev">
+                                    {% for translation in translations %}
+                                        <option value="{{ translation.abbrev }}" {% if selectedTranslation == translation.abbrev %}selected{% endif %}>
+                                            {{ translation.name }} ({{ translation.abbrev }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">
+                                    Válassza ki, melyik fordításból szeretné lekérni az igehelyeket
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="references" class="form-label">
+                                    Írjon be igehelyeket, minden igét külön sorba:
+                                </label>
+                                <textarea 
+                                    class="form-control font-monospace" 
+                                    id="references" 
+                                    name="references" 
+                                    rows="10" 
+                                    placeholder="Példa:&#10;Mt 5,14-16&#10;Jn 3,16&#10;Róm 8,28&#10;Fil 4,13"
+                                >{{ input }}</textarea>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i> Használjon szabványos hivatkozási formátumot (pl. Jn 3,16 vagy Mt 5,1-10)
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-play-circle"></i> Memóriajáték létrehozása
+                            </button>
+                            <a href="/tools/memorygame" class="btn btn-secondary">
+                                <i class="bi bi-arrow-clockwise"></i> Új kezdése
+                            </a>
+                        </form>
+                    </div>
+                </div>
+
+                {% if errors|length > 0 %}
+                    <div class="alert alert-warning">
+                        <h5><i class="bi bi-exclamation-triangle"></i> Figyelmeztetések</h5>
+                        <ul class="mb-0">
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if verses|length > 0 %}
+                    <div class="card mb-4 print-only">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="bi bi-check-circle"></i> Memóriajáték kártyák</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Összesen {{ verses|length }} igepár lett létrehozva{% if selectedTranslation %} a <strong>{{ selectedTranslation }}</strong> fordításból{% endif %}. Az alábbi táblázat mutatja a memóriajáték kártyáit.</p>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered memory-game-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%;">Igehely</th>
+                                            <th style="width: 42.5%;">Első fél</th>
+                                            <th style="width: 42.5%;">Második fél</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for verse in verses %}
+                                            <tr>
+                                                <td><strong>{{ verse.reference }}</strong></td>
+                                                <td>{{ verse.first_half }}</td>
+                                                <td>{{ verse.second_half }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                            <div class="mt-3">
+                                <button class="btn btn-outline-primary" onclick="window.print()">
+                                    <i class="bi bi-printer"></i> Nyomtatás
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Override Bootstrap table styles - Light mode */
+        .memory-game-table > :not(caption) > * > * {
+            background-color: transparent;
+            border-color: inherit;
+        }
+        
+        /* Screen styles - Light mode */
+        .memory-game-table {
+            --bs-table-bg: white;
+            --bs-table-color: #212529;
+        }
+        
+        .memory-game-table thead {
+            background-color: #343a40;
+            color: white;
+        }
+        
+        .memory-game-table tbody tr {
+            background-color: white;
+        }
+        
+        .memory-game-table th,
+        .memory-game-table td {
+            background-color: white;
+            color: #212529;
+        }
+        
+        /* Dark mode support */
+        [data-theme="dark"] .memory-game-table {
+            --bs-table-bg: #212529;
+            --bs-table-color: #dee2e6;
+        }
+        
+        [data-theme="dark"] .memory-game-table thead {
+            background-color: #495057;
+            color: #f8f9fa;
+        }
+        
+        [data-theme="dark"] .memory-game-table tbody tr {
+            background-color: #212529;
+        }
+        
+        [data-theme="dark"] .memory-game-table th,
+        [data-theme="dark"] .memory-game-table td {
+            background-color: #212529;
+            color: #dee2e6;
+            border-color: #495057;
+        }
+        
+        @media print {
+            /* Set page margins */
+            @page {
+                margin: 10mm 10mm 10mm 10mm;
+            }
+            
+            /* Remove body margins and set white background */
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background-color: white !important;
+            }
+            
+            html {
+                background-color: white !important;
+            }
+            
+            .container {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Hide left column menu */
+            .col-lg-3,
+            .col-md-4 {
+                display: none !important;
+            }
+            
+            /* Make content full width */
+            .col-lg-9,
+            .col-md-8 {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+            }
+            
+            /* Hide navigation and footer */
+            .navbar, footer {
+                display: none !important;
+            }
+            
+            /* Hide page header */
+            .page-header {
+                display: none !important;
+            }
+            
+            /* Hide lead text and alerts */
+            .lead, .alert {
+                display: none !important;
+            }
+            
+            /* Hide all cards except the one with the table */
+            .card:not(.print-only) {
+                display: none !important;
+            }
+            
+            /* Show the table card but remove styling */
+            .card.print-only {
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+            }
+            
+            /* Hide card header */
+            .card.print-only .card-header {
+                display: none !important;
+            }
+            
+            /* Remove padding from card body */
+            .card.print-only .card-body {
+                padding: 0 !important;
+            }
+            
+            /* Hide everything in card body except the table */
+            .card.print-only .card-body > *:not(.table-responsive) {
+                display: none !important;
+            }
+            
+            /* Table styling for print */
+            .table-responsive {
+                display: block !important;
+            }
+            
+            table {
+                page-break-inside: auto;
+                width: 100% !important;
+                border-collapse: collapse !important;
+                background-color: white !important;
+                table-layout: fixed !important;
+            }
+            
+            thead {
+                display: table-header-group;
+            }
+            
+            tbody tr {
+                background-color: white !important;
+                height: 60px !important;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            th, td {
+                border: 1px solid #000 !important;
+                padding: 10px !important;
+                background-color: white !important;
+                color: black !important;
+                vertical-align: middle !important;
+                height: 60px !important;
+            }
+            
+            th {
+                font-weight: bold !important;
+            }
+            
+            /* Hide the first column (Igehely) when printing */
+            th:first-child,
+            td:first-child {
+                display: none !important;
+            }
+            
+            /* Make remaining columns equal width */
+            th:nth-child(2),
+            th:nth-child(3),
+            td:nth-child(2),
+            td:nth-child(3) {
+                width: 50% !important;
+            }
+        }
+    </style>
+{% endblock %}
