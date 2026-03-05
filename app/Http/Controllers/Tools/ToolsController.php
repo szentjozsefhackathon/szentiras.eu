@@ -171,22 +171,24 @@ class ToolsController extends Controller
         // Start new game
         if ($request->input('action') === 'new_game' || !$gameState || $gameState['translation'] !== $selectedTranslation) {
             $randomBook = $books->random();
-            $verses = $this->getRandomVersesFromBook($randomBook, $translation);
+            $versesData = $this->getRandomVersesFromBook($randomBook, $translation);
             
-            $gameState = [
-                'book' => [
-                    'id' => $randomBook->id,
-                    'name' => $randomBook->name,
-                    'abbrev' => $randomBook->abbrev,
-                    'testament' => $randomBook->old_testament ? 'old' : 'new',
-                    'section' => $this->getBookSection($randomBook->order, $randomBook->old_testament),
-                    'firstLetter' => mb_substr($randomBook->name, 0, 1, 'UTF-8')
-                ],
-                'verses' => $verses,
-                'translation' => $selectedTranslation,
-                'guesses' => []
-            ];
-            $request->session()->put('guess_book_state', $gameState);
+            if ($versesData) {
+                $gameState = [
+                    'book' => [
+                        'id' => $randomBook->id,
+                        'name' => $randomBook->name,
+                        'abbrev' => $randomBook->abbrev,
+                        'testament' => $randomBook->old_testament ? 'old' : 'new',
+                        'section' => $this->getBookSection($randomBook->order, $randomBook->old_testament),
+                        'firstLetter' => mb_substr($randomBook->name, 0, 1, 'UTF-8')
+                    ],
+                    'verses' => $versesData['text'],
+                    'translation' => $selectedTranslation,
+                    'guesses' => []
+                ];
+                $request->session()->put('guess_book_state', $gameState);
+            }
         }
         
         // Process guess
@@ -276,9 +278,12 @@ class ToolsController extends Controller
                 }
             }
             
-            return trim($fullText);
+            return [
+                'text' => trim($fullText),
+                'reference' => $refString
+            ];
         } catch (\Exception $e) {
-            return '';
+            return null;
         }
     }
     
@@ -369,11 +374,13 @@ class ToolsController extends Controller
                 while (count($cards) < $pairsNeeded && $attempts < $maxAttempts) {
                     $attempts++;
                     $randomBook = $books->random();
-                    $verseText = $this->getRandomVersesFromBook($randomBook, $translation, 1, 2);
+                    $versesData = $this->getRandomVersesFromBook($randomBook, $translation, 1, 2);
                     
-                    if (empty($verseText)) {
+                    if (!$versesData || empty($versesData['text'])) {
                         continue;
                     }
+                    
+                    $verseText = $versesData['text'];
                     
                     // Split verse into two halves
                     $words = explode(' ', $verseText);
@@ -430,4 +437,189 @@ class ToolsController extends Controller
         
         return $text;
     }
+    
+    /**
+     * Guess the missing word game (Wordle-like)
+     */
+    public function guessWord(Request $request)
+    {
+        $translations = $this->translationService->getAllTranslations();
+        $selectedTranslation = null;
+        
+        // Set default translation for initial page load
+        if (!$request->isMethod('post') || !$request->has('translation_abbrev')) {
+            $defaultTranslation = $this->translationService->getDefaultTranslation();
+            $selectedTranslation = $defaultTranslation->abbrev;
+        } else {
+            $selectedTranslation = $request->input('translation_abbrev');
+        }
+
+        $translation = $this->translationService->getByAbbreviation($selectedTranslation);
+        $books = $this->bookService->getBooksForTranslation($translation);
+        
+        // Initialize or get game state from session
+        $gameState = $request->session()->get('guess_word_state', null);
+        $guesses = [];
+        $won = false;
+        $maxGuesses = 6;
+        
+        // Start new game
+        if ($request->input('action') === 'new_game' || !$gameState || $gameState['translation'] !== $selectedTranslation) {
+            $randomBook = $books->random();
+            $versesData = $this->getRandomVersesFromBook($randomBook, $translation, 3, 4);
+            
+            if ($versesData && !empty($versesData['text'])) {
+                // Find a word with at least 4 letters
+                $wordData = $this->selectWordFromText($versesData['text']);
+                
+                if ($wordData) {
+                    $gameState = [
+                        'verses' => $versesData['text'],
+                        'reference' => $versesData['reference'],
+                        'versesWithGap' => $wordData['textWithGap'],
+                        'word' => $wordData['word'],
+                        'wordNormalized' => $wordData['wordNormalized'],
+                        'translation' => $selectedTranslation,
+                        'guesses' => []
+                    ];
+                    $request->session()->put('guess_word_state', $gameState);
+                }
+            }
+        }
+        
+        // Process guess
+        if ($request->input('action') === 'guess' && $request->has('guess_word') && $gameState) {
+            $guessInput = $request->input('guess_word');
+            $guessNormalized = $this->normalizeWord($guessInput);
+            
+            if (mb_strlen($guessNormalized) === mb_strlen($gameState['wordNormalized'])) {
+                $evaluation = $this->evaluateGuess($guessNormalized, $gameState['wordNormalized']);
+                
+                // Split normalized word into characters array
+                $chars = preg_split('//u', $guessNormalized, -1, PREG_SPLIT_NO_EMPTY);
+                
+                $guess = [
+                    'word' => $guessInput,
+                    'wordNormalized' => $guessNormalized,
+                    'chars' => $chars,
+                    'evaluation' => $evaluation
+                ];
+                
+                $gameState['guesses'][] = $guess;
+                $request->session()->put('guess_word_state', $gameState);
+                
+                // Check if won
+                if ($guessNormalized === $gameState['wordNormalized']) {
+                    $won = true;
+                }
+            }
+        }
+        
+        // Process give up
+        $gaveUp = false;
+        if ($request->input('action') === 'give_up' && $gameState) {
+            $gaveUp = true;
+        }
+        
+        $guesses = $gameState['guesses'] ?? [];
+        $gameOver = $won || count($guesses) >= $maxGuesses || $gaveUp;
+        
+        return \View::make("tools/guess-word", [
+            'pageTitle' => 'Találd ki a hiányzó szót - Szentírás.eu',
+            'metaTitle' => 'Találd ki a hiányzó szót - Szentírás.eu',
+            'translations' => $translations,
+            'selectedTranslation' => $selectedTranslation,
+            'versesWithGap' => $gameState['versesWithGap'] ?? '',
+            'reference' => $gameState['reference'] ?? null,
+            'wordLength' => isset($gameState['wordNormalized']) ? mb_strlen($gameState['wordNormalized']) : 0,
+            'guesses' => $guesses,
+            'won' => $won,
+            'gaveUp' => $gaveUp,
+            'gameOver' => $gameOver,
+            'maxGuesses' => $maxGuesses,
+            'correctWord' => $gameOver && !$won ? $gameState['word'] : null
+        ]);
+    }
+    
+    /**
+     * Select a word from text (at least 4 letters, no punctuation)
+     */
+    private function selectWordFromText(string $text): ?array
+    {
+        // Remove punctuation and split into words
+        $cleanText = preg_replace('/[^\p{L}\s]/u', '', $text);
+        $words = array_filter(explode(' ', $cleanText), function($word) {
+            return mb_strlen(trim($word)) >= 4;
+        });
+        
+        if (empty($words)) {
+            return null;
+        }
+        
+        // Select a random word
+        $wordsArray = array_values($words);
+        $selectedWord = $wordsArray[array_rand($wordsArray)];
+        $selectedWord = trim($selectedWord);
+        
+        // Create text with gap (use underlined placeholder)
+        $wordLength = mb_strlen($selectedWord);
+        $placeholder = '<span class="word-gap">' . str_repeat('_', $wordLength) . '</span>';
+        $textWithGap = str_replace($selectedWord, $placeholder, $text);
+        
+        return [
+            'word' => $selectedWord,
+            'wordNormalized' => $this->normalizeWord($selectedWord),
+            'textWithGap' => $textWithGap
+        ];
+    }
+    
+    /**
+     * Normalize word: lowercase and remove punctuation
+     */
+    private function normalizeWord(string $word): string
+    {
+        // Remove punctuation
+        $word = preg_replace('/[^\p{L}]/u', '', $word);
+        // Convert to lowercase (UTF-8 safe)
+        return mb_strtolower($word, 'UTF-8');
+    }
+    
+    /**
+     * Evaluate a guess against the target word (Wordle-like)
+     * Returns array of letter evaluations: 'correct', 'present', 'absent'
+     */
+    private function evaluateGuess(string $guess, string $target): array
+    {
+        $evaluation = [];
+        $guessChars = preg_split('//u', $guess, -1, PREG_SPLIT_NO_EMPTY);
+        $targetChars = preg_split('//u', $target, -1, PREG_SPLIT_NO_EMPTY);
+        $targetCharCount = array_count_values($targetChars);
+        $usedTargetChars = array_fill(0, count($targetChars), false);
+        
+        // First pass: mark correct positions (green)
+        foreach ($guessChars as $i => $char) {
+            if ($char === $targetChars[$i]) {
+                $evaluation[$i] = 'correct';
+                $usedTargetChars[$i] = true;
+                $targetCharCount[$char]--;
+            } else {
+                $evaluation[$i] = null; // Will be determined in second pass
+            }
+        }
+        
+        // Second pass: mark present but wrong position (yellow)
+        foreach ($guessChars as $i => $char) {
+            if ($evaluation[$i] === null) {
+                if (isset($targetCharCount[$char]) && $targetCharCount[$char] > 0) {
+                    $evaluation[$i] = 'present';
+                    $targetCharCount[$char]--;
+                } else {
+                    $evaluation[$i] = 'absent';
+                }
+            }
+        }
+        
+        return $evaluation;
+    }
 }
+

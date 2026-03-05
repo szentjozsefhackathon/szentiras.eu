@@ -1,0 +1,261 @@
+{% extends "layout" %}
+
+{% block pageHeader %}
+    <div class="page-header">
+        <h1><i class="bi bi-fonts"></i> Találd ki a hiányzó szót</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-12">
+                <p class="lead">Találd ki, melyik szó hiányzik a bibliai idézetből! A betűk színe jelzi, hogy mennyire vagy közel a megoldáshoz.</p>
+                
+                {% if versesWithGap %}
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-book"></i> Bibliai idézet</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="verse-text lead text-center py-3">
+                            {{ versesWithGap|raw }}
+                        </div>
+                        {% if reference %}
+                        <div class="text-center text-muted mt-3">
+                            <i class="bi bi-book"></i> {{ reference }}
+                        </div>
+                        {% endif %}
+                        <div class="text-center text-muted mt-2">
+                            <small>A hiányzó szó {{ wordLength }} betűből áll</small>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if not gameOver %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-keyboard"></i> Tippelés</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/tools/guess-word">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="translation_abbrev" value="{{ selectedTranslation }}">
+                            <input type="hidden" name="action" value="guess">
+                            
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="guess_word" class="form-label">Add meg a tipped ({{ wordLength }} betű):</label>
+                                    <input type="text" class="form-control form-control-lg" id="guess_word" 
+                                           name="guess_word" maxlength="{{ wordLength }}" 
+                                           pattern="[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]{1,}" 
+                                           required autofocus>
+                                    <small class="form-text text-muted">Csak betűk, {{ wordLength }} karakter</small>
+                                </div>
+                                <div class="col-md-4 mb-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="bi bi-send"></i> Tipp beküldése
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted">
+                                    <small>Tippek: {{ guesses|length }} / {{ maxGuesses }}</small>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('giveUpForm').submit();">
+                                        <i class="bi bi-flag"></i> Feladom
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <form method="POST" action="/tools/guess-word" id="giveUpForm" class="d-none">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="translation_abbrev" value="{{ selectedTranslation }}">
+                            <input type="hidden" name="action" value="give_up">
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if guesses|length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-list-ol"></i> Eddigi tippeid</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="guess-grid">
+                            {% for guess in guesses %}
+                                <div class="guess-row mb-3">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        {% for i in 0..(guess.chars|length - 1) %}
+                                            {% set char = guess.chars[i] %}
+                                            {% set status = guess.evaluation[i] %}
+                                            <div class="letter-box letter-{{ status }}">
+                                                {{ char|upper }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if won %}
+                <div class="alert alert-success">
+                    <h4 class="alert-heading"><i class="bi bi-trophy-fill"></i> Gratulálunk!</h4>
+                    <p class="mb-0">Eltaláltad a szót <strong>{{ guesses|length }}</strong> tippből!</p>
+                </div>
+                {% elseif gaveUp %}
+                <div class="alert alert-warning">
+                    <h4 class="alert-heading"><i class="bi bi-flag-fill"></i> Feladtad a játékot</h4>
+                    <p class="mb-0">A keresett szó: <strong>{{ correctWord }}</strong></p>
+                </div>
+                {% elseif gameOver %}
+                <div class="alert alert-danger">
+                    <h4 class="alert-heading"><i class="bi bi-x-circle-fill"></i> Vége a játéknak</h4>
+                    <p class="mb-0">A keresett szó: <strong>{{ correctWord }}</strong></p>
+                </div>
+                {% endif %}
+                
+                {% if gameOver %}
+                <div class="text-center">
+                    <form method="POST" action="/tools/guess-word">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="translation_abbrev" value="{{ selectedTranslation }}">
+                        <input type="hidden" name="action" value="new_game">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-arrow-clockwise"></i> Új játék indítása
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+                
+                {% else %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-play-circle"></i> Játék indítása</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/tools/guess-word">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="action" value="new_game">
+                            
+                            <div class="mb-3">
+                                <label for="translation_abbrev" class="form-label">
+                                    <i class="bi bi-book"></i> Válassz fordítást:
+                                </label>
+                                <select class="form-select" id="translation_abbrev" name="translation_abbrev" required>
+                                    {% for translation in translations %}
+                                        <option value="{{ translation.abbrev }}" 
+                                            {{ translation.abbrev == selectedTranslation ? 'selected' : '' }}>
+                                            {{ translation.name }} ({{ translation.abbrev }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-play-fill"></i> Játék indítása
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-info text-dark">
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Játékszabályok</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Válassz egy fordítást és indítsd el a játékot</li>
+                            <li>Egy bibliai idézetből hiányzik egy szó - találd ki, melyik!</li>
+                            <li>A hiányzó szó legalább 4 betűből áll</li>
+                            <li>6 próbálkozásod van a szó kitalálására</li>
+                            <li>Minden tipp után színekkel jelezzük, mennyire vagy közel:
+                                <ul>
+                                    <li><span class="letter-box letter-correct d-inline-block">A</span> <strong>Zöld:</strong> A betű jó helyen van</li>
+                                    <li><span class="letter-box letter-present d-inline-block">B</span> <strong>Sárga:</strong> A betű benne van a szóban, de rossz helyen</li>
+                                    <li><span class="letter-box letter-absent d-inline-block">C</span> <strong>Piros:</strong> A betű nincs benne a szóban</li>
+                                </ul>
+                            </li>
+                            <li>Kis- és nagybetűk nem számítanak</li>
+                            <li>Az írásjelek nem számítanak</li>
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .verse-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+        }
+        
+        .word-gap {
+            display: inline-block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+            letter-spacing: 0.2em;
+            padding: 0 0.3em;
+            border-bottom: 3px solid #007bff;
+        }
+        
+        [data-theme="dark"] .word-gap {
+            color: #4da3ff;
+            border-bottom-color: #4da3ff;
+        }
+        
+        .guess-grid {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .letter-box {
+            width: 50px;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            text-transform: uppercase;
+        }
+        
+        .letter-correct {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .letter-present {
+            background-color: #ffc107;
+            color: white;
+            border-color: #ffc107;
+        }
+        
+        .letter-absent {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        [data-theme="dark"] .letter-box {
+            border-color: #495057;
+        }
+        
+        [data-theme="dark"] .verse-text {
+            color: #e2e8f0;
+        }
+    </style>
+{% endblock %}
