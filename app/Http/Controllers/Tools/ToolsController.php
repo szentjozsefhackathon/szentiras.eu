@@ -621,5 +621,104 @@ class ToolsController extends Controller
         
         return $evaluation;
     }
-}
 
+    /**
+     * Verse scramble game - arrange words in correct order
+     */
+    public function verseScramble(Request $request)
+    {
+        $translations = $this->translationService->getAllTranslations();
+        $selectedTranslation = null;
+
+        // Set default translation for initial page load
+        if (!$request->isMethod('post') || !$request->has('translation_abbrev')) {
+            $defaultTranslation = $this->translationService->getDefaultTranslation();
+            $selectedTranslation = $defaultTranslation->abbrev;
+        } else {
+            $selectedTranslation = $request->input('translation_abbrev');
+        }
+
+        $translation = $this->translationService->getByAbbreviation($selectedTranslation);
+        $books = $this->bookService->getBooksForTranslation($translation);
+
+        // Initialize or get game state from session
+        $gameState = $request->session()->get('verse_scramble_state', null);
+        $won = false;
+
+        // Start new game
+        if ($request->input('action') === 'new_game' || !$gameState || $gameState['translation'] !== $selectedTranslation) {
+            $randomBook = $books->random();
+            $versesData = $this->getRandomVersesFromBook($randomBook, $translation, 1, 1);
+
+            if ($versesData && !empty($versesData['text'])) {
+                // Split verse into words
+                $verseText = $versesData['text'];
+
+                // Clean text and split into words
+                $words = array_filter(
+                    preg_split('/\s+/u', $verseText),
+                    function($word) {
+                        return !empty(trim($word));
+                    }
+                );
+
+                $words = array_values($words);
+
+                // Only use verses with at least 8 words
+                if (count($words) >= 8) {
+                    // Create scrambled version
+                    $scrambledWords = $words;
+                    do {
+                        shuffle($scrambledWords);
+                    } while ($scrambledWords === $words && count($words) > 1);
+
+                    $gameState = [
+                        'verse' => $verseText,
+                        'reference' => $versesData['reference'],
+                        'words' => $words,
+                        'scrambledWords' => $scrambledWords,
+                        'translation' => $selectedTranslation,
+                        'attempts' => 0
+                    ];
+                    $request->session()->put('verse_scramble_state', $gameState);
+                } else {
+                    // Try again with another verse
+                    return $this->verseScramble($request->merge(['action' => 'new_game']));
+                }
+            }
+        }
+
+        // Check answer
+        if ($request->input('action') === 'check' && $gameState) {
+            $userOrder = $request->input('word_order', []);
+
+            // Reconstruct user's verse
+            $userWords = [];
+            foreach ($userOrder as $index) {
+                if (isset($gameState['scrambledWords'][$index])) {
+                    $userWords[] = $gameState['scrambledWords'][$index];
+                }
+            }
+
+            // Compare with original
+            if ($userWords === $gameState['words']) {
+                $won = true;
+            }
+
+            $gameState['attempts']++;
+            $request->session()->put('verse_scramble_state', $gameState);
+        }
+
+        return \View::make("tools/verse-scramble", [
+            'pageTitle' => 'Verskirakó játék - Szentírás.eu',
+            'metaTitle' => 'Verskirakó játék - Szentírás.eu',
+            'translations' => $translations,
+            'selectedTranslation' => $selectedTranslation,
+            'scrambledWords' => $gameState['scrambledWords'] ?? [],
+            'reference' => $gameState['reference'] ?? null,
+            'won' => $won,
+            'attempts' => $gameState['attempts'] ?? 0,
+            'correctVerse' => $won ? $gameState['verse'] : null
+        ]);
+    }
+}

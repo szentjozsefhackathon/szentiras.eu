@@ -1,0 +1,361 @@
+{% extends "layout" %}
+
+{% block pageHeader %}
+    <div class="page-header">
+        <h1><i class="bi bi-shuffle"></i> Verskirakó játék</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-12">
+                <p class="lead">Rakd össze helyes sorrendbe a bibliai vers szavait!</p>
+                
+                {% if scrambledWords|length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-book"></i> Rakd sorba a szavakat!</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if reference %}
+                        <div class="text-center text-muted mb-3">
+                            <i class="bi bi-book"></i> {{ reference }}
+                        </div>
+                        {% endif %}
+                        
+                        {% if not won %}
+                        <div class="scramble-container">
+                            <!-- Drag and drop words area -->
+                            <div class="words-container mb-4" id="wordsContainer">
+                                <h6 class="text-center mb-3">Rendezd sorba a szavakat! (húzd át őket)</h6>
+                                <div class="words-sortable" id="wordsSortable">
+                                    {% for index, word in scrambledWords %}
+                                        <div class="word-item" 
+                                             draggable="true"
+                                             data-index="{{ index }}"
+                                             data-original-position="{{ index }}">
+                                            <span class="drag-handle"><i class="bi bi-grip-vertical"></i></span>
+                                            {{ word }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <!-- Action buttons -->
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary btn-lg me-2" onclick="checkAnswer()">
+                                    <i class="bi bi-check-circle"></i> Ellenőrzés
+                                </button>
+                                <button type="button" class="btn btn-warning btn-lg me-2" onclick="resetOrder()">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Eredeti sorrend
+                                </button>
+                                <form method="POST" action="/tools/verse-scramble" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="translation_abbrev" value="{{ selectedTranslation }}">
+                                    <input type="hidden" name="action" value="new_game">
+                                    <button type="submit" class="btn btn-secondary btn-lg">
+                                        <i class="bi bi-skip-forward"></i> Új vers
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <!-- Hidden form for checking answer -->
+                            <form method="POST" action="/tools/verse-scramble" id="checkForm">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="translation_abbrev" value="{{ selectedTranslation }}">
+                                <input type="hidden" name="action" value="check">
+                                <div id="wordOrderInputs"></div>
+                            </form>
+                        </div>
+                        {% endif %}
+                        
+                        {% if won %}
+                        <div class="alert alert-success">
+                            <h4 class="alert-heading"><i class="bi bi-trophy-fill"></i> Gratulálunk!</h4>
+                            <p class="mb-2">Sikeresen összeraktad a verset!</p>
+                            <p class="mb-3"><strong>{{ correctVerse }}</strong></p>
+                            {% if attempts > 1 %}
+                                <p class="mb-0"><small>Próbálkozások száma: {{ attempts }}</small></p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="text-center">
+                            <form method="POST" action="/tools/verse-scramble">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="translation_abbrev" value="{{ selectedTranslation }}">
+                                <input type="hidden" name="action" value="new_game">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-arrow-clockwise"></i> Új játék indítása
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-play-circle"></i> Játék indítása</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/tools/verse-scramble">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="action" value="new_game">
+                            
+                            <div class="mb-3">
+                                <label for="translation_abbrev" class="form-label">
+                                    <i class="bi bi-book"></i> Válassz fordítást:
+                                </label>
+                                <select class="form-select" id="translation_abbrev" name="translation_abbrev" required>
+                                    {% for translation in translations %}
+                                        <option value="{{ translation.abbrev }}" 
+                                            {{ translation.abbrev == selectedTranslation ? 'selected' : '' }}>
+                                            {{ translation.name }} ({{ translation.abbrev }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-play-fill"></i> Játék indítása
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-info text-dark">
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Játékszabályok</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Válassz egy fordítást és indítsd el a játékot</li>
+                            <li>Egy bibliai vers szavai összekeveredtek</li>
+                            <li>Húzd át a szavakat, hogy helyes sorrendbe rakd őket (drag & drop)</li>
+                            <li>Használd az "Eredeti sorrend" gombot, hogy visszaállítsd a kezdeti állapotot</li>
+                            <li>Nyomd meg az "Ellenőrzés" gombot, amikor készen vagy</li>
+                            <li>Ha nem sikerül, próbálkozz újra vagy kérj új verset!</li>
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .scramble-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .words-container {
+            background-color: #f8f9fa;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+        }
+        
+        .words-sortable {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            min-height: 100px;
+        }
+        
+        .word-item {
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #007bff;
+            background-color: white;
+            color: #007bff;
+            border-radius: 8px;
+            cursor: move;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+        
+        .word-item:hover {
+            background-color: #e7f3ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .word-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        .word-item.drag-over {
+            border-style: dashed;
+            border-width: 3px;
+            background-color: #fff3cd;
+        }
+        
+        .drag-handle {
+            color: #6c757d;
+            font-size: 1rem;
+            cursor: grab;
+        }
+        
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        [data-theme="dark"] .words-container {
+            background-color: #2d3748;
+            border-color: #4da3ff;
+        }
+        
+        [data-theme="dark"] .word-item {
+            background-color: #2d3748;
+            border-color: #4da3ff;
+            color: #4da3ff;
+        }
+        
+        [data-theme="dark"] .word-item:hover {
+            background-color: #1a365d;
+        }
+        
+        [data-theme="dark"] .word-item.drag-over {
+            background-color: #3d3d0d;
+        }
+        
+        [data-theme="dark"] .drag-handle {
+            color: #a0aec0;
+        }
+    </style>
+
+    <script>
+        let draggedElement = null;
+        let originalOrder = [];
+        
+        // Store original order on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const wordItems = document.querySelectorAll('.word-item');
+            wordItems.forEach((item, index) => {
+                originalOrder.push(item.getAttribute('data-index'));
+                setupDragAndDrop(item);
+            });
+        });
+        
+        function setupDragAndDrop(element) {
+            element.addEventListener('dragstart', handleDragStart);
+            element.addEventListener('dragend', handleDragEnd);
+            element.addEventListener('dragover', handleDragOver);
+            element.addEventListener('drop', handleDrop);
+            element.addEventListener('dragenter', handleDragEnter);
+            element.addEventListener('dragleave', handleDragLeave);
+        }
+        
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Remove drag-over class from all items
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+        
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+        
+        function handleDragEnter(e) {
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            if (draggedElement !== this) {
+                // Get the container
+                const container = document.getElementById('wordsSortable');
+                const allItems = [...container.querySelectorAll('.word-item')];
+                
+                const draggedIndex = allItems.indexOf(draggedElement);
+                const targetIndex = allItems.indexOf(this);
+                
+                // Insert dragged element before or after target
+                if (draggedIndex < targetIndex) {
+                    // Moving forward
+                    this.parentNode.insertBefore(draggedElement, this.nextSibling);
+                } else {
+                    // Moving backward
+                    this.parentNode.insertBefore(draggedElement, this);
+                }
+            }
+            
+            this.classList.remove('drag-over');
+            return false;
+        }
+        
+        function resetOrder() {
+            const container = document.getElementById('wordsSortable');
+            const items = [...container.querySelectorAll('.word-item')];
+            
+            // Sort items by original order
+            items.sort((a, b) => {
+                return originalOrder.indexOf(a.getAttribute('data-index')) - 
+                       originalOrder.indexOf(b.getAttribute('data-index'));
+            });
+            
+            // Clear container and append in original order
+            container.innerHTML = '';
+            items.forEach(item => {
+                container.appendChild(item);
+            });
+        }
+        
+        function checkAnswer() {
+            const container = document.getElementById('wordsSortable');
+            const items = container.querySelectorAll('.word-item');
+            
+            if (items.length === 0) {
+                alert('Nincs még összerakva vers!');
+                return;
+            }
+            
+            // Create hidden inputs for the current word order
+            const form = document.getElementById('checkForm');
+            const inputsContainer = document.getElementById('wordOrderInputs');
+            inputsContainer.innerHTML = '';
+            
+            items.forEach((item, position) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'word_order[]';
+                input.value = item.getAttribute('data-index');
+                inputsContainer.appendChild(input);
+            });
+            
+            form.submit();
+        }
+    </script>
+{% endblock %}
