@@ -296,7 +296,7 @@
         
         function generateQRCode() {
             const qrImage = document.getElementById('qrcodeImage');
-            qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(joinUrl)}`;
+            qrImage.src = `/qr/img/${joinUrl}`;
         }
         
         function updateUI() {
