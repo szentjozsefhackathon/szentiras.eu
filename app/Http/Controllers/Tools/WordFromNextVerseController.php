@@ -32,9 +32,25 @@ class WordFromNextVerseController extends Controller
         // Get game state first to check if we have an active game
         $gameState = $request->session()->get('word_from_next_verse_state', null);
         
-        // Set translation - prefer active game's translation, then request param, then default
-        if ($gameState && isset($gameState['translation'])) {
-            $selectedTranslation = $gameState['translation'];
+        // Set translation - if new game is starting, use request param or default
+        // Otherwise, prefer active game's translation
+        if ($request->input('action') === 'new_game' || !$gameState) {
+            // New game starting - allow translation selection
+            if ($request->has('translation_abbrev')) {
+                $selectedTranslation = $request->input('translation_abbrev');
+            } else {
+                $defaultTranslation = $this->toolsService->getDefaultTranslation();
+                $selectedTranslation = $defaultTranslation->abbrev;
+            }
+        } elseif ($gameState && isset($gameState['translation'])) {
+            // Active game - use session translation unless explicitly changing
+            if ($request->has('translation_abbrev') && $request->input('translation_abbrev') !== $gameState['translation']) {
+                // User wants to change translation - treat as new game
+                $selectedTranslation = $request->input('translation_abbrev');
+                $gameState = null; // Force new game generation
+            } else {
+                $selectedTranslation = $gameState['translation'];
+            }
         } elseif ($request->has('translation_abbrev')) {
             $selectedTranslation = $request->input('translation_abbrev');
         } else {

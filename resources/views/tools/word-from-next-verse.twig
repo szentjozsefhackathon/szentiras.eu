@@ -18,10 +18,38 @@
                     <span class="badge bg-primary" style="font-size: 1.2rem;">
                         <i class="bi bi-trophy"></i> Pontszám: {{ score }}
                     </span>
-                    <div class="mt-2">
-                        <a href="/tools/word-from-next-verse?reset=1" class="btn btn-sm btn-outline-secondary">
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#newGameForm">
                             <i class="bi bi-arrow-clockwise"></i> Új játék kezdése
-                        </a>
+                        </button>
+                    </div>
+                    <div class="collapse mt-3" id="newGameForm">
+                        <div class="card" style="max-width: 400px; margin: 0 auto;">
+                            <div class="card-body">
+                                <form method="POST" action="/tools/word-from-next-verse">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="action" value="new_game">
+                                    
+                                    <div class="mb-3">
+                                        <label for="new_game_translation" class="form-label">
+                                            <i class="bi bi-book"></i> Válassz fordítást:
+                                        </label>
+                                        <select class="form-select" id="new_game_translation" name="translation_abbrev" required>
+                                            {% for translation in translations %}
+                                                <option value="{{ translation.abbrev }}" 
+                                                    {{ translation.abbrev == selectedTranslation ? 'selected' : '' }}>
+                                                    {{ translation.name }} ({{ translation.abbrev }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                        <i class="bi bi-play-fill"></i> Új játék indítása
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {% else %}
