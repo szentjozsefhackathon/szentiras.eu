@@ -1,0 +1,725 @@
+{% extends "layout" %}
+
+{% block content %}
+    <div class="container-fluid px-2" id="playerView">
+        <!-- Join Screen -->
+        <div id="joinScreen">
+            <div class="row">
+                <div class="col-12 text-center py-4">
+                    <h3 class="mb-4">Csatlakozás a játékhoz</h3>
+                    <p class="lead mb-4">Szoba kód: <strong style="font-size: 2rem; letter-spacing: 0.2em;">{{ roomCode }}</strong></p>
+                    
+                    <h3 class="text-center mb-3">Válassz egy állatot!</h3>
+                    
+                    <form id="joinForm">
+                        <div id="animalGrid" class="mb-4" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; max-height: 500px; overflow-y: auto;">
+                            <p class="text-center">Betöltés...</p>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-lg w-100" style="font-size: 1.5rem; padding: 1rem;" disabled id="joinButton">
+                            <i class="bi bi-box-arrow-in-right"></i> Csatlakozás
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Waiting Screen -->
+        <div id="waitingScreen" style="display: none;">
+            <div class="row">
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-primary mb-4" role="status" style="width: 4rem; height: 4rem;">
+                        <span class="visually-hidden">Várakozás...</span>
+                    </div>
+                    <h3 class="mb-3">Várunk a többiekre...</h3>
+                    <p class="lead">A tanár hamarosan indítja a játékot!</p>
+                    
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="mb-3">Te vagy:</h5>
+                            <div id="yourAnimal" style="width: 120px; height: 120px; margin: 0 auto; background-color: white; border: 3px solid #000; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); padding: 10px; display: flex; align-items: center; justify-content: center;">
+                                <img id="yourAnimalImage" style="max-width: 100%; max-height: 100%;" alt="">
+                            </div>
+                            <p class="mt-3 mb-0"><strong id="yourAnimalName"></strong></p>
+                            <p class="text-muted mb-0">Játékosok: <span id="playerCountWaiting">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question Screen -->
+        <div id="questionScreen" style="display: none;">
+            <div class="row">
+                <div class="col-12 text-center py-3">
+                    <h4 class="mb-3">
+                        Kérdés <span id="currentQuestion"></span> / <span id="totalQuestions"></span>
+                    </h4>
+                    
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div id="playerTimerProgress" class="progress-bar bg-warning" role="progressbar" style="width: 100%;">
+                            <span id="playerTimerText" style="font-weight: bold;">15</span>
+                        </div>
+                    </div>
+                    
+                    <p class="lead mb-4">Válassz gyorsan!</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <button class="answer-btn w-100" data-index="0" style="min-height: 140px;">
+                                <div class="answer-icon"></div>
+                                <div class="answer-text"></div>
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="answer-btn w-100" data-index="1" style="min-height: 140px;">
+                                <div class="answer-icon"></div>
+                                <div class="answer-text"></div>
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="answer-btn w-100" data-index="2" style="min-height: 140px;">
+                                <div class="answer-icon"></div>
+                                <div class="answer-text"></div>
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="answer-btn w-100" data-index="3" style="min-height: 140px;">
+                                <div class="answer-icon"></div>
+                                <div class="answer-text"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Answer Submitted Screen -->
+        <div id="answerSubmittedScreen" style="display: none;">
+            <div class="row">
+                <div class="col-12 text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h3 class="mb-3">Válasz elküldve!</h3>
+                    <p class="lead">Várunk a többi játékosra...</p>
+                    
+                    <div id="answerFeedback" class="alert mt-4" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="resultsScreen" style="display: none;">
+            <div class="row">
+                <div class="col-12 text-center py-4">
+                    <h3 class="mb-4">Eredmények</h3>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header" id="resultHeader">
+                        </div>
+                        <div class="card-body">
+                            <h4 id="pointsEarned"></h4>
+                            <h5>Összesen: <span id="totalScore"></span> pont</h5>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-warning">
+                            <h5 class="mb-0">🏆 Helyezésed</h5>
+                        </div>
+                        <div class="card-body">
+                            <h2 id="currentRank"></h2>
+                        </div>
+                    </div>
+                    
+                    <p class="text-muted mt-3">Várj a következő kérdésre...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Final Results Screen -->
+        <div id="finalScreen" style="display: none;">
+            <div class="row">
+                <div class="col-12 text-center py-4">
+                    <h2 class="display-4 mb-4">🎉 Vége! 🎉</h2>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h4 class="mb-0">Végeredményed</h4>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="display-3" id="finalRank"></h2>
+                            <h4 id="finalScore"></h4>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-info">
+                            <h5 class="mb-0">Gratulálunk!</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="lead" id="finalMessage"></p>
+                        </div>
+                    </div>
+                    
+                    <button onclick="window.location.href='/quiz'" class="btn btn-primary btn-lg mt-4 w-100">
+                        <i class="bi bi-arrow-clockwise"></i> Új játék
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        /* Hide navigation and sidebar for fullscreen quiz experience */
+        body > .container > nav,
+        body > .container > .row > .col-lg-3,
+        body > .container > .row > .col-md-4,
+        footer {
+            display: none !important;
+        }
+        
+        body > .container > .row > .col-lg-9,
+        body > .container > .row > .col-md-8 {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: 0 0 100% !important;
+        }
+        
+        body > .container {
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+        
+        #playerView {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .answer-btn {
+            border: 4px solid #ddd;
+            border-radius: 15px;
+            background-color: white;
+            padding: 1.5rem;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .answer-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .answer-btn.selected {
+            border-width: 6px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        
+        .answer-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .answer-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 576px) {
+            .answer-btn {
+                min-height: 120px !important;
+                padding: 1rem;
+            }
+            
+            .answer-icon {
+                font-size: 2.5rem;
+            }
+            
+            .answer-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+    
+    <script>
+        const roomCode = '{{ roomCode }}';
+        let game = {{ game|json_encode|raw }};
+        let sessionId = null;
+        let selectedAnimalId = null;
+        let availableAnimals = [];
+        let questionStartTime = null;
+        let timerInterval = null;
+        let pollInterval = null;
+        let animalsRefreshInterval = null;
+        let hasAnswered = false;
+        let previousQuestionNumber = 0;
+        
+        // Helper functions
+        function getAnimalName(animalId) {
+            // First try from availableAnimals (during selection)
+            const animal = availableAnimals.find(a => a.id === animalId);
+            if (animal) return animal.name;
+            
+            // Then try from game.players (during game)
+            const player = game.players?.find(p => p.animal_id === animalId);
+            if (player) return player.animal_name;
+            
+            // Fallback to ID
+            return animalId;
+        }
+        
+        function getAnimalSvgUrl(animalId) {
+            return `/animals/${animalId}.svg`;
+        }
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if already joined
+            const savedPlayer = sessionStorage.getItem(`quiz_player_${roomCode}`);
+            
+            if (savedPlayer) {
+                const player = JSON.parse(savedPlayer);
+                selectedAnimalId = player.animal_id;
+                sessionId = player.session_id;
+                showWaitingScreen();
+                startPolling();
+            } else {
+                // Load available animals
+                await loadAvailableAnimals();
+                // Start refreshing animals every 2 seconds
+                startAnimalsRefresh();
+            }
+            
+            updateUI();
+        });
+        
+        async function loadAvailableAnimals() {
+            try {
+                const response = await fetch(`/quiz/animals/${roomCode}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    availableAnimals = data.animals;
+                    displayAnimalGrid();
+                } else {
+                    alert('Hiba: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error loading animals:', error);
+                alert('Nem sikerült betölteni az állatokat.');
+            }
+        }
+        
+        function startAnimalsRefresh() {
+            if (animalsRefreshInterval) {
+                clearInterval(animalsRefreshInterval);
+            }
+            animalsRefreshInterval = setInterval(async () => {
+                await loadAvailableAnimals();
+            }, 2000); // Refresh every 2 seconds
+        }
+        
+        function stopAnimalsRefresh() {
+            if (animalsRefreshInterval) {
+                clearInterval(animalsRefreshInterval);
+                animalsRefreshInterval = null;
+            }
+        }
+        
+        function displayAnimalGrid() {
+            const grid = document.getElementById('animalGrid');
+           const joinButton = document.getElementById('joinButton');
+            
+            if (availableAnimals.length === 0) {
+                grid.innerHTML = '<p class="text-center text-danger">Nincs több szabad állat!</p>';
+                stopAnimalsRefresh();
+                return;
+            }
+            
+            // Check if previously selected animal is still available
+            const isStillAvailable = availableAnimals.some(animal => animal.id === selectedAnimalId);
+            if (selectedAnimalId && !isStillAvailable) {
+                // Reset selection if animal is no longer available
+                selectedAnimalId = null;
+                joinButton.disabled = true;
+            }
+            
+            grid.innerHTML = availableAnimals.map(animal => `
+                <button type="button" class="animal-choice" 
+                        data-id="${animal.id}"
+                        data-name="${animal.name}" 
+                        data-svg-url="${animal.svg_url}"
+                        style="background-color: white; height: 120px; border: 3px solid #ddd; border-radius: 10px; cursor: pointer; transition: all 0.2s; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;"
+                        title="${animal.name}">
+                    <img src="${animal.svg_url}" style="max-width: 60px; max-height: 60px; margin-bottom: 5px;" alt="${animal.name}">
+                    <span style="font-size: 0.8rem; color: #333; font-weight: bold;">${animal.name}</span>
+                </button>
+            `).join('');
+            
+            // Add click handlers
+            document.querySelectorAll('.animal-choice').forEach(btn => {
+                // Restore previous selection if matches
+                if (selectedAnimalId && btn.dataset.id === selectedAnimalId) {
+                    btn.style.border = '5px solid #000';
+                    btn.style.transform = 'scale(1.1)';
+                    joinButton.disabled = false;
+                }
+                
+                btn.addEventListener('click', () => {
+                    // Remove previous selection
+                    document.querySelectorAll('.animal-choice').forEach(b => {
+                        b.style.border = '3px solid #ddd';
+                        b.style.transform = 'scale(1)';
+                    });
+                    
+                    // Mark as selected
+                    btn.style.border = '5px solid #000';
+                    btn.style.transform = 'scale(1.1)';
+                    
+                    selectedAnimalId = btn.dataset.id;
+                    joinButton.disabled = false;
+                });
+            });
+        }
+        
+        // Join form
+        document.getElementById('joinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedAnimalId) {
+                alert('Kérlek válassz egy állatot!');
+                return;
+            }
+            
+            console.log('=== JOIN GAME ===');
+            console.log('Room code:', roomCode);
+            console.log('Animal ID:', selectedAnimalId);
+            
+            try {
+                const response = await fetch(`/quiz/join/${roomCode}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ 
+                        animal_id: selectedAnimalId
+                    })
+                });
+                
+                console.log('Join response status:', response.status);
+                const data = await response.json();
+                console.log('Join response data:', data);
+                
+                if (data.success) {
+                    game = data.game;
+                    sessionId = data.session_id;
+                    
+                    console.log('Joined successfully! Session ID:', sessionId);
+                    console.log('Game state:', game);
+                    
+                    // Save to session storage
+                    sessionStorage.setItem(`quiz_player_${roomCode}`, JSON.stringify({
+                        animal_id: selectedAnimalId,
+                        session_id: sessionId
+                    }));
+                    
+                    stopAnimalsRefresh();
+                    showWaitingScreen();
+                    startPolling();
+                } else {
+                    alert('Nem sikerült csatlakozni a játékhoz: ' + (data.error || 'Ismeretlen hiba'));
+                    console.error('Join failed:', data);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hiba történt a csatlakozás során.');
+            }
+        });
+        
+        function updateUI() {
+            if (!sessionId) {
+                return; // Not joined yet
+            }
+            
+            // Check if new question started - reset hasAnswered
+            if (game.status === 'playing' && game.current_question !== previousQuestionNumber) {
+                console.log('New question detected! Resetting hasAnswered. Previous:', previousQuestionNumber, 'Current:', game.current_question);
+                hasAnswered = false;
+                previousQuestionNumber = game.current_question;
+            }
+            
+            if (game.status === 'waiting') {
+                showWaitingScreen();
+            } else if (game.status === 'playing') {
+                if (hasAnswered) {
+                    showAnswerSubmittedScreen();
+                } else {
+                    showQuestionScreen();
+                }
+            } else if (game.status === 'results') {
+                showResultsScreen();
+            } else if (game.status === 'finished') {
+                showFinalScreen();
+            }
+        }
+        
+        function showWaitingScreen() {
+            document.getElementById('joinScreen').style.display = 'none';
+            document.getElementById('waitingScreen').style.display = 'block';
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('answerSubmittedScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'none';
+            
+            document.getElementById('yourAnimalImage').src = getAnimalSvgUrl(selectedAnimalId);
+            document.getElementById('yourAnimalName').textContent = getAnimalName(selectedAnimalId);
+            document.getElementById('playerCountWaiting').textContent = game.players.length;
+        }
+        
+        function showQuestionScreen() {
+            console.log('=== SHOW QUESTION SCREEN ===');
+            console.log('Current question:', game.current_question);
+            console.log('hasAnswered:', hasAnswered);
+            
+            document.getElementById('joinScreen').style.display = 'none';
+            document.getElementById('waitingScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+            document.getElementById('answerSubmittedScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'none';
+            
+            hasAnswered = false;
+            questionStartTime = Date.now();
+            
+            const question = game.questions[game.current_question - 1];
+            
+            console.log('Question data:', question);
+            
+            document.getElementById('currentQuestion').textContent = game.current_question;
+            document.getElementById('totalQuestions').textContent = game.total_questions;
+            
+            // Setup answer buttons
+            const buttons = document.querySelectorAll('.answer-btn');
+            console.log('Found buttons:', buttons.length);
+            
+            buttons.forEach((btn, index) => {
+                const option = question.options[index];
+                
+                btn.querySelector('.answer-icon').textContent = option.icon;
+                btn.querySelector('.answer-text').textContent = option.book_name;
+                btn.style.borderColor = option.hex;
+                btn.style.backgroundColor = option.hex + '20';
+                
+                // Re-enable button and clear previous state
+                btn.disabled = false;
+                btn.classList.remove('selected');
+                
+                btn.onclick = () => {
+                    console.log('Button clicked! Index:', index);
+                    submitAnswer(index);
+                };
+                
+                console.log('Button', index, 'configured:', option.book_name);
+            });
+            
+            startPlayerTimer();
+        }
+        
+        function showAnswerSubmittedScreen() {
+            document.getElementById('joinScreen').style.display = 'none';
+            document.getElementById('waitingScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('answerSubmittedScreen').style.display = 'block';
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'none';
+        }
+        
+        function showResultsScreen() {
+            // Stop the timer immediately
+            clearInterval(timerInterval);
+            
+            document.getElementById('joinScreen').style.display = 'none';
+            document.getElementById('waitingScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('answerSubmittedScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            document.getElementById('finalScreen').style.display = 'none';
+            
+            fetchResults();
+        }
+        
+        function showFinalScreen() {
+            document.getElementById('joinScreen').style.display = 'none';
+            document.getElementById('waitingScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('answerSubmittedScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'block';
+            
+            fetchFinalResults();
+        }
+        
+        function startPlayerTimer() {
+            clearInterval(timerInterval);
+            
+            const startTime = new Date(game.question_started_at);
+            const duration = game.question_time_limit * 1000;
+            
+            timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime.getTime();
+                const remaining = Math.max(0, duration - elapsed);
+                const seconds = Math.ceil(remaining / 1000);
+                const percentage = (remaining / duration) * 100;
+                
+                document.getElementById('playerTimerText').textContent = seconds;
+                document.getElementById('playerTimerProgress').style.width = percentage + '%';
+                
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                }
+            }, 100);
+        }
+        
+        async function submitAnswer(optionIndex) {
+            if (hasAnswered) return;
+            
+            hasAnswered = true;
+            const responseTime = Date.now() - questionStartTime;
+            
+            console.log('=== SUBMIT ANSWER ===');
+            console.log('Room code:', roomCode);
+            console.log('Session ID:', sessionId);
+            console.log('Option index:', optionIndex);
+            console.log('Response time:', responseTime);
+            
+            // Visual feedback
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons[optionIndex].classList.add('selected');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            try {
+                const response = await fetch(`/quiz/answer/${roomCode}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        option_index: optionIndex,
+                        response_time_ms: responseTime
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    game = data.game;
+                    showAnswerSubmittedScreen();
+                } else {
+                    alert('Hiba: ' + (data.error || 'Válasz elküldése nem sikerült'));
+                    if (data.debug) {
+                        console.error('Debug info:', data.debug);
+                    }
+                    hasAnswered = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hiba történt a válasz küldésekor.');
+                hasAnswered = false;
+            }
+        }
+        
+        function startPolling() {
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/quiz/state/${roomCode}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        game = data.game;
+                        updateUI();
+                    }
+                } catch (error) {
+                    console.error('Polling error:', error);
+                }
+            }, 2000);
+        }
+        
+        async function fetchResults() {
+            try {
+                const response = await fetch(`/quiz/state/${roomCode}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const myAnswer = findMyAnswer(game);
+                    const myPlayer = findMyPlayer(game);
+                    const leaderboard = data.leaderboard;
+                    const myRank = leaderboard.findIndex(p => p.session_id === sessionId) + 1;
+                    
+                    if (myAnswer) {
+                        const header = document.getElementById('resultHeader');
+                        const pointsElem = document.getElementById('pointsEarned');
+                        
+                        if (myAnswer.is_correct) {
+                            header.className = 'card-header bg-success text-white';
+                            header.innerHTML = '<h4 class="mb-0">✓ Helyes válasz!</h4>';
+                            pointsElem.textContent = `+${myAnswer.points} pont`;
+                        } else {
+                            header.className = 'card-header bg-danger text-white';
+                            header.innerHTML = '<h4 class="mb-0">✗ Helytelen válasz</h4>';
+                            pointsElem.textContent = '0 pont';
+                        }
+                        
+                        document.getElementById('totalScore').textContent = myPlayer.score;
+                        document.getElementById('currentRank').textContent = `${myRank}. helyezett vagy!`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function fetchFinalResults() {
+            try {
+                const response = await fetch(`/quiz/state/${roomCode}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const myPlayer = findMyPlayer(game);
+                    const leaderboard = data.leaderboard;
+                    const myRank = leaderboard.findIndex(p => p.session_id === sessionId) + 1;
+                    
+                    const rankText = myRank === 1 ? '🥇 1. helyezett' : 
+                                    myRank === 2 ? '🥈 2. helyezett' : 
+                                    myRank === 3 ? '🥉 3. helyezett' : 
+                                    `${myRank}. helyezett`;
+                    
+                    document.getElementById('finalRank').textContent = rankText;
+                    document.getElementById('finalScore').textContent = `${myPlayer.score} pont`;
+                    
+                    const message = myRank <= 3 ? 'Fantasztikus teljesítmény!' : 
+                                   myRank <= 10 ? 'Szép munka!' : 
+                                   'Köszönjük a részvételt!';
+                    document.getElementById('finalMessage').textContent = message;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        function findMyAnswer(game) {
+            const answerKey = `${sessionId}_${game.current_question}`;
+            return game.current_answers[answerKey];
+        }
+        
+        function findMyPlayer(game) {
+            return game.players.find(p => p.session_id === sessionId);
+        }
+    </script>
+{% endblock %}

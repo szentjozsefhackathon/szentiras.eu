@@ -1,0 +1,158 @@
+{% extends "layout" %}
+
+{% block pageHeader %}
+    <div class="page-header">
+        <h1><i class="bi bi-joystick"></i> Interaktív kvízjáték</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <p class="lead text-center">
+                    Interaktív kvízjáték bibliai idézetekből. Találd ki, melyik könyvből származnak az idézetek!
+                </p>
+                
+                <!-- Tanári nézet létrehozása -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-display"></i> Tanári nézet - Új játék indítása</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="createGameForm">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="total_questions" class="form-label">Kérdések száma</label>
+                                    <select class="form-select" id="total_questions" name="total_questions">
+                                        <option value="10">10 kérdés</option>
+                                        <option value="15" selected>15 kérdés</option>
+                                        <option value="20">20 kérdés</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="time_limit" class="form-label">Időkorlát (mp)</label>
+                                    <select class="form-select" id="time_limit" name="time_limit">
+                                        <option value="10">10 másodperc</option>
+                                        <option value="15" selected>15 másodperc</option>
+                                        <option value="20">20 másodperc</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="translation_abbrev" class="form-label">Fordítás</label>
+                                    <select class="form-select" id="translation_abbrev" name="translation_abbrev">
+                                        {% for translation in translations %}
+                                            <option value="{{ translation.abbrev }}" 
+                                                    {% if translation.abbrev == defaultTranslation.abbrev %}selected{% endif %}>
+                                                {{ translation.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-play-fill"></i> Új játék indítása
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Játékos csatlakozás -->
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-phone"></i> Játékos csatlakozás</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="joinGameForm">
+                            <div class="mb-3">
+                                <label for="room_code_join" class="form-label">Szoba kód</label>
+                                <input type="text" class="form-control form-control-lg text-uppercase" 
+                                       id="room_code_join" name="room_code" 
+                                       placeholder="Pl: ABC123" 
+                                       maxlength="6" 
+                                       required
+                                       style="letter-spacing: 0.2em; font-weight: bold;">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                <i class="bi bi-box-arrow-in-right"></i> Csatlakozás
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Játékszabályok -->
+                <div class="card mt-4">
+                    <div class="card-header bg-info text-dark">
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Játékszabályok</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Tanár:</strong> Indítsd el a játékot és oszd meg a szoba kódot a diákokkal</li>
+                            <li><strong>Diákok:</strong> Add meg a nevedet és csatlakozz a szoba kódja alapján</li>
+                            <li>Minden kérdésnél egy bibliai idézetet látsz</li>
+                            <li>Találd ki, melyik könyvből származik az idézet (4 lehetőség közül)</li>
+                            <li>Válaszolj gyorsan! A gyorsabb válaszok több pontot érnek</li>
+                            <li>Helyes válasz: 500-1000 pont (gyorsaság alapján)</li>
+                            <li>A játék végén láthatod a végeredményt</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Create game form
+        document.getElementById('createGameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/quiz/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Redirect to teacher view
+                    window.location.href = `/quiz/teacher/${result.room_code}`;
+                } else {
+                    alert('Hiba történt a játék létrehozásakor.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hiba történt a kérés során.');
+            }
+        });
+        
+        // Join game form
+        document.getElementById('joinGameForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const roomCode = document.getElementById('room_code_join').value.toUpperCase();
+            
+            if (roomCode.length >= 4) {
+                window.location.href = `/quiz/player/${roomCode}`;
+            } else {
+                alert('Kérlek add meg a szoba kódot!');
+            }
+        });
+        
+        // Auto-uppercase room code input
+        document.getElementById('room_code_join').addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+{% endblock %}

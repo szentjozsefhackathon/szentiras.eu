@@ -21,6 +21,7 @@ use SzentirasHu\Http\Controllers\Tools\GuessTheBookController;
 use SzentirasHu\Http\Controllers\Tools\GuessTheMissingWordController;
 use SzentirasHu\Http\Controllers\Tools\VerseScrambleController;
 use SzentirasHu\Http\Controllers\Tools\WordFromNextVerseController;
+use SzentirasHu\Http\Controllers\Tools\QuizGameController;
 use SzentirasHu\Http\Middleware\RedirectLowerCaseTranslationAbbrev;
 use SzentirasHu\Models\Media;
 
@@ -130,6 +131,19 @@ Route::match(['get', 'post'], '/tools/guess-word', [GuessTheMissingWordControlle
 Route::match(['get', 'post'], '/tools/verse-scramble', [VerseScrambleController::class, 'index']);
 Route::match(['get', 'post'], '/tools/word-from-next-verse', [WordFromNextVerseController::class, 'index']);
 
+// Quiz game routes
+Route::get('/quiz', [QuizGameController::class, 'index'])->name('quiz.index');
+Route::post('/quiz/create', [QuizGameController::class, 'createGame'])->name('quiz.create');
+Route::get('/quiz/teacher/{roomCode}', [QuizGameController::class, 'teacherView'])->name('quiz.teacher');
+Route::get('/quiz/player/{roomCode}', [QuizGameController::class, 'playerView'])->name('quiz.player');
+Route::get('/quiz/animals/{roomCode}', [QuizGameController::class, 'getAvailableAnimals'])->name('quiz.animals');
+Route::post('/quiz/join/{roomCode}', [QuizGameController::class, 'joinGame'])->name('quiz.join');
+Route::post('/quiz/start/{roomCode}', [QuizGameController::class, 'startGame'])->name('quiz.start');
+Route::post('/quiz/answer/{roomCode}', [QuizGameController::class, 'submitAnswer'])->name('quiz.answer');
+Route::post('/quiz/results/{roomCode}', [QuizGameController::class, 'showResults'])->name('quiz.results');
+Route::post('/quiz/next/{roomCode}', [QuizGameController::class, 'nextQuestion'])->name('quiz.next');
+Route::get('/quiz/state/{roomCode}', [QuizGameController::class, 'getGameState'])->name('quiz.state');
+Route::post('/quiz/end/{roomCode}', [QuizGameController::class, 'endGame'])->name('quiz.end');
 
 // User inbox routes (require anonymous login)
 Route::middleware('anonymousId')->group(function () {
