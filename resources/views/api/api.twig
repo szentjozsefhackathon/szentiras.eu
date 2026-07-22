@@ -34,7 +34,8 @@
     <p>2026. március 31-ig az API kulcs nélküli kérések még engedélyezve vannak, de naplózva lesznek. <strong>Javasoljuk, hogy már most regisztrálj egy API kulcsot</strong>, hogy felkészülj a kötelezővé válásra!</p>
     
     <h5>API kulcs beszerzése</h5>
-    <p>Az API kulcs beszerzéséhez vedd fel velünk a kapcsolatot emailben vagy üzenetben. A kulcs egyedi és biztonságosan tárolva lesz.</p>
+    <p>Ha be vagy jelentkezve, az API kulcsot <strong>önkiszolgáló módon, azonnal létre tudod hozni</strong> a <a href="{{ url('/profile/api-keys') }}">API kulcsaim</a> oldalon. Itt láthatod a meglévő kulcsaidat, létrehozhatsz újat, és bármikor törölheted azokat, amelyekre már nincs szükséged. Felhasználónként legfeljebb 5 kulcs hozható létre.</p>
+    <p>Ha nem vagy bejelentkezve, vagy egyedi igényed van (például a szokásosnál magasabb sebességkorlát), vedd fel velünk a kapcsolatot emailben vagy üzenetben. A kulcs egyedi és biztonságosan tárolva lesz.</p>
     
     <h5>Hibakezelés</h5>
     <dl>
@@ -101,7 +102,7 @@
         </p>
 
     <h3>MCP szerver</h3>
-    <p>Az MCP (<a href="https://modelcontextprotocol.io">Model Context Protocol</a>) egy nyílt szabvány, amellyel az AI-kliensek (pl. Claude, ChatGPT és más MCP-t támogató alkalmazások) külső eszközökhöz és adatforrásokhoz férhetnek hozzá. A Szentírás.eu MCP szervere lehetővé teszi, hogy az AI a <strong>pontos, szó szerinti bibliai szöveget</strong> kérje le egy adott magyar fordításból, ahelyett, hogy emlékezetből idézne.</p>
+    <p>Az MCP (<a href="https://modelcontextprotocol.io">Model Context Protocol</a>) egy nyílt szabvány, amellyel az AI-kliensek (pl. Claude, ChatGPT és más MCP-t támogató alkalmazások) külső eszközökhöz és adatforrásokhoz férhetnek hozzá. A Szentírás.eu MCP szervere lehetővé teszi, hogy az AI a <strong>pontos, szó szerinti bibliai szöveget</strong> kérje le egy adott magyar fordításból, ahelyett, hogy emlékezetből idézne, valamint hogy az <strong>Újszövetség eredeti görög szövegét</strong> szavanként elemezve érje el.</p>
 
     <h4>Végpont</h4>
     <p>A szerver a következő címen érhető el:</p>
@@ -119,6 +120,10 @@
         <dd>Egy megadott szentírási hely pontos, szó szerinti szövegét adja vissza a beállított fordításban. Paraméterek: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code> vagy <code>1Kor 13,4-7</code>), és <code>translation</code> (opcionális) – a fordítás rövidítése, amellyel az URL-ben megadott hagyomány felülírható.</dd>
         <dt><code>list-translations</code></dt>
         <dd>Felsorolja az elérhető magyar fordításokat felekezetenként (katolikus / protestáns), és jelzi, hogy a végpont alapértelmezetten melyikkel válaszol.</dd>
+        <dt><code>get-greek-verses</code></dt>
+        <dd>Egy újszövetségi szakasz eredeti görög szövegét adja vissza, szavanként elemezve: a szövegbeli alak, a szótári alak (lemma), az átírás, a Strong-szám, a morfológiai kód és annak magyar leírása, valamint a szó első magyar jelentése. Paraméter: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code>). Görögül csak az Újszövetség érhető el.</dd>
+        <dt><code>lookup-greek-word</code></dt>
+        <dd>Egy Strong-szám görög–magyar szótári szócikkét adja vissza: a szótári alakot, az átírást, az összes magyar jelentést a hozzájuk tartozó magyarázattal, valamint – ha ismert – a szó eredetét, paradigmáját és a megjegyzéseket. Paraméter: <code>strongNumber</code> (kötelező) – a <code>get-greek-verses</code> által visszaadott Strong-szám.</dd>
     </dl>
     <p>A hivatkozások magyar jelölést használnak: a vessző választja el a fejezetet és a verset (<code>Jn 3,16</code>), a kötőjel jelöl tartományt (<code>1Kor 13,4-7</code>), a pontosvessző pedig könyveket vagy fejezeteket választ el (<code>Jn 1;3</code>).</p>
 

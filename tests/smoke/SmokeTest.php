@@ -104,6 +104,17 @@ class SmokeTest extends TestCase
         $response->assertSee(url('/mcp/bible'), false);
         $response->assertSee('get-verses');
         $response->assertSee('list-translations');
+        $response->assertSee('get-greek-verses');
+        $response->assertSee('lookup-greek-word');
+    }
+
+    public function testDeveloperPageDocumentsSelfServiceApiKeys()
+    {
+        $response = $this->get('/api');
+
+        $response->assertStatus(200);
+        $response->assertSee('önkiszolgáló', false);
+        $response->assertSee(url('/profile/api-keys'), false);
     }
 
     public function testBasicApiTranslation()

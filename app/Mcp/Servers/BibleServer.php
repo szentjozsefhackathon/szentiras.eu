@@ -3,8 +3,10 @@
 namespace SzentirasHu\Mcp\Servers;
 
 use Laravel\Mcp\Server;
+use SzentirasHu\Mcp\Tools\GetGreekVersesTool;
 use SzentirasHu\Mcp\Tools\GetVersesTool;
 use SzentirasHu\Mcp\Tools\ListTranslationsTool;
+use SzentirasHu\Mcp\Tools\LookupGreekWordTool;
 
 class BibleServer extends Server
 {
@@ -13,7 +15,7 @@ class BibleServer extends Server
     protected string $version = '1.0.0';
 
     protected string $instructions = <<<'MARKDOWN'
-    Provides verbatim Hungarian Bible text from szentiras.eu.
+    Provides verbatim Hungarian Bible text and the original Greek New Testament from szentiras.eu.
 
     Always call `get-verses` instead of quoting scripture from memory: the text returned is
     the exact wording of a specific published translation.
@@ -22,6 +24,12 @@ class BibleServer extends Server
     The translation this endpoint answers with reflects the user's own tradition, so never
     substitute a different one. Only pass the `translation` argument when the user explicitly
     asks for another translation.
+
+    For questions about the original wording of the New Testament — what a Greek word means,
+    how a form is parsed, what stands behind a Hungarian rendering — call `get-greek-verses`
+    rather than recalling Greek from memory. It returns each word with its lemma, Strong
+    number and morphology. Follow a Strong number with `lookup-greek-word` for the full
+    dictionary entry. The Greek text covers the New Testament only.
 
     References use Hungarian notation: a comma separates chapter and verse (`Jn 3,16`), a
     hyphen marks a range (`1Kor 13,4-7`), and a semicolon separates books or chapters (`Jn 1;3`).
@@ -33,5 +41,7 @@ class BibleServer extends Server
     protected array $tools = [
         GetVersesTool::class,
         ListTranslationsTool::class,
+        GetGreekVersesTool::class,
+        LookupGreekWordTool::class,
     ];
 }

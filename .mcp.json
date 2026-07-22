@@ -6,6 +6,12 @@
                 "artisan",
                 "boost:mcp"
             ]
+        },
+        "szentiraseu": {
+            "type": "http",
+            "url": "http://localhost/mcp/bible"
+
         }
+
     }
 }

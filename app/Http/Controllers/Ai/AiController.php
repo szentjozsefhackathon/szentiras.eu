@@ -4,7 +4,6 @@ namespace SzentirasHu\Http\Controllers\Ai;
 
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 use Pgvector\Vector;
 use SzentirasHu\Data\UsxCodes;
 use SzentirasHu\Http\Controllers\Controller;
@@ -16,6 +15,7 @@ use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ReferenceService;
 use SzentirasHu\Service\Search\SemanticSearchService;
 use SzentirasHu\Service\Text\BookService;
+use SzentirasHu\Service\Text\MorphologyService;
 use SzentirasHu\Service\Text\TextService;
 use SzentirasHu\Service\Text\TranslationService;
 use Illuminate\Support\Collection;
@@ -28,7 +28,8 @@ class AiController extends Controller
         protected SemanticSearchService $semanticSearchService,
         protected TranslationService $translationService,
         protected ReferenceService $referenceService,
-        protected BookService $bookService
+        protected BookService $bookService,
+        protected MorphologyService $morphologyService
     ) {}
 
     public function getAiToolPopover($translationAbbrev, $reference)
@@ -161,7 +162,7 @@ class AiController extends Controller
         $greekText = str_replace('¶', '', $greekVerse->text);
         $explodedText = explode(' ', $greekText);
         $printed = preg_replace('/[^\w]/u', '', $explodedText[$i]);
-        $morphology = $this->parseMorphology($json->morphology);
+        $morphology = $this->morphologyService->describe($json->morphology);
         $view = view(
             "ai.greekWordPanel",
             [
@@ -253,44 +254,5 @@ class AiController extends Controller
         }
 
         return view("ai.allInstancesOfGreekWord", ['instances' => $instances, 'strongWord' => $strongWord, 'hitCount' => $hitCount, 'limit' => $limit, 'offset' => $offset]);
-    }
-
-
-    /**
-     * Parses a Greek verb morphological code and returns a Hungarian explanation.
-     *
-     * Verb codes have one of three formats:
-     *   1. V‑tense‑voice‑mood
-     *   2. V‑tense‑voice‑mood‑person‑number
-     *   3. V‑tense‑voice‑mood‑case‑number‑gender
-     *
-     * An optional trailing “ATT” indicates an Attic form.
-     *
-     * Examples:
-     *   V-PAI-1S → "ige, jelen idő, aktív, kijelentő mód, első személy, egyes szám"
-     *   V-2AOM-3P-ATT → "ige, második aoristus, passzív deponens, felszólító mód, harmadik személy, többes szám, attikus alak"
-     *
-     * @param string $morphCode The morph code starting with "V-"
-     * @return string Explanation in Hungarian.
-     */
-    private function parseMorphology($morphCode): string
-    {
-        $morphology = Config::get("morphology.{$morphCode}");
-        $result = [];
-        if ($morphology) {
-            $result[] = $morphology['partOfSpeech'] ?? null;
-            $result[] = $morphology['tense'] ?? null;
-            $result[] = $morphology['voice'] ?? null;
-            $result[] = $morphology['mood'] ?? null;
-            $result[] = $morphology['number'] ?? null;
-            $result[] = $morphology['person'] ?? null;
-            $result[] = $morphology['case'] ?? null;
-            $result[] = $morphology['gender'] ?? null;
-            $result[] = $morphology['degree'] ?? null;
-            $result[] = $morphology['form'] ?? null;
-            return implode(", ", array_filter($result));
-        } else {
-            return "";
-        }
     }
 }

@@ -40,6 +40,9 @@ class StrongWord extends Model
         return $this->belongsToMany(GreekVerse::class);
     }
 
+    /**
+     * @return HasMany<DictionaryMeaning, $this>
+     */
     public function dictionaryMeanings() : HasMany {
         return $this->hasMany(DictionaryMeaning::class, 'strong_word_number', 'number');
     }
