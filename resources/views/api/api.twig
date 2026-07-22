@@ -1,120 +1,83 @@
 {% extends 'layout' %}
+{% set pageTitle='Fejlesztőknek – API és MCP szerver | Szentírás' %}
+{% set teaser='A Szentírás.eu fejlesztői dokumentációja: nyílt forráskód, REST API a bibliai szövegek, fordítások és keresés programozott eléréséhez, MCP szerver az AI-klienseknek, valamint az API kulcs igénylése és használata.' %}
+
+{% set key = 'AZ_EN_API_KULCSOM' %}
 
 {% block content %}
-    <h2>Fejlesztőknek</h2>
+    <h1 class="h4">Fejlesztőknek</h1>
 
-    <p>A honlap forráskódja elérhető a <a href="https://github.com/szentjozsefhackathon/szentiras.eu">GitHub-on</a>, szívesen látjuk azokat, akik részt vennének a fejlesztésben.</p>
-    <h4>Widgetek, pluginek, stb.</h4>
-    <p>Elkészült egy <a href="http://molnarm.github.io/igemutato/">igemutató kiegészítő</a> ami a bibliai hivatkozásokat automatikusan átalakítja, hogy felugró ablakban lehessen olvasni a teljes szöveget.</p>
-    <p> A script beilleszthető bármilyen honlapba vagy telepíthető <a
-                href="https://chrome.google.com/webstore/detail/szent%C3%ADr%C3%A1s/mooikajlieddnjlmlbodldompfifkoim">Google
-            Chrome</a> és <a href=" https://addons.mozilla.org/hu/firefox/addon/szent%C3%ADr%C3%A1s/">Mozilla
-            Firefox</a> böngészőkben. További információ: <a href="http://molnarm.github.io/igemutato/">molnarm.github.io/igemutato</a>
-    </p>
-    <p>Ha további widget/plugin ötleted vagy igényed van, szívesen segítünk a kifejlesztésében.
-        Létező munkádat kérjük oszd meg velünk, hogy másoknak is hasznára lehessen.</p>
+    <p>A honlap forráskódja elérhető a <a href="https://github.com/szentjozsefhackathon/szentiras.eu">GitHub-on</a>, szívesen látjuk azokat, akik részt vennének a fejlesztésben. Widgetek, pluginek fejlesztésében is szívesen segítünk – ilyen például az <a href="http://molnarm.github.io/igemutato/">igemutató kiegészítő</a>, amely a bibliai hivatkozásokat felugró ablakban olvasható szöveggé alakítja.</p>
 
-    <h3>API</h3>
-    <p><strong>Kérünk minden API fejlesztőt/használót, hogy egy emailben jelentkezzen, hogy értesíteni tudjuk az
-            esetleges API fejlesztésekről!</strong></p>
-    <p>Minden API hívás JSON formátumú válasszal tér vissza, kivéve hiba esetén (404, 500, 503 stb. HTTP kódoknál).</p>
+    <h2 class="h5 mt-4" id="api-kulcs">API kulcs</h2>
+    <p>Minden API- és MCP-hívás érvényes API kulcsot igényel. A kulcsot az <code>X-API-Key</code> HTTP fejlécben kell elküldeni:</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/idezet/1Kor13,10-13') }}"</code></pre>
 
-    <h4 id="api-kulcs">API kulcs követelmények</h4>
-    <p><strong>⚠️ Fontos: 2026. április 1-től az API kulcs kötelezővé válik!</strong> Ennek a célja a hibás kérések és a túlterhelés elkerülése.</p>
-    <p>Az API kulcs egy egyedi azonosító, amely szükséges az API végpontok eléréséhez. A kulcsot a kérés fejlécében kell megadni.</p>
-    
-    <h5>API kulcs megadása</h5>
-    <p>Az API kulcsot az <code>X-API-Key</code> HTTP fejléc segítségével kell megadni:</p>
-    <pre><code>X-API-Key: your_api_key_here</code></pre>
-    
-    <h5>Példa cURL-lel:</h5>
-    <pre><code>curl -H "X-API-Key: your_api_key_here" https://szentiras.eu/api/idezet/1Kor13,10-13</code></pre>
-    
-    <h5>Átmeneti időszak (Grace Period)</h5>
-    <p>2026. március 31-ig az API kulcs nélküli kérések még engedélyezve vannak, de naplózva lesznek. <strong>Javasoljuk, hogy már most regisztrálj egy API kulcsot</strong>, hogy felkészülj a kötelezővé válásra!</p>
-    
-    <h5>API kulcs beszerzése</h5>
-    <p>Ha be vagy jelentkezve, az API kulcsot <strong>önkiszolgáló módon, azonnal létre tudod hozni</strong> a <a href="{{ url('/profile/api-keys') }}">API kulcsaim</a> oldalon. Itt láthatod a meglévő kulcsaidat, létrehozhatsz újat, és bármikor törölheted azokat, amelyekre már nincs szükséged. Felhasználónként legfeljebb 5 kulcs hozható létre.</p>
-    <p>Ha nem vagy bejelentkezve, vagy egyedi igényed van (például a szokásosnál magasabb sebességkorlát), vedd fel velünk a kapcsolatot emailben vagy üzenetben. A kulcs egyedi és biztonságosan tárolva lesz.</p>
-    
-    <h5>Hibakezelés</h5>
+    <h3 class="h6">Kulcs igénylése</h3>
+    <p>Ha be vagy jelentkezve, a kulcsot <strong>önkiszolgáló módon, azonnal létre tudod hozni</strong> az <a href="{{ url('/profile/api-keys') }}">API kulcsaim</a> oldalon: itt láthatod a meglévő kulcsaidat, létrehozhatsz újat (felhasználónként legfeljebb ötöt), és bármikor törölheted azokat, amelyekre már nincs szükséged. Ha nem vagy bejelentkezve, vagy egyedi igényed van (például a szokásosnál magasabb sebességkorlát), vedd fel velünk a kapcsolatot emailben vagy üzenetben.</p>
+
+    <h3 class="h6">Sebességkorlát és hibakódok</h3>
+    <p>Alapértelmezetten percenként 60 kérés engedélyezett; egyes kulcsokhoz ettől eltérő korlát is rendelhető.</p>
     <dl>
-        <dt>401 Unauthorized - Hiányzó vagy érvénytelen API kulcs</dt>
-        <dd>A kérésben nincs <code>X-API-Key</code> fejléc, vagy az érték érvénytelen.</dd>
-        <dt>403 Forbidden - Letiltott API kulcs</dt>
-        <dd>Az API kulcs létezik, de le van tiltva.</dd>
+        <dt><code>401 Unauthorized</code></dt>
+        <dd>Hiányzik az <code>X-API-Key</code> fejléc, vagy az értéke érvénytelen.</dd>
+        <dt><code>403 Forbidden</code></dt>
+        <dd>A kulcs létezik, de le van tiltva.</dd>
+        <dt><code>429 Too Many Requests</code></dt>
+        <dd>Túllépted a sebességkorlátot.</dd>
     </dl>
-    
-    <h5>Rate Limiting (Sebességkorlátozás)</h5>
-    <p>Az API kulcsok sebességkorlátozásnak vannak alávetve:</p>
-    <ul>
-        <li><strong>Alapértelmezett korlát:</strong> 60 kérés percenként</li>
-        <li><strong>Egyéni korlátok:</strong> Egyes kulcsokhoz egyéni sebességkorlátok rendelhetők</li>
-    </ul>
-    <p>Ha túllépik a sebességkorlátot, a szerver 429 Too Many Requests hibát ad vissza.</p>
 
-    <h4>idezet</h4>
-    Megadott szentírási hely(ek) megjelenítése alapértelmezett vagy megadott fordításban.
-    {% set exampleUrl = url('api/idezet/1Kor13,10-13') %}
-    <p><a href="{{ exampleUrl }}">{{ exampleUrl }}</a><br>
-    <a href="{{ exampleUrl }}/SZIT">{{ exampleUrl }}/SZIT</a></p>
-    <h5>Paraméterek:</h5>
+    <h2 class="h5 mt-4">REST API</h2>
+    <p>Minden végpont JSON formátumú válasszal tér vissza, kivéve hiba esetén (404, 500, 503 stb. HTTP kódoknál). A példák a saját kulcsoddal, változtatás nélkül futtathatók.</p>
+
+    <h3 class="h6"><code>idezet</code> – szentírási hely</h3>
+    <p>Megadott szentírási hely(ek) megjelenítése alapértelmezett vagy megadott fordításban.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/idezet/1Kor13,10-13') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/idezet/1Kor13,10-13/SZIT') }}"</code></pre>
     <dl>
-        <dt>Hivatkozás*</dt>
-        <dd>A szentírási hely hivatkozása, lényegében bármilyen elfogadott formátumban, bármely fordítás szerint, pl. <code>1Kor13,10-13</code></dd>
-        <dt>Fordítás</dt>
-        <dd>A fordítás rövidítése. Ha nincs megadva, az alapértelmezett fordítás alapján ad vissza találatot.</dd>
+        <dt>hivatkozás (kötelező)</dt>
+        <dd>A szentírási hely, lényegében bármilyen elfogadott formátumban, bármely fordítás szerint, pl. <code>1Kor13,10-13</code></dd>
+        <dt>fordítás</dt>
+        <dd>A fordítás rövidítése. Ha nincs megadva, az alapértelmezett fordításból ad vissza találatot.</dd>
     </dl>
-    <h4>forditasok</h4>
-    <h5>Fordítások listája</h5>
-    {% set exampleUrl = 'api/forditasok' %}
-    <a href="{{ exampleUrl }}">{{ url(exampleUrl) }}</a>
-    <h5>Egyetlen szentírási vers megjelenítése az összes elérhető fordításban</h5>
-    Példa:
-    {% set exampleUrl = 'api/forditasok/JHN_13_34' %}
-    <a href="{{ exampleUrl }}">{{ url(exampleUrl) }}</a></p>
 
-    <em>hivatkozas</em> (kötelező): pl. <i>JHN_13_34</i> (Úgynevezett <i>gépi kód</i>dal lehet
-    verset keresni, amely a könyv <a href="https://ubsicap.github.io/usx/vocabularies.html#list-of-vocabularies">USX kódja</a>, a vers és a fejezet.
-    
+    <h3 class="h6"><code>forditasok</code> – fordítások</h3>
+    <p>Az elérhető fordítások listája, illetve egyetlen vers megjelenítése az összes fordításban. Ez utóbbihoz az úgynevezett <em>gépi kód</em> kell, amely a könyv <a href="https://ubsicap.github.io/usx/vocabularies.html#list-of-vocabularies">USX kódjából</a>, a fejezetből és a versből áll, pl. <code>JHN_13_34</code>.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/forditasok') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/forditasok/JHN_13_34') }}"</code></pre>
 
-    <h4>books</h4>
-    Adott fordítás könyveinek listája.
-    Példák: <ul>
-        <li><a href='/api/books'>{{ url('/api/books')}}</a></li>
-        <li><a href='/api/books/KG'>{{ url('/api/books/KG')}}</a></li></li>
-    </ul>
+    <h3 class="h6"><code>books</code> – könyvek</h3>
+    <p>Adott fordítás könyveinek listája.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/books') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/books/KG') }}"</code></pre>
 
-    <h4>ref</h4>
-    Megadott hivatkozás teljes szövege.
-    Példák:
-    {% set example = '1Kor 2,2-3.4;Jn 1,1-2' %}
-    <ul>
-        <li><a href='/api/ref/{{ example }}'>{{ url('/api/ref/' ~ example )}}</a></li>
-        <li><a href='/api/ref/{{ example }}/KG'>{{ url('/api/ref/' ~ example ~ '/KG')}}</a></li>
-        <li><a href='/api/ref/{{ example }}/*'>{{ url('/api/ref/' ~ example ~ '/*')}}</a> - Minden fordításból</li>
-    </ul>
+    <h3 class="h6"><code>ref</code> – teljes szöveg</h3>
+    <p>Megadott hivatkozás teljes szövege. A fordítás helyén <code>*</code> megadva minden fordításból visszaadja a szöveget.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/ref/1Kor2,2-3.4;Jn1,1-2') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/ref/1Kor2,2-3.4;Jn1,1-2/KG') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/ref/1Kor2,2-3.4;Jn1,1-2/*') }}"</code></pre>
 
-    <h4>search</h4>
-    <p>Szó vagy szórészlet keresése, pl.
-    {% set example = 'bocsát' %}
-    <a href="/api/search/{{ example }}">{{ url('/api/search/' ~ example) }}</a>
-        </p>
+    <h3 class="h6"><code>search</code> – keresés</h3>
+    <p>Szó vagy szórészlet keresése a szövegekben.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/search/szeretet') }}"</code></pre>
 
-    <h3>MCP szerver</h3>
+    <h2 class="h5 mt-4">MCP szerver</h2>
     <p>Az MCP (<a href="https://modelcontextprotocol.io">Model Context Protocol</a>) egy nyílt szabvány, amellyel az AI-kliensek (pl. Claude, ChatGPT és más MCP-t támogató alkalmazások) külső eszközökhöz és adatforrásokhoz férhetnek hozzá. A Szentírás.eu MCP szervere lehetővé teszi, hogy az AI a <strong>pontos, szó szerinti bibliai szöveget</strong> kérje le egy adott magyar fordításból, ahelyett, hogy emlékezetből idézne, valamint hogy az <strong>Újszövetség eredeti görög szövegét</strong> szavanként elemezve érje el.</p>
 
-    <h4>Végpont</h4>
-    <p>A szerver a következő címen érhető el:</p>
-    <pre><code>{{ url('/mcp/bible') }}</code></pre>
+    <h3 class="h6">Végpont</h3>
+    <pre class="bg-body-secondary p-3 rounded"><code>{{ url('/mcp/bible') }}</code></pre>
     <p>Az URL végére opcionálisan hozzáfűzhető egy fordításrövidítés, amellyel kiválasztható, hogy a szerver alapértelmezetten melyik hagyomány szerinti fordítással válaszoljon. Így minden felhasználó a saját fordítására állíthatja be a kliensét:</p>
     <ul>
-        <li><a href="{{ url('/mcp/bible/RUF') }}">{{ url('/mcp/bible/RUF') }}</a> – protestáns felhasználóknak (Revideált új fordítás)</li>
-        <li><a href="{{ url('/mcp/bible/SZIT') }}">{{ url('/mcp/bible/SZIT') }}</a> – katolikus felhasználóknak (Szent István Társulati Biblia)</li>
+        <li><code>{{ url('/mcp/bible/RUF') }}</code> – protestáns felhasználóknak (Revideált új fordítás)</li>
+        <li><code>{{ url('/mcp/bible/SZIT') }}</code> – katolikus felhasználóknak (Szent István Társulati Biblia)</li>
     </ul>
     <p>Fordításrövidítés nélkül a szerver a webhely alapértelmezett fordítását használja. A rövidítés nem érzékeny a kis- és nagybetűkre.</p>
 
-    <h4>Elérhető eszközök (tools)</h4>
+    <h3 class="h6">Hitelesítés</h3>
+    <p>Az MCP szerver ugyanazt az API kulcsot igényli, mint a REST API (lásd az <a href="#api-kulcs">API kulcs</a> szakaszt). Mivel az MCP-kliensekben általában csak egy URL adható meg, a kulcs az <code>api_key</code> query paraméterként is átadható – az <code>X-API-Key</code> fejléc ugyanúgy működik:</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>{{ url('/mcp/bible/RUF') }}?api_key={{ key }}</code></pre>
+
+    <h3 class="h6">Elérhető eszközök (tools)</h3>
     <dl>
         <dt><code>get-verses</code></dt>
         <dd>Egy megadott szentírási hely pontos, szó szerinti szövegét adja vissza a beállított fordításban. Paraméterek: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code> vagy <code>1Kor 13,4-7</code>), és <code>translation</code> (opcionális) – a fordítás rövidítése, amellyel az URL-ben megadott hagyomány felülírható.</dd>
@@ -126,10 +89,5 @@
         <dd>Egy Strong-szám görög–magyar szótári szócikkét adja vissza: a szótári alakot, az átírást, az összes magyar jelentést a hozzájuk tartozó magyarázattal, valamint – ha ismert – a szó eredetét, paradigmáját és a megjegyzéseket. Paraméter: <code>strongNumber</code> (kötelező) – a <code>get-greek-verses</code> által visszaadott Strong-szám.</dd>
     </dl>
     <p>A hivatkozások magyar jelölést használnak: a vessző választja el a fejezetet és a verset (<code>Jn 3,16</code>), a kötőjel jelöl tartományt (<code>1Kor 13,4-7</code>), a pontosvessző pedig könyveket vagy fejezeteket választ el (<code>Jn 1;3</code>).</p>
-
-    <h4>Hitelesítés</h4>
-    <p>Az MCP szerver ugyanazt az API kulcsot igényli, mint a fenti REST API (lásd az <a href="#api-kulcs">API kulcs követelmények</a> szakaszt). Mivel az MCP-kliensekben általában csak egy URL adható meg, a kulcs az <code>api_key</code> query paraméterként is átadható:</p>
-    <pre><code>{{ url('/mcp/bible/RUF') }}?api_key=your_api_key_here</code></pre>
-    <p>Ugyanúgy működik az <code>X-API-Key</code> HTTP fejléc is, és a hívásokra a REST API-nál leírt sebességkorlátozás vonatkozik.</p>
 
 {% endblock %}

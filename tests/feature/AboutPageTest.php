@@ -30,4 +30,14 @@ class AboutPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('href="/rolunk"', false);
     }
+
+    public function test_informaciok_page_links_to_developers_page(): void
+    {
+        $response = $this->get('/informaciok');
+
+        $response->assertOk();
+        $response->assertSee('href="/api"', false);
+        $response->assertSee('Fejlesztőknek');
+        $response->assertSee('MCP szerver', false);
+    }
 }

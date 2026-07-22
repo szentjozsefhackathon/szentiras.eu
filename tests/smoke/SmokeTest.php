@@ -117,6 +117,36 @@ class SmokeTest extends TestCase
         $response->assertSee(url('/profile/api-keys'), false);
     }
 
+    public function testDeveloperPageHasHeaderAndMetaDescription()
+    {
+        $response = $this->get('/api');
+
+        // Every page needs an <h1> for SEO (Bing crawler reports missing headers).
+        $response->assertSee('<h1 class="h4">Fejlesztőknek</h1>', false);
+        // Bing reports meta descriptions shorter than ~150 chars as too short.
+        $this->assertGreaterThanOrEqual(150, mb_strlen($this->metaDescription($response->getContent())));
+    }
+
+    public function testDeveloperPageShowsCurlExamplesForEveryRestEndpoint()
+    {
+        $response = $this->get('/api');
+
+        // The endpoints cannot be tried out from the browser without an API key,
+        // so every example is a runnable curl command instead of a link.
+        foreach (['idezet/1Kor13,10-13', 'forditasok', 'forditasok/JHN_13_34', 'books', 'books/KG', 'ref/1Kor2,2-3.4;Jn1,1-2', 'search/szeretet'] as $endpoint) {
+            $response->assertSee('curl -H "X-API-Key: AZ_EN_API_KULCSOM" "'.url('api/'.$endpoint).'"', false);
+        }
+    }
+
+    public function testDeveloperPageStatesTheApiKeyIsRequiredWithoutGracePeriod()
+    {
+        $response = $this->get('/api');
+
+        $response->assertSee('Minden API- és MCP-hívás érvényes API kulcsot igényel.', false);
+        $response->assertDontSee('2026', false);
+        $response->assertDontSee('Grace', false);
+    }
+
     public function testBasicApiTranslation()
     {
         $this->get('/api/forditasok/10100100200')->assertStatus(200);
