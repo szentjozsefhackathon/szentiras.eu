@@ -7,14 +7,16 @@ use Request;
 use Redirect;
 use Redis;
 use Response;
-use SzentirasHu\Data\Entity\Verse;
 use SzentirasHu\Data\UsxCodes;
 use SzentirasHu\Http\Controllers\Controller;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ParsingException;
 use SzentirasHu\Service\Reference\ReferenceService;
 use SzentirasHu\Service\Search\FullTextSearchParams;
-use SzentirasHu\Service\Search\FullTextSearchResult;
+use SzentirasHu\Service\Search\GreekSearchMode;
+use SzentirasHu\Service\Search\GreekSearchParams;
+use SzentirasHu\Service\Search\GreekSearchRule;
+use SzentirasHu\Service\Search\GreekSearchService;
 use SzentirasHu\Service\Search\SearchService;
 use SzentirasHu\Service\Text\TextService;
 use SzentirasHu\Service\VerseContainer;
@@ -53,7 +55,7 @@ class SearchController extends Controller
      */
     private $searchService;
 
-    function __construct(BookRepository $bookRepository, TranslationRepository $translationRepository, TextService $textService, SearchService $searchService, protected TranslationService $translationService, protected ReferenceService $referenceService)
+    function __construct(BookRepository $bookRepository, TranslationRepository $translationRepository, TextService $textService, SearchService $searchService, protected TranslationService $translationService, protected ReferenceService $referenceService, protected GreekSearchService $greekSearchService)
     {
         $this->bookRepository = $bookRepository;
         $this->translationRepository = $translationRepository;
@@ -209,90 +211,24 @@ class SearchController extends Controller
         }
         $form = $this->prepareForm();
         $view = $this->getView($form);
-        $searchParams = $this->createFullTextSearchParams($form);
-        $gepis = [];
-        $greekVersesPerGepi = [];
-        if ($form->mode == 'lemma') {
-            $greekVerses = [];
-            $explodedGreekText = explode(" ", strtolower($form->greekTranslit));
-            $query = GreekVerse::query();
-            if ($form->rule == 'all') {
-                foreach ($explodedGreekText as $i => $word) {
-                    $query->where('strong_normalizations', '~*', "\\y{$word}\\y");
-                }
-            } else {
-                foreach ($explodedGreekText as $i => $word) {
-                    $query->orWhere('strong_normalizations', '~*', "\\y{$word}\\y");
-                }
-            }
-            $greekVerses = $query->get();
-            $greekVersesPerGepi = $greekVerses->keyBy('gepi');
-            $gepis = $greekVersesPerGepi->keys()->all();
-        } else if ($form->mode == 'verse') {
-            // use SphinxSearch to find the greek verses
-            $sphinxClient = new SphinxSearch(implode(' ', explode(' ', $form->greekText)));
-            $limit = 1000;
-            $sphinxClient->limit($limit);
-
-            if (!empty($searchParams->usxCodes)) {
-                $sphinxClient->filter('usx_code', array_keys($searchParams->usxCodes));
-            }
-            $sphinxResult = $sphinxClient->getGreekNormalizations();
-            if ($sphinxResult) {
-                $fullTextSearchResult = new FullTextSearchResult();
-                if (array_key_exists("hitcount", $sphinxResult[0])) {
-                    $fullTextSearchResult->hitCount = $sphinxResult[0]["hitcount"];
-                } else {
-                    $fullTextSearchResult->verseIds = array_map(fn($elem) => $elem['id'], $sphinxResult);
-                    // transform sphinxResult to id => element
-                    $fullTextSearchResult->verses = array_combine($fullTextSearchResult->verseIds, $sphinxResult);
-                    $fullTextSearchResult->hitCount = count($sphinxResult);
-                }
-                $greekVerses = GreekVerse::whereIn('id', $fullTextSearchResult->verseIds)->get();
-                $gepis = $greekVerses->pluck('gepi')->toArray();
-                $greekVersesPerGepi = $greekVerses->keyBy('gepi');
-            }
+        $results = $this->greekSearchService->search($this->createGreekSearchParams($form));
+        if ($results) {
+            $view = $view->with('fullTextResults', $results);
         }
+        return $view->with('greekSearch', true);
+    }
 
-        if (!empty($gepis)) {
-            $query = Verse::query();
-            if ($searchParams->translationId) {
-                $query = $query->where('trans', $searchParams->translationId);
-            }
-            if ($searchParams->usxCodes) {
-                $query = $query->whereIn('usx_code', array_keys($searchParams->usxCodes));
-            }
-            $query = $query->whereIn('gepi', $gepis)->whereIn('tip', [901]);
+    private function createGreekSearchParams(SearchForm $form): GreekSearchParams
+    {
+        $searchParams = new GreekSearchParams();
+        $searchParams->mode = GreekSearchMode::tryFrom((string) $form->mode) ?? GreekSearchMode::Lemma;
+        $searchParams->text = (string) ($searchParams->mode === GreekSearchMode::Lemma ? $form->greekTranslit : $form->greekText);
+        $searchParams->rule = GreekSearchRule::tryFrom((string) $form->rule) ?? GreekSearchRule::All;
+        $searchParams->translationId = $form->translation ? $form->translation->id : null;
+        $searchParams->usxCodes = $this->extractBookUsxCodes($form->book);
+        $searchParams->grouping = $form->grouping;
 
-            $verses = $query->limit(1000)->orderBy('tip')->orderBy('usx_code')->orderBy('chapter')->orderBy('numv')->get();
-
-            $results = new FullTextSearchResult();
-            $results->verses = [];
-            foreach ($verses as $verse) {
-                $results->verseIds[] = $verse->id;
-                $results->verses[$verse->id]['id'] = $verse->id;
-                $results->verses[$verse->id]['trans'] = $verse->trans;
-                $results->verses[$verse->id]['usx_code'] = $verse->usx_code;
-                $results->verses[$verse->id]['chapter'] = $verse->chapter;
-                $results->verses[$verse->id]['numv'] = $verse->numv;
-                $results->verses[$verse->id]['gepi'] = $verse->gepi;
-                $results->verses[$verse->id]['tip'] = $verse->tip;
-                $results->verses[$verse->id]['weight()'] = 1;
-                $greekVerse = $greekVersesPerGepi[$verse->gepi];
-                $results->verses[$verse->id]['greekText'] = str_replace('¶', '', $greekVerse->text);
-                $results->verses[$verse->id]['greekTransliteration'] = $greekVerse->transliteration;
-                $results->verses[$verse->id]['greekWords'] = $greekVerse->annotatedWords();
-            }
-            if (!$verses->isEmpty()) {
-                $results->hitCount = count($verses);
-                $processedResults = $this->searchService->handleFullTextResults($results, $searchParams);
-                $view = $view->with('fullTextResults', $processedResults);
-            }
-        }
-
-        $view = $view->with('greekSearch', true);
-
-        return $view;
+        return $searchParams;
     }
 
 

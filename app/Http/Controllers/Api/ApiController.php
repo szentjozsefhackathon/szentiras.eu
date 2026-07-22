@@ -7,8 +7,12 @@ use OpenAI\Laravel\Facades\OpenAI;
 use Pgvector\Laravel\Vector;
 use Redirect;
 use SzentirasHu\Http\Controllers\Controller;
+use SzentirasHu\Http\Requests\GreekSearchApiRequest;
+use SzentirasHu\Http\Requests\SearchApiRequest;
 use SzentirasHu\Service\Reference\ParsingException;
 use SzentirasHu\Service\Search\FullTextSearchParams;
+use SzentirasHu\Service\Search\GreekSearchParams;
+use SzentirasHu\Service\Search\GreekSearchService;
 use SzentirasHu\Service\Search\SearcherFactory;
 use SzentirasHu\Service\Search\SearchService;
 use URL;
@@ -64,7 +68,8 @@ class ApiController extends Controller
         SearchService $searchService,
         protected TranslationService $translationService,
         protected BookService $bookService,
-        protected SemanticSearchService $semanticSearchService
+        protected SemanticSearchService $semanticSearchService,
+        protected GreekSearchService $greekSearchService
     ) {
         $this->textService = $textService;
         $this->translationRepository = $translationRepository;
@@ -188,13 +193,56 @@ class ApiController extends Controller
         }
     }
 
-    public function getSearch($text)
+    public function getSearch(SearchApiRequest $request, $text, $translationAbbrev = false)
     {
+        $translation = $translationAbbrev ? $this->findExistingTranslation($translationAbbrev) : null;
         $params = new FullTextSearchParams();
         $params->text = $text;
+        $params->translationId = $translation?->id;
+        $params->usxCodes = $request->usxCodes();
+        $params->grouping = $request->grouping();
+        $params->limit = $request->limit();
+        $params->synonyms = true;
         $results = $this->searchService->getDetailedResults($params);
-        unset($results['resultsByBookNumber']); // don't use new search results view in the API yet
-        return $this->formatJsonResponse(["fullTextResult" => $results]);
+        return $this->formatJsonResponse(["fullTextResult" => $this->formatSearchResults($results)]);
+    }
+
+    public function getGreekSearch(GreekSearchApiRequest $request, $text, $translationAbbrev = false)
+    {
+        $translation = $translationAbbrev ? $this->findExistingTranslation($translationAbbrev) : null;
+        $params = new GreekSearchParams();
+        $params->text = $text;
+        $params->mode = $request->mode();
+        $params->rule = $request->rule();
+        $params->translationId = $translation?->id;
+        $params->usxCodes = $request->usxCodes();
+        $params->grouping = $request->grouping();
+        $params->limit = $request->limit();
+        $results = $this->greekSearchService->search($params);
+        return $this->formatJsonResponse([
+            "greekSearchResult" => [
+                ...$this->formatSearchResults($results),
+                "totalHitCount" => $this->greekSearchService->countHits($params),
+            ],
+        ]);
+    }
+
+    /**
+     * The search results as the API exposes them: the grouped view the search page renders
+     * is left out, it is not part of the published API yet.
+     *
+     * @param  array<string, mixed>|null  $results
+     * @return array{results: array<mixed>, hitCount: int}
+     */
+    private function formatSearchResults(?array $results): array
+    {
+        if ($results === null) {
+            return ['results' => [], 'hitCount' => 0];
+        }
+
+        unset($results['resultsByBookNumber']);
+
+        return $results;
     }
 
     public function getLegacyApiEndpoint()
@@ -229,6 +277,22 @@ class ApiController extends Controller
     private function findTranslation($translationAbbrev = false)
     {
         return $translationAbbrev ? $this->translationRepository->getByAbbrev($translationAbbrev) : $this->translationService->getDefaultTranslation();
+    }
+
+    /**
+     * The named translation, or a 404 rather than a search silently running on every
+     * translation because of a typo in the abbreviation.
+     */
+    private function findExistingTranslation(string $translationAbbrev): Translation
+    {
+        $translation = $this->translationRepository->getAll()
+            ->first(fn (Translation $candidate): bool => mb_strtoupper($candidate->abbrev) === mb_strtoupper($translationAbbrev));
+
+        if (! $translation) {
+            \App::abort(404, "Nincs ilyen fordítás: {$translationAbbrev}");
+        }
+
+        return $translation;
     }
 
     /**

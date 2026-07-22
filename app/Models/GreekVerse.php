@@ -3,6 +3,7 @@
 namespace SzentirasHu\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -46,7 +47,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GreekVerse extends Model
 {
-    public function strongWords() {
+    /**
+     * @return BelongsToMany<StrongWord, $this>
+     */
+    public function strongWords(): BelongsToMany {
         return $this->belongsToMany(StrongWord::class)->withPivot('strong_word_instances');
     }
 

@@ -58,8 +58,42 @@ curl -H "X-API-Key: {{ key }}" "{{ url('api/ref/1Kor2,2-3.4;Jn1,1-2/KG') }}"
 curl -H "X-API-Key: {{ key }}" "{{ url('api/ref/1Kor2,2-3.4;Jn1,1-2/*') }}"</code></pre>
 
     <h3 class="h6"><code>search</code> – keresés</h3>
-    <p>Szó vagy szórészlet keresése a szövegekben.</p>
-    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/search/szeretet') }}"</code></pre>
+    <p>Szó vagy szórészlet keresése a szövegekben. Ugyanazok a szűkítési lehetőségek érhetők el, mint a <a href="{{ url('/kereses') }}">keresés oldalon</a>: szűkíthetsz könyvre vagy szövetségre, egyetlen fordításra, és megadhatod a csoportosítást, valamint a találatok maximális számát.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/search/szeretet') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/search/szeretet/SZIT') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/search/szeretet') }}?book=new_testament&amp;limit=20"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/search/szeretet') }}?book=Jn&amp;grouping=chapter"</code></pre>
+    <dl>
+        <dt>keresendő szöveg (kötelező)</dt>
+        <dd>Az útvonal része, pl. <code>szeretet</code>.</dd>
+        <dt>fordítás</dt>
+        <dd>Az útvonal opcionális második része, a fordítás rövidítése. Ha nincs megadva, minden fordításban keres.</dd>
+        <dt><code>book</code></dt>
+        <dd>Szűkítés egy könyvre vagy szövetségre: <code>all</code> (alapértelmezés), <code>old_testament</code>, <code>new_testament</code>, egy könyv <a href="https://ubsicap.github.io/usx/vocabularies.html#list-of-vocabularies">USX kódja</a> (pl. <code>JHN</code>) vagy magyar rövidítése (pl. <code>Jn</code>).</dd>
+        <dt><code>grouping</code></dt>
+        <dd>A találatok csoportosítása: <code>verse</code>, <code>chapter</code> vagy <code>book</code>.</dd>
+        <dt><code>limit</code></dt>
+        <dd>A visszaadott versek maximális száma, 1 és 1000 között. Érdemes kicsire venni, a válasz mérete ezzel arányos.</dd>
+    </dl>
+
+    <h3 class="h6"><code>greek-search</code> – görög keresés</h3>
+    <p>Keresés az Újszövetség eredeti görög szövegében. A találatok a görög szöveget és a hozzájuk tartozó magyar verseket is tartalmazzák. Görögül csak az Újszövetség érhető el.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/greek-search/agape') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/greek-search/26/SZIT') }}?mode=strong"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/greek-search/agape') }}?book=Jn&amp;limit=20"</code></pre>
+    <dl>
+        <dt>keresendő szöveg (kötelező)</dt>
+        <dd>Az útvonal része, a <code>mode</code> szerint értelmezve.</dd>
+        <dt>fordítás</dt>
+        <dd>Az útvonal opcionális második része: melyik magyar fordítás szövege jelenjen meg a görög mellett.</dd>
+        <dt><code>mode</code></dt>
+        <dd><code>lemma</code> (alapértelmezés): a versek Strong-szavai (szótövei) között keres, a szótő ékezet nélküli latin átírása alapján, pl. <code>agape</code>. <code>strong</code>: Strong-szám szerint, pl. <code>26</code>. <code>verse</code>: a görög szövegben keres a szóalakokra, pl. <code>ἀγάπη</code>; a <code>|</code> jellel bármelyik szó, a <code>*</code> jellel szórészlet kereshető.</dd>
+        <dt><code>rule</code></dt>
+        <dd>Több szó vagy Strong-szám esetén: <code>all</code> (alapértelmezés) mindegyiket megköveteli a versben, <code>any</code> bármelyiket elfogadja. A <code>verse</code> módban nincs szerepe.</dd>
+        <dt><code>book</code>, <code>grouping</code>, <code>limit</code></dt>
+        <dd>Ugyanaz, mint a <code>search</code> végpontnál.</dd>
+    </dl>
+    <p>A válasz a <code>totalHitCount</code> mezőben a limittől független teljes találatszámot is megadja, így látszik, ha a válasz csak a találatok egy részét tartalmazza.</p>
 
     <h2 class="h5 mt-4">MCP szerver</h2>
     <p>Az MCP (<a href="https://modelcontextprotocol.io">Model Context Protocol</a>) egy nyílt szabvány, amellyel az AI-kliensek (pl. Claude, ChatGPT és más MCP-t támogató alkalmazások) külső eszközökhöz és adatforrásokhoz férhetnek hozzá. A Szentírás.eu MCP szervere lehetővé teszi, hogy az AI a <strong>pontos, szó szerinti bibliai szöveget</strong> kérje le egy adott magyar fordításból, ahelyett, hogy emlékezetből idézne, valamint hogy az <strong>Újszövetség eredeti görög szövegét</strong> szavanként elemezve érje el.</p>
@@ -81,10 +115,14 @@ curl -H "X-API-Key: {{ key }}" "{{ url('api/ref/1Kor2,2-3.4;Jn1,1-2/*') }}"</cod
     <dl>
         <dt><code>get-verses</code></dt>
         <dd>Egy megadott szentírási hely pontos, szó szerinti szövegét adja vissza a beállított fordításban. Paraméterek: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code> vagy <code>1Kor 13,4-7</code>), és <code>translation</code> (opcionális) – a fordítás rövidítése, amellyel az URL-ben megadott hagyomány felülírható.</dd>
+        <dt><code>search-verses</code></dt>
+        <dd>Megkeresi azokat a verseket, amelyekben a megadott magyar szavak szerepelnek – akkor hasznos, ha a szöveg megvan, de a hivatkozás nem. Paraméterek: <code>text</code> (kötelező) – a keresendő szavak, <code>book</code> – szűkítés könyvre vagy szövetségre (<code>old_testament</code>, <code>new_testament</code>, <code>Jn</code>, <code>JHN</code>), <code>translation</code> – a fordítás rövidítése, és <code>limit</code> – a találatok maximális száma (1–50, alapértelmezés 10). A válasz versenként csak a hivatkozást és a szöveget tartalmazza, és megadja a teljes találatszámot is.</dd>
         <dt><code>list-translations</code></dt>
         <dd>Felsorolja az elérhető magyar fordításokat felekezetenként (katolikus / protestáns), és jelzi, hogy a végpont alapértelmezetten melyikkel válaszol.</dd>
         <dt><code>get-greek-verses</code></dt>
         <dd>Egy újszövetségi szakasz eredeti görög szövegét adja vissza, szavanként elemezve: a szövegbeli alak, a szótári alak (lemma), az átírás, a Strong-szám, a morfológiai kód és annak magyar leírása, valamint a szó első magyar jelentése. Paraméter: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code>). Görögül csak az Újszövetség érhető el.</dd>
+        <dt><code>search-greek</code></dt>
+        <dd>Megkeresi azokat az újszövetségi verseket, amelyekben a keresett görög szó szerepel, és a görög szöveget a magyar fordítással együtt adja vissza. Paraméterek: <code>text</code> (kötelező), <code>mode</code> – <code>strong</code> (Strong-szám szerint), <code>lemma</code> (a szótő latin átírása szerint, alapértelmezés) vagy <code>verse</code> (a görög szövegben), <code>rule</code>, <code>book</code>, <code>translation</code> és <code>limit</code> (1–50, alapértelmezés 10).</dd>
         <dt><code>lookup-greek-word</code></dt>
         <dd>Egy Strong-szám görög–magyar szótári szócikkét adja vissza: a szótári alakot, az átírást, az összes magyar jelentést a hozzájuk tartozó magyarázattal, valamint – ha ismert – a szó eredetét, paradigmáját és a megjegyzéseket. Paraméter: <code>strongNumber</code> (kötelező) – a <code>get-greek-verses</code> által visszaadott Strong-szám.</dd>
     </dl>

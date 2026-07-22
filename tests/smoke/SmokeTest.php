@@ -103,8 +103,10 @@ class SmokeTest extends TestCase
         $response->assertSee('MCP szerver');
         $response->assertSee(url('/mcp/bible'), false);
         $response->assertSee('get-verses');
+        $response->assertSee('search-verses');
         $response->assertSee('list-translations');
         $response->assertSee('get-greek-verses');
+        $response->assertSee('search-greek');
         $response->assertSee('lookup-greek-word');
     }
 
@@ -133,7 +135,7 @@ class SmokeTest extends TestCase
 
         // The endpoints cannot be tried out from the browser without an API key,
         // so every example is a runnable curl command instead of a link.
-        foreach (['idezet/1Kor13,10-13', 'forditasok', 'forditasok/JHN_13_34', 'books', 'books/KG', 'ref/1Kor2,2-3.4;Jn1,1-2', 'search/szeretet'] as $endpoint) {
+        foreach (['idezet/1Kor13,10-13', 'forditasok', 'forditasok/JHN_13_34', 'books', 'books/KG', 'ref/1Kor2,2-3.4;Jn1,1-2', 'search/szeretet', 'search/szeretet/SZIT', 'greek-search/agape'] as $endpoint) {
             $response->assertSee('curl -H "X-API-Key: AZ_EN_API_KULCSOM" "'.url('api/'.$endpoint).'"', false);
         }
     }
