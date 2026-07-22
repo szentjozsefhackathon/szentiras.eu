@@ -16,6 +16,7 @@ use SzentirasHu\Http\Controllers\Contact\ContactController;
 use SzentirasHu\Http\Controllers\Contact\InboxController;
 use SzentirasHu\Http\Controllers\Home\HomeController;
 use SzentirasHu\Http\Controllers\MediaController;
+use SzentirasHu\Http\Controllers\Profile\ApiKeyController as ProfileApiKeyController;
 use SzentirasHu\Http\Controllers\Tools\ToolsController;
 use SzentirasHu\Http\Controllers\Tools\MemoryGameController;
 use SzentirasHu\Http\Controllers\Tools\OnlineMemoryGameController;
@@ -112,6 +113,17 @@ Route::get('/tervek', '\SzentirasHu\Http\Controllers\Display\\TextDisplayControl
 
 Route::get('/register', [AnonymousIdController::class, 'showAnonymousRegistrationForm']);
 Route::post('/register', [AnonymousIdController::class, 'registerAnonymousId']);
+
+// Self-service API keys (require anonymous login).
+// Declared before /profile/{PROFILE_ID} so these specific paths take precedence.
+Route::middleware('anonymousId')->prefix('profile/api-keys')->name('profile.apiKeys.')->group(function () {
+    Route::get('/', [ProfileApiKeyController::class, 'index'])->name('index');
+    Route::get('/create', [ProfileApiKeyController::class, 'create'])->name('create');
+    Route::post('/', [ProfileApiKeyController::class, 'store'])->name('store');
+    Route::get('/{apiKey}', [ProfileApiKeyController::class, 'show'])->name('show');
+    Route::delete('/{apiKey}', [ProfileApiKeyController::class, 'destroy'])->name('destroy');
+});
+
 Route::get('/profile/{PROFILE_ID}', [AnonymousIdController::class, 'showProfile'])
     ->middleware('throttle:100,1');
 Route::get('/profile', [AnonymousIdController::class, 'showProfile'])

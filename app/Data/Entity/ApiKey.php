@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Data\Entity;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -9,8 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $name
  * @property string $key_hash
+ * @property string|null $key_plain
  * @property string $key_prefix
  * @property bool $is_internal
+ * @property bool $is_self_service
  * @property int|null $throttle_rate
  * @property bool $enabled
  * @property int|null $created_by_anonymous_id
@@ -42,13 +45,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ApiKey extends Model
 {
+    use HasFactory;
+
     protected $table = 'api_keys';
 
     protected $fillable = [
         'name',
         'key_hash',
+        'key_plain',
         'key_prefix',
         'is_internal',
+        'is_self_service',
         'throttle_rate',
         'enabled',
         'created_by_anonymous_id',
@@ -59,6 +66,7 @@ class ApiKey extends Model
 
     protected $casts = [
         'is_internal' => 'boolean',
+        'is_self_service' => 'boolean',
         'enabled' => 'boolean',
         'throttle_rate' => 'integer',
         'usage_count' => 'integer',
@@ -87,6 +95,14 @@ class ApiKey extends Model
     public function isExternal(): bool
     {
         return !$this->is_internal;
+    }
+
+    /**
+     * Determine if this key was created by a user through the self-service flow.
+     */
+    public function isSelfService(): bool
+    {
+        return $this->is_self_service;
     }
 
     /**

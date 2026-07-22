@@ -1,0 +1,124 @@
+{% extends 'layout.twig' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>API kulcs részletei</h1>
+    <p class="text-muted">Kulcs információk és használati statisztikák</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="api-keys-show">
+    {% if session('success') %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle"></i> {{ session('success') }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ key.name }}</h5>
+                    <p class="card-text text-muted">{{ key.description ?? 'Nincs leírás' }}</p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">API kulcs</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control font-monospace" id="rawKey" value="{{ key.key_plain }}" readonly>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">
+                            Küldd el a <code>X-API-Key</code> fejlécben minden API kérésnél. Ne oszd meg másokkal!
+                        </div>
+                    </div>
+
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Előtag</dt>
+                        <dd class="col-sm-8"><code>{{ key.key_prefix }}</code></dd>
+
+                        <dt class="col-sm-4">Korlát (percenként)</dt>
+                        <dd class="col-sm-8">{{ key.throttle_rate ?? config('api.default_throttle', 60) }}</dd>
+
+                        <dt class="col-sm-4">Státusz</dt>
+                        <dd class="col-sm-8">
+                            {% if key.enabled %}
+                                <span class="badge bg-success">Aktív</span>
+                            {% else %}
+                                <span class="badge bg-danger">Letiltva</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Létrehozva</dt>
+                        <dd class="col-sm-8">{{ key.created_at|date('Y-m-d H:i') }}</dd>
+
+                        <dt class="col-sm-4">Utolsó használat</dt>
+                        <dd class="col-sm-8">
+                            {% if key.last_used_at %}
+                                {{ key.last_used_at|date('Y-m-d H:i') }}
+                            {% else %}
+                                <span class="text-muted">még nem</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Használatok száma</dt>
+                        <dd class="col-sm-8">{{ key.usage_count }}</dd>
+                    </dl>
+                </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <form action="{{ route('profile.apiKeys.destroy', key.id) }}" method="POST" onsubmit="return confirm('Biztosan törölni szeretnéd ezt az API kulcsot?');">
+                        {{ csrf_field() }}
+                        {{ method_field('DELETE') }}
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Törlés
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-info-circle"></i> Használati útmutató
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled small">
+                        <li><i class="bi bi-check-circle text-success"></i> A kulcsot a <code>X-API-Key</code> fejlécben kell elküldeni.</li>
+                        <li><i class="bi bi-check-circle text-success"></i> A korlát túllépése <code>429</code> hibát eredményez.</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Ha a kulcs letiltásra kerül, a kérések <code>403</code> hibával fognak visszatérni.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ route('profile.apiKeys.index') }}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Vissza a listához
+        </a>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard() {
+        const input = document.getElementById('rawKey');
+        input.select();
+        input.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(input.value).then(() => {
+            const button = event.target.closest('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-check"></i>';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-success');
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-secondary');
+            }, 2000);
+        });
+    }
+</script>
+{% endblock %}

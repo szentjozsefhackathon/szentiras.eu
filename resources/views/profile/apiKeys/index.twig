@@ -2,21 +2,41 @@
 
 {% block pageHeader %}
 <div class="page-header mb-4">
-    <h1>API kulcsok kezelése</h1>
-    <p class="text-muted">API kulcsok létrehozása, szerkesztése és törlése</p>
+    <h1>Saját API kulcsaim</h1>
+    <p class="text-muted">API kulcsok létrehozása és kezelése a szentiras.eu API eléréséhez</p>
 </div>
 {% endblock %}
 
 {% block content %}
-<div class="api-keys-editor">
+<div class="api-keys">
+    {% if session('success') %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle"></i> {{ session('success') }}
+        </div>
+    {% endif %}
+
+    {% if errors.any() %}
+        <div class="alert alert-danger">
+            {% for error in errors.all() %}
+                <div>{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <a href="{{ route('editor.apiKeys.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Új API kulcs
-            </a>
+            {% if keys.count() < maxKeys %}
+                <a href="{{ route('profile.apiKeys.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Új API kulcs
+                </a>
+            {% else %}
+                <button class="btn btn-primary" disabled title="Elérted a maximális kulcsszámot">
+                    <i class="bi bi-plus-circle"></i> Új API kulcs
+                </button>
+            {% endif %}
         </div>
         <div class="text-muted">
-            <small>API kulcsok száma: {{ keys.count() }}</small>
+            <small>API kulcsok: {{ keys.count() }} / {{ maxKeys }}</small>
         </div>
     </div>
 
@@ -27,10 +47,7 @@
                     <tr>
                         <th>Név</th>
                         <th>Előtag</th>
-                        <th>Típus</th>
-                        <th>Korlát (percenként)</th>
                         <th>Státusz</th>
-                        <th>Létrehozta</th>
                         <th>Utoljára használva</th>
                         <th>Műveletek</th>
                     </tr>
@@ -48,23 +65,6 @@
                             <code class="text-muted">{{ key.key_prefix }}</code>
                         </td>
                         <td>
-                            {% if key.is_internal %}
-                                <span class="badge bg-info">Belső</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Külső</span>
-                            {% endif %}
-                            {% if key.is_self_service %}
-                                <span class="badge bg-warning text-dark">Önkiszolgáló</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if key.is_internal %}
-                                <span class="text-muted">–</span>
-                            {% else %}
-                                {{ key.throttle_rate ?? 'alapértelmezett' }}
-                            {% endif %}
-                        </td>
-                        <td>
                             {% if key.enabled %}
                                 <span class="badge bg-success">Aktív</span>
                             {% else %}
@@ -72,16 +72,8 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if key.createdBy %}
-                                {{ key.createdBy.token|slice(0, 8) }}…
-                                <br><small class="text-muted">{{ key.created_at|date('Y‑m‑d') }}</small>
-                            {% else %}
-                                <span class="text-muted">–</span>
-                            {% endif %}
-                        </td>
-                        <td>
                             {% if key.last_used_at %}
-                                {{ key.last_used_at|date('Y‑m‑d H:i') }}
+                                {{ key.last_used_at|date('Y-m-d H:i') }}
                                 <br><small class="text-muted">használatok: {{ key.usage_count }}</small>
                             {% else %}
                                 <span class="text-muted">még nem</span>
@@ -89,13 +81,10 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('editor.apiKeys.show', key.id) }}" class="btn btn-outline-primary" title="Részletek">
+                                <a href="{{ route('profile.apiKeys.show', key.id) }}" class="btn btn-outline-primary" title="Részletek">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('editor.apiKeys.edit', key.id) }}" class="btn btn-outline-secondary" title="Szerkesztés">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <form action="{{ route('editor.apiKeys.destroy', key.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Biztosan törölni szeretnéd ezt az API kulcsot?');">
+                                <form action="{{ route('profile.apiKeys.destroy', key.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Biztosan törölni szeretnéd ezt az API kulcsot?');">
                                     {{ csrf_field() }}
                                     {{ method_field('DELETE') }}
                                     <button type="submit" class="btn btn-outline-danger" title="Törlés">
@@ -111,8 +100,14 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> Még nincs API kulcs. Hozz létre egyet a fenti gombbal.
+            <i class="bi bi-info-circle"></i> Még nincs API kulcsod. Hozz létre egyet a fenti gombbal.
         </div>
     {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ url('/profile') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Vissza a profilhoz
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -27,6 +27,9 @@
                             {% else %}
                                 <span class="badge bg-secondary">Külső</span>
                             {% endif %}
+                            {% if key.is_self_service %}
+                                <span class="badge bg-warning text-dark">Önkiszolgáló</span>
+                            {% endif %}
                         </dd>
 
                         <dt class="col-sm-4">Korlát (percenként)</dt>

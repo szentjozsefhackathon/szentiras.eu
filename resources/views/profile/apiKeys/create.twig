@@ -1,0 +1,61 @@
+{% extends 'layout.twig' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Új API kulcs létrehozása</h1>
+    <p class="text-muted">Adj nevet a kulcsnak, hogy később könnyen felismerd.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="api-keys-create">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {% if errors.any() %}
+                <div class="alert alert-danger">
+                    {% for error in errors.all() %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('profile.apiKeys.store') }}" method="POST">
+                        {{ csrf_field() }}
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Név <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                   value="{{ old('name') }}"
+                                   placeholder="pl. Saját alkalmazás, Weboldal">
+                            <div class="form-text">Emberi olvasható azonosító, amely segít felismerni a kulcsot.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Leírás</label>
+                            <textarea class="form-control" id="description" name="description" rows="2"
+                                      placeholder="Opcionális részletek, például mihez használod">{{ old('description') }}</textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            A kulcsot a <code>X-API-Key</code> fejlécben kell elküldeni minden API kérésnél.
+                            A kulcsra percenként {{ config('api.default_throttle', 60) }} kérés korlát vonatkozik.
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('profile.apiKeys.index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Vissza a listához
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Kulcs létrehozása
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
