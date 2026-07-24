@@ -110,6 +110,15 @@ class SmokeTest extends TestCase
         $response->assertSee('lookup-greek-word');
     }
 
+    public function testDeveloperPageDocumentsMcpHeaderAuthenticationFirst()
+    {
+        $response = $this->get('/api');
+
+        // Most MCP clients take the token in a header; the query parameter is only a fallback.
+        $response->assertSee('"X-API-Key": "AZ_EN_API_KULCSOM"', false);
+        $response->assertSee(url('/mcp/bible/RUF').'?api_key=AZ_EN_API_KULCSOM', false);
+    }
+
     public function testDeveloperPageDocumentsSelfServiceApiKeys()
     {
         $response = $this->get('/api');
@@ -124,7 +133,7 @@ class SmokeTest extends TestCase
         $response = $this->get('/api');
 
         // Every page needs an <h1> for SEO (Bing crawler reports missing headers).
-        $response->assertSee('<h1 class="h4">Fejlesztőknek</h1>', false);
+        $response->assertSee('<h1 class="h4">API és MCP szerver</h1>', false);
         // Bing reports meta descriptions shorter than ~150 chars as too short.
         $this->assertGreaterThanOrEqual(150, mb_strlen($this->metaDescription($response->getContent())));
     }

@@ -37,7 +37,7 @@ class AboutPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('href="/api"', false);
-        $response->assertSee('Fejlesztőknek');
+        $response->assertSee('API és MCP szerver');
         $response->assertSee('MCP szerver', false);
     }
 }

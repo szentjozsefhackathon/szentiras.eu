@@ -1,20 +1,44 @@
 {% extends 'layout' %}
-{% set pageTitle='Fejlesztőknek – API és MCP szerver | Szentírás' %}
-{% set teaser='A Szentírás.eu fejlesztői dokumentációja: nyílt forráskód, REST API a bibliai szövegek, fordítások és keresés programozott eléréséhez, MCP szerver az AI-klienseknek, valamint az API kulcs igénylése és használata.' %}
+{% set pageTitle='API és MCP szerver | Szentírás' %}
+{% set teaser='A Szentírás.eu MCP szervere és nyílt REST API-ja: kösd be a bibliai szövegeket az AI-kliensedbe (Claude, ChatGPT), vagy érd el programozottan a fordításokat, a keresést és az eredeti görög Újszövetséget. Az API kulcs önkiszolgáló módon, azonnal létrehozható.' %}
 
 {% set key = 'AZ_EN_API_KULCSOM' %}
 
 {% block content %}
-    <h1 class="h4">Fejlesztőknek</h1>
+    <h1 class="h4">API és MCP szerver</h1>
 
-    <p>A honlap forráskódja elérhető a <a href="https://github.com/szentjozsefhackathon/szentiras.eu">GitHub-on</a>, szívesen látjuk azokat, akik részt vennének a fejlesztésben. Widgetek, pluginek fejlesztésében is szívesen segítünk – ilyen például az <a href="http://molnarm.github.io/igemutato/">igemutató kiegészítő</a>, amely a bibliai hivatkozásokat felugró ablakban olvasható szöveggé alakítja.</p>
+    <p class="lead">A Szentírás.eu szövegei nem csak a honlapon olvashatók: <strong>MCP szerverünkkel</strong> bekötheted a pontos bibliai szöveget az AI-kliensedbe, <strong>REST API-nkkal</strong> pedig a saját alkalmazásodból érheted el a fordításokat, a keresést és az eredeti görög Újszövetséget.</p>
+
+    <div class="row row-cols-1 row-cols-md-2 g-3 my-4">
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 card-title"><i class="bi bi-robot me-2 text-primary"></i>MCP szerver</h2>
+                    <p class="card-text">Ha AI-t használsz (Claude, ChatGPT vagy más MCP-t támogató alkalmazás), és azt szeretnéd, hogy a <strong>valódi, szó szerinti</strong> bibliai szöveget idézze a saját fordításodból, ne az emlékezetéből. Programozói tudás nem kell hozzá: elég a kliens beállításai közt megadni a szerver címét és az API kulcsodat.</p>
+                    <a href="#mcp" class="btn btn-sm btn-outline-primary">Tovább az MCP szerverhez</a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 card-title"><i class="bi bi-code-slash me-2 text-primary"></i>REST API</h2>
+                    <p class="card-text">Ha saját honlapot, alkalmazást vagy widgetet fejlesztesz, és bibliai szövegre, fordításlistára, keresésre vagy görög szóelemzésre van szükséged. Egyszerű JSON-válaszok, minden végponthoz futtatható példával.</p>
+                    <a href="#rest-api" class="btn btn-sm btn-outline-primary">Tovább a REST API-hoz</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <h2 class="h5 mt-4" id="api-kulcs">API kulcs</h2>
-    <p>Minden API- és MCP-hívás érvényes API kulcsot igényel. A kulcsot az <code>X-API-Key</code> HTTP fejlécben kell elküldeni:</p>
-    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/idezet/1Kor13,10-13') }}"</code></pre>
+    <p>Minden API- és MCP-hívás érvényes API kulcsot igényel. A kulcs ingyenes.</p>
 
     <h3 class="h6">Kulcs igénylése</h3>
     <p>Ha be vagy jelentkezve, a kulcsot <strong>önkiszolgáló módon, azonnal létre tudod hozni</strong> az <a href="{{ url('/profile/api-keys') }}">API kulcsaim</a> oldalon: itt láthatod a meglévő kulcsaidat, létrehozhatsz újat (felhasználónként legfeljebb ötöt), és bármikor törölheted azokat, amelyekre már nincs szükséged. Ha nem vagy bejelentkezve, vagy egyedi igényed van (például a szokásosnál magasabb sebességkorlát), vedd fel velünk a kapcsolatot emailben vagy üzenetben.</p>
+
+    <h3 class="h6">A kulcs használata</h3>
+    <p>A kulcsot az <code>X-API-Key</code> HTTP fejlécben kell elküldeni – ez érvényes a REST API-ra és az MCP szerverre egyaránt. Ha a kliensedben nem adható meg fejléc, csak URL, akkor az MCP szervernél <code>api_key</code> query paraméterként is átadhatod.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/idezet/1Kor13,10-13') }}"</code></pre>
 
     <h3 class="h6">Sebességkorlát és hibakódok</h3>
     <p>Alapértelmezetten percenként 60 kérés engedélyezett; egyes kulcsokhoz ettől eltérő korlát is rendelhető.</p>
@@ -27,7 +51,52 @@
         <dd>Túllépted a sebességkorlátot.</dd>
     </dl>
 
-    <h2 class="h5 mt-4">REST API</h2>
+    <h2 class="h5 mt-5" id="mcp">MCP szerver – bibliai szöveg az AI-kliensedben</h2>
+    <p>Az MCP (<a href="https://modelcontextprotocol.io">Model Context Protocol</a>) egy nyílt szabvány, amellyel az AI-kliensek (pl. Claude, ChatGPT és más MCP-t támogató alkalmazások) külső eszközökhöz és adatforrásokhoz férhetnek hozzá. A Szentírás.eu MCP szervere lehetővé teszi, hogy az AI a <strong>pontos, szó szerinti bibliai szöveget</strong> kérje le egy adott magyar fordításból, ahelyett, hogy emlékezetből idézne, valamint hogy az <strong>Újszövetség eredeti görög szövegét</strong> szavanként elemezve érje el. A szerver használatához nem kell programozni tudni: elég a kliens beállításai közt felvenni az alábbi címet és az API kulcsodat.</p>
+
+    <h3 class="h6">Végpont</h3>
+    <pre class="bg-body-secondary p-3 rounded"><code>{{ url('/mcp/bible') }}</code></pre>
+    <p>Az útvonal végére opcionálisan hozzáfűzhető egy fordításrövidítés, amellyel kiválasztható, hogy a szerver alapértelmezetten melyik hagyomány szerinti fordítással válaszoljon. Így mindenki a saját fordítására állíthatja be a kliensét:</p>
+    <ul>
+        <li><code>{{ url('/mcp/bible/RUF') }}</code> – protestáns felhasználóknak (Revideált új fordítás)</li>
+        <li><code>{{ url('/mcp/bible/SZIT') }}</code> – katolikus felhasználóknak (Szent István Társulati Biblia)</li>
+    </ul>
+    <p>Fordításrövidítés nélkül a szerver a webhely alapértelmezett fordítását használja. A rövidítés nem érzékeny a kis- és nagybetűkre.</p>
+
+    <h3 class="h6">Hitelesítés és beállítás a kliensben</h3>
+    <p>Az MCP szerver ugyanazt az API kulcsot igényli, mint a REST API (lásd az <a href="#api-kulcs">API kulcs</a> szakaszt). A kliensek többségében a távoli (HTTP) MCP szerverhez a cím mellett HTTP fejlécek is megadhatók – ilyenkor a kulcsot az <code>X-API-Key</code> fejlécben add meg. Konfigurációs fájlt használó kliensben a bejegyzés jellemzően így néz ki:</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>{
+  "mcpServers": {
+    "szentiraseu": {
+      "type": "http",
+      "url": "{{ url('/mcp/bible/RUF') }}",
+      "headers": {
+        "X-API-Key": "{{ key }}"
+      }
+    }
+  }
+}</code></pre>
+    <p>Ha a kliensed nem enged fejlécet megadni, csak URL-t, akkor a kulcs <code>api_key</code> query paraméterként is átadható:</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>{{ url('/mcp/bible/RUF') }}?api_key={{ key }}</code></pre>
+
+    <h3 class="h6">Elérhető eszközök (tools)</h3>
+    <dl>
+        <dt><code>get-verses</code></dt>
+        <dd>Egy megadott szentírási hely pontos, szó szerinti szövegét adja vissza a beállított fordításban. Paraméterek: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code> vagy <code>1Kor 13,4-7</code>), és <code>translation</code> (opcionális) – a fordítás rövidítése, amellyel az URL-ben megadott hagyomány felülírható.</dd>
+        <dt><code>search-verses</code></dt>
+        <dd>Megkeresi azokat a verseket, amelyekben a megadott magyar szavak szerepelnek – akkor hasznos, ha a szöveg megvan, de a hivatkozás nem. Paraméterek: <code>text</code> (kötelező) – a keresendő szavak, <code>book</code> – szűkítés könyvre vagy szövetségre (<code>old_testament</code>, <code>new_testament</code>, <code>Jn</code>, <code>JHN</code>), <code>translation</code> – a fordítás rövidítése, és <code>limit</code> – a találatok maximális száma (1–50, alapértelmezés 10). A válasz versenként csak a hivatkozást és a szöveget tartalmazza, és megadja a teljes találatszámot is.</dd>
+        <dt><code>list-translations</code></dt>
+        <dd>Felsorolja az elérhető magyar fordításokat felekezetenként (katolikus / protestáns), és jelzi, hogy a végpont alapértelmezetten melyikkel válaszol.</dd>
+        <dt><code>get-greek-verses</code></dt>
+        <dd>Egy újszövetségi szakasz eredeti görög szövegét adja vissza, szavanként elemezve: a szövegbeli alak, a szótári alak (lemma), az átírás, a Strong-szám, a morfológiai kód és annak magyar leírása, valamint a szó első magyar jelentése. Paraméter: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code>). Görögül csak az Újszövetség érhető el.</dd>
+        <dt><code>search-greek</code></dt>
+        <dd>Megkeresi azokat az újszövetségi verseket, amelyekben a keresett görög szó szerepel, és a görög szöveget a magyar fordítással együtt adja vissza. Paraméterek: <code>text</code> (kötelező), <code>mode</code> – <code>strong</code> (Strong-szám szerint), <code>lemma</code> (a szótő latin átírása szerint, alapértelmezés) vagy <code>verse</code> (a görög szövegben), <code>rule</code>, <code>book</code>, <code>translation</code> és <code>limit</code> (1–50, alapértelmezés 10).</dd>
+        <dt><code>lookup-greek-word</code></dt>
+        <dd>Egy Strong-szám görög–magyar szótári szócikkét adja vissza: a szótári alakot, az átírást, az összes magyar jelentést a hozzájuk tartozó magyarázattal, valamint – ha ismert – a szó eredetét, paradigmáját és a megjegyzéseket. Paraméter: <code>strongNumber</code> (kötelező) – a <code>get-greek-verses</code> által visszaadott Strong-szám.</dd>
+    </dl>
+    <p>A hivatkozások magyar jelölést használnak: a vessző választja el a fejezetet és a verset (<code>Jn 3,16</code>), a kötőjel jelöl tartományt (<code>1Kor 13,4-7</code>), a pontosvessző pedig könyveket vagy fejezeteket választ el (<code>Jn 1;3</code>).</p>
+
+    <h2 class="h5 mt-5" id="rest-api">REST API</h2>
     <p>Minden végpont JSON formátumú válasszal tér vissza, kivéve hiba esetén (404, 500, 503 stb. HTTP kódoknál). A példák a saját kulcsoddal, változtatás nélkül futtathatók.</p>
 
     <h3 class="h6"><code>idezet</code> – szentírási hely</h3>
@@ -95,37 +164,7 @@ curl -H "X-API-Key: {{ key }}" "{{ url('api/greek-search/agape') }}?book=Jn&amp;
     </dl>
     <p>A válasz a <code>totalHitCount</code> mezőben a limittől független teljes találatszámot is megadja, így látszik, ha a válasz csak a találatok egy részét tartalmazza.</p>
 
-    <h2 class="h5 mt-4">MCP szerver</h2>
-    <p>Az MCP (<a href="https://modelcontextprotocol.io">Model Context Protocol</a>) egy nyílt szabvány, amellyel az AI-kliensek (pl. Claude, ChatGPT és más MCP-t támogató alkalmazások) külső eszközökhöz és adatforrásokhoz férhetnek hozzá. A Szentírás.eu MCP szervere lehetővé teszi, hogy az AI a <strong>pontos, szó szerinti bibliai szöveget</strong> kérje le egy adott magyar fordításból, ahelyett, hogy emlékezetből idézne, valamint hogy az <strong>Újszövetség eredeti görög szövegét</strong> szavanként elemezve érje el.</p>
-
-    <h3 class="h6">Végpont</h3>
-    <pre class="bg-body-secondary p-3 rounded"><code>{{ url('/mcp/bible') }}</code></pre>
-    <p>Az URL végére opcionálisan hozzáfűzhető egy fordításrövidítés, amellyel kiválasztható, hogy a szerver alapértelmezetten melyik hagyomány szerinti fordítással válaszoljon. Így minden felhasználó a saját fordítására állíthatja be a kliensét:</p>
-    <ul>
-        <li><code>{{ url('/mcp/bible/RUF') }}</code> – protestáns felhasználóknak (Revideált új fordítás)</li>
-        <li><code>{{ url('/mcp/bible/SZIT') }}</code> – katolikus felhasználóknak (Szent István Társulati Biblia)</li>
-    </ul>
-    <p>Fordításrövidítés nélkül a szerver a webhely alapértelmezett fordítását használja. A rövidítés nem érzékeny a kis- és nagybetűkre.</p>
-
-    <h3 class="h6">Hitelesítés</h3>
-    <p>Az MCP szerver ugyanazt az API kulcsot igényli, mint a REST API (lásd az <a href="#api-kulcs">API kulcs</a> szakaszt). Mivel az MCP-kliensekben általában csak egy URL adható meg, a kulcs az <code>api_key</code> query paraméterként is átadható – az <code>X-API-Key</code> fejléc ugyanúgy működik:</p>
-    <pre class="bg-body-secondary p-3 rounded"><code>{{ url('/mcp/bible/RUF') }}?api_key={{ key }}</code></pre>
-
-    <h3 class="h6">Elérhető eszközök (tools)</h3>
-    <dl>
-        <dt><code>get-verses</code></dt>
-        <dd>Egy megadott szentírási hely pontos, szó szerinti szövegét adja vissza a beállított fordításban. Paraméterek: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code> vagy <code>1Kor 13,4-7</code>), és <code>translation</code> (opcionális) – a fordítás rövidítése, amellyel az URL-ben megadott hagyomány felülírható.</dd>
-        <dt><code>search-verses</code></dt>
-        <dd>Megkeresi azokat a verseket, amelyekben a megadott magyar szavak szerepelnek – akkor hasznos, ha a szöveg megvan, de a hivatkozás nem. Paraméterek: <code>text</code> (kötelező) – a keresendő szavak, <code>book</code> – szűkítés könyvre vagy szövetségre (<code>old_testament</code>, <code>new_testament</code>, <code>Jn</code>, <code>JHN</code>), <code>translation</code> – a fordítás rövidítése, és <code>limit</code> – a találatok maximális száma (1–50, alapértelmezés 10). A válasz versenként csak a hivatkozást és a szöveget tartalmazza, és megadja a teljes találatszámot is.</dd>
-        <dt><code>list-translations</code></dt>
-        <dd>Felsorolja az elérhető magyar fordításokat felekezetenként (katolikus / protestáns), és jelzi, hogy a végpont alapértelmezetten melyikkel válaszol.</dd>
-        <dt><code>get-greek-verses</code></dt>
-        <dd>Egy újszövetségi szakasz eredeti görög szövegét adja vissza, szavanként elemezve: a szövegbeli alak, a szótári alak (lemma), az átírás, a Strong-szám, a morfológiai kód és annak magyar leírása, valamint a szó első magyar jelentése. Paraméter: <code>reference</code> (kötelező) – a hivatkozás magyar jelöléssel (pl. <code>Jn 3,16</code>). Görögül csak az Újszövetség érhető el.</dd>
-        <dt><code>search-greek</code></dt>
-        <dd>Megkeresi azokat az újszövetségi verseket, amelyekben a keresett görög szó szerepel, és a görög szöveget a magyar fordítással együtt adja vissza. Paraméterek: <code>text</code> (kötelező), <code>mode</code> – <code>strong</code> (Strong-szám szerint), <code>lemma</code> (a szótő latin átírása szerint, alapértelmezés) vagy <code>verse</code> (a görög szövegben), <code>rule</code>, <code>book</code>, <code>translation</code> és <code>limit</code> (1–50, alapértelmezés 10).</dd>
-        <dt><code>lookup-greek-word</code></dt>
-        <dd>Egy Strong-szám görög–magyar szótári szócikkét adja vissza: a szótári alakot, az átírást, az összes magyar jelentést a hozzájuk tartozó magyarázattal, valamint – ha ismert – a szó eredetét, paradigmáját és a megjegyzéseket. Paraméter: <code>strongNumber</code> (kötelező) – a <code>get-greek-verses</code> által visszaadott Strong-szám.</dd>
-    </dl>
-    <p>A hivatkozások magyar jelölést használnak: a vessző választja el a fejezetet és a verset (<code>Jn 3,16</code>), a kötőjel jelöl tartományt (<code>1Kor 13,4-7</code>), a pontosvessző pedig könyveket vagy fejezeteket választ el (<code>Jn 1;3</code>).</p>
+    <h2 class="h5 mt-5" id="forraskod">Forráskód és közreműködés</h2>
+    <p>A honlap forráskódja elérhető a <a href="https://github.com/szentjozsefhackathon/szentiras.eu">GitHub-on</a>, szívesen látjuk azokat, akik részt vennének a fejlesztésben. Widgetek, pluginek fejlesztésében is szívesen segítünk – ilyen például az <a href="http://molnarm.github.io/igemutato/">igemutató kiegészítő</a>, amely a bibliai hivatkozásokat felugró ablakban olvasható szöveggé alakítja.</p>
 
 {% endblock %}
