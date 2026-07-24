@@ -7,7 +7,7 @@
                 "boost:mcp"
             ]
         },
-        "szentiraseu": {
+        "szentiraseu-local": {
             "type": "http",
             "url": "http://localhost/mcp/bible"
 
