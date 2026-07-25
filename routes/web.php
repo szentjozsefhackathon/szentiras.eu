@@ -12,9 +12,11 @@ use SzentirasHu\Http\Controllers\Editor\ThemeController;
 use SzentirasHu\Http\Controllers\Editor\CommentaryEditorController;
 use SzentirasHu\Http\Controllers\Editor\StrongWordEditorController;
 use SzentirasHu\Http\Controllers\Editor\ContactMessageEditorController;
+use SzentirasHu\Http\Controllers\Editor\GuideController as EditorGuideController;
 use SzentirasHu\Http\Controllers\Contact\ContactController;
 use SzentirasHu\Http\Controllers\Contact\InboxController;
 use SzentirasHu\Http\Controllers\Home\HomeController;
+use SzentirasHu\Http\Controllers\GuideController;
 use SzentirasHu\Http\Controllers\MediaController;
 use SzentirasHu\Http\Controllers\Profile\ApiKeyController as ProfileApiKeyController;
 use SzentirasHu\Http\Controllers\Tools\ToolsController;
@@ -78,6 +80,8 @@ Route::get('/info', '\SzentirasHu\Http\Controllers\Home\InfoController@getIndex'
 Route::get('/impresszum', '\SzentirasHu\Http\Controllers\Home\InfoController@mission');
 Route::get('/informaciok', '\SzentirasHu\Http\Controllers\Home\InfoController@informaciok');
 Route::get('/rolunk', '\SzentirasHu\Http\Controllers\Home\InfoController@about');
+Route::get('/utmutatok', [GuideController::class, 'index'])->name('guides.index');
+Route::get('/utmutatok/{guide}', [GuideController::class, 'show'])->name('guides.show');
 
 Route::get('/pdf/dialog/{translationAbbrev}/{refString}', '\SzentirasHu\Http\Controllers\Display\PdfController@getDialog');
 Route::get('/pdf/ref/{translationId}/{refString}', '\SzentirasHu\Http\Controllers\Display\PdfController@getRef');
@@ -176,6 +180,10 @@ Route::get('/media/{uuid}', [MediaController::class, 'show'])->name('media.show'
 
 // Editor routes
 Route::middleware('editor')->group(function () {
+    Route::patch('/editor/guides/reorder', [EditorGuideController::class, 'reorder'])->name('editor.guides.reorder');
+    Route::patch('/editor/guides/{guide}/toggle', [EditorGuideController::class, 'toggle'])->name('editor.guides.toggle');
+    Route::resource('/editor/guides', EditorGuideController::class)->names('editor.guides');
+
     // Commentary editor (except generate which has special permissions)
     Route::prefix('editor/commentaries')->name('editor.commentaries.')->group(function () {
         Route::get('/', [CommentaryEditorController::class, 'index'])->name('index');

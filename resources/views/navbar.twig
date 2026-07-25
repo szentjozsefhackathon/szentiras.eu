@@ -60,7 +60,17 @@
                         <a class="dropdown-item" href="https://cantores.hu/" target="_new">Cantores.hu - Liturgikus naptár és énekrendek {{ externalIcon }}</a>
                     </div>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="/informaciok"><i class="bi bi-info-circle"></i> Információk</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-info-circle"></i> Információk<span class="caret"></span></a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/informaciok">
+                            <i class="bi bi-info-square"></i> Áttekintés
+                        </a>
+                        <a class="dropdown-item" href="{{ route('guides.index') }}">
+                            <i class="bi bi-journal-text"></i> Útmutatók
+                        </a>
+                    </div>
+                </li>
                 {% if isEditor() %}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-pencil-square"></i> Szerkesztés<span class="caret"></span></a>
@@ -82,6 +92,9 @@
                         </a>
                         <a class="dropdown-item" href="{{ route('editor.themes.index') }}">
                             <i class="bi bi-tags-fill"></i> Témák
+                        </a>
+                        <a class="dropdown-item" href="{{ route('editor.guides.index') }}">
+                            <i class="bi bi-journal-text"></i> Útmutatók
                         </a>
                     </div>
                 </li>

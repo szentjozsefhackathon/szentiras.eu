@@ -26,6 +26,7 @@ class SitemapGenerator
         '/info',
         '/impresszum',
         '/informaciok',
+        '/utmutatok',
         '/rolunk',
         '/kereses',
         '/ai-search',

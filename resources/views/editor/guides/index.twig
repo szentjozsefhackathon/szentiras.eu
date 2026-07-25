@@ -1,0 +1,132 @@
+{% extends 'layout.twig' %}
+{% set pageTitle = 'Útmutatók kezelése | Szentírás' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Útmutatók kezelése</h1>
+    <p class="text-muted">Húzd a sorokat a kívánt sorrendbe; a változás automatikusan mentődik.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if session('success') %}
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i> {{ session('success') }}
+    </div>
+{% endif %}
+
+<div id="guide-order-message" class="alert d-none" role="status"></div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <a href="{{ route('editor.guides.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Új útmutató
+    </a>
+    <a href="{{ route('guides.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-eye"></i> Nyilvános oldal
+    </a>
+</div>
+
+{% if guides is empty %}
+    <div class="alert alert-info">Még nincs útmutató.</div>
+{% else %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="text-center" style="width: 3rem;">Sorrend</th>
+                        <th scope="col">Cím</th>
+                        <th scope="col">Állapot</th>
+                        <th scope="col" class="text-end">Műveletek</th>
+                    </tr>
+                </thead>
+                <tbody id="sortable-guides">
+                    {% for guide in guides %}
+                        <tr data-guide-id="{{ guide.id }}">
+                            <td class="text-center guide-drag-handle" style="cursor: grab;" title="Fogd meg és húzd">
+                                <i class="bi bi-grip-vertical fs-5 text-muted"></i>
+                            </td>
+                            <td>
+                                <a href="{{ route('editor.guides.edit', guide) }}" class="fw-semibold text-decoration-none">{{ guide.title }}</a>
+                                <div class="small text-muted">/utmutatok/{{ guide.slug }}</div>
+                            </td>
+                            <td>
+                                {% if guide.is_active %}
+                                    <span class="badge bg-success">Aktív</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inaktív</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex flex-wrap justify-content-end gap-1">
+                                    <a href="{{ route('editor.guides.edit', guide) }}" class="btn btn-sm btn-outline-primary" title="Szerkesztés">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="{{ route('editor.guides.toggle', guide) }}" method="POST">
+                                        {{ csrf_field() }}
+                                        {{ method_field('PATCH') }}
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="{{ guide.is_active ? 'Inaktiválás' : 'Aktiválás' }}">
+                                            <i class="bi {{ guide.is_active ? 'bi-eye-slash' : 'bi-eye' }}"></i>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('editor.guides.destroy', guide) }}" method="POST" onsubmit="return confirm('Biztosan törölni szeretnéd ezt az útmutatót?');">
+                                        {{ csrf_field() }}
+                                        {{ method_field('DELETE') }}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Törlés">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+{% if guides is not empty %}
+<script>
+$(function () {
+    const rows = $('#sortable-guides');
+    const message = $('#guide-order-message');
+
+    rows.sortable({
+        axis: 'y',
+        handle: '.guide-drag-handle',
+        update: async function () {
+            const guides = rows.children().map(function () {
+                return Number($(this).data('guide-id'));
+            }).get();
+
+            message.removeClass('d-none alert-success alert-danger').addClass('alert-info').text('Sorrend mentése…');
+
+            try {
+                const response = await fetch('{{ route('editor.guides.reorder') }}', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ guides: guides })
+                });
+
+                if (!response.ok) {
+                    throw new Error('A sorrend mentése sikertelen.');
+                }
+
+                message.removeClass('alert-info alert-danger').addClass('alert-success').text('A sorrend elmentve.');
+            } catch (error) {
+                message.removeClass('alert-info alert-success').addClass('alert-danger').text(error.message);
+                rows.sortable('cancel');
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

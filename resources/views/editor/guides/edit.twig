@@ -1,0 +1,28 @@
+{% extends 'layout.twig' %}
+{% set pageTitle = guide.title ~ ' szerkesztése | Szentírás' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Útmutató szerkesztése</h1>
+    <p class="text-muted">
+        Nyilvános cím:
+        <a href="{{ route('guides.show', guide) }}" target="_blank">{{ route('guides.show', guide) }}</a>
+    </p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ route('editor.guides.update', guide) }}" method="POST">
+                    {{ csrf_field() }}
+                    {{ method_field('PUT') }}
+                    {% include 'editor.guides._form' %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

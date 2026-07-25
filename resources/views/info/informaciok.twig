@@ -28,6 +28,17 @@
     </div>
 
     <div class="card mb-4 shadow-sm">
+        <div class="card-body d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+            <i class="bi bi-journal-text fs-1 text-primary"></i>
+            <div>
+                <h2 class="h5 mb-1"><a href="{{ route('guides.index') }}" class="text-decoration-none">Útmutatók</a></h2>
+                <p class="mb-2 text-muted">Gyakorlati leírások a Szentírás.eu funkcióinak hatékony használatához.</p>
+                <a href="{{ route('guides.index') }}" class="btn btn-sm btn-outline-primary">Útmutatók megnyitása</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
         <div class="card-body">
             <div class="markdown-content">
                 {% apply markdown_to_html %}

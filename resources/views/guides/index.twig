@@ -1,0 +1,39 @@
+{% extends 'layout.twig' %}
+{% set pageTitle = 'Útmutatók | Szentírás' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Útmutatók</h1>
+    <p class="text-muted">Gyakorlati segítség a Szentírás.eu funkcióinak használatához.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="guides-list">
+    {% if guides is empty %}
+        <div class="alert alert-info">
+            Jelenleg nincs elérhető útmutató.
+        </div>
+    {% else %}
+        <div class="list-group shadow-sm">
+            {% for guide in guides %}
+                <a href="{{ route('guides.show', guide) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-3 py-3">
+                    <span>
+                        <i class="bi bi-journal-text text-primary me-2"></i>
+                        <strong>{{ guide.title }}</strong>
+                    </span>
+                    <i class="bi bi-chevron-right text-muted"></i>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if isEditor() %}
+        <div class="mt-4">
+            <a href="{{ route('editor.guides.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil-square"></i> Útmutatók kezelése
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
