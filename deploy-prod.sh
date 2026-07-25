@@ -220,7 +220,7 @@ done
 
 # 7. Generate the static sitemap so Apache can serve public/sitemap.xml directly (no PHP/DB per request)
 echo "7. Generating sitemap..."
-$SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && docker compose -f docker-compose.prod.yml exec -T app php artisan szentiras:generate-sitemap" \
+$SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && docker compose -f docker-compose.prod.yml exec -T app php artisan szentiras:generate-sitemap && docker compose -f docker-compose.prod.yml exec -T app ln -sf public/sitemap.xml public/sitemap-copy.xml" \
     && echo "   ✅ Sitemap generated" \
     || echo "   ⚠️  Sitemap generation failed — the app will fall back to building it on demand"
 
