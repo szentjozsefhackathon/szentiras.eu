@@ -10,10 +10,23 @@ source parent_source {
 source verses_source : parent_source
 {
 
+	# Verse types are per translation: the same tip means different things in different
+	# translations (e.g. 902 is a poem line in SZIT but unused leftover text in RUF), so the
+	# filter must be keyed on trans as well. Keep in sync with the text/heading/poemLine
+	# entries of config/translations.php; tests/Feature/SphinxIndexConfigTest.php fails when
+	# the two drift apart.
 	sql_query		= \
 		SELECT id, gepi, trans, usx_code, chapter, tip, verse, verse as verse2, verse as verse3 \
 		FROM kar_tdverse \
-    WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
+    WHERE (trans = 1 AND tip IN (901, 902, 3000, 3001, 3002, 3003, 3004, 3005, 3006)) \
+       OR (trans = 2 AND tip IN (703, 901, 902)) \
+       OR (trans = 3 AND tip IN (301, 320, 330, 640, 650, 680, 701, 702, 901, 902)) \
+       OR (trans = 4 AND tip IN (1, 2, 3, 901, 902)) \
+       OR (trans = 5 AND tip IN (701, 704, 901, 902)) \
+       OR (trans = 6 AND tip IN (701, 901, 904)) \
+       OR (trans = 7 AND tip IN (901, 902)) \
+       OR (trans = 8 AND tip IN (901, 902)) \
+       OR (trans = 9 AND tip IN (701, 901))
 
 }
 
@@ -23,7 +36,15 @@ source verses_root_source : verses_source
     sql_query		= \
     SELECT id, gepi, trans, usx_code, chapter, tip, verseroot as verse, verseroot as verse2, verseroot as verse3 \
     FROM kar_tdverse \
-    WHERE tip IN (60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704)
+    WHERE (trans = 1 AND tip IN (901, 902, 3000, 3001, 3002, 3003, 3004, 3005, 3006)) \
+       OR (trans = 2 AND tip IN (703, 901, 902)) \
+       OR (trans = 3 AND tip IN (301, 320, 330, 640, 650, 680, 701, 702, 901, 902)) \
+       OR (trans = 4 AND tip IN (1, 2, 3, 901, 902)) \
+       OR (trans = 5 AND tip IN (701, 704, 901, 902)) \
+       OR (trans = 6 AND tip IN (701, 901, 904)) \
+       OR (trans = 7 AND tip IN (901, 902)) \
+       OR (trans = 8 AND tip IN (901, 902)) \
+       OR (trans = 9 AND tip IN (701, 901))
 
 }
 
