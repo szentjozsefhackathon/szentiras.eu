@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Exit on error
-set -e
+# Exit on errors, including failures on either side of a pipe
+set -eo pipefail
 
 # Load deployment configuration
 if [ -f .env.deploy ]; then
@@ -84,6 +84,27 @@ if [ -f "$SSH_KEY_PATH" ]; then
     SCP_CMD="$SCP_CMD -i $SSH_KEY_PATH"
 fi
 
+# Files and directories mounted from the remote deployment directory by
+# docker-compose.prod.yml. These must be deployed alongside the application image.
+DEPLOY_FILES=(
+    "docker-compose.prod.yml"
+    "deploy/production/sphinx"
+    "docker/database"
+    "docker/maintenance"
+    "docker/postgres"
+    "docker/sphinx"
+)
+
+SPHINX_RUNTIME_FILES=(
+    "deploy/production/sphinx/sphinx.conf.in"
+    "docker/sphinx/start.sh"
+    "docker/sphinx/reindex.sh"
+)
+
+DATABASE_RUNTIME_FILES=(
+    "docker/postgres/postgresql.conf"
+)
+
 # Get local file size
 LOCAL_FILE_SIZE=$(stat -f%z "$LOCAL_FILE_PATH" 2>/dev/null || stat -c%s "$LOCAL_FILE_PATH" 2>/dev/null)
 
@@ -126,38 +147,41 @@ if [ "$ENV_CHECK" = "missing" ]; then
     echo "     scp -P $DEPLOY_PORT .env.prod $SSH_TARGET:$DEPLOY_REMOTE_PATH/"
 fi
 
-# 5. Check for docker-compose.prod.yml on server
-echo "5. Ensuring docker-compose.prod.yml is up to date on server..."
-COMPOSE_CHECK=$($SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && if [ -f docker-compose.prod.yml ]; then echo 'exists'; else echo 'missing'; fi")
+# 5. Upload files bind-mounted by docker-compose.prod.yml
+echo "5. Syncing production runtime files..."
+LOCAL_SPHINX_CHECKSUM=$(md5sum "${SPHINX_RUNTIME_FILES[@]}" | md5sum | awk '{print $1}')
+REMOTE_SPHINX_CHECKSUM=$($SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && for file in ${SPHINX_RUNTIME_FILES[*]}; do test -f \"\$file\" || exit 1; done && md5sum ${SPHINX_RUNTIME_FILES[*]} | md5sum | awk '{print \$1}' || echo missing")
+LOCAL_DATABASE_CHECKSUM=$(md5sum "${DATABASE_RUNTIME_FILES[@]}" | md5sum | awk '{print $1}')
+REMOTE_DATABASE_CHECKSUM=$($SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && for file in ${DATABASE_RUNTIME_FILES[*]}; do test -f \"\$file\" || exit 1; done && md5sum ${DATABASE_RUNTIME_FILES[*]} | md5sum | awk '{print \$1}' || echo missing")
 
-if [ "$COMPOSE_CHECK" = "missing" ]; then
-    echo "   Uploading docker-compose.prod.yml..."
-    $SCP_CMD "docker-compose.prod.yml" "$SSH_TARGET:$DEPLOY_REMOTE_PATH/"
-    echo "   ✅ docker-compose.prod.yml uploaded"
+if [ "$LOCAL_SPHINX_CHECKSUM" = "$REMOTE_SPHINX_CHECKSUM" ]; then
+    SPHINX_RUNTIME_CHANGED=0
 else
-    # Compare local and remote checksums
-    LOCAL_CHECKSUM=$(md5sum docker-compose.prod.yml | awk '{print $1}')
-    REMOTE_CHECKSUM=$($SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && md5sum docker-compose.prod.yml | awk '{print \$1}'")
-    
-    if [ "$LOCAL_CHECKSUM" != "$REMOTE_CHECKSUM" ]; then
-        echo "   ⚠️  Local docker-compose.prod.yml differs from remote version"
-        echo "   Local checksum:  $LOCAL_CHECKSUM"
-        echo "   Remote checksum: $REMOTE_CHECKSUM"
-        echo
-        read -p "   Upload and use local version? (y/n) " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo "   Uploading docker-compose.prod.yml..."
-            $SCP_CMD "docker-compose.prod.yml" "$SSH_TARGET:$DEPLOY_REMOTE_PATH/"
-            echo "   ✅ docker-compose.prod.yml uploaded"
-        else
-            echo "   ❌ Deployment aborted: docker-compose.prod.yml mismatch"
-            exit 1
-        fi
-    else
-        echo "   ✅ docker-compose.prod.yml is up to date"
-    fi
+    SPHINX_RUNTIME_CHANGED=1
 fi
+
+if [ "$LOCAL_DATABASE_CHECKSUM" = "$REMOTE_DATABASE_CHECKSUM" ]; then
+    DATABASE_RUNTIME_CHANGED=0
+else
+    DATABASE_RUNTIME_CHANGED=1
+fi
+
+tar -czf - "${DEPLOY_FILES[@]}" | $SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && tar -xzf -"
+DEPLOYED_SPHINX_CHECKSUM=$($SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && md5sum ${SPHINX_RUNTIME_FILES[*]} | md5sum | awk '{print \$1}'")
+DEPLOYED_DATABASE_CHECKSUM=$($SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && md5sum ${DATABASE_RUNTIME_FILES[*]} | md5sum | awk '{print \$1}'")
+
+if [ "$LOCAL_SPHINX_CHECKSUM" != "$DEPLOYED_SPHINX_CHECKSUM" ]; then
+    echo "❌ Sphinx runtime file verification failed at $DEPLOY_REMOTE_PATH/deploy/production/sphinx/sphinx.conf.in"
+    exit 1
+fi
+
+if [ "$LOCAL_DATABASE_CHECKSUM" != "$DEPLOYED_DATABASE_CHECKSUM" ]; then
+    echo "❌ PostgreSQL runtime file verification failed at $DEPLOY_REMOTE_PATH/docker/postgres/postgresql.conf"
+    exit 1
+fi
+
+echo "   ✅ Production runtime files synchronized and verified"
+echo "   Remote Sphinx config: $DEPLOY_REMOTE_PATH/deploy/production/sphinx/sphinx.conf.in"
 
 # 6. Restart app services (keep traefik running to minimise downtime)
 echo "6. Restarting app services (traefik kept running)..."
@@ -166,8 +190,30 @@ echo "6. Restarting app services (traefik kept running)..."
 echo "   Putting application into maintenance mode..."
 $SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && docker compose -f docker-compose.prod.yml exec -T app php artisan down 2>/dev/null || echo '   ℹ️  App container not running or already in maintenance mode'"
 
-# Bring up infrastructure services first (database, redis, sphinx) if not already running
-$SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && APP_DOMAIN=szentiras.eu docker compose -f docker-compose.prod.yml --env-file .env.prod up -d database redis sphinx memcached"
+# Bring up infrastructure services first. Sphinx must be recreated when one of its
+# bind-mounted inputs changes because start.sh renders the active configuration only
+# during container startup.
+if [ "$DATABASE_RUNTIME_CHANGED" -eq 1 ]; then
+    echo "   PostgreSQL configuration changed; recreating the database container..."
+    $SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && APP_DOMAIN=szentiras.eu docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --force-recreate database"
+else
+    $SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && APP_DOMAIN=szentiras.eu docker compose -f docker-compose.prod.yml --env-file .env.prod up -d database"
+fi
+
+$SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && APP_DOMAIN=szentiras.eu docker compose -f docker-compose.prod.yml --env-file .env.prod up -d redis memcached"
+
+echo "   Waiting for database to become healthy..."
+$SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && timeout 120 bash -c 'until APP_DOMAIN=szentiras.eu docker compose -f docker-compose.prod.yml --env-file .env.prod ps database | grep -q \"(healthy)\"; do sleep 3; done'" || {
+    echo "❌ Database did not become healthy within 120s. Aborting deployment."
+    exit 1
+}
+
+if [ "$SPHINX_RUNTIME_CHANGED" -eq 1 ]; then
+    echo "   Sphinx runtime files changed; recreating and reindexing Sphinx..."
+    $SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && APP_DOMAIN=szentiras.eu docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --force-recreate sphinx"
+else
+    $SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && APP_DOMAIN=szentiras.eu docker compose -f docker-compose.prod.yml --env-file .env.prod up -d sphinx"
+fi
 
 # Stop only the app-layer containers so traefik keeps serving (returns 502 briefly, not 404)
 $SSH_CMD "$SSH_TARGET" "cd $DEPLOY_REMOTE_PATH && docker compose -f docker-compose.prod.yml stop horizon app 2>/dev/null || true"

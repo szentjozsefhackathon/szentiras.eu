@@ -106,7 +106,7 @@ services:
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+      test: ["CMD-SHELL", "pg_isready -h \"$${HOSTNAME}\" -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       start_period: 1m
       interval: 10s
       timeout: 5s
