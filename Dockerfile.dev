@@ -9,7 +9,7 @@ ARG GID
 # Hunspell doesn't work without a proper locale :o
 RUN apt-get update && \
     apt-get install -y \
-    curl sudo git gh nano hunspell hunspell-hu locales 
+    curl sudo git gh nano hunspell hunspell-hu locales python3 jq
 RUN sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen
 RUN sed -i 's/^# *\(hu_HU.UTF-8\)/\1/' /etc/locale.gen
 
