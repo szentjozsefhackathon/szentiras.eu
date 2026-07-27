@@ -18,6 +18,7 @@
 {% block content %}
 
     {% set compareQuery = (compareTranslation is defined and compareTranslation) ? '?compare=' ~ compareTranslation.abbrev : '' %}
+    {% set highlightedGreekVerseGepis = highlightedGreekVerseGepis|default([]) %}
 
     <h1 class="h2">Görög Újszövetség</h2>
 
@@ -162,7 +163,7 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            {% set gntChapterPath = '/GNT/' ~ book.abbrev ~ currentChapter %}
+            {% set gntChapterPath = gntReferencePath %}
             <hr class="my-2">
             <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
                 <span class="text-muted small"><i class="bi bi-columns-gap"></i> Párhuzamos olvasás fordítással:</span>
@@ -190,6 +191,8 @@
     {% endif %}
     {% endif %}
 
+    <span id="data"{% if scrollTo %} data-scroll-to="{{ scrollTo }}"{% endif %}></span>
+
     {% if compareTranslation is defined and compareTranslation and compareVerseContainers %}
         {% set rightMap = {} %}
         {% for container in compareVerseContainers %}
@@ -204,16 +207,19 @@
             'rightType': 'verse',
             'leftLabel': 'GNT',
             'rightLabel': compareTranslation.name,
-            'compareTranslation': compareTranslation
+            'compareTranslation': compareTranslation,
+            'highlightedGreekVerseGepis': highlightedGreekVerseGepis
         }) }}
     {% else %}
     {% set displayedChapter = null %}
     <div class="parsedVerses greek">
         {% for greekVerse in greekVerses %}
+            {% set mark = greekVerse.gepi in highlightedGreekVerseGepis %}
             {% if displayedChapter != greekVerse.chapter and greekVerse.verse == 1 %}
                 <span class="numchapter">{{ greekVerse.chapter }}</span>
                 {% set displayedChapter = greekVerse.chapter %}
             {% endif %}
+            <span id="v_{{ greekVerse.usx_code }}_{{ greekVerse.chapter }}_{{ greekVerse.verse }}" class="greek-verse{{ mark ? ' mark' : '' }}">
                 <span class="numv hidden"><sup>{{ greekVerse.verse }}</sup></span>
                 {% if book %}
                 <a class="numvai" data-bs-placement="auto" tabindex="0" data-bs-custom-class="ai-tool-popover" data-link="{{ translation.abbrev }}/{{ book.abbrev }}{{ greekVerse.chapter }},{{ greekVerse.verse }}">
@@ -222,6 +228,7 @@
                 {% endif %}
                 {% include 'greekText.verseAnalysisToggle' with {'greekVerse': greekVerse} %}
                 <span id="greek-verse-text-{{ greekVerse.gepi }}" class="verse-text">{% include 'greekText.clickableGreekText' with {'words': greekVerse.annotatedWords} %}</span>
+            </span>
         {% endfor %}
     </div>
     {% endif %}

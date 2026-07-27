@@ -15,7 +15,7 @@ class GreekComparisonTest extends FastDatabaseTestCase
 
     private function setUpNewTestamentData(): void
     {
-        $book = new Book();
+        $book = new Book;
         $book->order = 200;
         $book->abbrev = 'Mt';
         $book->name = 'Máté';
@@ -32,9 +32,9 @@ class GreekComparisonTest extends FastDatabaseTestCase
 
     private function createHungarianVerse(int $bookId, int $chapter, int $numv, string $text): void
     {
-        $verse = new Verse();
+        $verse = new Verse;
         $verse->trans = self::TEST_TRANSLATION_ID;
-        $verse->gepi = '993000' . str_pad((string) $chapter, 3, '0', STR_PAD_LEFT) . str_pad((string) $numv, 3, '0', STR_PAD_LEFT) . '000';
+        $verse->gepi = '993000'.str_pad((string) $chapter, 3, '0', STR_PAD_LEFT).str_pad((string) $numv, 3, '0', STR_PAD_LEFT).'000';
         $verse->usx_code = 'MAT';
         $verse->book_id = $bookId;
         $verse->chapter = $chapter;
@@ -48,7 +48,7 @@ class GreekComparisonTest extends FastDatabaseTestCase
 
     private function createGreekVerse(int $chapter, int $verse, string $text, string $strongs = '', string $translit = ''): void
     {
-        $greekVerse = new GreekVerse();
+        $greekVerse = new GreekVerse;
         $greekVerse->source = 'test';
         $greekVerse->gepi = "MAT.{$chapter}.{$verse}";
         $greekVerse->usx_code = 'MAT';
@@ -69,7 +69,7 @@ class GreekComparisonTest extends FastDatabaseTestCase
     private function createGreekBook(): void
     {
         $gnt = Translation::where('abbrev', 'GNT')->firstOrFail();
-        $book = new Book();
+        $book = new Book;
         $book->order = 1;
         $book->abbrev = 'Mt';
         $book->name = 'Evangélium Máté szerint';
@@ -161,6 +161,19 @@ class GreekComparisonTest extends FastDatabaseTestCase
         $response->assertSee('γενεσεως', false);
         $response->assertSee('class="greekWord clickable-greek"', false);
         $response->assertSeeText('Magyar Máté evangéliuma');
+    }
+
+    public function test_gnt_parallel_reading_preserves_and_highlights_the_requested_verse(): void
+    {
+        $this->setUpNewTestamentData();
+        $this->createGreekBook();
+        $this->enableGreekComparison();
+
+        $response = $this->get('/GNT/Mt1,1?compare=TESTTRANS');
+
+        $response->assertStatus(200);
+        $response->assertSee('id="v_MAT_1_1" class="compareGreek greek greekSection mark" lang="grc"', false);
+        $response->assertSee('/GNT/Mt%201,1?compare=TESTTRANS', false);
     }
 
     public function test_gnt_reading_page_offers_comparison_dropdown(): void

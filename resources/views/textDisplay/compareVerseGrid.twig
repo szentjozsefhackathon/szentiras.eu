@@ -14,11 +14,13 @@
     rightLabel     column header for the right side
     translation        primary Translation (for verseCell xrefs links on the left)
     compareTranslation comparison Translation (for verseCell xrefs links on the right)
-    verseToPlaces, highlightedGepis  optional rendering context for the primary side
+    verseToPlaces, highlightedGepis, highlightedGreekVerseGepis
+                                      optional rendering context for the primary side
 #}
 {% import 'textDisplay.compareCells' as cells %}
 {% set verseToPlaces = verseToPlaces|default({}) %}
 {% set highlightedGepis = highlightedGepis|default([]) %}
+{% set highlightedGreekVerseGepis = highlightedGreekVerseGepis|default([]) %}
 
 <div class="compareGridHeader">
     <div class="compareGridHeaderCell">{{ leftLabel }}</div>
@@ -52,7 +54,7 @@
 
         <div class="compareCell compareCol-primary">
             {% if leftType == 'greek' %}
-                {{ cells.greekCell(leftVerse) }}
+                {{ cells.greekCell(leftVerse, leftVerse.gepi in highlightedGreekVerseGepis) }}
             {% else %}
                 {{ cells.verseCell(leftVerse, translation, verseToPlaces, highlightedGepis) }}
             {% endif %}
@@ -61,7 +63,7 @@
             {% set rightVerse = rightMap[key] is defined ? rightMap[key] : null %}
             {% if rightVerse %}
                 {% if rightType == 'greek' %}
-                    {{ cells.greekCell(rightVerse) }}
+                    {{ cells.greekCell(rightVerse, rightVerse.gepi in highlightedGreekVerseGepis) }}
                 {% else %}
                     {{ cells.verseCell(rightVerse, compareTranslation, {}, []) }}
                 {% endif %}

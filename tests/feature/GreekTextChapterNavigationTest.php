@@ -29,7 +29,7 @@ class GreekTextChapterNavigationTest extends TestCase
     private function createGreekBook(): void
     {
         // The GNT translation (id 7) is inserted by the add_gnt_translation migration.
-        $book = new Book();
+        $book = new Book;
         $book->translation_id = self::GREEK_TRANSLATION_ID;
         $book->name = 'Evangélium Máté szerint';
         $book->abbrev = 'Mt';
@@ -41,7 +41,7 @@ class GreekTextChapterNavigationTest extends TestCase
 
         foreach ([1, 2, 3] as $chapter) {
             foreach ([1, 2] as $verse) {
-                $greekVerse = new GreekVerse();
+                $greekVerse = new GreekVerse;
                 $greekVerse->source = 'test';
                 $greekVerse->gepi = "MAT.{$chapter}.{$verse}";
                 $greekVerse->usx_code = 'MAT';
@@ -78,6 +78,29 @@ class GreekTextChapterNavigationTest extends TestCase
         $response->assertSeeText('GReeK chapter 2 verse 1');
         $response->assertDontSeeText('GReeK chapter 1 verse 1');
         $response->assertDontSeeText('GReeK chapter 3 verse 1');
+    }
+
+    public function test_single_verse_reference_highlights_and_scrolls_to_the_requested_verse(): void
+    {
+        $this->createGreekBook();
+
+        $response = $this->get('/GNT/Mt2,2');
+
+        $response->assertStatus(200);
+        $response->assertSee('id="v_MAT_2_2" class="greek-verse mark"', false);
+        $response->assertSee('data-scroll-to="MAT_2_2"', false);
+        $response->assertDontSee('id="v_MAT_2_1" class="greek-verse mark"', false);
+    }
+
+    public function test_verse_range_highlights_every_requested_verse(): void
+    {
+        $this->createGreekBook();
+
+        $response = $this->get('/GNT/Mt2,1-2');
+
+        $response->assertStatus(200);
+        $response->assertSee('id="v_MAT_2_1" class="greek-verse mark"', false);
+        $response->assertSee('id="v_MAT_2_2" class="greek-verse mark"', false);
     }
 
     public function test_chapter_navigation_links_are_rendered(): void
