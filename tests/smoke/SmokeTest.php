@@ -213,9 +213,30 @@ class SmokeTest extends TestCase
     public function testChapterPageHasSeoTitleAndH1() {
         $response = $this->get('/TESTTRANS/Ter2');
         $response->assertStatus(200);
-        // Canonical abbreviation reference leads the title and is the page <h1>.
-        $response->assertSee('<title>Ter 2 ', false);
-        $response->assertSee('<h1 class="h4">Ter 2</h1>', false);
+        // Canonical chapter pages use the full book and chapter names consistently
+        // in the title and visible heading so search engines have a clear title.
+        $response->assertSee('<title>Ter. – 2. fejezet – Translation Name 1</title>', false);
+        $response->assertSee('<h1 class="h4">Ter. – 2. fejezet</h1>', false);
+    }
+
+    public function testPsalmPageUsesPsalmInSeoTitleAndH1(): void
+    {
+        \SzentirasHu\Data\Entity\Book::query()
+            ->whereKey(99101)
+            ->update([
+                'name' => 'A Zsoltárok könyve',
+                'abbrev' => 'Zsolt',
+                'usx_code' => 'PSA',
+            ]);
+        \SzentirasHu\Data\Entity\Verse::query()
+            ->where('book_id', 99101)
+            ->update(['usx_code' => 'PSA']);
+
+        $response = $this->get('/TESTTRANS/Zsolt2');
+
+        $response->assertStatus(200);
+        $response->assertSee('<title>Zsoltárok könyve – 2. zsoltár – Translation Name 1</title>', false);
+        $response->assertSee('<h1 class="h4">Zsoltárok könyve – 2. zsoltár</h1>', false);
     }
 
     public function testChapterPageHasDescriptiveMetaDescription() {

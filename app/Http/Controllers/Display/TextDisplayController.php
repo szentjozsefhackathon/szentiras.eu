@@ -392,6 +392,8 @@ class TextDisplayController extends Controller
             }
 
             $translations = $this->translationRepository->getAllOrderedByDenom();
+            $pageHeading = $this->getChapterPageHeading($verseContainers);
+
             return View::make('textDisplay.verses')->with([
                 'fullChaptersIncluded' => $fullChaptersIncluded,
                 'highlightedGepis' => $highlightedGepis ?? [],
@@ -411,8 +413,9 @@ class TextDisplayController extends Controller
                 'translations' => $translations,
                 'canonicalUrl' => $this->referenceService->getCanonicalUrl($canonicalRef, $translation->id),
                 'seoUrl' => $this->referenceService->getSeoUrl($canonicalRef, $translation->id),
-                'metaTitle' => $this->getTitle($verseContainers, $translation),
+                'metaTitle' => $this->getTitle($verseContainers, $translation, $pageHeading),
                 'metaReference' => $this->getReference($verseContainers),
+                'pageHeading' => $pageHeading,
                 'teaser' => $this->buildMetaDescription($verseContainers, $translation),
                 'chapterLinks' => $chapterLinks,
                 'media' => $mediaVerses ?? [],
@@ -669,11 +672,56 @@ class TextDisplayController extends Controller
         return $bookViewArray;
     }
 
-    private function getTitle($verseContainers, $translation)
+    /**
+     * @param VerseContainer[] $verseContainers
+     */
+    private function getTitle(array $verseContainers, Translation $translation, ?string $pageHeading): string
     {
+        if ($pageHeading !== null) {
+            return "{$pageHeading} | {$translation->name}";
+        }
+
         $reference = $this->getReference($verseContainers);
 
         return $reference !== "" ? "{$reference} – {$translation->name}" : $translation->name;
+    }
+
+    /**
+     * Builds the descriptive heading used by canonical whole-chapter pages.
+     *
+     * @param VerseContainer[] $verseContainers
+     */
+    private function getChapterPageHeading(array $verseContainers): ?string
+    {
+        if (count($verseContainers) !== 1) {
+            return null;
+        }
+
+        $verseContainer = $verseContainers[0];
+        $chapterRanges = $verseContainer->bookRef?->chapterRanges ?? [];
+
+        if (count($chapterRanges) !== 1) {
+            return null;
+        }
+
+        $chapterRange = $chapterRanges[0];
+        $chapterRef = $chapterRange->chapterRef;
+
+        if (
+            $chapterRange->untilChapterRef !== null
+            || $chapterRef->chapterPart !== null
+            || count($chapterRef->verseRanges) !== 0
+        ) {
+            return null;
+        }
+
+        $isPsalm = $verseContainer->book->usx_code === 'PSA';
+        $chapterType = $isPsalm ? 'zsoltár' : 'fejezet';
+        $bookName = $isPsalm
+            ? (preg_replace('/^A\s+/u', '', $verseContainer->book->name) ?? $verseContainer->book->name)
+            : $verseContainer->book->name;
+
+        return "{$bookName} – {$chapterRef->chapterId}. {$chapterType}";
     }
 
     /**
