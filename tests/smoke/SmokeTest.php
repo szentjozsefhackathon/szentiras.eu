@@ -215,7 +215,7 @@ class SmokeTest extends TestCase
         $response->assertStatus(200);
         // Canonical chapter pages use the full book and chapter names consistently
         // in the title and visible heading so search engines have a clear title.
-        $response->assertSee('<title>Ter. – 2. fejezet – Translation Name 1</title>', false);
+        $response->assertSee('<title>Ter. – 2. fejezet | Translation Name 1</title>', false);
         $response->assertSee('<h1 class="h4">Ter. – 2. fejezet</h1>', false);
     }
 
@@ -235,7 +235,7 @@ class SmokeTest extends TestCase
         $response = $this->get('/TESTTRANS/Zsolt2');
 
         $response->assertStatus(200);
-        $response->assertSee('<title>Zsoltárok könyve – 2. zsoltár – Translation Name 1</title>', false);
+        $response->assertSee('<title>Zsoltárok könyve – 2. zsoltár | Translation Name 1</title>', false);
         $response->assertSee('<h1 class="h4">Zsoltárok könyve – 2. zsoltár</h1>', false);
     }
 
