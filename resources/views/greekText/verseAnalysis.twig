@@ -26,4 +26,5 @@
             </span>
         {% endfor %}
     </span>
+    {% if annotatedWords is not empty and (annotatedWords|last).hasBreak %}<br>{% endif %}
 </span>

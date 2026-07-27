@@ -5,7 +5,7 @@
   Optional: preserveBreaks = whether paragraph markers should render as line breaks
 #}
 {%- set marked = marked|default([]) -%}
-{%- set preserveBreaks = preserveBreaks|default(true) -%}
+{%- set preserveBreaks = preserveBreaks is defined ? preserveBreaks : true -%}
 {%- for word in words -%}
     <span class="greekWord clickable-greek{% if word.i in marked %} matched{% endif %}" data-usx="{{ word.usx_code }}" data-chapter="{{ word.chapter }}" data-verse="{{ word.verse }}" data-i="{{ word.i }}" tabindex="0" role="button"{% if word.strong %} title="{{ word.strong }}{% if word.translit %} ({{ word.translit }}){% endif %}"{% endif %}>{{ word.printed }}</span>
     {%- if preserveBreaks and word.hasBreak %}<br>{% else %}{{ ' ' }}{% endif -%}

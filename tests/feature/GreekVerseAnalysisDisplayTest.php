@@ -79,6 +79,23 @@ class GreekVerseAnalysisDisplayTest extends TestCase
             ->assertStatus(304);
     }
 
+    public function test_endpoint_moves_a_trailing_verse_break_after_the_analysis(): void
+    {
+        $verse = $this->createGreekVerse(1, 'γενεαὶ δεκατέσσαρες.¶');
+        $this->createAnalysis($verse);
+
+        $response = $this->get('/GNT/verse-analysis/MAT_1_1');
+
+        $response->assertOk();
+        $response->assertSeeText('δεκατέσσαρες.');
+        $response->assertSeeText('szövegösszefüggés szerinti jelentés');
+        $this->assertSame(1, substr_count($response->getContent(), '<br>'));
+        $this->assertGreaterThan(
+            strpos($response->getContent(), 'A mondat alanya.'),
+            strpos($response->getContent(), '<br>'),
+        );
+    }
+
     public function test_endpoint_does_not_return_an_analysis_for_another_greek_source(): void
     {
         $verse = $this->createGreekVerse(1, 'λόγος');
