@@ -2,12 +2,17 @@
 """
 Élő nézet a `claude -p --output-format stream-json` folyamához.
 
-A nyers JSON eseményeket olvasható sorokká alakítja, hogy futás közben látszódjon,
-mit csinál az adott fejezetet feldolgozó gorog-elemzo.
+A nyers JSON eseményeket olvasható sorokká alakítja, hogy futás közben
+látszódjon, mit csinál az adott elemzési hívás.
 
 Használat:
-    claude -p "..." --agent gorog-elemzo --output-format stream-json --verbose \
+    claude -p "..." --output-format stream-json --verbose \
       | python3 bible_import/verse-analysis/stream-view.py
+
+Strukturált kimenet mentése:
+    claude -p "..." --json-schema '{...}' --output-format stream-json --verbose \
+      | python3 bible_import/verse-analysis/stream-view.py \
+          --structured-output storage/app/verse-analysis/semantic.json
 """
 import argparse
 import json
@@ -96,10 +101,21 @@ def reset_delay_from_log(path: Path, now: datetime) -> int | None:
     return None
 
 
-def main() -> int:
+def write_structured_output(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = path.with_name(path.name + ".tmp")
+    temporary_path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    temporary_path.replace(path)
+
+
+def main(structured_output_path: Path | None = None) -> int:
     api_error_detected = False
     retryable_api_error_detected = False
     session_limit_detected = False
+    structured_output_written = False
 
     for line in sys.stdin:
         line = line.strip()
@@ -169,6 +185,17 @@ def main() -> int:
         elif etype == "result":
             cost = event.get("total_cost_usd")
             extra = f"  (${cost:.2f})" if isinstance(cost, (int, float)) else ""
+            usage = event.get("usage", {})
+            if isinstance(usage, dict):
+                cache_created = usage.get("cache_creation_input_tokens")
+                cache_read = usage.get("cache_read_input_tokens")
+                output = usage.get("output_tokens")
+                if all(isinstance(value, int) for value in (cache_created, cache_read, output)):
+                    extra += (
+                        f"  [cache-create={cache_created}, "
+                        f"cache-read={cache_read}, output={output}]"
+                    )
+
             if api_error_detected:
                 subtype = event.get("subtype", "done")
                 print(
@@ -180,6 +207,17 @@ def main() -> int:
                     f"✅ result: {event.get('subtype', 'done')}{extra}",
                     flush=True,
                 )
+                structured_output = event.get("structured_output")
+                if (
+                    structured_output_path is not None
+                    and event.get("subtype") == "success"
+                    and isinstance(structured_output, dict)
+                ):
+                    write_structured_output(
+                        structured_output_path,
+                        structured_output,
+                    )
+                    structured_output_written = True
 
     if session_limit_detected:
         return SESSION_LIMIT_EXIT_CODE
@@ -187,12 +225,16 @@ def main() -> int:
     if retryable_api_error_detected:
         return RETRYABLE_API_ERROR_EXIT_CODE
 
+    if structured_output_path is not None and not structured_output_written:
+        return 1
+
     return 1 if api_error_detected else 0
 
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--session-reset-delay", type=Path)
+    parser.add_argument("--structured-output", type=Path)
     parser.add_argument("--now", type=datetime.fromisoformat)
 
     return parser.parse_args()
@@ -202,7 +244,7 @@ if __name__ == "__main__":
     try:
         arguments = parse_arguments()
         if arguments.session_reset_delay is None:
-            raise SystemExit(main())
+            raise SystemExit(main(arguments.structured_output))
 
         current_time = arguments.now or datetime.now(timezone.utc)
         if current_time.tzinfo is None:

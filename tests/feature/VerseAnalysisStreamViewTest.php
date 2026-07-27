@@ -142,15 +142,58 @@ class VerseAnalysisStreamViewTest extends TestCase
         $this->assertStringContainsString('✅ result: success  ($1.25)', $process->getOutput());
     }
 
+    #[Test]
+    public function it_writes_a_successful_structured_output_atomically(): void
+    {
+        $outputPath = tempnam(sys_get_temp_dir(), 'semantic-output-');
+        $this->assertNotFalse($outputPath);
+
+        try {
+            $process = $this->runViewer(
+                [
+                    [
+                        'type' => 'result',
+                        'subtype' => 'success',
+                        'structured_output' => [
+                            'verses' => [
+                                [
+                                    'verse' => 1,
+                                    'segments' => [
+                                        ['wordIndexes' => [0], 'meaning' => 'kezdetben'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                ['--structured-output', $outputPath],
+            );
+
+            $this->assertSame(0, $process->getExitCode());
+            $this->assertSame(
+                1,
+                json_decode(
+                    (string) file_get_contents($outputPath),
+                    true,
+                    flags: JSON_THROW_ON_ERROR,
+                )['verses'][0]['verse'],
+            );
+            $this->assertFileDoesNotExist($outputPath.'.tmp');
+        } finally {
+            unlink($outputPath);
+        }
+    }
+
     /**
      * @param  array<int, array<string, mixed>>  $events
+     * @param  array<int, string>  $arguments
      */
-    private function runViewer(array $events): Process
+    private function runViewer(array $events, array $arguments = []): Process
     {
-        $process = new Process([
+        $process = new Process(array_merge([
             'python3',
             dirname(__DIR__, 2).'/bible_import/verse-analysis/stream-view.py',
-        ]);
+        ], $arguments));
         $process->setInput(
             implode("\n", array_map(
                 static fn (array $event): string => json_encode(
