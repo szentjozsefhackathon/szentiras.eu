@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Test;
 
+use Illuminate\Testing\PendingCommand;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Test\Common\FastDatabaseTestCase;
 
@@ -61,8 +62,8 @@ class ValidateVerseAnalysisTest extends FastDatabaseTestCase
 
     private function createGreekVerse(int $verse, string $text): void
     {
-        $greekVerse = new GreekVerse();
-        $greekVerse->source = 'test';
+        $greekVerse = new GreekVerse;
+        $greekVerse->source = 'OpenGNT';
         $greekVerse->gepi = "JHN_3_{$verse}";
         $greekVerse->usx_code = 'JHN';
         $greekVerse->chapter = 3;
@@ -86,6 +87,8 @@ class ValidateVerseAnalysisTest extends FastDatabaseTestCase
             'book' => 'Jn',
             'chapter' => 3,
             'greekSource' => 'OpenGNT',
+            'createdBy' => 'test-suite',
+            'createdAt' => '2026-07-27',
             'verses' => [
                 [
                     'verse' => 16,
@@ -119,7 +122,7 @@ class ValidateVerseAnalysisTest extends FastDatabaseTestCase
         );
     }
 
-    private function validate(string $reference = 'Jn 3'): \Illuminate\Testing\PendingCommand
+    private function validate(string $reference = 'Jn 3'): PendingCommand
     {
         return $this->artisan('szentiras:validate-verse-analysis', [
             'reference' => $reference,
@@ -271,6 +274,30 @@ class ValidateVerseAnalysisTest extends FastDatabaseTestCase
 
         $this->validate()
             ->expectsOutputToContain('The "chapter" field must be 3.')
+            ->assertExitCode(1);
+    }
+
+    public function test_a_wrong_greek_source_fails(): void
+    {
+        $analysis = $this->validAnalysis();
+        $analysis['greekSource'] = 'BMT';
+
+        $this->writeAnalysis($analysis);
+
+        $this->validate()
+            ->expectsOutputToContain('The "greekSource" field must be "OpenGNT".')
+            ->assertExitCode(1);
+    }
+
+    public function test_a_wrong_gepi_fails(): void
+    {
+        $analysis = $this->validAnalysis();
+        $analysis['verses'][0]['gepi'] = 'JHN_3_999';
+
+        $this->writeAnalysis($analysis);
+
+        $this->validate()
+            ->expectsOutputToContain('the "gepi" field must be "JHN_3_16"')
             ->assertExitCode(1);
     }
 

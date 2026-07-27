@@ -3,14 +3,15 @@
 namespace SzentirasHu\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 use SzentirasHu\Service\VerseAnalysis\VerseAnalysisAssembler;
 use Throwable;
 
 class AssembleVerseAnalysis extends Command
 {
     protected $signature = 'szentiras:assemble-verse-analysis
-        {manifest : Path to the compact exporter manifest, relative to the project root.}
-        {--output-dir=bible_import/verse-analysis : Analysis output directory, relative to the project root.}
+        {manifest : Path to the compact exporter manifest, relative to the local disk or absolute.}
+        {--output-dir=greek/verse-analysis/OpenGNT/hu/v1 : Analysis output directory, relative to the local disk or absolute.}
         {--created-by=claude-semantic-pipeline : Value for the final JSON createdBy field.}';
 
     protected $description = 'Assemble semantic chunk results into a complete verse-analysis JSON file.';
@@ -38,6 +39,6 @@ class AssembleVerseAnalysis extends Command
     {
         return str_starts_with($path, DIRECTORY_SEPARATOR)
             ? $path
-            : base_path($path);
+            : Storage::disk('local')->path(trim($path, DIRECTORY_SEPARATOR));
     }
 }

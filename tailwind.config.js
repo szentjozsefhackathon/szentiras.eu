@@ -2,7 +2,9 @@
 export default {
   content: [
     './resources/views/textDisplay/book.twig',
-    './resources/views/textDisplay/verseCardCreator.twig'
+    './resources/views/textDisplay/verseCardCreator.twig',
+    './resources/views/greekText/verseAnalysis.twig',
+    './resources/views/greekText/verseAnalysisToggle.twig',
   ],
   theme: {
     extend: {},

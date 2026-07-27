@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -41,12 +42,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $normalization
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereNormalization($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GreekVerse whereTransliteration($value)
- * @property-read \SzentirasHu\Models\array<int, array{printed: $annotated_words
- * @property-read \SzentirasHu\Models\array<int, array{printed: $annotated_words
+ * @property-read array<int, array{printed: string, strong: ?string, translit: ?string, usx_code: string, chapter: int, verse: int, i: int, hasBreak: bool}> $annotatedWords
+ * @property int|null $verse_analysis_id
+ * @property-read bool $has_verse_analysis
  * @mixin \Eloquent
  */
 class GreekVerse extends Model
 {
+    /**
+     * Add only the matching analysis ID, keeping the larger JSONB payload out of chapter queries.
+     *
+     * @param  Builder<GreekVerse>  $query
+     * @return Builder<GreekVerse>
+     */
+    public function scopeWithVerseAnalysisAvailability(
+        Builder $query,
+        string $locale = GreekVerseAnalysis::DEFAULT_LOCALE,
+    ): Builder {
+        return $query->addSelect([
+            'verse_analysis_id' => GreekVerseAnalysis::query()
+                ->select('id')
+                ->whereColumn('greek_verse_analyses.gepi', 'greek_verses.gepi')
+                ->whereColumn('greek_verse_analyses.greek_source', 'greek_verses.source')
+                ->where('greek_verse_analyses.locale', $locale)
+                ->limit(1),
+        ]);
+    }
+
+    public function getHasVerseAnalysisAttribute(): bool
+    {
+        return $this->getAttribute('verse_analysis_id') !== null;
+    }
+
     /**
      * @return BelongsToMany<StrongWord, $this>
      */

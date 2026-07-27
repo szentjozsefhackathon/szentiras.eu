@@ -1,0 +1,29 @@
+<span class="tailwind-scope">
+    <span class="verse-analysis-text inline [font-family:var(--book-font)] leading-relaxed" lang="hu">
+        {% for segment in verseAnalysis.segments %}
+            {% set segmentWords = segment.wordIndexes|map(wordIndex => annotatedWords[wordIndex]) %}
+            <span class="verse-analysis-segment mr-2 inline">
+                <span class="greek mr-1 [font-family:var(--book-font)] [font-size:var(--book-font-size)] font-semibold" lang="grc">
+                    {%- include 'greekText.clickableGreekText' with {
+                        'words': segmentWords,
+                        'preserveBreaks': false,
+                    } -%}
+                </span>
+                <span class="[font-size:calc(var(--book-font-size)*0.875)]">
+                    {{- segment.meaning -}}
+                    {% if segment.alternatives is defined and segment.alternatives is not empty %}
+                        <span class="[font-size:calc(var(--book-font-size)*0.75)] italic text-slate-500 dark:text-slate-400">
+                            ({{ segment.alternatives|join(', ') }})
+                        </span>
+                    {% endif %}
+                </span>
+                {% if segment.note is defined %}
+                    <small class="ml-1 [font-size:calc(var(--book-font-size)*0.75)] italic text-slate-500 dark:text-slate-400">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ segment.note }}
+                    </small>
+                {% endif %}
+            </span>
+        {% endfor %}
+    </span>
+</span>

@@ -43,6 +43,8 @@
 
 {% macro greekCell(greekVerse) %}
     <div class="compareGreek greek greekSection" lang="grc">
-        <span class="numv"><sup>{{ greekVerse.verse }}</sup></span><span class="verse-text">{% include 'greekText.clickableGreekText' with {'words': greekVerse.annotatedWords} %}</span>
+        <span class="numv"><sup>{{ greekVerse.verse }}</sup></span>
+        {% include 'greekText.verseAnalysisToggle' with {'greekVerse': greekVerse} %}
+        <span id="greek-verse-text-{{ greekVerse.gepi }}" class="verse-text">{% include 'greekText.clickableGreekText' with {'words': greekVerse.annotatedWords} %}</span>
     </div>
 {% endmacro %}

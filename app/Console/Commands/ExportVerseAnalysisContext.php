@@ -3,6 +3,7 @@
 namespace SzentirasHu\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 use SzentirasHu\Service\VerseAnalysis\VerseAnalysisContextExporter;
 use Throwable;
 
@@ -10,7 +11,7 @@ class ExportVerseAnalysisContext extends Command
 {
     protected $signature = 'szentiras:export-verse-analysis-context
         {reference : Exactly one New Testament chapter, for example "Jn 3".}
-        {--dir=storage/app/verse-analysis : Root directory for chapter work files, relative to the project root.}
+        {--dir=greek/verse-analysis/work : Root directory for chapter work files, relative to the local disk or absolute.}
         {--chunk-words=180 : Maximum Greek words per chunk; a single verse is never split.}
         {--translations=SZIT,KNB,STL,RUF : Comma-separated Hungarian translations.}
         {--json : Print the generated manifest as JSON.}';
@@ -59,6 +60,6 @@ class ExportVerseAnalysisContext extends Command
     {
         return str_starts_with($path, DIRECTORY_SEPARATOR)
             ? $path
-            : base_path($path);
+            : Storage::disk('local')->path(trim($path, DIRECTORY_SEPARATOR));
     }
 }

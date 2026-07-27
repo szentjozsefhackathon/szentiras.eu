@@ -1,6 +1,7 @@
 import initPdfModal from '../pdfDialog.js';
 import { VerseCardDialog } from '../verseCardDialog.js';
 import { initGreekWordPanel } from '../greekWordPanel.js';
+import { setVerseAnalysisVisibility } from '../verseAnalysis.js';
 
 /**
  * Toggles the inline word-by-word Hungarian translation for a single Greek verse
@@ -45,6 +46,66 @@ function toggleVerseWordTranslation(usx, chapter, verse) {
         .catch(e => {
             console.log('Error loading word translations', e);
         });
+}
+
+function initVerseAnalysisToggles() {
+    document.addEventListener('click', event => {
+        const button = event.target.closest('.verse-analysis-toggle');
+
+        if (!button) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const target = document.getElementById(button.getAttribute('aria-controls'));
+
+        if (!target || button.getAttribute('aria-busy') === 'true') {
+            return;
+        }
+
+        if (target.dataset.loaded === 'true') {
+            const shouldExpand = target.classList.contains('d-none');
+            setVerseAnalysisVisibility(button, target, shouldExpand);
+
+            return;
+        }
+
+        const originalContent = button.innerHTML;
+        button.setAttribute('aria-busy', 'true');
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>';
+
+        fetch(button.dataset.url, {
+            cache: 'no-cache',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Verse analysis request failed with status ${response.status}`);
+                }
+
+                return response.text();
+            })
+            .then(html => {
+                target.innerHTML = html;
+                target.dataset.loaded = 'true';
+                setVerseAnalysisVisibility(button, target, true);
+            })
+            .catch(error => {
+                console.log('Error loading verse analysis', error);
+                target.innerHTML = '<span class="text-danger ms-1" role="alert">Az elemzés betöltése nem sikerült. Kérjük, próbálja újra.</span>';
+                target.classList.remove('d-none');
+                button.setAttribute('aria-expanded', 'true');
+            })
+            .finally(() => {
+                button.removeAttribute('aria-busy');
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            });
+    });
 }
 
 const initToggler = function () {
@@ -517,5 +578,6 @@ function initMediaButtonStyling() {
 
 initMediaButtonStyling();
 initGreekWordPanel();
+initVerseAnalysisToggles();
 
 scrollToVerse();

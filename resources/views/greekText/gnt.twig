@@ -220,7 +220,8 @@
                     <span class="numvai">{{ greekVerse.verse }}&nbsp;</span>
                 </a>
                 {% endif %}
-                <span class="verse-text">{% include 'greekText.clickableGreekText' with {'words': greekVerse.annotatedWords} %}</span>
+                {% include 'greekText.verseAnalysisToggle' with {'greekVerse': greekVerse} %}
+                <span id="greek-verse-text-{{ greekVerse.gepi }}" class="verse-text">{% include 'greekText.clickableGreekText' with {'words': greekVerse.annotatedWords} %}</span>
         {% endfor %}
     </div>
     {% endif %}

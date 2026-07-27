@@ -12,7 +12,7 @@ Használat:
 Strukturált kimenet mentése:
     claude -p "..." --json-schema '{...}' --output-format stream-json --verbose \
       | python3 bible_import/verse-analysis/stream-view.py \
-          --structured-output storage/app/verse-analysis/semantic.json
+          --structured-output storage/app/private/greek/verse-analysis/work/semantic.json
 """
 import argparse
 import json

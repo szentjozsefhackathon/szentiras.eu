@@ -3,6 +3,7 @@
 namespace SzentirasHu\Test;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Data\Entity\Verse;
@@ -12,6 +13,10 @@ use SzentirasHu\Test\Common\FastDatabaseTestCase;
 
 class VerseAnalysisPipelineTest extends FastDatabaseTestCase
 {
+    private const OUTPUT_PATH = 'greek/verse-analysis/OpenGNT/hu/v1';
+
+    private const WORK_PATH = 'greek/verse-analysis/work';
+
     private string $outputDirectory;
 
     private string $workRoot;
@@ -20,9 +25,9 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
     {
         parent::setUp();
 
-        $temporaryRoot = sys_get_temp_dir().'/verse-analysis-pipeline-'.uniqid();
-        $this->workRoot = $temporaryRoot.'/work';
-        $this->outputDirectory = $temporaryRoot.'/output';
+        Storage::fake('local');
+        $this->workRoot = Storage::disk('local')->path(self::WORK_PATH);
+        $this->outputDirectory = Storage::disk('local')->path(self::OUTPUT_PATH);
         mkdir($this->workRoot, 0775, true);
         mkdir($this->outputDirectory, 0775, true);
 
@@ -67,7 +72,6 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
     {
         $this->artisan('szentiras:export-verse-analysis-context', [
             'reference' => 'Jn 3',
-            '--dir' => $this->workRoot,
             '--chunk-words' => 4,
             '--translations' => 'TESTTRANS',
         ])->assertExitCode(0);
@@ -102,8 +106,7 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
         $manifest = $this->exportAndWriteValidSemantics();
 
         $this->artisan('szentiras:assemble-verse-analysis', [
-            'manifest' => $this->manifestPath(),
-            '--output-dir' => $this->outputDirectory,
+            'manifest' => self::WORK_PATH.'/JHN_3/manifest.json',
             '--created-by' => 'test-semantic-model',
         ])->assertExitCode(0);
 
@@ -125,7 +128,6 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
 
         $this->artisan('szentiras:validate-verse-analysis', [
             'reference' => 'Jn 3',
-            '--dir' => $this->outputDirectory,
         ])
             ->expectsOutputToContain('OK')
             ->assertExitCode(0);
@@ -146,7 +148,7 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
 
         $this->artisan('szentiras:export-verse-analysis-context', [
             'reference' => 'Jn 3',
-            '--dir' => $this->workRoot,
+            '--dir' => self::WORK_PATH,
             '--chunk-words' => 4,
             '--translations' => 'TESTTRANS',
         ])->assertExitCode(0);
@@ -166,8 +168,8 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
         $this->writeJson($semanticPath, $semantic);
 
         $this->artisan('szentiras:assemble-verse-analysis', [
-            'manifest' => $this->manifestPath(),
-            '--output-dir' => $this->outputDirectory,
+            'manifest' => self::WORK_PATH.'/JHN_3/manifest.json',
+            '--output-dir' => self::OUTPUT_PATH,
         ])
             ->expectsOutputToContain('does not cover word indexes')
             ->assertExitCode(1);
@@ -182,7 +184,7 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
     {
         $this->artisan('szentiras:export-verse-analysis-context', [
             'reference' => 'Jn 3',
-            '--dir' => $this->workRoot,
+            '--dir' => self::WORK_PATH,
             '--chunk-words' => 4,
             '--translations' => 'TESTTRANS',
         ])->assertExitCode(0);

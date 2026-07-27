@@ -488,6 +488,7 @@ class TextDisplayController extends Controller
             }
 
             $compareGreekVerses[] = GreekVerse::query()
+                ->withVerseAnalysisAvailability()
                 ->where(function ($query) use ($triples) {
                     foreach ($triples as $triple) {
                         $query->orWhere(function ($subQuery) use ($triple) {

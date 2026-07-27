@@ -1,0 +1,19 @@
+{% if greekVerse.hasVerseAnalysis %}
+    {% set analysisTargetId = 'verse-analysis-' ~ greekVerse.gepi %}
+    {% set verseTextId = 'greek-verse-text-' ~ greekVerse.gepi %}
+    <span class="tailwind-scope">
+        <button
+            type="button"
+            class="verse-analysis-toggle inline-flex items-center justify-center rounded border-0 bg-transparent px-1 py-0.5 align-baseline leading-none text-blue-600 hover:bg-blue-50 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 aria-expanded:bg-blue-100 dark:text-blue-400 dark:hover:bg-slate-800 dark:hover:text-blue-300 dark:aria-expanded:bg-slate-700"
+            data-url="{{ route('greekVerseAnalysis.show', {'gepi': greekVerse.gepi, 'layout': 'inline-v1'}) }}"
+            data-replaces="{{ verseTextId }}"
+            aria-controls="{{ analysisTargetId }}"
+            aria-expanded="false"
+            aria-label="{{ greekVerse.chapter }}. fejezet {{ greekVerse.verse }}. vers elemzésének megjelenítése"
+            title="Vers elemzése"
+        >
+            <i class="bi bi-braces-asterisk" aria-hidden="true"></i>
+        </button>
+    </span>
+    <span id="{{ analysisTargetId }}" class="verse-analysis-container d-none" aria-live="polite"></span>
+{% endif %}

@@ -24,8 +24,8 @@ fi
 BOOKS=("$@")
 
 VIEWER="bible_import/verse-analysis/stream-view.py"
-LOG_DIR="bible_import/verse-analysis/logs"
-WORK_ROOT="storage/app/verse-analysis"
+ANALYSIS_PATH="greek/verse-analysis/OpenGNT/hu/v1"
+WORK_PATH="greek/verse-analysis/work"
 PROMPT_FILE="resources/prompts/greek_verse_analysis_semantic.md"
 SCHEMA_FILE="resources/prompts/greek_verse_analysis_semantic_schema.json"
 MAX_API_ATTEMPTS=5
@@ -43,7 +43,6 @@ semantic_schema="$(
     echo json_encode($schema, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
   ' "$SCHEMA_FILE"
 )"
-mkdir -p "$LOG_DIR" "$WORK_ROOT"
 
 for book in "${BOOKS[@]}"; do
   echo "===================================================================="
@@ -51,7 +50,11 @@ for book in "${BOOKS[@]}"; do
   echo "===================================================================="
 
   validation_json=""
-  if ! validation_json="$(php artisan szentiras:validate-verse-analysis "$book" --json)"; then
+  if ! validation_json="$(
+    php artisan szentiras:validate-verse-analysis "$book" \
+      --dir="$ANALYSIS_PATH" \
+      --json
+  )"; then
     true
   fi
 
@@ -85,7 +88,8 @@ for book in "${BOOKS[@]}"; do
     chapter_reference="$book $chapter_number"
     chapter_position=$((chapter_index + 1))
 
-    if php artisan szentiras:validate-verse-analysis "$chapter_reference" >/dev/null 2>&1; then
+    if php artisan szentiras:validate-verse-analysis "$chapter_reference" \
+      --dir="$ANALYSIS_PATH" >/dev/null 2>&1; then
       echo ">>> [$chapter_position/$chapter_count] $chapter_reference már kész."
       continue
     fi
@@ -95,12 +99,21 @@ for book in "${BOOKS[@]}"; do
       echo ">>> [$chapter_position/$chapter_count] $chapter_reference exportálása \
 (${VERSE_ANALYSIS_CHUNK_WORDS} szó/darab)."
 
-      php artisan szentiras:export-verse-analysis-context "$chapter_reference" \
-        --dir="$WORK_ROOT" \
-        --chunk-words="$VERSE_ANALYSIS_CHUNK_WORDS"
-
-      work_dir="$WORK_ROOT/$chapter_key"
+      export_json="$(
+        php artisan szentiras:export-verse-analysis-context "$chapter_reference" \
+          --dir="$WORK_PATH" \
+          --chunk-words="$VERSE_ANALYSIS_CHUNK_WORDS" \
+          --json
+      )"
+      work_dir="$(
+        php -r '
+          $manifest = json_decode($argv[1], true, 512, JSON_THROW_ON_ERROR);
+          echo $manifest["directory"];
+        ' "$export_json"
+      )"
       manifest_file="$work_dir/manifest.json"
+      log_dir="$(dirname "$(dirname "$work_dir")")/logs"
+      mkdir -p "$log_dir"
       chunk_rows_output="$(
         php -r '
           $manifest = json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR);
@@ -131,7 +144,7 @@ $chunk_reference kész rész-eredményből."
         attempt=1
         session_limit_count=0
         run_started_at="$(date '+%Y%m%d-%H%M%S')"
-        log_file="$LOG_DIR/${chapter_key}-chunk-${chunk_id}.jsonl"
+        log_file="$log_dir/${chapter_key}-chunk-${chunk_id}.jsonl"
 
         while true; do
           echo ">>> [$chapter_position/$chapter_count][$chunk_position/$chunk_count] \
@@ -157,7 +170,7 @@ $chunk_reference indul ($attempt/$MAX_API_ATTEMPTS. kísérlet, $(date '+%H:%M:%
 
           if [ "$session_status" -eq "$SESSION_LIMIT_EXIT_CODE" ]; then
             session_limit_count=$((session_limit_count + 1))
-            failed_log="$LOG_DIR/${chapter_key}-chunk-${chunk_id}-${run_started_at}-session-limit-${session_limit_count}.jsonl"
+            failed_log="$log_dir/${chapter_key}-chunk-${chunk_id}-${run_started_at}-session-limit-${session_limit_count}.jsonl"
             mv "$log_file" "$failed_log"
 
             if ! retry_delay="$(python3 "$VIEWER" --session-reset-delay "$failed_log")"; then
@@ -173,7 +186,7 @@ $chunk_reference indul ($attempt/$MAX_API_ATTEMPTS. kísérlet, $(date '+%H:%M:%
             continue
           fi
 
-          failed_log="$LOG_DIR/${chapter_key}-chunk-${chunk_id}-${run_started_at}-attempt-${attempt}.jsonl"
+          failed_log="$log_dir/${chapter_key}-chunk-${chunk_id}-${run_started_at}-attempt-${attempt}.jsonl"
           mv "$log_file" "$failed_log"
 
           if [ "$session_status" -ne "$RETRYABLE_API_ERROR_EXIT_CODE" ]; then
@@ -195,9 +208,12 @@ $chunk_reference indul ($attempt/$MAX_API_ATTEMPTS. kísérlet, $(date '+%H:%M:%
         done
       done
 
-      if php artisan szentiras:assemble-verse-analysis "$manifest_file" \
+      if php artisan szentiras:assemble-verse-analysis \
+        "$WORK_PATH/$chapter_key/manifest.json" \
+        --output-dir="$ANALYSIS_PATH" \
         --created-by="$VERSE_ANALYSIS_CREATED_BY" \
-        && php artisan szentiras:validate-verse-analysis "$chapter_reference"; then
+        && php artisan szentiras:validate-verse-analysis "$chapter_reference" \
+          --dir="$ANALYSIS_PATH"; then
         break
       fi
 
@@ -215,7 +231,7 @@ $MAX_SEMANTIC_ROUNDS kör után sem állíthatók össze." >&2
     echo ">>> [$chapter_position/$chapter_count] $chapter_reference kész ($(date '+%H:%M:%S'))"
   done
 
-  php artisan szentiras:validate-verse-analysis "$book"
+  php artisan szentiras:validate-verse-analysis "$book" --dir="$ANALYSIS_PATH"
   echo ">>> $book KÉSZ — minden fejezet valid."
 done
 
@@ -223,5 +239,5 @@ echo "===================================================================="
 echo "  Kész. Záró állapot:"
 echo "===================================================================="
 for book in "${BOOKS[@]}"; do
-  php artisan szentiras:validate-verse-analysis "$book" || true
+  php artisan szentiras:validate-verse-analysis "$book" --dir="$ANALYSIS_PATH" || true
 done

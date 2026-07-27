@@ -5,6 +5,7 @@ use SzentirasHu\Http\Controllers\Ai\AiController;
 use SzentirasHu\Http\Controllers\Auth\AnonymousIdController;
 use SzentirasHu\Http\Controllers\Display\GreekDictionaryController;
 use SzentirasHu\Http\Controllers\Display\GreekTextController;
+use SzentirasHu\Http\Controllers\Display\GreekVerseAnalysisController;
 use SzentirasHu\Http\Controllers\Display\TextDisplayController;
 use SzentirasHu\Http\Controllers\Editor\AnonymousIdEditorController;
 use SzentirasHu\Http\Controllers\Editor\ApiKeyController;
@@ -270,6 +271,9 @@ Route::prefix('api/media')->middleware('editor')->group(function () {
 Route::get('/gorog-szotar', [GreekDictionaryController::class, 'index'])->name('greekDictionary.index');
 Route::get('/gorog-szotar/filter', [GreekDictionaryController::class, 'filter'])->name('greekDictionary.filter');
 
+Route::get('/GNT/verse-analysis/{gepi}', GreekVerseAnalysisController::class)
+    ->name('greekVerseAnalysis.show')
+    ->where('gepi', '[A-Z0-9]{3}_\d+_\d+');
 Route::get('/GNT/{reference?}', [GreekTextController::class, 'show'])->middleware('cacheable')->where('reference', '[^/]+');
 
 /** These should come at the end to not collide with other routes! */

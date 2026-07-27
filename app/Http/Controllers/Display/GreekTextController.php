@@ -79,6 +79,7 @@ class GreekTextController extends Controller
                 if ($currentChapter !== null) {
                     $greekVerses = GreekVerse::where('usx_code', $book->usx_code)
                         ->where('chapter', $currentChapter)
+                        ->withVerseAnalysisAvailability()
                         ->orderBy('verse')
                         ->get();
 

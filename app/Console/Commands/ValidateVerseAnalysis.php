@@ -4,11 +4,13 @@ namespace SzentirasHu\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use SzentirasHu\Mcp\GreekReferenceResolver;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ParsingException;
+use SzentirasHu\Service\VerseAnalysis\VerseAnalysisValidator;
 
 /**
  * Validates the hand-curated, per chapter Greek verse analysis files against the Greek text
@@ -21,21 +23,18 @@ use SzentirasHu\Service\Reference\ParsingException;
  */
 class ValidateVerseAnalysis extends Command
 {
-    /**
-     * The only file format version this command understands.
-     */
-    private const FORMAT_VERSION = 1;
-
     protected $signature = 'szentiras:validate-verse-analysis
         {reference? : New Testament reference in Hungarian notation, e.g. "Jn" or "Jn 3". Defaults to the whole New Testament.}
-        {--dir=bible_import/verse-analysis : Directory holding the per chapter analysis files, relative to the project root.}
+        {--dir=greek/verse-analysis/OpenGNT/hu/v1 : Directory holding the per chapter analysis files, relative to the local disk or absolute.}
         {--missing : List only the chapters that have no analysis file yet.}
         {--json : Output the result as JSON instead of one line per chapter.}';
 
     protected $description = 'Validate the per chapter Greek verse analysis JSON files against the stored Greek text.';
 
-    public function __construct(private readonly GreekReferenceResolver $referenceResolver)
-    {
+    public function __construct(
+        private readonly GreekReferenceResolver $referenceResolver,
+        private readonly VerseAnalysisValidator $validator,
+    ) {
         parent::__construct();
     }
 
@@ -115,7 +114,7 @@ class ValidateVerseAnalysis extends Command
         $chapterKey = "{$first->usx_code}_{$first->chapter}";
         $path = $this->pathFor($chapterKey);
 
-        if (!is_file($path)) {
+        if (! is_file($path)) {
             return [
                 'chapter' => $chapterKey,
                 'path' => $path,
@@ -127,7 +126,7 @@ class ValidateVerseAnalysis extends Command
 
         $decoded = json_decode((string) file_get_contents($path), true);
 
-        if (!is_array($decoded)) {
+        if (! is_array($decoded)) {
             return [
                 'chapter' => $chapterKey,
                 'path' => $path,
@@ -137,266 +136,23 @@ class ValidateVerseAnalysis extends Command
             ];
         }
 
-        $errors = $this->headerErrors($decoded, $first);
-        $warnings = [];
-
-        [$verseErrors, $verseWarnings] = $this->verseErrors($decoded, $chapterVerses);
+        $validation = $this->validator->validate($decoded, $chapterVerses);
 
         return [
             'chapter' => $chapterKey,
             'path' => $path,
             'exists' => true,
-            'errors' => array_merge($errors, $verseErrors),
-            'warnings' => array_merge($warnings, $verseWarnings),
+            'errors' => $validation['errors'],
+            'warnings' => $validation['warnings'],
         ];
-    }
-
-    /**
-     * Errors of the chapter level fields, which have to agree with the file name.
-     *
-     * @param  array<string, mixed>  $decoded
-     * @return array<int, string>
-     */
-    private function headerErrors(array $decoded, GreekVerse $first): array
-    {
-        $errors = [];
-
-        if (($decoded['format'] ?? null) !== self::FORMAT_VERSION) {
-            $errors[] = 'The "format" field must be '.self::FORMAT_VERSION.'.';
-        }
-
-        if (($decoded['usxCode'] ?? null) !== $first->usx_code) {
-            $errors[] = "The \"usxCode\" field must be \"{$first->usx_code}\".";
-        }
-
-        if (($decoded['chapter'] ?? null) !== $first->chapter) {
-            $errors[] = "The \"chapter\" field must be {$first->chapter}.";
-        }
-
-        return $errors;
-    }
-
-    /**
-     * Errors and warnings of the verses of a chapter.
-     *
-     * @param  array<string, mixed>  $decoded
-     * @param  Collection<int, GreekVerse>  $chapterVerses
-     * @return array{0: array<int, string>, 1: array<int, string>}
-     */
-    private function verseErrors(array $decoded, Collection $chapterVerses): array
-    {
-        $analysedVerses = $decoded['verses'] ?? null;
-
-        if (!is_array($analysedVerses)) {
-            return [['The "verses" field is missing or is not an array.'], []];
-        }
-
-        $expectedVerseNumbers = $chapterVerses->map(fn (GreekVerse $verse): int => $verse->verse)->values()->all();
-        $actualVerseNumbers = array_map(
-            fn ($analysedVerse): mixed => is_array($analysedVerse) ? ($analysedVerse['verse'] ?? null) : null,
-            array_values($analysedVerses)
-        );
-
-        if ($actualVerseNumbers !== $expectedVerseNumbers) {
-            return [[sprintf(
-                'The verses of the file (%s) do not match the verses of the chapter (%s).',
-                $this->describeVerseNumbers($actualVerseNumbers),
-                $this->describeVerseNumbers($expectedVerseNumbers)
-            )], []];
-        }
-
-        $errors = [];
-        $warnings = [];
-
-        foreach (array_values($analysedVerses) as $i => $analysedVerse) {
-            $verse = $chapterVerses->values()->get($i);
-            [$verseErrors, $verseWarnings] = $this->singleVerseErrors($analysedVerse, $verse);
-
-            $errors = array_merge($errors, $verseErrors);
-            $warnings = array_merge($warnings, $verseWarnings);
-        }
-
-        return [$errors, $warnings];
-    }
-
-    /**
-     * @param  array<string, mixed>  $analysedVerse
-     * @return array{0: array<int, string>, 1: array<int, string>}
-     */
-    private function singleVerseErrors(array $analysedVerse, GreekVerse $verse): array
-    {
-        $label = "{$verse->chapter},{$verse->verse}";
-        $errors = [];
-        $warnings = [];
-
-        $expectedText = str_replace('¶', '', $verse->text);
-
-        if (!$this->greekMatches($analysedVerse['greekText'] ?? null, $expectedText)) {
-            $errors[] = "{$label}: the \"greekText\" field differs from the stored Greek text.";
-        }
-
-        $segments = $analysedVerse['segments'] ?? null;
-
-        if (!is_array($segments) || $segments === []) {
-            $errors[] = "{$label}: the \"segments\" field is missing or empty.";
-
-            return [$errors, $warnings];
-        }
-
-        $words = $verse->annotatedWords();
-        $seenIndexes = [];
-        $previousFirstIndex = -1;
-
-        foreach (array_values($segments) as $segmentPosition => $segment) {
-            $segmentLabel = "{$label} segment #{$segmentPosition}";
-
-            if (!is_array($segment)) {
-                $errors[] = "{$segmentLabel}: not an object.";
-
-                continue;
-            }
-
-            $wordIndexes = $segment['wordIndexes'] ?? null;
-
-            if (!is_array($wordIndexes) || $wordIndexes === [] || array_filter($wordIndexes, fn ($index): bool => !is_int($index)) !== []) {
-                $errors[] = "{$segmentLabel}: \"wordIndexes\" must be a non-empty array of integers.";
-
-                continue;
-            }
-
-            $wordIndexes = array_values($wordIndexes);
-
-            foreach ($wordIndexes as $index) {
-                if (!isset($words[$index])) {
-                    $errors[] = "{$segmentLabel}: word index {$index} is outside the verse (it has ".count($words).' words).';
-
-                    continue 2;
-                }
-
-                if (isset($seenIndexes[$index])) {
-                    $errors[] = "{$segmentLabel}: word index {$index} is covered by more than one segment.";
-
-                    continue 2;
-                }
-
-                $seenIndexes[$index] = true;
-            }
-
-            if ($wordIndexes !== $this->sorted($wordIndexes)) {
-                $errors[] = "{$segmentLabel}: the word indexes are not in increasing order.";
-            }
-
-            if ($wordIndexes[0] <= $previousFirstIndex) {
-                $errors[] = "{$segmentLabel}: the segments are not ordered by their first word index.";
-            }
-
-            $previousFirstIndex = $wordIndexes[0];
-
-            $expectedGreek = implode(' ', array_map(fn (int $index): string => $words[$index]['printed'], $wordIndexes));
-
-            if (!$this->greekMatches($segment['greek'] ?? null, $expectedGreek)) {
-                $errors[] = "{$segmentLabel}: the \"greek\" field must be \"{$expectedGreek}\".";
-            }
-
-            if (!is_string($segment['meaning'] ?? null) || trim((string) $segment['meaning']) === '') {
-                $errors[] = "{$segmentLabel}: the \"meaning\" field is missing or empty.";
-            }
-
-            $errors = array_merge($errors, $this->alternativesErrors($segment, $segmentLabel));
-
-            if ($this->isNonContiguous($wordIndexes)) {
-                $warnings[] = "{$segmentLabel}: the word indexes are not contiguous.";
-            }
-        }
-
-        $missingIndexes = array_values(array_diff(array_keys($words), array_keys($seenIndexes)));
-
-        if ($missingIndexes !== []) {
-            $errors[] = "{$label}: the segments do not cover the word indexes ".implode(', ', $missingIndexes).'.';
-        }
-
-        return [$errors, $warnings];
-    }
-
-    /**
-     * @param  array<string, mixed>  $segment
-     * @return array<int, string>
-     */
-    private function alternativesErrors(array $segment, string $segmentLabel): array
-    {
-        if (!array_key_exists('alternatives', $segment)) {
-            return [];
-        }
-
-        $alternatives = $segment['alternatives'];
-
-        if (!is_array($alternatives) || $alternatives === []) {
-            return ["{$segmentLabel}: \"alternatives\" must be a non-empty array of strings when present."];
-        }
-
-        foreach ($alternatives as $alternative) {
-            if (!is_string($alternative) || trim($alternative) === '') {
-                return ["{$segmentLabel}: \"alternatives\" must contain non-empty strings only."];
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * Whether two Greek strings are the same sequence of Unicode characters, ignoring how those
-     * characters are encoded.
-     *
-     * The database stores GREEK ANO TELEIA (U+0387) and GREEK QUESTION MARK (U+037E), which are
-     * canonically equivalent to MIDDLE DOT (U+00B7) and SEMICOLON (U+003B). Any NFC-normalising
-     * step in the tooling that writes an analysis file silently swaps them, so a byte-wise
-     * comparison would reject a text that is character for character identical. Comparing under
-     * Unicode normalisation keeps the "letter by letter" guarantee while looking past the
-     * encoding.
-     */
-    private function greekMatches(mixed $actual, string $expected): bool
-    {
-        return is_string($actual)
-            && \Normalizer::normalize($actual, \Normalizer::FORM_C) === \Normalizer::normalize($expected, \Normalizer::FORM_C);
-    }
-
-    /**
-     * @param  array<int, int>  $wordIndexes
-     * @return array<int, int>
-     */
-    private function sorted(array $wordIndexes): array
-    {
-        sort($wordIndexes);
-
-        return $wordIndexes;
-    }
-
-    /**
-     * @param  array<int, int>  $wordIndexes
-     */
-    private function isNonContiguous(array $wordIndexes): bool
-    {
-        return max($wordIndexes) - min($wordIndexes) + 1 !== count($wordIndexes);
-    }
-
-    /**
-     * @param  array<int, mixed>  $verseNumbers
-     */
-    private function describeVerseNumbers(array $verseNumbers): string
-    {
-        if ($verseNumbers === []) {
-            return 'none';
-        }
-
-        return implode(', ', array_map(fn ($verseNumber): string => is_int($verseNumber) ? (string) $verseNumber : '?', $verseNumbers));
     }
 
     private function pathFor(string $chapterKey): string
     {
         $directory = (string) $this->option('dir');
 
-        if (!Str::startsWith($directory, '/')) {
-            $directory = base_path($directory);
+        if (! Str::startsWith($directory, '/')) {
+            $directory = Storage::disk('local')->path(trim($directory, '/'));
         }
 
         return rtrim($directory, '/')."/{$chapterKey}.json";
