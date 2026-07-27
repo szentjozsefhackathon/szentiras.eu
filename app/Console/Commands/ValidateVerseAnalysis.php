@@ -403,7 +403,7 @@ class ValidateVerseAnalysis extends Command
     }
 
     /**
-     * The chapters that have no analysis file yet, which is what a fan-out run works from.
+     * The chapters that have no analysis file yet.
      *
      * @param  Collection<int, array{chapter: string, path: string, exists: bool, errors: array<int, string>, warnings: array<int, string>}>  $results
      */

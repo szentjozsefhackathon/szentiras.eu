@@ -1,4 +1,4 @@
-Készíts az Újszövetség egy fejezetének görög szövegéhez versenkénti, szakaszokra bontott magyar elemzést. Az elemzés célja, hogy a görög szöveget olvasó magyar felhasználó szóról szóra kövesse az eredetit, a szövegkörnyezetnek megfelelő jelentésekkel — nem kommentárt, nem magyarázatot, hanem pontos tükörfordítást szakaszokra bontva.
+Készíts az Újszövetség egy fejezetének görög szövegéhez versenkénti, szakaszokra bontott magyar elemzést. Az elemzés célja, hogy a görög szöveget olvasó magyar felhasználó szóról szóra kövesse az eredetit, a szövegkörnyezetnek megfelelő jelentésekkel — nem kommentárt, nem magyarázatot, hanem pontos tükörfordítást szókapcsolatokra bontva.
 
 ## Forrás
 
@@ -41,13 +41,13 @@ Mezőszabályok:
 - `greekText` — a `get-greek-verses` `greekText` mezője **betű szerint**, változtatás nélkül (írásjelekkel együtt).
 - `wordIndexes` — a `get-greek-verses` `i` mezői. Egy versen belül a szakaszok **pontosan egyszer** fedik le a `0..n-1` indexeket; a szakaszok a saját első indexük szerint növekvő sorrendben állnak, és a szakaszon belül is növekvők az indexek.
 - `greek` — a `wordIndexes`-hez tartozó `printed` alakok szóközzel összefűzve, **betű szerint**, írásjelekkel együtt (`"κόσμον,"`). Ezt gép ellenőrzi, ezért egyetlen karakter sem térhet el.
-- `meaning` — a szakasz magyar jelentése a szövegkörnyezetben, ragozva. A `meaning` mezők egymás után olvasva a vers durva, de értelmes magyar tükörfordítását adják.
+- `meaning` — a szókapcsolat magyar jelentése a szövegkörnyezetben, ragozva.
 - `alternatives` (opcionális) — sztringek tömbje, zárójel és magyarázat nélkül.
 - `note` (opcionális, ritka) — egyetlen rövid mondat, csak ha a szakasz e nélkül félreérthető.
 
 ## Csoportosítás
 
-Egy szakasz a lehető legkisebb egység legyen: alapesetben egy szó. Csak akkor vonj össze több szót, ha a magyar megoldás nem bontható szét értelmesen:
+Egy szókapcsolat a lehető legkisebb egység legyen: alapesetben egy szó. Csak akkor vonj össze több szót, ha a magyar megoldás nem bontható szét értelmesen:
 
 - névelő + főnév (`ὁ Θεὸς` → „az Isten")
 - prepozíció + vonzata (`εἰς τὸν κόσμον` → „a világba")

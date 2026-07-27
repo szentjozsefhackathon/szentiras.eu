@@ -2,9 +2,9 @@
 #
 # Görög fejezetelemzés driver — a paraméterként megadott könyvekre.
 #
-# Az állapotot a fájlok jelenléte + a validátor hordozza, nem a beszélgetés,
-# ezért ez a ciklus bármikor megszakítható és újraindítható: a --missing
-# mindig onnan folytatja, ahol tart.
+# Az állapotot a validátor hordozza, nem a beszélgetés. A driver a könyv minden
+# hiányzó vagy hibás fejezetét önálló claude folyamatban dolgozza fel, átmeneti
+# API-hiba esetén korlátozott újrapróbálással, a validátor kanonikus sorrendjében.
 #
 # Használat (a repó gyökeréből, /var/www/html):
 #   bash bible_import/verse-analysis/gorog-elemzes-driver.sh 1Tim 2Tim
@@ -24,12 +24,14 @@ if [ "$#" -eq 0 ]; then
 fi
 
 BOOKS=("$@")
-MAX_ROUNDS=8   # könyvenkénti biztonsági plafon, hogy ne pörögjön végtelenül
 
-# Élő nézet: a claude stream-json folyamát emberi olvasásra formázzuk, közben
-# a nyers eseményeket körönként logfájlba is mentjük későbbi visszanézéshez.
+# Élő nézet: a claude stream-json folyamát emberi olvasásra formázzuk, közben a
+# nyers eseményeket fejezetenként logfájlba is mentjük későbbi visszanézéshez.
 VIEWER="bible_import/verse-analysis/stream-view.py"
 LOG_DIR="bible_import/verse-analysis/logs"
+MAX_API_ATTEMPTS=5
+RETRYABLE_API_ERROR_EXIT_CODE=75
+SESSION_LIMIT_EXIT_CODE=76
 mkdir -p "$LOG_DIR"
 
 for book in "${BOOKS[@]}"; do
@@ -37,58 +39,108 @@ for book in "${BOOKS[@]}"; do
   echo "  KÖNYV: $book"
   echo "===================================================================="
 
-  round=0
-  # A --missing --json egy JSON tömböt ad a hiányzó fejezetekről: üres könyvnél
-  # "[]". A sima --missing MINDIG kiír egy összegző sort ("0 chapter(s) missing…"),
-  # ezért arra a "grep -q ." sosem áll le — kész könyvön is elpörögne a plafonig.
-  while missing_json="$(php artisan szentiras:validate-verse-analysis "$book" --missing --json)" \
-    && [ "$missing_json" != "[]" ]; do
-    round=$((round + 1))
-    if [ "$round" -gt "$MAX_ROUNDS" ]; then
-      echo ">>> $book: elértük a $MAX_ROUNDS körös plafont, még maradt hiányzó fejezet."
-      echo ">>> Nézd meg kézzel: php artisan szentiras:validate-verse-analysis $book --missing"
-      break
-    fi
+  validation_json=""
+  if ! validation_json="$(php artisan szentiras:validate-verse-analysis "$book" --json)"; then
+    true
+  fi
 
-    echo ">>> $book — $round. kör indul ($(date '+%H:%M:%S'))"
+  chapter_keys_output="$(
+    php -r '
+      $results = json_decode($argv[1], true, 512, JSON_THROW_ON_ERROR);
+      foreach ($results as $result) {
+          if (($result["errors"] ?? []) !== []) {
+              echo $result["chapter"], PHP_EOL;
+          }
+      }
+    ' "$validation_json"
+  )"
 
-    read -r missing_count first_missing_key < <(
-      php -r '$missing = json_decode($argv[1], true, 512, JSON_THROW_ON_ERROR); echo count($missing)." ".($missing[0] ?? "").PHP_EOL;' "$missing_json"
-    )
+  chapter_keys=()
+  if [ -n "$chapter_keys_output" ]; then
+    mapfile -t chapter_keys <<< "$chapter_keys_output"
+  fi
 
-    if [ "$missing_count" -eq 1 ]; then
-      chapter_number="${first_missing_key##*_}"
-      chapter_reference="$book $chapter_number"
+  chapter_count="${#chapter_keys[@]}"
+  if [ "$chapter_count" -eq 0 ]; then
+    echo ">>> $book KÉSZ — minden fejezet valid."
+    continue
+  fi
 
-      claude -p "Dolgozd fel és validáld a(z) $chapter_reference fejezetet a gorog-elemzo \
+  echo ">>> $book: $chapter_count feldolgozandó fejezet."
+
+  for chapter_index in "${!chapter_keys[@]}"; do
+    chapter_key="${chapter_keys[$chapter_index]}"
+    chapter_number="${chapter_key##*_}"
+    chapter_reference="$book $chapter_number"
+    chapter_position=$((chapter_index + 1))
+
+    attempt=1
+    session_limit_count=0
+    run_started_at="$(date '+%Y%m%d-%H%M%S')"
+    log_file="$LOG_DIR/${chapter_key}.jsonl"
+
+    while true; do
+      echo ">>> [$chapter_position/$chapter_count] $chapter_reference indul \
+($attempt/$MAX_API_ATTEMPTS. kísérlet, $(date '+%H:%M:%S'))"
+
+      if claude -p "Dolgozd fel és validáld a(z) $chapter_reference fejezetet a gorog-elemzo \
 ügynök utasításai szerint. Csak ezt az egy fejezetet dolgozd fel, más fájlt ne módosíts." \
         --agent gorog-elemzo \
         --permission-mode bypassPermissions \
         --output-format stream-json \
         --verbose \
-        | tee "$LOG_DIR/${book}-r${round}.jsonl" \
-        | python3 "$VIEWER"
-    else
-      claude -p "Olvasd be a .claude/skills/gorog-elemzes/reference/orchestration.md fájlt, \
-és aszerint dolgozz. A(z) $book könyv hiányzó fejezeteit dolgozd fel: \
-futtasd a 'php artisan szentiras:validate-verse-analysis $book --missing' parancsot, \
-majd a hiányzó fejezetekre 3-4 párhuzamos gorog-elemzo ügynökkel fan-out (Agent tool, \
-subagent_type: gorog-elemzo), ügynökönként PONTOSAN egy fejezet. Minden kör után \
-validátor-kapu ('php artisan szentiras:validate-verse-analysis $book'); ami piros, azt \
-az egy fejezetet futtasd újra. Kész, zölden futó fejezetet SOHA ne generáltass újra. \
-Csak a(z) $book könyv hiányzó fejezeteivel foglalkozz, más fájlt ne módosíts." \
-      --permission-mode bypassPermissions \
-      --output-format stream-json \
-      --verbose \
-      --forward-subagent-text \
-      | tee "$LOG_DIR/${book}-r${round}.jsonl" \
-      | python3 "$VIEWER"
-    fi
+        | tee "$log_file" \
+        | python3 "$VIEWER"; then
+        break
+      else
+        session_status=$?
+      fi
 
-    echo ">>> $book — $round. kör vége ($(date '+%H:%M:%S'))"
+      if [ "$session_status" -eq "$SESSION_LIMIT_EXIT_CODE" ]; then
+        session_limit_count=$((session_limit_count + 1))
+        failed_log="$LOG_DIR/${chapter_key}-${run_started_at}-session-limit-${session_limit_count}.jsonl"
+        mv "$log_file" "$failed_log"
+
+        if ! retry_delay="$(python3 "$VIEWER" --session-reset-delay "$failed_log")"; then
+          echo ">>> $chapter_reference: a munkamenet-korlát visszaállítási ideje nem olvasható." >&2
+          echo ">>> Hibás futás naplója: $failed_log" >&2
+          exit "$SESSION_LIMIT_EXIT_CODE"
+        fi
+
+        retry_at="$(date -u --date="+${retry_delay} seconds" '+%Y-%m-%d %H:%M:%S UTC')"
+        echo ">>> Munkamenet-korlát. Automatikus folytatás: $retry_at \
+(${retry_delay} másodperc múlva)."
+        sleep "$retry_delay"
+        continue
+      fi
+
+      if [ "$session_status" -ne "$RETRYABLE_API_ERROR_EXIT_CODE" ]; then
+        echo ">>> $chapter_reference feldolgozása sikertelen (kilépési kód: $session_status)." >&2
+        exit "$session_status"
+      fi
+
+      failed_log="$LOG_DIR/${chapter_key}-${run_started_at}-attempt-${attempt}.jsonl"
+      mv "$log_file" "$failed_log"
+
+      if [ "$attempt" -ge "$MAX_API_ATTEMPTS" ]; then
+        echo ">>> $chapter_reference: az API $MAX_API_ATTEMPTS kísérlet után sem érhető el." >&2
+        echo ">>> Utolsó hibás futás naplója: $failed_log" >&2
+        exit "$RETRYABLE_API_ERROR_EXIT_CODE"
+      fi
+
+      retry_delay=$((5 * 2 ** (attempt - 1)))
+      echo ">>> Átmeneti API hiba. Újrapróbálás ${retry_delay} másodperc múlva."
+      sleep "$retry_delay"
+      attempt=$((attempt + 1))
+    done
+
+    php artisan szentiras:validate-verse-analysis "$chapter_reference"
+
+    echo ">>> [$chapter_position/$chapter_count] $chapter_reference kész ($(date '+%H:%M:%S'))"
   done
 
-  echo ">>> $book KÉSZ — nincs több hiányzó fejezet."
+  php artisan szentiras:validate-verse-analysis "$book"
+  echo ">>> $book KÉSZ — minden fejezet valid."
 done
 
 echo "===================================================================="

@@ -15,3 +15,12 @@ php artisan szentiras:validate-verse-analysis Jn --missing   # a még hiányzó 
 
 A parancs a `--dir` kapcsolóval más könyvtárból is olvas, így egy későbbi
 `storage`/S3 alapú import is lehetséges marad.
+
+Több fejezet feldolgozásakor a driver a validátor adatbázis-alapú JSON
+eredményéből, kanonikus sorrendben választja ki a hiányzó vagy hibás
+fejezeteket. Minden fejezethez külön `claude -p` folyamat indul:
+
+```
+bash bible_import/verse-analysis/gorog-elemzes-driver.sh Jn
+bash bible_import/verse-analysis/gorog-elemzes-driver.sh 1Tim 2Tim
+```
