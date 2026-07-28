@@ -133,14 +133,22 @@ def reset_delay_from_log(path: Path, now: datetime) -> int | None:
     return text_delay
 
 
-def write_structured_output(path: Path, value: object) -> None:
+def write_structured_output(path: Path, value: object) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary_path = path.with_name(path.name + ".tmp")
+    compact_output = json.dumps(
+        value,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    formatted_output = json.dumps(value, ensure_ascii=False, indent=2)
     temporary_path.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+        formatted_output + "\n",
         encoding="utf-8",
     )
     temporary_path.replace(path)
+
+    return formatted_output.count(" ") - compact_output.count(" ")
 
 
 def main(structured_output_path: Path | None = None) -> int:
@@ -259,11 +267,17 @@ def main(structured_output_path: Path | None = None) -> int:
                     and event.get("subtype") == "success"
                     and isinstance(structured_output, dict)
                 ):
-                    write_structured_output(
+                    local_formatting_spaces = write_structured_output(
                         structured_output_path,
                         structured_output,
                     )
                     structured_output_written = True
+                    print(
+                        "💾 strukturált JSON: "
+                        f"{local_formatting_spaces} helyi formázási szóköz "
+                        "(nem AI-token)",
+                        flush=True,
+                    )
 
     if session_limit_detected:
         return SESSION_LIMIT_EXIT_CODE

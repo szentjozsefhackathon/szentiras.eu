@@ -290,6 +290,10 @@ class VerseAnalysisStreamViewTest extends TestCase
                     flags: JSON_THROW_ON_ERROR,
                 )['verses'][0]['verse'],
             );
+            $this->assertStringContainsString(
+                '💾 strukturált JSON: 93 helyi formázási szóköz (nem AI-token)',
+                $process->getOutput(),
+            );
             $this->assertFileDoesNotExist($outputPath.'.tmp');
         } finally {
             unlink($outputPath);

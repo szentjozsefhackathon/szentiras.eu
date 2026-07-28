@@ -83,9 +83,8 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
         $this->assertSame([16], $manifest['chunks'][0]['verses']);
         $this->assertSame([17, 18], $manifest['chunks'][1]['verses']);
 
-        $firstSource = $this->readJson(
-            dirname($this->manifestPath()).'/'.$manifest['chunks'][0]['source']
-        );
+        $firstSourcePath = dirname($this->manifestPath()).'/'.$manifest['chunks'][0]['source'];
+        $firstSource = $this->readJson($firstSourcePath);
 
         $this->assertSame(
             ['printed', 'strongNumber', 'morphology'],
@@ -99,6 +98,13 @@ class VerseAnalysisPipelineTest extends FastDatabaseTestCase
         $this->assertSame('határozószó', $firstSource['morphology']['ADV']);
         $this->assertArrayNotHasKey('greekText', $firstSource['verses'][0]);
         $this->assertSame(17, $firstSource['contextAfter']['verse']);
+        $this->assertSame(
+            json_encode(
+                $firstSource,
+                JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+            ),
+            file_get_contents($firstSourcePath),
+        );
     }
 
     public function test_assembler_reconstructs_exact_greek_fields_and_produces_a_valid_chapter(): void

@@ -424,10 +424,7 @@ class VerseAnalysisContextExporter
             throw new RuntimeException("Could not create a temporary file in '{$directory}'.");
         }
 
-        $json = json_encode(
-            $value,
-            JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT,
-        )."\n";
+        $json = $this->encode($value);
 
         if (file_put_contents($temporaryPath, $json) === false || ! rename($temporaryPath, $path)) {
             @unlink($temporaryPath);
