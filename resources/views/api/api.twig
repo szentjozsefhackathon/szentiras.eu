@@ -30,6 +30,13 @@
         </div>
     </div>
 
+    <h2 class="h5 mt-5" id="felhasznalasi-feltetelek">Felhasználási feltételek</h2>
+    <ul>
+        <li>A rendszert önkéntesek üzemeltetik, ezért a szolgáltatás működésével és használatával kapcsolatban semmilyen garanciát nem tudunk vállalni.</li>
+        <li>Ha az API-t vagy az azon keresztül letöltött anyagokat nyilvánosan használod, kérjük, tüntesd fel a <a href="https://szentiras.eu">szentiras.eu</a> címet.</li>
+        <li>Az API-n keresztül letöltött anyagokra és azok felhasználására is a magyar szerzői jogi törvény szabályai vonatkoznak.</li>
+    </ul>
+
     <h2 class="h5 mt-4" id="api-kulcs">API kulcs</h2>
     <p>Minden API- és MCP-hívás érvényes API kulcsot igényel. A kulcs ingyenes.</p>
 
@@ -53,6 +60,7 @@
 
     <h2 class="h5 mt-5" id="mcp">MCP szerver – bibliai szöveg az AI-kliensedben</h2>
     <p>Az MCP (<a href="https://modelcontextprotocol.io">Model Context Protocol</a>) egy nyílt szabvány, amellyel az AI-kliensek (pl. Claude, ChatGPT és más MCP-t támogató alkalmazások) külső eszközökhöz és adatforrásokhoz férhetnek hozzá. A Szentírás.eu MCP szervere lehetővé teszi, hogy az AI a <strong>pontos, szó szerinti bibliai szöveget</strong> kérje le egy adott magyar fordításból, ahelyett, hogy emlékezetből idézne, valamint hogy az <strong>Újszövetség eredeti görög szövegét</strong> szavanként elemezve érje el. A szerver használatához nem kell programozni tudni: elég a kliens beállításai közt felvenni az alábbi címet és az API kulcsodat.</p>
+    <p>Az <a href="{{ route('guides.index') }}">Útmutatók</a> között találhatsz segítséget a beállításhoz.</p>
 
     <h3 class="h6">Végpont</h3>
     <pre class="bg-body-secondary p-3 rounded"><code>{{ url('/mcp/bible') }}</code></pre>

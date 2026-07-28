@@ -108,6 +108,8 @@ class SmokeTest extends TestCase
         $response->assertSee('get-greek-verses');
         $response->assertSee('search-greek');
         $response->assertSee('lookup-greek-word');
+        $response->assertSee('href="'.route('guides.index').'">Útmutatók</a>', false);
+        $response->assertSee('között találhatsz segítséget a beállításhoz');
     }
 
     public function testDeveloperPageDocumentsMcpHeaderAuthenticationFirst()
@@ -126,6 +128,17 @@ class SmokeTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('önkiszolgáló', false);
         $response->assertSee(url('/profile/api-keys'), false);
+    }
+
+    public function testDeveloperPageShowsTermsOfUse()
+    {
+        $response = $this->get('/api');
+
+        $response->assertStatus(200);
+        $response->assertSee('Felhasználási feltételek');
+        $response->assertSee('önkéntesek üzemeltetik');
+        $response->assertSee('href="https://szentiras.eu">szentiras.eu</a>', false);
+        $response->assertSee('magyar szerzői jogi törvény szabályai');
     }
 
     public function testDeveloperPageHasHeaderAndMetaDescription()
