@@ -27,8 +27,12 @@ from typing import Iterator
 labels: dict[str, str] = {}
 
 API_ERROR_PATTERN = re.compile(r"^API Error:\s*(?P<status>\d{3})\b", re.IGNORECASE)
-SESSION_LIMIT_PATTERN = re.compile(
-    r"You(?:'|’)ve hit your session limit\s*[·•-]\s*resets\s*"
+RETRYABLE_CONNECTION_ERROR_PATTERN = re.compile(
+    r"^API Error:\s*Unable to connect to API\b",
+    re.IGNORECASE,
+)
+USAGE_LIMIT_PATTERN = re.compile(
+    r"You(?:'|’)ve hit your (?:session|weekly) limit\s*[·•-]\s*resets\s*"
     r"(?P<hour>\d{1,2})(?::(?P<minute>\d{2}))?\s*(?P<meridiem>am|pm)"
     r"\s*\(UTC\)",
     re.IGNORECASE,
@@ -52,7 +56,7 @@ def api_error_status(text: str) -> int | None:
 
 
 def session_reset_delay(text: str, now: datetime) -> int | None:
-    match = SESSION_LIMIT_PATTERN.search(text)
+    match = USAGE_LIMIT_PATTERN.search(text)
     if match is None:
         return None
 
@@ -75,6 +79,25 @@ def session_reset_delay(text: str, now: datetime) -> int | None:
     return math.ceil((reset_at - now).total_seconds()) + SESSION_RESET_BUFFER_SECONDS
 
 
+def timestamp_reset_delay(value: object, now: datetime) -> int | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+
+    timestamp = float(value)
+    if timestamp > 10_000_000_000:
+        timestamp /= 1000
+
+    try:
+        reset_at = datetime.fromtimestamp(timestamp, timezone.utc)
+    except (OverflowError, OSError, ValueError):
+        return None
+
+    return (
+        max(0, math.ceil((reset_at - now).total_seconds()))
+        + SESSION_RESET_BUFFER_SECONDS
+    )
+
+
 def nested_strings(value: object) -> Iterator[str]:
     if isinstance(value, str):
         yield value
@@ -87,18 +110,27 @@ def nested_strings(value: object) -> Iterator[str]:
 
 
 def reset_delay_from_log(path: Path, now: datetime) -> int | None:
+    text_delay = None
+
     for line in path.read_text(encoding="utf-8").splitlines():
         try:
             event = json.loads(line)
         except json.JSONDecodeError:
             continue
 
+        if event.get("type") == "rate_limit_event":
+            rate_limit_info = event.get("rate_limit_info", {})
+            if isinstance(rate_limit_info, dict):
+                delay = timestamp_reset_delay(rate_limit_info.get("resetsAt"), now)
+                if delay is not None:
+                    return delay
+
         for text in nested_strings(event):
             delay = session_reset_delay(text, now)
-            if delay is not None:
-                return delay
+            if delay is not None and text_delay is None:
+                text_delay = delay
 
-    return None
+    return text_delay
 
 
 def write_structured_output(path: Path, value: object) -> None:
@@ -133,7 +165,16 @@ def main(structured_output_path: Path | None = None) -> int:
         if parent and parent in labels:
             tag = f"[{labels[parent]}] "
 
-        if etype == "system" and event.get("subtype") == "init":
+        if etype == "rate_limit_event":
+            rate_limit_info = event.get("rate_limit_info", {})
+            if (
+                isinstance(rate_limit_info, dict)
+                and rate_limit_info.get("status") == "rejected"
+            ):
+                api_error_detected = True
+                session_limit_detected = True
+
+        elif etype == "system" and event.get("subtype") == "init":
             print(f"── session start ({event.get('model', '')}) ──", flush=True)
 
         elif etype == "assistant":
@@ -143,15 +184,20 @@ def main(structured_output_path: Path | None = None) -> int:
                     text = chunk.get("text", "").strip()
                     if text:
                         status = api_error_status(text)
-                        if SESSION_LIMIT_PATTERN.search(text):
+                        if USAGE_LIMIT_PATTERN.search(text):
                             api_error_detected = True
                             session_limit_detected = True
                             print(f"{indent}⏳ {tag}{short(text)}", flush=True)
-                        elif status is not None:
+                        elif (
+                            status is not None
+                            or event.get("is_api_error_message") is True
+                        ):
                             api_error_detected = True
                             retryable_api_error_detected = (
                                 retryable_api_error_detected
                                 or status in RETRYABLE_API_STATUSES
+                                or RETRYABLE_CONNECTION_ERROR_PATTERN.search(text)
+                                is not None
                             )
                             print(f"{indent}⚠️  {tag}{short(text)}", flush=True)
                         else:
