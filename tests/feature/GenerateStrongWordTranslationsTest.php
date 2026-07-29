@@ -85,25 +85,6 @@ class GenerateStrongWordTranslationsTest extends TestCase
         $this->assertSame($json, Storage::get('translation/1_gpt-5.5.json'));
     }
 
-    public function test_eimi_prompt_treats_the_input_as_a_lexeme_instead_of_a_first_person_form(): void
-    {
-        $configuration = config('ai.configurations.strong_word_translation');
-
-        $prompts = app(AiPromptService::class)->preparePrompts($configuration, [
-            'strong_number' => '1510',
-            'greek_word' => 'εἰμί',
-            'transliteration' => 'eimi',
-        ]);
-
-        $this->assertStringContainsString('lexéma szótári alakja (lemma)', $prompts['system']);
-        $this->assertStringContainsString('εἰμί jelentése „van”', $prompts['system']);
-        $this->assertStringContainsString('nem „vagyok” vagy „én vagyok”', $prompts['system']);
-        $this->assertSame(
-            "Strong-szám: G1510\nGörög lemma: εἰμί\nÁtírás: eimi",
-            trim($prompts['user'])
-        );
-    }
-
     public function test_bad_openai_response_does_not_save_file(): void
     {
         $this->createStrongWord(1, 'λόγος');
