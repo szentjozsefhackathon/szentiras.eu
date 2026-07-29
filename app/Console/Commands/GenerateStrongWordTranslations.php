@@ -40,8 +40,11 @@ class GenerateStrongWordTranslations extends Command
     private $examplePrompt = "<examples>\n<example>\n<word>\nἸησοῦς\n</word>\n<ideal_output>\n{\n  \"word\": \"Ἰησοῦς, -οῦ (hímnem)\",\n  \"meanings\": [\n    {\n      \"meaning\": \"Jézus\",\n      \"explanation\": \"A názáreti Jézus Krisztus.\"\n    },\n    {\n      \"meaning\": \"Józsué\",\n      \"explanation\": \"Az Ószövetségben szereplő vezető, aki Mózes után az izraelitákat az Ígéret földjére vezette.\"\n    }\n  ],\n  \"etymology\": \"A héber יְהוֹשֻׁעַ (Jehosua, 'Jahve a szabadítás') névből származik, amelynek rövidebb formája יֵשׁוּעַ (Jesua), amelyet görögösítettek.\",\n  \"notes\": \"Az Újszövetségben elsősorban Jézus Krisztusra utal, bár az Apostolok Cselekedeteiben (7:45) és a Zsidókhoz írt levélben (4:8) Józsuét is jelölheti. A név jelentése ('Jahve megment' vagy 'Jahve a szabadítás') összefügg Jézus küldetésével, ahogy Máté 1:21-ben is olvasható.\"\n}\n</ideal_output>\n</example>\n<example>\n<word>\nγεννάω\n</word>\n<ideal_output>\n{\n  \"word\": \"γεννάω\",\n  \"meanings\": [\n    {\n      \"meaning\": \"nemz\",\n      \"explanation\": \"Férfi általi nemzés, utód létrehozása biológiai értelemben.\"\n    },\n    {\n      \"meaning\": \"szül\",\n      \"explanation\": \"Női általi szülés, gyermek világra hozása.\"\n    },\n    {\n      \"meaning\": \"létrehoz\",\n      \"explanation\": \"Valaminek vagy valakinek a létrehozása átvitt értelemben.\"\n    },\n    {\n      \"meaning\": \"keletkezik\",\n      \"explanation\": \"Valaminek a létrejötte, keletkezése.\"\n    }\n  ],\n  \"etymology\": \"A γένος (nemzetség, család) szóból származik, rokon a γίνομαι (létrejönni, születni) igével.\",\n  \"notes\": \"Az Újszövetségben gyakran használják Jézus származásának leírásánál (Máté evangéliumának nemzetségtáblájában), illetve a lelki újjászületés metaforájaként János evangéliumában és leveleiben.\"\n}\n</ideal_output>\n</example>\n</examples>\n\n";
 
     private $folder;
+
     private $apiKey;
+
     private $model;
+
     private $provider;
 
     public function __construct(
@@ -55,18 +58,20 @@ class GenerateStrongWordTranslations extends Command
      */
     public function handle()
     {
-        $this->provider = $this->option("provider");
+        $this->provider = $this->option('provider');
         $this->model = $this->resolveModel();
         $this->folder = 'translation';
         $this->apiKey = Config::get('services.anthropic.api_key');
 
-        if (!in_array($this->provider, ['openai', 'anthropic'], true)) {
+        if (! in_array($this->provider, ['openai', 'anthropic'], true)) {
             $this->error("Unknown provider '{$this->provider}'. Use 'openai' or 'anthropic'.");
+
             return self::FAILURE;
         }
 
         if ($this->provider === 'openai' && ($this->option('batch') || $this->option('batch-result'))) {
-            $this->error("Batch mode is only supported with --provider=anthropic.");
+            $this->error('Batch mode is only supported with --provider=anthropic.');
+
             return self::FAILURE;
         }
 
@@ -76,17 +81,18 @@ class GenerateStrongWordTranslations extends Command
             $response = Http::withHeaders([
                 'x-api-key' => $this->apiKey,
                 'Content-Type' => 'application/json',
-                'anthropic-version' => '2023-06-01'
+                'anthropic-version' => '2023-06-01',
             ])->get($apiUrl);
             $resultsUrl = $response->json()['results_url'];
             if (empty($resultsUrl)) {
-                $this->info("No results yet. :(");
+                $this->info('No results yet. :(');
+
                 return;
             }
             $responseFromResult = Http::withHeaders([
                 'x-api-key' => $this->apiKey,
                 'Content-Type' => 'application/json',
-                'anthropic-version' => '2023-06-01'
+                'anthropic-version' => '2023-06-01',
             ])->get($resultsUrl);
             $jsonl = $responseFromResult->body();
             Storage::put("{$this->folder}/{$batchId}.jsonl", $jsonl);
@@ -103,21 +109,22 @@ class GenerateStrongWordTranslations extends Command
             }
 
             $this->info("Response saved to {$this->folder}/{$batchId}.jsonl");
+
             return;
         }
 
-        if ($this->option("word")) {
-            $wordNumbers = array_map("trim", explode(",", $this->option("word")));
+        if ($this->option('word')) {
+            $wordNumbers = array_map('trim', explode(',', $this->option('word')));
         } else {
             // get only those words that have usage
-            $wordNumbers = StrongWord::has('greekVerses')->pluck("number");
+            $wordNumbers = StrongWord::has('greekVerses')->pluck('number');
         }
 
         $progressBar = $this->output->createProgressBar(count($wordNumbers));
         $sourceStorage = null;
         if ($this->option('source') == 'filesystem') {
             $sourceStorage = Storage::disk('local');
-        } else if ($this->option('source') == 's3') {
+        } elseif ($this->option('source') == 's3') {
             $sourceStorage = Storage::disk('s3');
         }
 
@@ -131,8 +138,9 @@ class GenerateStrongWordTranslations extends Command
             if ($sourceStorage) {
                 // load the translation from the source file
                 $file = $sourceStorage->get($path);
-                if (!$file) {
+                if (! $file) {
                     $this->error("{$path} doesn't exist");
+
                     continue;
                 }
                 $object = json_decode($file);
@@ -140,12 +148,13 @@ class GenerateStrongWordTranslations extends Command
                     $progressBar->clear();
                     $this->error("Error decoding $path");
                     $progressBar->display();
+
                     continue;
                 }
                 // delete all existing meanings and etymology for the given word, regardless of source
                 DictionaryEntry::where('strong_word_number', $wordNumber)->delete();
                 DictionaryMeaning::where('strong_word_number', $wordNumber)->delete();
-                $dictionaryEntry = new DictionaryEntry();
+                $dictionaryEntry = new DictionaryEntry;
                 $dictionaryEntry->strong_word_number = $wordNumber;
                 $dictionaryEntry->source = $this->model;
                 $dictionaryEntry->paradigm = $object->word;
@@ -153,7 +162,7 @@ class GenerateStrongWordTranslations extends Command
                 $dictionaryEntry->notes = $object->notes ?? null;
                 $dictionaryEntry->save();
                 foreach ($object->meanings as $i => $meaning) {
-                    $dictionaryMeaning = new DictionaryMeaning();
+                    $dictionaryMeaning = new DictionaryMeaning;
                     $dictionaryMeaning->strong_word_number = $wordNumber;
                     $dictionaryMeaning->source = $this->model;
                     $dictionaryMeaning->meaning = $meaning->meaning;
@@ -165,6 +174,7 @@ class GenerateStrongWordTranslations extends Command
                 // we are generating now, not loading
                 if (Storage::exists($path)) {
                     $this->info("{$wordNumber}: translation already exists. Skipping.");
+
                     continue;
                 }
                 if ($limit !== null && $generatedCount >= $limit) {
@@ -176,26 +186,26 @@ class GenerateStrongWordTranslations extends Command
                 if ($this->provider === 'openai') {
                     $totalTokens += $this->sendOpenAiRequest($wordNumber, $path);
                     $generatedCount++;
-                } else if (!$this->option("batch")) {
+                } elseif (! $this->option('batch')) {
                     $this->sendDirectRequest($wordNumber, $path);
                     $generatedCount++;
                 } else {
                     $batchRequests[] = [
-                        "custom_id" => "$wordNumber",
-                        "params" => [
-                            "model" => $this->model,
-                            "max_tokens" => 1024,
-                            "system" => [["type" => "text", "text" => $this->systemPrompt, "cache_control" => ["type" => "ephemeral"]]],
-                            "messages" => [
+                        'custom_id' => "$wordNumber",
+                        'params' => [
+                            'model' => $this->model,
+                            'max_tokens' => 1024,
+                            'system' => [['type' => 'text', 'text' => $this->systemPrompt, 'cache_control' => ['type' => 'ephemeral']]],
+                            'messages' => [
                                 [
-                                    "role" => "user",
-                                    "content" => [
-                                        ["type" => "text", "text" => $this->examplePrompt, "cache_control" => ["type" => "ephemeral"]],
-                                        ["type" => "text", "text" => "The Greek word is: " . StrongWord::where('number', $wordNumber)->first()->lemma]
-                                    ]
-                                ]
-                            ]
-                        ]
+                                    'role' => 'user',
+                                    'content' => [
+                                        ['type' => 'text', 'text' => $this->examplePrompt, 'cache_control' => ['type' => 'ephemeral']],
+                                        ['type' => 'text', 'text' => 'The Greek word is: '.StrongWord::where('number', $wordNumber)->first()->lemma],
+                                    ],
+                                ],
+                            ],
+                        ],
                     ];
                     $generatedCount++;
                 }
@@ -239,8 +249,9 @@ class GenerateStrongWordTranslations extends Command
     private function sendOpenAiRequest(string $wordNumber, string $path): int
     {
         $strongWord = StrongWord::where('number', $wordNumber)->first();
-        if (!$strongWord) {
+        if (! $strongWord) {
             $this->error("{$wordNumber}: Strong word not found.");
+
             return 0;
         }
 
@@ -249,7 +260,11 @@ class GenerateStrongWordTranslations extends Command
         $response = $this->aiPromptService->generate(
             'strong_word_translation',
             false,
-            ['greek_word' => $strongWord->lemma],
+            [
+                'strong_number' => (string) $strongWord->number,
+                'greek_word' => $strongWord->lemma,
+                'transliteration' => $strongWord->transliteration,
+            ],
             null,
             ['model' => $this->model]
         );
@@ -258,6 +273,7 @@ class GenerateStrongWordTranslations extends Command
 
         if (empty($responseString)) {
             $this->error("{$wordNumber}: empty response from OpenAI.");
+
             return $tokenUsage;
         }
 
@@ -269,25 +285,25 @@ class GenerateStrongWordTranslations extends Command
     private function sendDirectRequest($wordNumber, $path)
     {
         $this->info("{$wordNumber}: Generate translation with AI.");
-        $apiUrl = "https://api.anthropic.com/v1/messages";
+        $apiUrl = 'https://api.anthropic.com/v1/messages';
         $data = [
-            "model" => $this->model,
-            "max_tokens" => 1024,
-            "system" => $this->systemPrompt,
-            "messages" => [
+            'model' => $this->model,
+            'max_tokens' => 1024,
+            'system' => $this->systemPrompt,
+            'messages' => [
                 [
-                    "role" => "user",
-                    "content" => [
-                        ["type" => "text", "text" => $this->examplePrompt, "cache_control" => ["type" => "ephemeral"]],
-                        ["type" => "text", "text" => "The Greek word is: " . StrongWord::where('number', $wordNumber)->first()->lemma]
-                    ]
-                ]
-            ]
+                    'role' => 'user',
+                    'content' => [
+                        ['type' => 'text', 'text' => $this->examplePrompt, 'cache_control' => ['type' => 'ephemeral']],
+                        ['type' => 'text', 'text' => 'The Greek word is: '.StrongWord::where('number', $wordNumber)->first()->lemma],
+                    ],
+                ],
+            ],
         ];
         $response = Http::withHeaders([
             'x-api-key' => $this->apiKey,
             'Content-Type' => 'application/json',
-            'anthropic-version' => '2023-06-01'
+            'anthropic-version' => '2023-06-01',
         ])->post($apiUrl, $data);
 
         if ($response->successful()) {
@@ -295,18 +311,18 @@ class GenerateStrongWordTranslations extends Command
             $responseString = $responseData['content'][0]['text'];
             $this->decodeAndSaveResponseString($wordNumber, $responseString, $path);
         } else {
-            $this->error("Error: " . $response->status() . " - " . $response->body());
+            $this->error('Error: '.$response->status().' - '.$response->body());
         }
     }
 
     private function sendBatchRequests($batchRequests)
     {
-        $batchApiData = ["requests" => $batchRequests];
+        $batchApiData = ['requests' => $batchRequests];
         $batchEndpoint = 'https://api.anthropic.com/v1/messages/batches';
         $response = Http::withHeaders([
             'x-api-key' => $this->apiKey,
             'Content-Type' => 'application/json',
-            'anthropic-version' => '2023-06-01'
+            'anthropic-version' => '2023-06-01',
         ])->post($batchEndpoint, $batchApiData);
         $responseData = $response->json();
         $responseId = $responseData['id'];
@@ -319,9 +335,10 @@ class GenerateStrongWordTranslations extends Command
     {
         $responseString = str_replace('```json', '', $responseString);
         $responseString = str_replace('```', '', $responseString);
-        $translation  = json_decode($responseString, true);
-        if ($translation == NULL) {
-            $this->error("Bad response from AI: " . $responseString);
+        $translation = json_decode($responseString, true);
+        if ($translation == null) {
+            $this->error('Bad response from AI: '.$responseString);
+
             return;
         }
         Storage::put("{$path}", $responseString);

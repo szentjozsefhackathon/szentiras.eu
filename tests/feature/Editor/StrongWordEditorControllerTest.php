@@ -30,7 +30,7 @@ class StrongWordEditorControllerTest extends TestCase
 
     private function createStrongWord(int $number = 2424): StrongWord
     {
-        $strongWord = new StrongWord();
+        $strongWord = new StrongWord;
         $strongWord->number = $number;
         $strongWord->lemma = 'Ἰησοῦς';
         $strongWord->transliteration = 'Iesous';
@@ -42,7 +42,7 @@ class StrongWordEditorControllerTest extends TestCase
 
     private function createMeaning(int $number, string $meaning, string $source = 'test', int $order = 0): void
     {
-        $dictionaryMeaning = new DictionaryMeaning();
+        $dictionaryMeaning = new DictionaryMeaning;
         $dictionaryMeaning->strong_word_number = $number;
         $dictionaryMeaning->source = $source;
         $dictionaryMeaning->meaning = $meaning;
@@ -51,7 +51,7 @@ class StrongWordEditorControllerTest extends TestCase
         $dictionaryMeaning->save();
     }
 
-    public function testUpdatePersistsEntryAndReplacesMeanings(): void
+    public function test_update_persists_entry_and_replaces_meanings(): void
     {
         $strongWord = $this->createStrongWord();
         $this->createMeaning($strongWord->number, 'régi', 'old');
@@ -80,7 +80,7 @@ class StrongWordEditorControllerTest extends TestCase
         $this->assertEquals(1, $meanings[1]->order);
     }
 
-    public function testGenerateReturnsPreviewWithoutPersisting(): void
+    public function test_generate_returns_preview_without_persisting(): void
     {
         $strongWord = $this->createStrongWord();
 
@@ -98,7 +98,11 @@ class StrongWordEditorControllerTest extends TestCase
                 ->once()
                 ->withArgs(function (string $name, bool $isBatch, array $placeholders) use ($strongWord) {
                     return $name === 'strong_word_translation'
-                        && $placeholders['greek_word'] === $strongWord->lemma;
+                        && $placeholders === [
+                            'strong_number' => (string) $strongWord->number,
+                            'greek_word' => $strongWord->lemma,
+                            'transliteration' => $strongWord->transliteration,
+                        ];
                 })
                 ->andReturn('raw-response');
             $mock->shouldReceive('extractTextAndTokens')
@@ -124,7 +128,7 @@ class StrongWordEditorControllerTest extends TestCase
         $this->assertDatabaseMissing('dictionary_meanings', ['strong_word_number' => $strongWord->number]);
     }
 
-    public function testGenerateReturnsErrorOnBadResponse(): void
+    public function test_generate_returns_error_on_bad_response(): void
     {
         $strongWord = $this->createStrongWord();
 
@@ -139,7 +143,7 @@ class StrongWordEditorControllerTest extends TestCase
         $response->assertJson(['success' => false]);
     }
 
-    public function testIndexListsStrongWordsWithDictionaryEntries(): void
+    public function test_index_lists_strong_words_with_dictionary_entries(): void
     {
         $strongWord = $this->createStrongWord();
         $this->createMeaning($strongWord->number, 'Jézus');
@@ -150,7 +154,7 @@ class StrongWordEditorControllerTest extends TestCase
         $response->assertSee('Ἰησοῦς');
     }
 
-    public function testIndexSearchByTransliterationDoesNotCastToNumber(): void
+    public function test_index_search_by_transliteration_does_not_cast_to_number(): void
     {
         $strongWord = $this->createStrongWord();
         $this->createMeaning($strongWord->number, 'Jézus');
@@ -161,7 +165,7 @@ class StrongWordEditorControllerTest extends TestCase
         $response->assertSee('Ἰησοῦς');
     }
 
-    public function testIndexSearchByNumberMatchesStrongWord(): void
+    public function test_index_search_by_number_matches_strong_word(): void
     {
         $strongWord = $this->createStrongWord();
         $this->createMeaning($strongWord->number, 'Jézus');
