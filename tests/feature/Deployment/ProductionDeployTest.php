@@ -3,6 +3,8 @@
 namespace SzentirasHu\Test\Deployment;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 class ProductionDeployTest extends TestCase
 {
@@ -123,6 +125,83 @@ class ProductionDeployTest extends TestCase
         self::assertNotFalse($postgresConfiguration);
         self::assertStringContainsString('pg_isready -h \"$${HOSTNAME}\"', $compose);
         self::assertStringContainsString("listen_addresses = '*'", $postgresConfiguration);
+    }
+
+    public function test_verse_analysis_deployment_syncs_to_s3_then_validates_and_imports_on_production(): void
+    {
+        $projectDirectory = dirname(__DIR__, 3);
+        $deploymentScript = $projectDirectory.'/deploy-verse-analysis.sh';
+        $setupScript = file_get_contents($projectDirectory.'/setup-ssh-deploy.sh');
+        $filesystem = new Filesystem;
+        $temporaryDirectory = sys_get_temp_dir().'/verse-analysis-deploy-'.bin2hex(random_bytes(8));
+        $binaryDirectory = $temporaryDirectory.'/bin';
+        $sourceDirectory = $temporaryDirectory.'/analysis';
+        $commandLog = $temporaryDirectory.'/commands.log';
+        $deployConfig = $temporaryDirectory.'/.env.deploy';
+
+        self::assertNotFalse($setupScript);
+        self::assertStringContainsString('AWS_PROFILE=', $setupScript);
+        self::assertStringContainsString('VERSE_ANALYSIS_BUCKET=', $setupScript);
+
+        try {
+            $filesystem->mkdir([$binaryDirectory, $sourceDirectory]);
+            $filesystem->dumpFile($sourceDirectory.'/MAT_1.json', '{}');
+            $filesystem->dumpFile(
+                $deployConfig,
+                implode("\n", [
+                    'AWS_PROFILE=test-profile',
+                    'DEPLOY_SERVER=example.test',
+                    'DEPLOY_PORT=2222',
+                    'DEPLOY_USER=deployer',
+                    'DEPLOY_REMOTE_PATH=/srv/szentiras',
+                    'SSH_KEY_PATH='.$temporaryDirectory.'/missing-key',
+                    'VERSE_ANALYSIS_BUCKET=test-bucket',
+                    '',
+                ])
+            );
+
+            foreach (['aws', 'ssh'] as $command) {
+                $filesystem->dumpFile(
+                    $binaryDirectory.'/'.$command,
+                    "#!/usr/bin/env bash\nprintf '{$command}:%s\\n' \"\$*\" >> \"\$COMMAND_LOG\"\n"
+                );
+                $filesystem->chmod($binaryDirectory.'/'.$command, 0755);
+            }
+
+            $process = new Process(
+                ['bash', $deploymentScript],
+                $projectDirectory,
+                [
+                    'PATH' => $binaryDirectory.':'.getenv('PATH'),
+                    'COMMAND_LOG' => $commandLog,
+                    'DEPLOY_CONFIG_FILE' => $deployConfig,
+                    'VERSE_ANALYSIS_SOURCE_DIRECTORY' => $sourceDirectory,
+                ]
+            );
+            $process->run();
+
+            self::assertSame(0, $process->getExitCode(), $process->getErrorOutput().$process->getOutput());
+
+            $commands = file($commandLog, FILE_IGNORE_NEW_LINES);
+
+            self::assertNotFalse($commands);
+            self::assertCount(3, $commands);
+            self::assertSame(
+                "aws:--profile test-profile s3 sync {$sourceDirectory}/ s3://test-bucket/greek/verse-analysis/OpenGNT/hu/v1/",
+                $commands[0]
+            );
+            self::assertStringContainsString(
+                'ssh:-p 2222 deployer@example.test cd /srv/szentiras && docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T app php artisan szentiras:import-verse-analysis --disk=s3 --no-interaction --dry-run',
+                $commands[1]
+            );
+            self::assertStringContainsString(
+                'ssh:-p 2222 deployer@example.test cd /srv/szentiras && docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T app php artisan szentiras:import-verse-analysis --disk=s3 --no-interaction',
+                $commands[2]
+            );
+            self::assertStringNotContainsString('--dry-run', $commands[2]);
+        } finally {
+            $filesystem->remove($temporaryDirectory);
+        }
     }
 
     /**

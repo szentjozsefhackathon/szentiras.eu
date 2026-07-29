@@ -39,6 +39,8 @@ DEPLOY_PORT=22
 DEPLOY_USER=deploy
 DEPLOY_REMOTE_PATH=/tmp/
 SSH_KEY_PATH=~/.ssh/deploy
+AWS_PROFILE=
+VERSE_ANALYSIS_BUCKET=
 EOF
     echo "✅ Created .env.deploy"
     echo
