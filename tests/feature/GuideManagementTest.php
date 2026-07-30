@@ -3,6 +3,7 @@
 namespace SzentirasHu\Test;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use SzentirasHu\Models\Guide;
 use SzentirasHu\Models\Tag;
 use SzentirasHu\Service\Editor\EditorService;
@@ -74,6 +75,36 @@ class GuideManagementTest extends TestCase
             ->assertSee('<strong>gyorskeresőt</strong>', false);
 
         $this->get(route('guides.show', $inactiveGuide))->assertNotFound();
+    }
+
+    public function test_guide_sitemap_is_lightweight_and_only_lists_active_guides(): void
+    {
+        $activeGuide = Guide::factory()->create([
+            'slug' => 'aktiv-cikk',
+        ]);
+        $inactiveGuide = Guide::factory()->inactive()->create([
+            'slug' => 'inaktiv-cikk',
+        ]);
+
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+
+        $response = $this->get(route('sitemaps.guides'));
+
+        DB::disableQueryLog();
+        $queries = DB::getQueryLog();
+
+        $response->assertOk();
+        $response->assertHeader('Content-Type', 'application/xml; charset=UTF-8');
+        $response->assertHeader('Cache-Control');
+        $response->assertHeader('ETag');
+        $response->assertSee('<loc>'.route('guides.show', $activeGuide).'</loc>', false);
+        $response->assertDontSee('<loc>'.route('guides.show', $inactiveGuide).'</loc>', false);
+
+        $this->assertCount(1, $queries);
+        $this->assertStringContainsString('guides', $queries[0]['query']);
+        $this->assertStringNotContainsString('books', $queries[0]['query']);
+        $this->assertStringNotContainsString('verses', $queries[0]['query']);
     }
 
     public function test_information_navigation_links_to_guides(): void

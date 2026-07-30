@@ -24,3 +24,4 @@ Disallow: /*?media
 Disallow: /*&media
 
 Sitemap: https://szentiras.eu/sitemap.xml
+Sitemap: https://szentiras.eu/sitemap-guides.xml

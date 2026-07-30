@@ -18,6 +18,7 @@ use SzentirasHu\Http\Controllers\Contact\ContactController;
 use SzentirasHu\Http\Controllers\Contact\InboxController;
 use SzentirasHu\Http\Controllers\Home\HomeController;
 use SzentirasHu\Http\Controllers\GuideController;
+use SzentirasHu\Http\Controllers\GuideSitemapController;
 use SzentirasHu\Http\Controllers\MediaController;
 use SzentirasHu\Http\Controllers\Profile\ApiKeyController as ProfileApiKeyController;
 use SzentirasHu\Http\Controllers\Tools\ToolsController;
@@ -50,6 +51,9 @@ Route::domain('ujszov.szentiras.eu')->group(function () {
 Route::get('/', [ HomeController::class, 'index' ]);
 
 Route::get('/sitemap.xml', [\SzentirasHu\Http\Controllers\SitemapController::class, 'index']);
+Route::get('/sitemap-guides.xml', GuideSitemapController::class)
+    ->name('sitemaps.guides')
+    ->middleware('cache.headers:public;max_age=60;s_maxage=300;stale_while_revalidate=600;etag');
 
 Route::get("/kereses", '\SzentirasHu\Http\Controllers\Search\SearchController@getIndex');
 Route::post("/kereses/search", '\SzentirasHu\Http\Controllers\Search\SearchController@anySearch');
