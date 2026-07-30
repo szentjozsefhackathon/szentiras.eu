@@ -201,5 +201,7 @@ class GreekComparisonTest extends FastDatabaseTestCase
         $response->assertStatus(200);
         $response->assertSeeText('magyar nyelvű nyelvtani elemzés');
         $response->assertSeeText('Párhuzamos olvasás');
+        $response->assertSeeText('könnyen megjegyezhető');
+        $response->assertSee('href="https://ujszov.szentiras.eu"', false);
     }
 }
