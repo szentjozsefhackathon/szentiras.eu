@@ -11,6 +11,7 @@ class GuideController extends Controller
     {
         return view('guides.index', [
             'guides' => Guide::query()
+                ->with('tags')
                 ->where('is_active', true)
                 ->orderBy('position')
                 ->orderBy('id')
@@ -21,6 +22,8 @@ class GuideController extends Controller
     public function show(Guide $guide): View
     {
         abort_unless($guide->is_active, 404);
+
+        $guide->load('tags');
 
         return view('guides.show', [
             'guide' => $guide,

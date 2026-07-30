@@ -5,6 +5,7 @@ namespace SzentirasHu\Models;
 use Database\Factories\GuideFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Guide extends Model
 {
@@ -31,6 +32,11 @@ class Guide extends Model
             'is_active' => 'boolean',
             'position' => 'integer',
         ];
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class)->orderBy('name');
     }
 
     public function getRouteKeyName(): string

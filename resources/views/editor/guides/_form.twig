@@ -21,11 +21,28 @@
         class="form-control"
         id="title"
         name="title"
-        value="{{ guide is defined ? guide.title : '' }}"
+        value="{{ old('title', guide is defined ? guide.title : '') }}"
         maxlength="255"
         required
         autofocus
     >
+</div>
+
+{% set tagNames = guide is defined ? guide.tags|map(tag => tag.name)|join(', ') : '' %}
+<div class="mb-3">
+    <label for="tags" class="form-label">Címkék</label>
+    <input
+        type="text"
+        class="form-control"
+        id="tags"
+        name="tags"
+        value="{{ old('tags', tagNames) }}"
+        maxlength="500"
+        placeholder="Útmutató, Bibliaolvasás"
+    >
+    <div class="form-text">
+        A címkéket vesszővel válaszd el. Egy bejegyzéshez legfeljebb 10 címke adható.
+    </div>
 </div>
 
 <div class="mb-3">
@@ -37,7 +54,7 @@
         rows="20"
         required
         placeholder="## Első lépések"
-    >{{ guide is defined ? guide.content : '' }}</textarea>
+    >{{ old('content', guide is defined ? guide.content : '') }}</textarea>
     <div class="form-text">
         Használható például: <code>## címsor</code>, <code>**félkövér**</code>, <code>*dőlt*</code>, listák és hivatkozások.
     </div>
@@ -52,7 +69,7 @@
         id="is_active"
         name="is_active"
         value="1"
-        {{ guide is defined and guide.is_active ? 'checked' : '' }}
+        {{ old('is_active', guide is defined and guide.is_active ? '1' : '0') == '1' ? 'checked' : '' }}
     >
     <label class="form-check-label" for="is_active">Aktív, a nyilvános oldalon megjelenik</label>
 </div>

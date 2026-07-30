@@ -35,8 +35,8 @@ class ReorderGuidesRequest extends FormRequest
     {
         return [
             'guides.required' => 'A mentendő sorrend hiányzik.',
-            'guides.*.distinct' => 'Egy útmutató csak egyszer szerepelhet a sorrendben.',
-            'guides.*.exists' => 'Az egyik útmutató már nem létezik.',
+            'guides.*.distinct' => 'Egy bejegyzés csak egyszer szerepelhet a sorrendben.',
+            'guides.*.exists' => 'Az egyik bejegyzés már nem létezik.',
         ];
     }
 }

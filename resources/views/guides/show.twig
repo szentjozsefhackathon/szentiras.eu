@@ -1,12 +1,12 @@
 {% extends 'layout.twig' %}
-{% set pageTitle = guide.title ~ ' | Útmutatók | Szentírás' %}
+{% set pageTitle = guide.title ~ ' | Útmutatók/Cikkek | Szentírás' %}
 
 {% block content %}
 <article class="guide my-4">
     <nav aria-label="Morzsamenü">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/informaciok">Információk</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('guides.index') }}">Útmutatók</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('guides.index') }}">Útmutatók/Cikkek</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ guide.title }}</li>
         </ol>
     </nav>
@@ -14,7 +14,16 @@
     <div class="card shadow-sm">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
-                <h1 class="h2 mb-0">{{ guide.title }}</h1>
+                <div class="d-flex flex-column align-items-start gap-2">
+                    <h1 class="h2 mb-0">{{ guide.title }}</h1>
+                    {% if guide.tags is not empty %}
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for tag in guide.tags %}
+                                <span class="badge rounded-pill bg-secondary">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
                 {% if isEditor() %}
                     <a href="{{ route('editor.guides.edit', guide) }}" class="btn btn-sm btn-outline-secondary text-nowrap">
                         <i class="bi bi-pencil"></i> Szerkesztés

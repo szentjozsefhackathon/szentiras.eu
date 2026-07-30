@@ -4,6 +4,7 @@ namespace SzentirasHu\Test;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use SzentirasHu\Models\Guide;
+use SzentirasHu\Models\Tag;
 use SzentirasHu\Service\Editor\EditorService;
 use SzentirasHu\Test\Common\TestCase;
 
@@ -42,11 +43,17 @@ class GuideManagementTest extends TestCase
             'slug' => 'rejtett-utmutato',
             'position' => 0,
         ]);
+        $guideTag = Tag::factory()->create([
+            'name' => 'Útmutató',
+            'slug' => 'utmutato',
+        ]);
+        $firstGuide->tags()->attach($guideTag);
 
         $response = $this->get(route('guides.index'));
 
         $response->assertOk();
         $response->assertSeeInOrder([$firstGuide->title, $secondGuide->title]);
+        $response->assertSee('<span class="badge rounded-pill bg-secondary">Útmutató</span>', false);
         $response->assertDontSee('Rejtett útmutató');
     }
 
@@ -74,7 +81,7 @@ class GuideManagementTest extends TestCase
         $this->get('/informaciok')
             ->assertOk()
             ->assertSee(route('guides.index'), false)
-            ->assertSee('Útmutatók');
+            ->assertSee('Útmutatók/Cikkek');
     }
 
     public function test_non_editor_cannot_manage_guides(): void
@@ -103,7 +110,8 @@ class GuideManagementTest extends TestCase
             ->assertSee($guide->title);
         $this->get(route('editor.guides.create'))
             ->assertOk()
-            ->assertSee('Új útmutató');
+            ->assertSee('Új útmutató/cikk')
+            ->assertSee('name="tags"', false);
         $this->get(route('editor.guides.edit', $guide))
             ->assertOk()
             ->assertSee($guide->content);
@@ -114,6 +122,7 @@ class GuideManagementTest extends TestCase
         $createResponse = $this->post(route('editor.guides.store'), [
             'title' => 'A kereső használata',
             'content' => '## Keresés',
+            'tags' => 'Útmutató, Bibliaolvasás, útmutató',
             'is_active' => true,
         ]);
 
@@ -121,16 +130,22 @@ class GuideManagementTest extends TestCase
         $createResponse->assertRedirect(route('editor.guides.edit', $guide));
         $this->assertSame('a-kereso-hasznalata', $guide->slug);
         $this->assertTrue($guide->is_active);
+        $this->assertSame(
+            ['Bibliaolvasás', 'Útmutató'],
+            $guide->tags()->orderBy('name')->pluck('name')->all(),
+        );
 
         $this->put(route('editor.guides.update', $guide), [
             'title' => 'A gyorskereső használata',
             'content' => "## Gyorskeresés\n\nÚj tartalom.",
+            'tags' => 'Cikk',
             'is_active' => true,
         ])->assertRedirect(route('editor.guides.edit', $guide));
 
         $guide->refresh();
         $this->assertSame('A gyorskereső használata', $guide->title);
         $this->assertSame('a-kereso-hasznalata', $guide->slug);
+        $this->assertSame(['Cikk'], $guide->tags()->pluck('name')->all());
 
         $this->patch(route('editor.guides.toggle', $guide))
             ->assertRedirect(route('editor.guides.index'));
@@ -182,5 +197,20 @@ class GuideManagementTest extends TestCase
             'title' => '',
             'content' => '',
         ])->assertSessionHasErrors(['title', 'content']);
+    }
+
+    public function test_guide_validation_rejects_too_many_or_invalid_tags(): void
+    {
+        $this->post(route('editor.guides.store'), [
+            'title' => 'Túl sok címke',
+            'content' => 'Tartalom',
+            'tags' => implode(', ', range(1, 11)),
+        ])->assertSessionHasErrors('tags');
+
+        $this->post(route('editor.guides.store'), [
+            'title' => 'Érvénytelen címke',
+            'content' => 'Tartalom',
+            'tags' => '📖',
+        ])->assertSessionHasErrors('tags');
     }
 }

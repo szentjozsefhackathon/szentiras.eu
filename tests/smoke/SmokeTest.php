@@ -108,7 +108,7 @@ class SmokeTest extends TestCase
         $response->assertSee('get-greek-verses');
         $response->assertSee('search-greek');
         $response->assertSee('lookup-greek-word');
-        $response->assertSee('href="'.route('guides.index').'">Útmutatók</a>', false);
+        $response->assertSee('href="'.route('guides.index').'">útmutatók és cikkek</a>', false);
         $response->assertSee('között találhatsz segítséget a beállításhoz');
     }
 

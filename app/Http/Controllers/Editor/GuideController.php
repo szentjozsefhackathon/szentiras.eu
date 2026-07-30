@@ -12,13 +12,18 @@ use SzentirasHu\Http\Requests\ReorderGuidesRequest;
 use SzentirasHu\Http\Requests\StoreGuideRequest;
 use SzentirasHu\Http\Requests\UpdateGuideRequest;
 use SzentirasHu\Models\Guide;
+use SzentirasHu\Models\Tag;
 
 class GuideController extends Controller
 {
     public function index(): View
     {
         return view('editor.guides.index', [
-            'guides' => Guide::query()->orderBy('position')->orderBy('id')->get(),
+            'guides' => Guide::query()
+                ->with('tags')
+                ->orderBy('position')
+                ->orderBy('id')
+                ->get(),
         ]);
     }
 
@@ -31,16 +36,22 @@ class GuideController extends Controller
     {
         $validated = $request->validated();
 
-        $guide = Guide::query()->create([
-            'title' => $validated['title'],
-            'slug' => $this->uniqueSlug($validated['title']),
-            'content' => $validated['content'],
-            'is_active' => $request->boolean('is_active'),
-            'position' => ((int) Guide::query()->max('position')) + 1,
-        ]);
+        $guide = DB::transaction(function () use ($request, $validated): Guide {
+            $guide = Guide::query()->create([
+                'title' => $validated['title'],
+                'slug' => $this->uniqueSlug($validated['title']),
+                'content' => $validated['content'],
+                'is_active' => $request->boolean('is_active'),
+                'position' => ((int) Guide::query()->max('position')) + 1,
+            ]);
+
+            $this->syncTags($guide, $validated['tags'] ?? '');
+
+            return $guide;
+        });
 
         return redirect()->route('editor.guides.edit', $guide)
-            ->with('success', 'Az útmutató létrejött.');
+            ->with('success', 'A bejegyzés létrejött.');
     }
 
     public function show(Guide $guide): RedirectResponse
@@ -50,6 +61,8 @@ class GuideController extends Controller
 
     public function edit(Guide $guide): View
     {
+        $guide->load('tags');
+
         return view('editor.guides.edit', [
             'guide' => $guide,
         ]);
@@ -59,14 +72,18 @@ class GuideController extends Controller
     {
         $validated = $request->validated();
 
-        $guide->update([
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-            'is_active' => $request->boolean('is_active'),
-        ]);
+        DB::transaction(function () use ($guide, $request, $validated): void {
+            $guide->update([
+                'title' => $validated['title'],
+                'content' => $validated['content'],
+                'is_active' => $request->boolean('is_active'),
+            ]);
+
+            $this->syncTags($guide, $validated['tags'] ?? '');
+        });
 
         return redirect()->route('editor.guides.edit', $guide)
-            ->with('success', 'Az útmutató módosításai elmentve.');
+            ->with('success', 'A bejegyzés módosításai elmentve.');
     }
 
     public function destroy(Guide $guide): RedirectResponse
@@ -76,7 +93,7 @@ class GuideController extends Controller
         $this->normalizePositions();
 
         return redirect()->route('editor.guides.index')
-            ->with('success', 'Az útmutató törölve.');
+            ->with('success', 'A bejegyzés törölve.');
     }
 
     public function toggle(Guide $guide): RedirectResponse
@@ -86,7 +103,7 @@ class GuideController extends Controller
         ]);
 
         return redirect()->route('editor.guides.index')
-            ->with('success', $guide->is_active ? 'Az útmutató aktív.' : 'Az útmutató inaktív.');
+            ->with('success', $guide->is_active ? 'A bejegyzés aktív.' : 'A bejegyzés inaktív.');
     }
 
     public function reorder(ReorderGuidesRequest $request): JsonResponse
@@ -96,7 +113,7 @@ class GuideController extends Controller
 
         if (count($guideIds) !== count($allGuideIds)) {
             return response()->json([
-                'message' => 'A teljes útmutatólistát el kell küldeni.',
+                'message' => 'A teljes bejegyzéslistát el kell küldeni.',
             ], 422);
         }
 
@@ -113,9 +130,26 @@ class GuideController extends Controller
         ]);
     }
 
+    private function syncTags(Guide $guide, string $tagNames): void
+    {
+        $tagIds = collect(explode(',', $tagNames))
+            ->map(fn (string $tagName): string => trim($tagName))
+            ->filter()
+            ->unique(fn (string $tagName): string => Str::lower($tagName))
+            ->map(function (string $tagName): int {
+                return Tag::query()->firstOrCreate(
+                    ['slug' => Str::slug($tagName)],
+                    ['name' => $tagName],
+                )->id;
+            })
+            ->all();
+
+        $guide->tags()->sync($tagIds);
+    }
+
     private function uniqueSlug(string $title): string
     {
-        $baseSlug = Str::slug($title) ?: 'utmutato';
+        $baseSlug = Str::slug($title) ?: 'cikk';
         $slug = $baseSlug;
         $suffix = 2;
 

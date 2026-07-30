@@ -1,9 +1,9 @@
 {% extends 'layout.twig' %}
-{% set pageTitle = 'Útmutatók kezelése | Szentírás' %}
+{% set pageTitle = 'Útmutatók/cikkek kezelése | Szentírás' %}
 
 {% block pageHeader %}
 <div class="page-header mb-4">
-    <h1>Útmutatók kezelése</h1>
+    <h1>Útmutatók/cikkek kezelése</h1>
     <p class="text-muted">Húzd a sorokat a kívánt sorrendbe; a változás automatikusan mentődik.</p>
 </div>
 {% endblock %}
@@ -19,7 +19,7 @@
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <a href="{{ route('editor.guides.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Új útmutató
+        <i class="bi bi-plus-circle"></i> Új útmutató/cikk
     </a>
     <a href="{{ route('guides.index') }}" class="btn btn-outline-secondary">
         <i class="bi bi-eye"></i> Nyilvános oldal
@@ -27,7 +27,7 @@
 </div>
 
 {% if guides is empty %}
-    <div class="alert alert-info">Még nincs útmutató.</div>
+    <div class="alert alert-info">Még nincs útmutató vagy cikk.</div>
 {% else %}
     <div class="card">
         <div class="table-responsive">
@@ -49,6 +49,13 @@
                             <td>
                                 <a href="{{ route('editor.guides.edit', guide) }}" class="fw-semibold text-decoration-none">{{ guide.title }}</a>
                                 <div class="small text-muted">/utmutatok/{{ guide.slug }}</div>
+                                {% if guide.tags is not empty %}
+                                    <div class="d-flex flex-wrap gap-1 mt-2">
+                                        {% for tag in guide.tags %}
+                                            <span class="badge rounded-pill bg-secondary">{{ tag.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if guide.is_active %}
@@ -69,7 +76,7 @@
                                             <i class="bi {{ guide.is_active ? 'bi-eye-slash' : 'bi-eye' }}"></i>
                                         </button>
                                     </form>
-                                    <form action="{{ route('editor.guides.destroy', guide) }}" method="POST" onsubmit="return confirm('Biztosan törölni szeretnéd ezt az útmutatót?');">
+                                    <form action="{{ route('editor.guides.destroy', guide) }}" method="POST" onsubmit="return confirm('Biztosan törölni szeretnéd ezt a bejegyzést?');">
                                         {{ csrf_field() }}
                                         {{ method_field('DELETE') }}
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Törlés">
