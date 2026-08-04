@@ -166,11 +166,11 @@ class TextDisplayController extends Controller
             if ($scheme === 'vulgata') {
                 $canonicalRef = $this->numberingSchemeService->convertReference($canonicalRef, 'vulgata', 'default');
             }
-            if ($this->chapterRequestGuard->exceedsLimit($canonicalRef, $translation)) {
-                abort(413, 'Egyszerre legfeljebb 5 fejezet kérhető. Kérjük, bontsd a hivatkozást kisebb részekre.');
-            }
             if ($canonicalRef->isBookLevel()) {
                 return $this->bookView($translationAbbrev, $canonicalRef);
+            }
+            if ($this->chapterRequestGuard->exceedsLimit($canonicalRef, $translation)) {
+                abort(413, 'Egyszerre legfeljebb 5 fejezet kérhető. Kérjük, bontsd a hivatkozást kisebb részekre.');
             }
             $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation);
             if (empty($verseContainers) || sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {

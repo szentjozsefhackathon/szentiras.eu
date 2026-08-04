@@ -13,9 +13,15 @@ class ChapterRequestGuardTest extends FastDatabaseTestCase
             ->assertSeeText('Egyszerre legfeljebb 5 fejezet kérhető.');
     }
 
-    public function test_translated_url_rejects_a_large_whole_book_request(): void
+    public function test_whole_book_request_is_never_rejected(): void
     {
         $this->get('/TESTTRANS/Ter')
+            ->assertOk();
+    }
+
+    public function test_mixed_reference_containing_a_large_whole_book_is_rejected(): void
+    {
+        $this->get('/TESTTRANS/Ter;Kiv1')
             ->assertStatus(413)
             ->assertSeeText('Egyszerre legfeljebb 5 fejezet kérhető.');
     }
