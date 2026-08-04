@@ -1,5 +1,7 @@
 :root {
-    --book-font-size: 16px;
+    /* Relative on purpose: 1rem follows the browser's own default font size, so readers
+       who enlarge text in their browser settings get larger text here as well. */
+    --book-font-size: 1rem;
     --background-color: #fafafa;
     --text-color: #2e2e2e;
     --muted-text-color: #6c757d;
@@ -402,8 +404,10 @@
 
 @import url(autocomplete.less);
 
+/* 100% keeps the browser's configured default font size instead of overriding it with a
+   fixed pixel value. The text size stepper in the navbar sets an inline font-size here. */
 html {
-    font-size: var(--book-font-size);
+    font-size: 100%;
 }
 
 body {
@@ -453,6 +457,123 @@ a.leadChapterLink {
 
     &:hover {
         background-color: rgba(0, 0, 0, 0.05);
+    }
+}
+
+.text-size-step {
+    font-weight: bold;
+    line-height: 1;
+
+    &[aria-disabled="true"] {
+        opacity: 0.45;
+    }
+
+    .text-size-sign {
+        font-size: 0.75em;
+        vertical-align: super;
+    }
+}
+
+.readingPreferences {
+    min-width: 18rem;
+
+    legend {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Reading preferences, see readingPreferences.js. Each rule is scoped to the flowing
+   scripture text so the surrounding layout is never affected. */
+:root[data-text-font="sans"] {
+    --book-font: 'Noto Sans', sans-serif;
+}
+
+:root[data-text-font="hyperlegible"] {
+    --book-font: 'Atkinson Hyperlegible Next', 'Noto Sans', sans-serif;
+}
+
+/* Every selectable font must ship a real 600, otherwise the browser falls back to a lighter
+   face and this switch does nothing — see HYPERLEGIBLE_FONT_HREF in readingPreferences.js. */
+:root[data-text-weight="bold"] .parsedVerses {
+    font-weight: 600;
+}
+
+/* Wider tracking counters visual crowding, which is what makes text hard to resolve for
+   readers with reduced central vision. */
+:root[data-text-spacing="comfortable"] .parsedVerses {
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    word-spacing: 0.1em;
+}
+
+:root[data-text-align="left"] .parsedVerses {
+    text-align: left;
+    hyphens: manual;
+}
+
+.high-contrast-text() {
+    --text-color: #000;
+    --muted-text-color: #000;
+    --footnote-link-color: #00308f;
+    --footnote-hover-color: #00308f;
+    color: #000;
+    background-color: #fff;
+
+    a.xref,
+    a.footnote {
+        text-decoration: underline;
+    }
+}
+
+.high-contrast-text-dark() {
+    --text-color: #fff;
+    --muted-text-color: #fff;
+    --footnote-link-color: #9ec9ff;
+    --footnote-hover-color: #9ec9ff;
+    color: #fff;
+    background-color: #000;
+}
+
+:root[data-text-contrast="high"] .parsedVerses {
+    .high-contrast-text();
+}
+
+:root[data-theme="dark"][data-text-contrast="high"] .parsedVerses {
+    .high-contrast-text-dark();
+}
+
+/* Readers who asked their system for more contrast get it without opening the panel. An
+   explicit `normal` in the reading preferences opts back out. */
+@media (prefers-contrast: more) {
+    :root:not([data-text-contrast]) .parsedVerses {
+        .high-contrast-text();
+    }
+
+    :root[data-theme="dark"]:not([data-text-contrast]) .parsedVerses {
+        .high-contrast-text-dark();
+    }
+}
+
+/* Passage currently being read aloud. Uses a background plus a left rule so the cue does
+   not depend on colour perception alone. */
+.parsedVerses .speaking {
+    background-color: rgba(90, 143, 192, 0.18);
+    box-shadow: -0.25rem 0 0 rgba(74, 123, 167, 0.9);
+    border-radius: 0.125rem;
+}
+
+:root[data-theme="dark"] .parsedVerses .speaking {
+    background-color: rgba(107, 166, 214, 0.22);
+    box-shadow: -0.25rem 0 0 rgba(107, 166, 214, 0.9);
+}
+
+/* Windows high contrast mode drops background colours and shadows, so the read aloud cue
+   needs an outline to survive. */
+@media (forced-colors: active) {
+    .parsedVerses .speaking {
+        outline: 2px solid CanvasText;
+        outline-offset: 2px;
     }
 }
 
@@ -572,10 +693,12 @@ div.chapterButtons {
     }
 }
 
+/* Expressed in terms of the text size so the chapter drop cap keeps its proportion
+   when the reader enlarges the scripture text. */
 .numchapter {
-    min-height: 3rem;
-    font-size: 3rem;
-    line-height: 3rem;
+    min-height: calc(var(--book-font-size) * 3);
+    font-size: calc(var(--book-font-size) * 3);
+    line-height: calc(var(--book-font-size) * 3);
     float: left;
     clear: left;
     padding-right: 6px;
@@ -602,10 +725,9 @@ h5.bookchapter {
     display: inline;
     margin: 0px;
     padding-right: 6px;
-    line-height: 40px;
-    font-size: 42px;
+    font-size: 2.625rem;
     float: left;
-    line-height: 40px;
+    line-height: 2.5rem;
 }
 
 .hideSpinner {

@@ -35,6 +35,40 @@
                         }
                     }
                 } catch (e) {}
+                try {
+                    // Mirrors fontScale.js, applied before first paint so the text does not resize visibly
+                    var scales = [1, 1.15, 1.3, 1.5, 1.75, 2];
+                    var stored = parseFloat(localStorage.getItem('fontScale'));
+                    if (isFinite(stored) && scales.indexOf(stored) > 0) {
+                        document.documentElement.style.setProperty('--book-font-size', stored + 'rem');
+                    }
+                } catch (e) {}
+                try {
+                    // Mirrors readingPreferences.js, applied before first paint so the text does not restyle visibly
+                    var preferenceAttributes = {
+                        font: ['data-text-font', ['serif', 'sans', 'hyperlegible']],
+                        weight: ['data-text-weight', ['normal', 'bold']],
+                        spacing: ['data-text-spacing', ['normal', 'comfortable']],
+                        align: ['data-text-align', ['justify', 'left']],
+                        contrast: ['data-text-contrast', ['normal', 'high']]
+                    };
+                    var preferences = JSON.parse(localStorage.getItem('readingPreferences') || '{}');
+                    Object.keys(preferenceAttributes).forEach(function (key) {
+                        var attribute = preferenceAttributes[key][0];
+                        var allowed = preferenceAttributes[key][1];
+                        if (allowed.indexOf(preferences[key]) !== -1) {
+                            document.documentElement.setAttribute(attribute, preferences[key]);
+                        }
+                    });
+                    if (preferences.font === 'hyperlegible') {
+                        var hyperlegible = document.createElement('link');
+                        hyperlegible.rel = 'stylesheet';
+                        hyperlegible.href = 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;1,400;1,600&display=swap';
+                        hyperlegible.setAttribute('crossorigin', '');
+                        hyperlegible.setAttribute('data-font', 'hyperlegible');
+                        document.head.appendChild(hyperlegible);
+                    }
+                } catch (e) {}
             })();
         </script>
         <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico">

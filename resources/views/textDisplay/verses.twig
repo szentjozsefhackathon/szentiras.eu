@@ -86,6 +86,7 @@
             <i class="bi-chevron-contract"></i> Csak a hivatkozás szövegének megjelenítése</a>
     {% endif %}
     <span id="data" {% if scrollTo %} data-scroll-to="{{ scrollTo }}" {% endif %}></span>
+    {% include 'textDisplay.accessibilityToolbar' %}
     {% if compareTranslation and (compareVerseContainers or compareGreekVerses) %}
         {{ include('textDisplay.verseContainers', { 'compareMode': true }) }}
     {% else %}
@@ -135,31 +136,31 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex flex-wrap gap-2">
-                <button type="button" class="btn btn-sm active" id="toggleNumv" title="Versszámozás" style="background-color: #0d6efd; color: white;">
-                    <i class="bi-123"></i>
+                <button type="button" class="btn btn-sm active" id="toggleNumv" title="Versszámozás" aria-label="Versszámozás megjelenítése vagy elrejtése" style="background-color: #0d6efd; color: white;">
+                    <i class="bi-123" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="btn btn-sm active" id="toggleXrefs" title="Hivatkozások" style="background-color: #0d6efd; color: white;">
-                    <i class="bi-link-45deg"></i>
+                <button type="button" class="btn btn-sm active" id="toggleXrefs" title="Hivatkozások" aria-label="Hivatkozások megjelenítése vagy elrejtése" style="background-color: #0d6efd; color: white;">
+                    <i class="bi-link-45deg" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="btn btn-sm active" id="toggleHeadings" title="Címsorok" style="background-color: #0d6efd; color: white;">
-                    <i class="bi-card-heading"></i>
+                <button type="button" class="btn btn-sm active" id="toggleHeadings" title="Címsorok" aria-label="Címsorok megjelenítése vagy elrejtése" style="background-color: #0d6efd; color: white;">
+                    <i class="bi-card-heading" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="btn btn-sm inactive" id="toggleAiTools" title="Segédeszközök" style="background-color: transparent; color: #0d6efd; border: 1px solid #0d6efd;">
-                    <i class="bi-tools"></i>
+                <button type="button" class="btn btn-sm inactive" id="toggleAiTools" title="Segédeszközök" aria-label="Segédeszközök megjelenítése vagy elrejtése" style="background-color: transparent; color: #0d6efd; border: 1px solid #0d6efd;">
+                    <i class="bi-tools" aria-hidden="true"></i>
                 </button>
                 {% if not mediaEnabled %}
-                    <a class="btn btn-sm {{ hasMedia ? '' : 'd-none' }}" id="mediaButton" rel="nofollow" href="{{ url('/' ~ canonicalUrl ~ '?media' ~ (fullContext ? '&fullContext' : '')) }}" title="Illusztrációk megjelenítése">
-                        <i class="bi-images"></i>
+                    <a class="btn btn-sm {{ hasMedia ? '' : 'd-none' }}" id="mediaButton" rel="nofollow" href="{{ url('/' ~ canonicalUrl ~ '?media' ~ (fullContext ? '&fullContext' : '')) }}" title="Illusztrációk megjelenítése" aria-label="Illusztrációk megjelenítése">
+                        <i class="bi-images" aria-hidden="true"></i>
                     </a>
                 {% endif %}
                 {% if mediaEnabled %}
-                    <a class="btn btn-sm {{ hasMedia ? '' : 'd-none' }}" id="mediaButton" rel="nofollow" href="{{ url('/' ~ canonicalUrl ~ (fullContext ? '?fullContext' : '')) }}" title="Illusztrációk elrejtése">
-                        <i class="bi-images"></i>
+                    <a class="btn btn-sm {{ hasMedia ? '' : 'd-none' }}" id="mediaButton" rel="nofollow" href="{{ url('/' ~ canonicalUrl ~ (fullContext ? '?fullContext' : '')) }}" title="Illusztrációk elrejtése" aria-label="Illusztrációk elrejtése">
+                        <i class="bi-images" aria-hidden="true"></i>
                     </a>
                 {% endif %}
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-sm {% if compareTranslation %}active{% else %}inactive{% endif %}" data-bs-toggle="dropdown" title="Fordítások összehasonlítása" style="{% if compareTranslation %}background-color: #0d6efd; color: white;{% else %}background-color: transparent; color: #0d6efd; border: 1px solid #0d6efd;{% endif %}">
-                        <i class="bi-columns-gap"></i>
+                    <button type="button" class="btn btn-sm {% if compareTranslation %}active{% else %}inactive{% endif %}" data-bs-toggle="dropdown" title="Fordítások összehasonlítása" aria-label="Fordítások összehasonlítása" style="{% if compareTranslation %}background-color: #0d6efd; color: white;{% else %}background-color: transparent; color: #0d6efd; border: 1px solid #0d6efd;{% endif %}">
+                        <i class="bi-columns-gap" aria-hidden="true"></i>
                     </button>
                     <ul class="dropdown-menu">
                         {% if compareTranslation %}

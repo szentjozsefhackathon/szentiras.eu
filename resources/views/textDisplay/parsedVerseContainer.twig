@@ -41,8 +41,9 @@
                 data-bs-toggle="modal"
                 data-bs-target="#placeModal"
                 data-place-ids="{{ verseToPlaces[gepi]|default([])|map(arrow => arrow.place_id)|join(',') }}"
-                title="Helyek: {{ placeNames|join(', ') }}">
-            <i class="bi bi-geo-alt-fill" style="color: #28a745; margin-left: 0.25rem;"></i>
+                title="Helyek: {{ placeNames|join(', ') }}"
+                aria-label="Helyek: {{ placeNames|join(', ') }}">
+            <i class="bi bi-geo-alt-fill" style="color: #28a745; margin-left: 0.25rem;" aria-hidden="true"></i>
         </button>
     {%- endif %}
 {%- endmacro %}

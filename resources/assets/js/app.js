@@ -1,4 +1,61 @@
 import './quickSearch.js';
+import {
+    FONT_SCALES,
+    FONT_SCALE_STORAGE_KEY,
+    applyFontScale,
+    formatFontScale,
+    normalizeFontScale,
+    stepFontScale,
+} from './fontScale.js';
+import { initReadingPreferences } from './readingPreferences.js';
+
+document.addEventListener('DOMContentLoaded', initReadingPreferences);
+
+// Text size stepper: multiplies the browser's own default font size, see fontScale.js
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.text-size-step');
+    if (buttons.length === 0) return;
+
+    const status = document.querySelector('.text-size-status');
+
+    const getStoredScale = () => {
+        try {
+            return normalizeFontScale(localStorage.getItem(FONT_SCALE_STORAGE_KEY));
+        } catch (e) {
+            return FONT_SCALES[0];
+        }
+    };
+
+    const update = (scale) => {
+        const applied = applyFontScale(document.documentElement, scale);
+
+        try {
+            localStorage.setItem(FONT_SCALE_STORAGE_KEY, String(applied));
+        } catch (e) { /* private mode: the size still applies for this page view */ }
+
+        buttons.forEach((button) => {
+            const direction = parseInt(button.dataset.step, 10);
+            const name = direction > 0 ? 'Betűméret növelése' : 'Betűméret csökkentése';
+            const title = `${name} (jelenleg ${formatFontScale(applied)})`;
+            button.setAttribute('title', title);
+            button.setAttribute('aria-label', title);
+            button.setAttribute('aria-disabled', stepFontScale(applied, direction) === applied ? 'true' : 'false');
+        });
+
+        if (status) {
+            status.textContent = `Betűméret: ${formatFontScale(applied)}`;
+        }
+    };
+
+    update(getStoredScale());
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', function() {
+            const direction = parseInt(button.dataset.step, 10);
+            update(stepFontScale(getStoredScale(), direction));
+        });
+    });
+});
 
 // Theme switching functionality with three states: light, dark, system
 document.addEventListener('DOMContentLoaded', function() {
@@ -59,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title = 'Világos mód';
         }
         themeToggle.setAttribute('title', title);
+        themeToggle.setAttribute('aria-label', title);
     };
     
     // Determine next theme in cycle: light -> dark -> system -> light

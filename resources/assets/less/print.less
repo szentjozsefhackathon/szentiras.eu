@@ -6,6 +6,12 @@
     --book-font: "EB Garamond", "Noto Serif", serif;
 }
 
+/* The print sheet is laid out in absolute units, so the root size stays fixed here
+   rather than following the browser default the way the site does. */
+html {
+    font-size: 11pt;
+}
+
 a.footnote .numv {
     color: black;
     font-style: normal;

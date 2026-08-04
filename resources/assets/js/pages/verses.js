@@ -2,6 +2,7 @@ import initPdfModal from '../pdfDialog.js';
 import { VerseCardDialog } from '../verseCardDialog.js';
 import { initGreekWordPanel } from '../greekWordPanel.js';
 import { setVerseAnalysisVisibility } from '../verseAnalysis.js';
+import { initReadAloud } from '../readAloud.js';
 
 /**
  * Toggles the inline word-by-word Hungarian translation for a single Greek verse
@@ -579,5 +580,6 @@ function initMediaButtonStyling() {
 initMediaButtonStyling();
 initGreekWordPanel();
 initVerseAnalysisToggles();
+initReadAloud();
 
 scrollToVerse();

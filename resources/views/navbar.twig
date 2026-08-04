@@ -102,37 +102,39 @@
               </ul>
               <ul class="navbar-nav ms-auto">
                 <li class="nav-item my-auto">
-                    <a class="nav-link" href="/contact" title="Kapcsolatfelvétel">
-                        <i class="bi bi-envelope"></i>
+                    <a class="nav-link" href="/contact" title="Kapcsolatfelvétel" aria-label="Kapcsolatfelvétel">
+                        <i class="bi bi-envelope" aria-hidden="true"></i>
                     </a>
                 </li>
                 <li class="nav-item">
                     {% if  not session('anonymous_token') %}
                     {% set currentPath = app.request.pathInfo %}
-                    <a class="nav-link" href="/login{% if currentPath != '/login' %}?r={{ currentPath|url_encode }}{% endif %}" title="Belépés">
-                        <i class="bi bi-person bi-large"></i>
+                    <a class="nav-link" href="/login{% if currentPath != '/login' %}?r={{ currentPath|url_encode }}{% endif %}" title="Belépés" aria-label="Belépés">
+                        <i class="bi bi-person bi-large" aria-hidden="true"></i>
                     </a>
                     {% else %}
-                        <a class="nav-link" href="/profile/{{ session('anonymous_token') }}" title="{% if isEditor() %}Szerkesztő{% else %}Felhasználó{% endif %}">
+                        {% set profileLabel %}{% if isEditor() %}Szerkesztő{% else %}Felhasználó{% endif %}{% endset %}
+                        <a class="nav-link" href="/profile/{{ session('anonymous_token') }}" title="{{ profileLabel }}" aria-label="{{ profileLabel }} profil">
                             {% if isEditor() %}
-                                <i class="bi bi-person-gear bi-large" style="color: #28a745;"></i>
+                                <i class="bi bi-person-gear bi-large" style="color: #28a745;" aria-hidden="true"></i>
                                 <span class="badge bg-success ms-1" style="font-size: 0.6em;">Szerk.</span>
                             {% else %}
-                                <i class="bi bi-person-check bi-large"></i>
+                                <i class="bi bi-person-check bi-large" aria-hidden="true"></i>
                             {% endif %}
                             {% set unreadCount = unreadMessageCount() %}
                             {% if unreadCount > 0 %}
                                 <span class="badge bg-danger ms-1" style="font-size: 0.6em;">
-                                    <i class="bi bi-envelope"></i>
+                                    <i class="bi bi-envelope" aria-hidden="true"></i>
                                     {{ unreadCount }}
+                                    <span class="visually-hidden">olvasatlan üzenet</span>
                                 </span>
                             {% endif %}
                         </a>
                     {% endif %}
                 </li>
                 <li class="nav-item my-auto">
-                    <button class="btn btn-link nav-link theme-toggle" type="button" title="Sötét/világos mód váltása">
-                        <i class="bi bi-sun theme-icon"></i>
+                    <button class="btn btn-link nav-link theme-toggle" type="button" title="Sötét/világos mód váltása" aria-label="Sötét/világos mód váltása">
+                        <i class="bi bi-sun theme-icon" aria-hidden="true"></i>
                     </button>
                 </li>
              </ul>

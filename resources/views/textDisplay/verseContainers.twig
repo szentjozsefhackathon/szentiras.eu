@@ -21,8 +21,8 @@
                         data-bs-toggle="modal"
                         data-bs-target="#placeModal"
                         data-place-ids="{{ containerPlaces|map(arrow => arrow.place_id)|join(',') }}"
-                        title="Helyek megtekintése">
-                    <i class="bi bi-geo-alt-fill"></i>
+                        title="Helyek megtekintése" aria-label="Helyek megtekintése">
+                    <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
                     <span class="ms-2">Helyek megtekintése</span>
                 </button>
             </div>
@@ -105,13 +105,13 @@
                 {# Floating navigation control that appears when pagination is out of view #}
                 <div class="floating-pagination-{{ containerIndex }}" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1050; gap: 4px;">
                     {% if chapterLinks.prevLink %}
-                        <a href="/{{ chapterLinks.prevLink }}{{ mediaEnabled ? '?media' : '' }}" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.7); color: white; border-radius: 4px; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(0, 0, 0, 0.9)'; this.style.transform='scale(1.1)';" onmouseout="this.style.backgroundColor='rgba(0, 0, 0, 0.7)'; this.style.transform='scale(1)';" title="Előző {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}">
-                            <i class="bi-chevron-left"></i>
+                        <a href="/{{ chapterLinks.prevLink }}{{ mediaEnabled ? '?media' : '' }}" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.7); color: white; border-radius: 4px; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(0, 0, 0, 0.9)'; this.style.transform='scale(1.1)';" onmouseout="this.style.backgroundColor='rgba(0, 0, 0, 0.7)'; this.style.transform='scale(1)';" title="Előző {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}" aria-label="Előző {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}">
+                            <i class="bi-chevron-left" aria-hidden="true"></i>
                         </a>
                     {% endif %}
                     {% if chapterLinks.nextLink %}
-                        <a href="/{{ chapterLinks.nextLink }}{{ mediaEnabled ? '?media' : '' }}" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.7); color: white; border-radius: 4px; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(0, 0, 0, 0.9)'; this.style.transform='scale(1.1)';" onmouseout="this.style.backgroundColor='rgba(0, 0, 0, 0.7)'; this.style.transform='scale(1)';" title="Következő {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}">
-                            <i class="bi-chevron-right"></i>
+                        <a href="/{{ chapterLinks.nextLink }}{{ mediaEnabled ? '?media' : '' }}" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.7); color: white; border-radius: 4px; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(0, 0, 0, 0.9)'; this.style.transform='scale(1.1)';" onmouseout="this.style.backgroundColor='rgba(0, 0, 0, 0.7)'; this.style.transform='scale(1)';" title="Következő {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}" aria-label="Következő {{ verseContainer.book.usx_code != "PSA" ? "fejezet" : "zsoltár"}}">
+                            <i class="bi-chevron-right" aria-hidden="true"></i>
                         </a>
                     {% endif %}
                 </div>

@@ -1,0 +1,71 @@
+{#
+  Accessibility toolbar for the reading view.
+
+  Every control here affects the scripture text only, never the surrounding layout: the text
+  size stepper drives `--book-font-size`, the reading preferences set `data-text-*` attributes
+  on the root element (see readingPreferences.js), and the read aloud button speaks the
+  displayed passage. Readers who want the whole page larger have the browser's own zoom.
+#}
+<div class="accessibilityToolbar mt-2 mb-3 d-flex flex-wrap align-items-center gap-2" role="group" aria-label="Akadálymentességi eszközök">
+    {# Comparison lays the translations out side by side, where a single linear reading order does not exist #}
+    {% if not compareTranslation %}
+        <button type="button" class="btn btn-info" id="readAloudButton" aria-pressed="false" title="Felolvasás" aria-label="Felolvasás">
+            <i class="read-aloud-icon bi bi-volume-up-fill" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn btn-secondary d-none" id="readAloudStopButton" title="Felolvasás leállítása" aria-label="Felolvasás leállítása">
+            <i class="bi bi-stop-fill" aria-hidden="true"></i>
+        </button>
+        <span id="readAloudStatus" class="visually-hidden" role="status" aria-live="polite"></span>
+    {% endif %}
+
+    <div class="btn-group text-size-controls" role="group" aria-label="A szöveg betűmérete">
+        <button class="btn btn-outline-secondary text-size-step" type="button" data-step="-1" title="Betűméret csökkentése" aria-label="Betűméret csökkentése">
+            <span aria-hidden="true">A<span class="text-size-sign">−</span></span>
+        </button>
+        <button class="btn btn-outline-secondary text-size-step" type="button" data-step="1" title="Betűméret növelése" aria-label="Betűméret növelése">
+            <span aria-hidden="true">A<span class="text-size-sign">+</span></span>
+        </button>
+    </div>
+    <span class="text-size-status visually-hidden" role="status" aria-live="polite"></span>
+
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="readingPreferencesButton"
+                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                title="Olvasási beállítások" aria-label="Olvasási beállítások">
+            <i class="bi bi-type" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu readingPreferences p-3" aria-labelledby="readingPreferencesButton">
+            <fieldset class="mb-3">
+                <legend class="h6">Betűtípus</legend>
+                {% for option in [
+                    { 'value': 'serif', 'label': 'Talpas (könyvszerű)' },
+                    { 'value': 'sans', 'label': 'Talp nélküli' },
+                    { 'value': 'hyperlegible', 'label': 'Atkinson Hyperlegible' }
+                ] %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="textFont" data-preference="font"
+                               value="{{ option.value }}" id="textFont-{{ option.value }}">
+                        <label class="form-check-label" for="textFont-{{ option.value }}">{{ option.label }}</label>
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+            <fieldset>
+                <legend class="h6">Megjelenítés</legend>
+                {% for option in [
+                    { 'key': 'weight', 'on': 'bold', 'off': 'normal', 'label': 'Vastagabb betűk' },
+                    { 'key': 'spacing', 'on': 'comfortable', 'off': 'normal', 'label': 'Nagyobb sor- és betűtávolság' },
+                    { 'key': 'align', 'on': 'left', 'off': 'justify', 'label': 'Balra zárt szöveg, elválasztás nélkül' },
+                    { 'key': 'contrast', 'on': 'high', 'off': 'normal', 'label': 'Erős kontraszt' }
+                ] %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               data-preference="{{ option.key }}" data-on="{{ option.on }}" data-off="{{ option.off }}"
+                               id="textPreference-{{ option.key }}">
+                        <label class="form-check-label" for="textPreference-{{ option.key }}">{{ option.label }}</label>
+                    </div>
+                {% endfor %}
+            </fieldset>
+        </div>
+    </div>
+</div>
