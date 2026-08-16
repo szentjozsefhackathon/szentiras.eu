@@ -31,6 +31,28 @@ class AboutPageTest extends TestCase
         $response->assertSee('href="/rolunk"', false);
     }
 
+    public function test_about_page_states_the_licences(): void
+    {
+        $response = $this->get('/rolunk');
+
+        $response->assertOk();
+        $response->assertSee('a Szerzői Jogi Törvénynek megfelelően használhatók fel');
+        $response->assertSee('CC BY-SA 4.0');
+        $response->assertSee('tüntesd fel forrásként a');
+    }
+
+    public function test_informaciok_page_states_the_licences(): void
+    {
+        $response = $this->get('/informaciok');
+
+        $response->assertOk();
+        // The translations belong to their publishers, our own material is CC BY-SA.
+        $response->assertSee('A honlapon megjelenő bibliafordítások a Szerzői Jogi Törvénynek megfelelően használhatók fel.');
+        $response->assertSee('A Szentírás.eu saját anyagai (kommentárok, görög szószedet stb.)');
+        $response->assertSee('CC BY-SA 4.0');
+        $response->assertSee('tüntesd fel forrásként a');
+    }
+
     public function test_informaciok_page_links_to_developers_page(): void
     {
         $response = $this->get('/informaciok');

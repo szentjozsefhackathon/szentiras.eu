@@ -3,6 +3,7 @@
 namespace SzentirasHu\Test\Editor;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SzentirasHu\Data\Entity\AnonymousId;
 use SzentirasHu\Data\Entity\ApiKey;
 use SzentirasHu\Service\Editor\EditorService;
@@ -57,5 +58,37 @@ class ApiKeyControllerTest extends TestCase
 
         $response->assertRedirect(route('editor.apiKeys.index'));
         $this->assertDatabaseMissing('api_keys', ['id' => $key->id]);
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function keyPages(): array
+    {
+        return [
+            'index' => ['index'],
+            'create' => ['create'],
+            'show' => ['show'],
+            'edit' => ['edit'],
+        ];
+    }
+
+    #[DataProvider('keyPages')]
+    public function testKeyPagesShowAttributionAndLicenceNotice(string $page): void
+    {
+        $owner = AnonymousId::factory()->create();
+        $key = ApiKey::factory()->selfService()->create([
+            'created_by_anonymous_id' => $owner->id,
+        ]);
+
+        $response = in_array($page, ['show', 'edit'], true)
+            ? $this->get(route('editor.apiKeys.'.$page, $key))
+            : $this->get(route('editor.apiKeys.'.$page));
+
+        $response->assertOk();
+        $response->assertSee('tüntesd fel forrásként a');
+        $response->assertSee('href="https://szentiras.eu"', false);
+        $response->assertSee('a magyar szerzői jogi törvénynek megfelelően');
+        $response->assertSee('CC BY-SA 4.0');
     }
 }

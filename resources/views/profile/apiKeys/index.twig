@@ -105,6 +105,10 @@
     {% endif %}
 
     <div class="mt-4">
+        {% include 'partials.apiLicenseNotice' %}
+    </div>
+
+    <div class="mt-4">
         <a href="{{ url('/profile') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Vissza a profilhoz
         </a>

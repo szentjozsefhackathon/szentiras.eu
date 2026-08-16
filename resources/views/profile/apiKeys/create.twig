@@ -44,6 +44,8 @@
                             A kulcsra percenként {{ config('api.default_throttle', 60) }} kérés korlát vonatkozik.
                         </div>
 
+                        {% include 'partials.apiLicenseNotice' %}
+
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('profile.apiKeys.index') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Vissza a listához

@@ -64,6 +64,8 @@
                             <strong>Figyelem:</strong> A módosítások azonnal hatályba lépnek. A letiltott kulcsok már nem használhatók.
                         </div>
 
+                        {% include 'partials.apiLicenseNotice' %}
+
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('editor.apiKeys.show', key.id) }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Mégse

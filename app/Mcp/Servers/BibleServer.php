@@ -41,6 +41,12 @@ class BibleServer extends Server
 
     References use Hungarian notation: a comma separates chapter and verse (`Jn 3,16`), a
     hyphen marks a range (`1Kor 13,4-7`), and a semicolon separates books or chapters (`Jn 1;3`).
+
+    When material obtained here ends up in something published,
+    credit szentiras.eu as the source. The Hungarian Bible translations stay under their
+    publishers' copyright and may be used as Hungarian copyright law allows; szentiras.eu's own
+    material — commentaries, the Greek glossary and similar — is licensed CC BY-SA 4.0.
+    Licence details are listed at https://szentiras.eu/forditasok
     MARKDOWN;
 
     /**
