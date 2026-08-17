@@ -55,6 +55,8 @@
                             <strong>Fontos:</strong> A kulcs létrehozása után egyszer megjelenik a nyers kulcs (UUID). Másold le és tárold biztonságosan, mert később nem lesz újra lekérhető.
                         </div>
 
+                        {% include 'partials.apiLicenseNotice' %}
+
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('editor.apiKeys.index') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Vissza a listához

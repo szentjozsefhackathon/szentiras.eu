@@ -3,6 +3,7 @@
 namespace SzentirasHu\Test\Profile;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SzentirasHu\Data\Entity\AnonymousId;
 use SzentirasHu\Data\Entity\ApiKey;
 use SzentirasHu\Test\Common\TestCase;
@@ -170,5 +171,41 @@ class ApiKeyControllerTest extends TestCase
 
         $response->assertSessionHasErrors('name');
         $this->assertEquals(5, ApiKey::where('created_by_anonymous_id', $owner->id)->count());
+    }
+
+    /**
+     * Anyone who gets hold of a key must see what we ask in return: attribution, and the
+     * licence the downloaded material carries.
+     *
+     * @return array<string, array{0: string}>
+     */
+    public static function selfServiceKeyPages(): array
+    {
+        return [
+            'index' => ['index'],
+            'create' => ['create'],
+            'show' => ['show'],
+        ];
+    }
+
+    #[DataProvider('selfServiceKeyPages')]
+    public function testKeyPagesShowAttributionAndLicenceNotice(string $page): void
+    {
+        $owner = AnonymousId::factory()->create();
+        $key = ApiKey::factory()->selfService()->create([
+            'created_by_anonymous_id' => $owner->id,
+        ]);
+
+        $this->loginAs($owner);
+
+        $response = $page === 'show'
+            ? $this->get(route('profile.apiKeys.show', $key))
+            : $this->get(route('profile.apiKeys.'.$page));
+
+        $response->assertOk();
+        $response->assertSee('tüntesd fel forrásként a');
+        $response->assertSee('href="https://szentiras.eu"', false);
+        $response->assertSee('a magyar szerzői jogi törvénynek megfelelően');
+        $response->assertSee('CC BY-SA 4.0');
     }
 }
