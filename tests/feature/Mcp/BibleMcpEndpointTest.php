@@ -114,6 +114,25 @@ class BibleMcpEndpointTest extends FastDatabaseTestCase
         $this->assertTrue($response->json('result.isError'));
     }
 
+    public function test_server_instructions_ask_for_attribution_and_state_the_licences(): void
+    {
+        $response = $this->postJson('/mcp/bible', [
+            'jsonrpc' => '2.0',
+            'id' => 1,
+            'method' => 'initialize',
+            'params' => [
+                'protocolVersion' => '2025-06-18',
+                'capabilities' => [],
+                'clientInfo' => ['name' => 'test-client', 'version' => '1.0.0'],
+            ],
+        ], ['Accept' => 'application/json, text/event-stream']);
+
+        $response->assertOk();
+        $instructions = (string) $response->json('result.instructions');
+        $this->assertStringContainsString('credit szentiras.eu as the source', $instructions);
+        $this->assertStringContainsString('CC BY-SA 4.0', $instructions);
+    }
+
     public function test_api_key_may_be_supplied_as_a_query_parameter(): void
     {
         config(['api.key_required' => true]);

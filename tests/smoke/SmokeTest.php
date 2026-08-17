@@ -90,6 +90,18 @@ class SmokeTest extends TestCase
         $this->assertStringContainsString('Translation Name 1', $description);
     }
 
+    public function testTranslationListPageStatesTheLicences()
+    {
+        $response = $this->get('/forditasok');
+
+        $response->assertStatus(200);
+        // The translations belong to their publishers, our own material is CC BY-SA.
+        $response->assertSee('a Szerzői Jogi Törvény szerinti védelem alatt állnak');
+        $response->assertSee('A Szentírás.eu saját anyagai');
+        $response->assertSee('CC BY-SA 4.0');
+        $response->assertSee('tüntesd fel forrásként a');
+    }
+
     public function testBasicApi()
     {
         $this->get('/api/idezet/Ter 2,3')->assertStatus(200);
@@ -139,6 +151,26 @@ class SmokeTest extends TestCase
         $response->assertSee('önkéntesek üzemeltetik');
         $response->assertSee('href="https://szentiras.eu">szentiras.eu</a>', false);
         $response->assertSee('magyar szerzői jogi törvény szabályai');
+    }
+
+    public function testDeveloperPageShowsLicencesOfTheDownloadableMaterial()
+    {
+        $response = $this->get('/api');
+
+        $response->assertStatus(200);
+        // The translations belong to their publishers, our own material is CC BY-SA.
+        $response->assertSee('A bibliafordítások szövege a magyar szerzői jogi törvénynek megfelelően használható fel');
+        $response->assertSee('A Szentírás.eu saját anyagai');
+        $response->assertSee('CC BY-SA 4.0');
+        $response->assertSee('href="/forditasok"', false);
+    }
+
+    public function testApiKeySectionAsksForAttribution()
+    {
+        $response = $this->get('/api');
+
+        $response->assertSee('felhasználási feltételeket');
+        $response->assertSee('kérjük, nyilvános felhasználás esetén tüntesd fel a');
     }
 
     public function testDeveloperPageHasHeaderAndMetaDescription()

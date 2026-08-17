@@ -57,6 +57,20 @@ class GreekDictionaryTest extends TestCase
         $response->assertSee('λόγος');
     }
 
+    public function test_dictionary_index_states_the_licence_of_the_glossary(): void
+    {
+        $this->createStrongWord(1, 'ἀγάπη', 'agapē', 'agape');
+        $this->addMeaning(1, 'szeretet');
+
+        $response = $this->get('/gorog-szotar');
+
+        $response->assertStatus(200);
+        // The glossary is our own work, so it carries our own licence.
+        $response->assertSee('CC BY-SA 4.0');
+        $response->assertSee('a forrás (szentiras.eu) feltüntetésével');
+        $response->assertSee('href="/forditasok"', false);
+    }
+
     public function test_dictionary_filter_returns_only_matching_words(): void
     {
         $this->createStrongWord(1, 'ἀγάπη', 'agapē', 'agape');
