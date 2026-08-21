@@ -17,8 +17,50 @@ final class ChapterRequestGuard
 
     public function exceedsLimit(CanonicalReference $reference, Translation $translation): bool
     {
-        /** @var array<string, array<int, true>> $chaptersByBook */
-        $chaptersByBook = [];
+        $collected = $this->collectChapters($reference, $translation, self::MAX_CHAPTERS + 1);
+
+        return $this->chapterCount($collected) > self::MAX_CHAPTERS;
+    }
+
+    /**
+     * Returns the beginning of the requested reference, trimmed to the maximum number of
+     * chapters that can be displayed at once, so it can be offered to the user as an
+     * alternative. Returns null if nothing could be collected from the reference.
+     */
+    public function suggestReference(CanonicalReference $reference, Translation $translation): ?CanonicalReference
+    {
+        $collected = $this->collectChapters($reference, $translation, self::MAX_CHAPTERS);
+        $suggestion = new CanonicalReference([], $reference->translationId);
+
+        foreach ($collected as $book) {
+            $chapters = array_keys($book['chapters']);
+            if ($chapters === []) {
+                continue;
+            }
+            sort($chapters);
+            $bookRef = new BookRef($book['bookId']);
+            foreach ($this->groupToRanges($chapters) as [$firstChapter, $lastChapter]) {
+                $bookRef->addChapterRange(new ChapterRange(
+                    new ChapterRef($firstChapter),
+                    $firstChapter === $lastChapter ? null : new ChapterRef($lastChapter)
+                ));
+            }
+            $suggestion->addBookRef($bookRef);
+        }
+
+        return $suggestion->bookRefs === [] ? null : $suggestion;
+    }
+
+    /**
+     * Collects the distinct chapters of the reference, book by book, and stops as soon as
+     * $limit chapters have been gathered.
+     *
+     * @return array<string, array{bookId: string, chapters: array<int, true>}>
+     */
+    private function collectChapters(CanonicalReference $reference, Translation $translation, int $limit): array
+    {
+        /** @var array<string, array{bookId: string, chapters: array<int, true>}> $collected */
+        $collected = [];
 
         /** @var array<string, true> $wholeBooks */
         $wholeBooks = [];
@@ -27,16 +69,18 @@ final class ChapterRequestGuard
             $bookKey = mb_strtolower($bookRef->bookId);
 
             if ($bookRef->chapterRanges === []) {
+                if (isset($wholeBooks[$bookKey])) {
+                    continue;
+                }
                 $wholeBooks[$bookKey] = true;
-                $chaptersByBook[$bookKey] = [];
+                $collected[$bookKey] = ['bookId' => $bookRef->bookId, 'chapters' => []];
                 $chapterCount = $this->wholeBookChapterCount($bookRef->bookId, $translation);
 
                 for ($chapter = 1; $chapter <= $chapterCount; $chapter++) {
-                    $chaptersByBook[$bookKey][$chapter] = true;
-
-                    if ($this->chapterCount($chaptersByBook) > self::MAX_CHAPTERS) {
-                        return true;
+                    if ($this->chapterCount($collected) >= $limit) {
+                        return $collected;
                     }
+                    $collected[$bookKey]['chapters'][$chapter] = true;
                 }
 
                 continue;
@@ -56,24 +100,48 @@ final class ChapterRequestGuard
                 );
 
                 for ($chapter = $firstChapter; $chapter <= $lastChapter; $chapter++) {
-                    $chaptersByBook[$bookKey][$chapter] = true;
-
-                    if ($this->chapterCount($chaptersByBook) > self::MAX_CHAPTERS) {
-                        return true;
+                    if (isset($collected[$bookKey]['chapters'][$chapter])) {
+                        continue;
                     }
+                    if ($this->chapterCount($collected) >= $limit) {
+                        return $collected;
+                    }
+                    $collected[$bookKey] ??= ['bookId' => $bookRef->bookId, 'chapters' => []];
+                    $collected[$bookKey]['chapters'][$chapter] = true;
                 }
             }
         }
 
-        return false;
+        return $collected;
     }
 
     /**
-     * @param  array<string, array<int, true>>  $chaptersByBook
+     * @param  int[]  $chapters  sorted, distinct chapter numbers
+     * @return array<int, array{0: int, 1: int}>
      */
-    private function chapterCount(array $chaptersByBook): int
+    private function groupToRanges(array $chapters): array
     {
-        return array_sum(array_map('count', $chaptersByBook));
+        $ranges = [];
+        $firstChapter = $lastChapter = array_shift($chapters);
+        foreach ($chapters as $chapter) {
+            if ($chapter === $lastChapter + 1) {
+                $lastChapter = $chapter;
+                continue;
+            }
+            $ranges[] = [$firstChapter, $lastChapter];
+            $firstChapter = $lastChapter = $chapter;
+        }
+        $ranges[] = [$firstChapter, $lastChapter];
+
+        return $ranges;
+    }
+
+    /**
+     * @param  array<string, array{bookId: string, chapters: array<int, true>}>  $collected
+     */
+    private function chapterCount(array $collected): int
+    {
+        return array_sum(array_map(fn (array $book): int => count($book['chapters']), $collected));
     }
 
     private function wholeBookChapterCount(string $bookAbbrev, Translation $translation): int
