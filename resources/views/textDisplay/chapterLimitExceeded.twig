@@ -1,0 +1,23 @@
+{% extends 'layout' %}
+
+{% block meta %}
+    <meta name="robots" content="noindex,nofollow">
+{% endblock %}
+
+{% block content %}
+    <div class="card bg-light mb-3">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-book"></i> Ez a hivatkozás túl hosszú</h5>
+            <p class="card-text">
+                Egyszerre legfeljebb <b>{{ maxChapters }} fejezetet</b> tudunk megjeleníteni, a kért
+                <b>{{ requestedReference }}</b> ennél többet tartalmaz. Kérjük, bontsd a hivatkozást kisebb részekre.
+            </p>
+            {% if suggestedReference %}
+                <p class="card-text">Például így kezdheted az olvasást:</p>
+                <div>
+                    <a href="/{{ translation.abbrev }}/{{ suggestedReference }}"><i class="bi bi-arrow-right-circle"></i> {{ suggestedReference }} – {{ translation.name }}</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
