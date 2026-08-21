@@ -170,7 +170,7 @@ class TextDisplayController extends Controller
                 return $this->bookView($translationAbbrev, $canonicalRef);
             }
             if ($this->chapterRequestGuard->exceedsLimit($canonicalRef, $translation)) {
-                abort(413, 'Egyszerre legfeljebb 5 fejezet kérhető. Kérjük, bontsd a hivatkozást kisebb részekre.');
+                return $this->chapterLimitExceeded($canonicalRef, $translation);
             }
             $verseContainers = $this->textService->getTranslatedVerses($canonicalRef, $translation);
             if (empty($verseContainers) || sizeof($verseContainers) == 1 && empty($verseContainers[0]->rawVerses)) {
@@ -556,6 +556,22 @@ class TextDisplayController extends Controller
             $defaultCanonicalRef = $this->referenceService->translateReference($canonicalRef, $defaultTranslation->id);
             return $this->referenceFallback($translation, $defaultTranslation, $defaultCanonicalRef);
         }
+    }
+
+    private function chapterLimitExceeded(CanonicalReference $canonicalRef, Translation $translation)
+    {
+        $suggestedReference = $this->chapterRequestGuard->suggestReference($canonicalRef, $translation);
+        return response()->view(
+            "textDisplay.chapterLimitExceeded",
+            [
+                'translation' => $translation,
+                'maxChapters' => ChapterRequestGuard::MAX_CHAPTERS,
+                'requestedReference' => $canonicalRef->toString(),
+                'suggestedReference' => $suggestedReference ? str_replace(" ", "", $suggestedReference->toString()) : null,
+                'pageTitle' => 'Túl hosszú hivatkozás - Szentírás.eu',
+            ],
+            422
+        );
     }
 
     private function referenceFallback(Translation $requestedTranslation, Translation $defaultTranslation, CanonicalReference $defaultCanonicalRef) {
