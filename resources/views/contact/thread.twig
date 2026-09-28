@@ -23,15 +23,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="mb-1">
-                                {% if message.sender %}
-                                    <span class="badge bg-secondary">Szerkesztő</span>
-                                {% else %}
+                                {% if message.sender_anonymous_id == anonymousId.id %}
                                     <span class="badge bg-primary">Ön</span>
-                                {% endif %}
-                                {% if message.sender %}
-                                    {{ message.sender.token|slice(0, 8) }}…
                                 {% else %}
-                                    Vendég
+                                    <span class="badge bg-secondary">Szerkesztő</span>
                                 {% endif %}
                             </h6>
                             <p class="mb-0">{{ message.message|nl2br }}</p>

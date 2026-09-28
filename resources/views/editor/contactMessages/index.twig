@@ -51,7 +51,9 @@
                                 <tr class="{{ msg.isResolved() ? 'table-success' : '' }}">
                                     <td>{{ msg.id }}</td>
                                     <td>
-                                        {% if msg.sender %}
+                                        {% if msg.receiver %}
+                                            <span class="badge bg-info" title="Szerkesztő által indítva">→ {{ msg.receiver.token|slice(0, 8) }}…</span>
+                                        {% elseif msg.sender %}
                                             <span class="badge bg-primary">{{ msg.sender.token|slice(0, 8) }}…</span>
                                         {% else %}
                                             <span class="badge bg-secondary">Vendég</span>

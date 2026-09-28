@@ -17,6 +17,7 @@
                         <th>Token</th>
                         <th>Létrehozva</th>
                         <th>Utolsó bejelentkezés</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +35,11 @@
                             {% else %}
                                 <small class="text-muted text-secondary">Soha</small>
                             {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ route('editor.contactMessages.compose', anonymousId.id) }}" class="btn btn-outline-primary btn-sm" title="Üzenet küldése">
+                                <i class="bi bi-envelope"></i>
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

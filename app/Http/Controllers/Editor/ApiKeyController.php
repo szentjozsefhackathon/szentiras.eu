@@ -115,7 +115,11 @@ class ApiKeyController extends Controller
             'enabled' => 'boolean',
         ]);
 
-        $apiKey->update($validated);
+        $apiKey->update([
+            ...$validated,
+            'is_internal' => $request->boolean('is_internal'),
+            'enabled' => $request->boolean('enabled'),
+        ]);
 
         return redirect()->route('editor.apiKeys.show', $apiKey)
             ->with('success', 'API key updated successfully.');

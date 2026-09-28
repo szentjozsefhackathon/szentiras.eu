@@ -75,10 +75,11 @@ class InboxController extends Controller
             abort(403);
         }
 
-        // Mark as read if it's a received message
-        if ($message->receiver_anonymous_id === $anonymousId->id && !$message->is_read) {
-            $message->markAsRead();
-        }
+        ContactMessage::query()
+            ->where(fn ($query) => $query->where('id', $message->id)->orWhere('parent_id', $message->id))
+            ->where('receiver_anonymous_id', $anonymousId->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
 
         return view('contact.thread', [
             'message' => $message,

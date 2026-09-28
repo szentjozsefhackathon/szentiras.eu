@@ -47,6 +47,55 @@ class ApiKeyControllerTest extends TestCase
         $this->assertFalse($key->enabled);
     }
 
+    public function testUncheckedCheckboxesDisableKeyAndClearInternalFlag(): void
+    {
+        $key = ApiKey::factory()->create([
+            'is_internal' => true,
+            'enabled' => true,
+        ]);
+
+        $response = $this->put(route('editor.apiKeys.update', $key), [
+            'name' => $key->name,
+        ]);
+
+        $response->assertRedirect(route('editor.apiKeys.show', $key));
+
+        $key->refresh();
+        $this->assertFalse($key->enabled);
+        $this->assertFalse($key->is_internal);
+    }
+
+    public function testCheckedCheckboxesEnableKey(): void
+    {
+        $key = ApiKey::factory()->create([
+            'is_internal' => false,
+            'enabled' => false,
+        ]);
+
+        $this->put(route('editor.apiKeys.update', $key), [
+            'name' => $key->name,
+            'is_internal' => '1',
+            'enabled' => '1',
+        ]);
+
+        $key->refresh();
+        $this->assertTrue($key->enabled);
+        $this->assertTrue($key->is_internal);
+    }
+
+    public function testShowPageLinksToMessageOwner(): void
+    {
+        $owner = AnonymousId::factory()->create();
+        $key = ApiKey::factory()->selfService()->create([
+            'created_by_anonymous_id' => $owner->id,
+        ]);
+
+        $response = $this->get(route('editor.apiKeys.show', $key));
+
+        $response->assertOk();
+        $response->assertSee(route('editor.contactMessages.compose', $owner->id), false);
+    }
+
     public function testEditorCanDeleteSelfServiceKey(): void
     {
         $owner = AnonymousId::factory()->create();

@@ -74,9 +74,16 @@
                     </dl>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="{{ route('editor.apiKeys.edit', key.id) }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-pencil"></i> Szerkesztés
-                    </a>
+                    <div>
+                        <a href="{{ route('editor.apiKeys.edit', key.id) }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-pencil"></i> Szerkesztés
+                        </a>
+                        {% if key.createdBy %}
+                            <a href="{{ route('editor.contactMessages.compose', key.createdBy.id) }}" class="btn btn-outline-primary">
+                                <i class="bi bi-envelope"></i> Üzenet a tulajdonosnak
+                            </a>
+                        {% endif %}
+                    </div>
                     <form action="{{ route('editor.apiKeys.destroy', key.id) }}" method="POST" onsubmit="return confirm('Biztosan törölni szeretnéd ezt az API kulcsot?');">
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}

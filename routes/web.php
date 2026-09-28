@@ -206,7 +206,9 @@ Route::middleware('editor')->group(function () {
     // Contact messages editor
     Route::prefix('editor/contact-messages')->name('editor.contactMessages.')->group(function () {
         Route::get('/', [ContactMessageEditorController::class, 'index'])->name('index');
-        Route::get('/{message}', [ContactMessageEditorController::class, 'showThread'])->name('thread');
+        Route::get('/compose/{recipient}', [ContactMessageEditorController::class, 'compose'])->name('compose');
+        Route::post('/compose/{recipient}', [ContactMessageEditorController::class, 'send'])->name('send');
+        Route::get('/{message}',[ContactMessageEditorController::class, 'showThread'])->name('thread');
         Route::post('/{message}/reply', [ContactMessageEditorController::class, 'reply'])->name('reply');
         Route::post('/{message}/resolve', [ContactMessageEditorController::class, 'markResolved'])->name('resolve');
         Route::post('/{message}/delete', [ContactMessageEditorController::class, 'delete'])->name('delete');

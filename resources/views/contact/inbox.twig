@@ -31,10 +31,10 @@
                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold">
-                                    {% if thread.sender %}
-                                        <span class="badge bg-secondary me-2">Szerkesztő</span>
-                                    {% else %}
+                                    {% if thread.user_is_sender %}
                                         <span class="badge bg-light text-dark me-2">Ön</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary me-2">Szerkesztő</span>
                                     {% endif %}
                                     {{ thread.message|slice(0, 100) }}{% if thread.message|length > 100 %}…{% endif %}
                                 </div>

@@ -121,17 +121,22 @@
                             {% else %}
                                 <i class="bi bi-person-check bi-large" aria-hidden="true"></i>
                             {% endif %}
-                            {% set unreadCount = unreadMessageCount() %}
-                            {% if unreadCount > 0 %}
-                                <span class="badge bg-danger ms-1" style="font-size: 0.6em;">
-                                    <i class="bi bi-envelope" aria-hidden="true"></i>
-                                    {{ unreadCount }}
-                                    <span class="visually-hidden">olvasatlan üzenet</span>
-                                </span>
-                            {% endif %}
                         </a>
                     {% endif %}
                 </li>
+                {% if session('anonymous_token') %}
+                    {% set unreadCount = unreadMessageCount() %}
+                    {% if unreadCount > 0 %}
+                    <li class="nav-item my-auto">
+                        <a class="nav-link" href="{{ route('contact.inbox') }}" title="Olvasatlan üzenetek" aria-label="{{ unreadCount }} olvasatlan üzenet">
+                            <span class="badge bg-danger">
+                                <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+                                {{ unreadCount }}
+                            </span>
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endif %}
                 <li class="nav-item my-auto">
                     <button class="btn btn-link nav-link theme-toggle" type="button" title="Sötét/világos mód váltása" aria-label="Sötét/világos mód váltása">
                         <i class="bi bi-sun theme-icon" aria-hidden="true"></i>
