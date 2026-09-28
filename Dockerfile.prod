@@ -17,7 +17,7 @@ WORKDIR /var/www/html
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
-    cron curl
+    cron curl git
 # Add extensions not included in the base image
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN install-php-extensions gd gmp memcached pdo_pgsql pdo_mysql xdebug zip pcntl imagick exif intl
