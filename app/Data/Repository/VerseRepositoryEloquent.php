@@ -31,7 +31,6 @@ class VerseRepositoryEloquent implements VerseRepository {
         return $verses
         ->orderBy('chapter')
         ->orderBy('numv')
-        ->orderBy('tip')
         ->orderBy('id')
         ->get();
         

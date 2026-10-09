@@ -30,4 +30,32 @@ class VerseRepositoryTest extends FastDatabaseTestCase
         $this->assertEquals('Ter', $verse->book->abbrev);
     }
 
+    public function testChapterVersesKeepTheStoredOrderWithinAVerse() {
+        $repo = App::make(\SzentirasHu\Data\Repository\VerseRepositoryEloquent::class);
+
+        $poemLine = $this->createVerse(10, 8, 902, 'idézett verssor');
+        $text = $this->createVerse(10, 8, 901, 'prózai folytatás');
+
+        $verses = $repo->getTranslatedChapterVerses(99101, [10]);
+
+        $this->assertSame([$poemLine->id, $text->id], $verses->pluck('id')->all());
+    }
+
+    private function createVerse(int $chapter, int $numv, int $tip, string $content): \SzentirasHu\Data\Entity\Verse {
+        $verse = new \SzentirasHu\Data\Entity\Verse();
+        $verse->trans = 1001;
+        $verse->gepi = 101000000 + $chapter * 1000 + $numv;
+        $verse->usx_code = 'GEN';
+        $verse->book_id = 99101;
+        $verse->chapter = $chapter;
+        $verse->numv = $numv;
+        $verse->tip = $tip;
+        $verse->verse = $content;
+        $verse->verseroot = $content;
+        $verse->ido = '2025-02-05';
+        $verse->save();
+
+        return $verse;
+    }
+
 }
