@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use SzentirasHu\Http\Controllers\Ai\AiController;
 use SzentirasHu\Http\Controllers\Auth\AnonymousIdController;
 use SzentirasHu\Http\Controllers\Display\GreekDictionaryController;
@@ -292,6 +293,10 @@ Route::get('/GNT/verse-analysis/{gepi}', GreekVerseAnalysisController::class)
     ->name('greekVerseAnalysis.show')
     ->where('gepi', '[A-Z0-9]{3}_\d+_\d+');
 Route::get('/GNT/{reference?}', [GreekTextController::class, 'show'])->middleware('cacheable')->where('reference', '[^/]+');
+
+/** UF is superseded by RUF (issue #71) */
+Route::get('/{UF_ABBREV}/{REFERENCE?}', fn (Request $request) => redirect(preg_replace('#^/uf#i', '/RUF', $request->getRequestUri()), 301))
+    ->where(['UF_ABBREV' => 'UF|uf', 'REFERENCE' => '[^/]+']);
 
 /** These should come at the end to not collide with other routes! */
 Route::get('/{TRANSLATION_ABBREV}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showTranslation')
