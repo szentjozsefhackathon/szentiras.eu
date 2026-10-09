@@ -28,6 +28,32 @@ class CloudflareCacheServiceTest extends TestCase
         });
     }
 
+    public function test_purge_tags_sends_only_the_given_tags(): void
+    {
+        Http::fake([
+            'api.cloudflare.com/*' => Http::response(['success' => true], 200),
+        ]);
+
+        $this->assertTrue($this->service()->purgeTags(['text-ruf-jhn', 'text-ruf', 'text-ruf']));
+
+        Http::assertSent(function ($request) {
+            return $request['tags'] === ['text-ruf-jhn', 'text-ruf']
+                && ! isset($request['purge_everything']);
+        });
+    }
+
+    public function test_purge_tags_splits_large_tag_lists(): void
+    {
+        Http::fake([
+            'api.cloudflare.com/*' => Http::response(['success' => true], 200),
+        ]);
+
+        $tags = array_map(fn (int $number): string => "tag-{$number}", range(1, 31));
+        $this->assertTrue($this->service()->purgeTags($tags));
+
+        Http::assertSentCount(2);
+    }
+
     public function test_purge_is_skipped_when_not_configured(): void
     {
         Http::fake();

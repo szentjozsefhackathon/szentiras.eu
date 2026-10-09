@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Translation;
+use SzentirasHu\Service\Cdn\CacheTagCollector;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ReferenceService;
 use SzentirasHu\Service\VerseContainer;
@@ -31,7 +32,7 @@ class TextService
      */
     private $verseRepository;
 
-    function __construct(ReferenceService $referenceService, BookRepository $bookRepository, VerseRepository $verseRepository)
+    function __construct(ReferenceService $referenceService, BookRepository $bookRepository, VerseRepository $verseRepository, protected CacheTagCollector $cacheTagCollector)
     {
         $this->referenceService = $referenceService;
         $this->bookRepository = $bookRepository;
@@ -46,11 +47,10 @@ class TextService
      */
     public function getTranslatedVerses(CanonicalReference $canonicalRef, Translation $translation, $verseTypes = [])
     {
-        // replace spaces with underscores
-        $cacheKey = "getTranslatedVerses_".base64_encode($canonicalRef->toString())."_".$translation->abbrev;
+        $cacheKey = $this->getTranslatedVersesCacheKey($canonicalRef, $translation);
         // TODO cache if verse types are specified as well
         if (empty($verseTypes) && Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
+            return $this->tagVerseContainers(Cache::get($cacheKey), $translation);
         }
         $translatedRef = $this->referenceService->translateReference($canonicalRef, $translation->id);
         $verseContainers = [];
@@ -78,7 +78,41 @@ class TextService
         if (empty(($verseTypes))) {
             Cache::forever($cacheKey, $verseContainers);
         }
+        return $this->tagVerseContainers($verseContainers, $translation);
+    }
+
+    /**
+     * Record the shown books as CDN cache tags of the current response.
+     *
+     * @param VerseContainer[] $verseContainers
+     * @return VerseContainer[]
+     */
+    private function tagVerseContainers(array $verseContainers, Translation $translation): array
+    {
+        foreach ($verseContainers as $verseContainer) {
+            $this->cacheTagCollector->add(CacheTagCollector::textTag($translation->abbrev, (string) $verseContainer->book->usx_code));
+        }
         return $verseContainers;
+    }
+
+    /**
+     * The key includes the translation's text version, so bumping the version
+     * invalidates every cached reference of that translation at once.
+     */
+    public function getTranslatedVersesCacheKey(CanonicalReference $canonicalRef, Translation $translation): string
+    {
+        $textVersion = Cache::rememberForever("textVersion_{$translation->id}", fn (): string => '0');
+
+        return "getTranslatedVerses_{$textVersion}_".base64_encode($canonicalRef->toString())."_".$translation->abbrev;
+    }
+
+    /**
+     * Drop the cached texts of one translation after its stored verses changed, leaving the rest of the cache intact.
+     */
+    public function invalidateTranslationTexts(Translation $translation): void
+    {
+        Cache::forever("textVersion_{$translation->id}", uniqid('', true));
+        Cache::forget("bookHeaders_{$translation->abbrev}");
     }
 
     public function getChapterRangeVerses(?ChapterRange $chapterRange, Book $book, $searchedChapters, $verseTypes = [])

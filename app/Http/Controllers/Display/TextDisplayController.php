@@ -30,6 +30,8 @@ use View;
 use SzentirasHu\Service\Reference\NumberingSchemeService;
 use SzentirasHu\Service\Editor\EditorService;
 use SzentirasHu\Service\Ai\CommentaryService;
+use SzentirasHu\Service\Cdn\CacheTagCollector;
+
 
 
 /**
@@ -72,7 +74,7 @@ class TextDisplayController extends Controller
      * @var \SzentirasHu\Service\Ai\CommentaryService
      */
     private $commentaryService;
-    function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository, VerseRepository $verseRepository, ReadingPlanRepository $readingPlanRepository, ReferenceService $referenceService, TextService $textService, NumberingSchemeService $numberingSchemeService, CommentaryService $commentaryService, protected BookService $bookService, protected TranslationService $translationService, protected EditorService $editorService, protected ChapterRequestGuard $chapterRequestGuard)
+    function __construct(TranslationRepository $translationRepository, BookRepository $bookRepository, VerseRepository $verseRepository, ReadingPlanRepository $readingPlanRepository, ReferenceService $referenceService, TextService $textService, NumberingSchemeService $numberingSchemeService, CommentaryService $commentaryService, protected BookService $bookService, protected TranslationService $translationService, protected EditorService $editorService, protected ChapterRequestGuard $chapterRequestGuard, protected CacheTagCollector $cacheTagCollector)
     {
         $this->translationRepository = $translationRepository;
         $this->bookRepository = $bookRepository;
@@ -109,6 +111,7 @@ class TextDisplayController extends Controller
         if (!$allTranslation->contains($translation)) {
             return $this->handleDisabledTranslations($translation);
         }
+        $this->cacheTagCollector->add(CacheTagCollector::translationTag($translation->abbrev));
         $books = $this->translationRepository->getBooks($translation);
         $bookHeaders = [];
         $toc = request()->has("toc");

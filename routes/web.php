@@ -12,6 +12,7 @@ use SzentirasHu\Http\Controllers\Editor\ApiKeyController;
 use SzentirasHu\Http\Controllers\Editor\ThemeController;
 use SzentirasHu\Http\Controllers\Editor\CommentaryEditorController;
 use SzentirasHu\Http\Controllers\Editor\StrongWordEditorController;
+use SzentirasHu\Http\Controllers\Editor\VerseFixEditorController;
 use SzentirasHu\Http\Controllers\Editor\ContactMessageEditorController;
 use SzentirasHu\Http\Controllers\Editor\GuideController as EditorGuideController;
 use SzentirasHu\Http\Controllers\Contact\ContactController;
@@ -231,6 +232,16 @@ Route::middleware('editor')->group(function () {
         Route::get('/{strongWord}', [StrongWordEditorController::class, 'show'])->name('show');
         Route::put('/{strongWord}', [StrongWordEditorController::class, 'update'])->name('update');
         Route::post('/{strongWord}/generate', [StrongWordEditorController::class, 'generate'])->name('generate');
+    });
+
+    // Verse text fixes editor
+    Route::prefix('editor/verse-fixes')->name('editor.verseFixes.')->group(function () {
+        Route::get('/', [VerseFixEditorController::class, 'index'])->name('index');
+        Route::get('/create', [VerseFixEditorController::class, 'create'])->name('create');
+        Route::post('/', [VerseFixEditorController::class, 'store'])->name('store');
+        Route::get('/{verseFix}', [VerseFixEditorController::class, 'edit'])->name('edit');
+        Route::put('/{verseFix}', [VerseFixEditorController::class, 'update'])->name('update');
+        Route::post('/{verseFix}/disable', [VerseFixEditorController::class, 'disable'])->name('disable');
     });
 
     // Themes editor

@@ -1,0 +1,237 @@
+{% extends 'layout.twig' %}
+{% set target = verseFix ?? verse %}
+{% set referenceLabel = bookAbbrev ~ ' ' ~ target.chapter ~ ',' ~ target.numv %}
+{% set pageTitle = referenceLabel ~ ' javítása | Szentírás' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1>{{ referenceLabel }} <small class="text-muted">{{ translation.abbrev }}</small></h1>
+            <p class="text-muted mb-0">
+                <span class="badge bg-light text-dark">tip: {{ target.tip }}</span>
+                {% if verseFix %}
+                    <span class="badge {{ verseFix.status.badgeClass() }}">{{ verseFix.status.label() }}</span>
+                    {% if verseFix.last_applied_at %}
+                        <small>utoljára alkalmazva: {{ verseFix.last_applied_at|date('Y-m-d H:i') }}</small>
+                    {% endif %}
+                {% endif %}
+                <a href="/{{ translation.abbrev }}/{{ bookAbbrev }}{{ target.chapter }},{{ target.numv }}" target="_blank" class="ms-2">Megnyitás az oldalon <i class="bi bi-box-arrow-up-right"></i></a>
+            </p>
+        </div>
+        <a href="{{ route('editor.verseFixes.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Vissza a listához
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if session('success') %}
+    <div class="alert alert-success"><i class="bi bi-check-circle"></i> {{ session('success') }}</div>
+{% endif %}
+{% if errors.any() %}
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            {% for error in errors.all() %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% if verseFix and verseFix.status.value == 'conflict' %}
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i>
+        Az utolsó betöltés után sem az eredeti, sem a javított szöveg nem található a versben: a forrás szövege megváltozott.
+        Válassza ki lent az új alapszöveget, és mentse újra a javítást, vagy kapcsolja ki.
+    </div>
+{% elseif verseFix and verseFix.status.value == 'resolved_upstream' %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        A forrás már a javított szöveget tartalmazza, ezt a javítást nem kell többé alkalmazni.
+    </div>
+{% endif %}
+
+{% set originalText = verseFix ? verseFix.original_text : verse.verse %}
+
+<div class="card mb-4">
+    <div class="card-header bg-light"><h5 class="mb-0">Javítás</h5></div>
+    <div class="card-body">
+        <form method="POST" action="{{ verseFix ? route('editor.verseFixes.update', verseFix.id) : route('editor.verseFixes.store') }}" id="verse-fix-form">
+            {{ csrf_field() }}
+            {% if verseFix %}
+                {{ method_field('PUT') }}
+            {% else %}
+                <input type="hidden" name="verse_id" value="{{ verse.id }}">
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="original_text" class="form-label">Eredeti szöveg (a forrásból)</label>
+                <textarea class="form-control font-monospace" id="original_text" rows="4" readonly>{{ originalText }}</textarea>
+            </div>
+
+            {% if verseFix and targetVerses|length > 0 and verseFix.status.value != 'active' %}
+                <div class="mb-3">
+                    <label class="form-label">Új alapszöveg választása (a jelenleg tárolt szövegek közül)</label>
+                    <div class="form-check">
+                        <input class="form-check-input base-verse" type="radio" name="base_verse_id" id="base_verse_none" value="" data-text="{{ verseFix.original_text }}" checked>
+                        <label class="form-check-label" for="base_verse_none">Az eredeti szöveg megtartása</label>
+                    </div>
+                    {% for targetVerse in targetVerses %}
+                        <div class="form-check">
+                            <input class="form-check-input base-verse" type="radio" name="base_verse_id" id="base_verse_{{ targetVerse.id }}" value="{{ targetVerse.id }}" data-text="{{ targetVerse.verse }}" {{ old('base_verse_id') == targetVerse.id ? 'checked' }}>
+                            <label class="form-check-label" for="base_verse_{{ targetVerse.id }}"><code class="text-body">{{ targetVerse.verse }}</code></label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="fixed_text" class="form-label">Javított szöveg <span class="text-danger">*</span></label>
+                <textarea class="form-control font-monospace" id="fixed_text" name="fixed_text" rows="6" required>{{ old('fixed_text', verseFix ? verseFix.fixed_text : verse.verse) }}</textarea>
+                <div class="form-text">A szöveg a forrás jelölőivel (pl. HTML-címkék, lábjegyzetjelek) együtt kerül tárolásra.</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Változások</label>
+                <div id="fix-diff" class="border rounded p-2 bg-body-tertiary font-monospace small"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="note" class="form-label">Megjegyzés (pl. a GitHub-jegy címe)</label>
+                <textarea class="form-control" id="note" name="note" rows="2" maxlength="2000">{{ old('note', verseFix ? verseFix.note : '') }}</textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Mentés és alkalmazás
+                </button>
+            </div>
+        </form>
+
+        {% if verseFix and verseFix.status.value == 'active' %}
+            <form method="POST" action="{{ route('editor.verseFixes.disable', verseFix.id) }}" class="mt-2 d-flex justify-content-end"
+                  onsubmit="return confirm('Biztosan kikapcsolja a javítást? Az eredeti szöveg visszaáll.');">
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-x-circle"></i> Kikapcsolás (eredeti visszaállítása)
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+{% if verseFix %}
+<div class="card mb-4">
+    <div class="card-header bg-light"><h5 class="mb-0">Előzmények</h5></div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Időpont</th>
+                        <th>Forrás</th>
+                        <th>Állapot</th>
+                        <th>Javított szöveg</th>
+                        <th>Megjegyzés</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for revision in verseFix.revisions %}
+                        <tr>
+                            <td class="text-nowrap"><small>{{ revision.created_at|date('Y-m-d H:i') }}</small></td>
+                            <td><small>{{ revision.source == 'import' ? 'betöltés' : 'szerkesztő' }}</small></td>
+                            <td><span class="badge {{ revision.status.badgeClass() }}">{{ revision.status.label() }}</span></td>
+                            <td><code class="text-body small">{{ revision.fixed_text }}</code></td>
+                            <td><small class="text-muted">{{ revision.note }}</small></td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-secondary load-revision" data-text="{{ revision.fixed_text }}">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Betöltés
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const originalField = document.getElementById('original_text');
+    const fixedField = document.getElementById('fixed_text');
+    const diffBox = document.getElementById('fix-diff');
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function diffWords(before, after) {
+        const a = before.split(/(\s+)/);
+        const b = after.split(/(\s+)/);
+        const lengths = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+        for (let i = a.length - 1; i >= 0; i--) {
+            for (let j = b.length - 1; j >= 0; j--) {
+                lengths[i][j] = a[i] === b[j] ? lengths[i + 1][j + 1] + 1 : Math.max(lengths[i + 1][j], lengths[i][j + 1]);
+            }
+        }
+        let html = '';
+        let i = 0;
+        let j = 0;
+        while (i < a.length && j < b.length) {
+            if (a[i] === b[j]) {
+                html += escapeHtml(a[i]);
+                i++;
+                j++;
+            } else if (lengths[i + 1][j] >= lengths[i][j + 1]) {
+                html += '<del class="text-danger">' + escapeHtml(a[i++]) + '</del>';
+            } else {
+                html += '<ins class="text-success">' + escapeHtml(b[j++]) + '</ins>';
+            }
+        }
+        while (i < a.length) {
+            html += '<del class="text-danger">' + escapeHtml(a[i++]) + '</del>';
+        }
+        while (j < b.length) {
+            html += '<ins class="text-success">' + escapeHtml(b[j++]) + '</ins>';
+        }
+        return html;
+    }
+
+    function renderDiff() {
+        diffBox.innerHTML = originalField.value === fixedField.value
+            ? '<span class="text-muted">Nincs eltérés az eredetitől.</span>'
+            : diffWords(originalField.value, fixedField.value);
+    }
+
+    fixedField.addEventListener('input', renderDiff);
+
+    document.querySelectorAll('.base-verse').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            originalField.value = radio.dataset.text;
+            renderDiff();
+        });
+    });
+
+    document.querySelectorAll('.load-revision').forEach(function (button) {
+        button.addEventListener('click', function () {
+            fixedField.value = button.dataset.text;
+            renderDiff();
+            fixedField.focus();
+        });
+    });
+
+    const checkedBase = document.querySelector('.base-verse:checked');
+    if (checkedBase) {
+        originalField.value = checkedBase.dataset.text;
+    }
+    renderDiff();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends 'layout.twig' %}
+{% set pageTitle = 'Szövegjavítások | Szentírás' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Szövegjavítások</h1>
+    <p class="text-muted">
+        Versszövegek kézi javításai. A javítás mentéskor azonnal érvénybe lép, és minden szövegbetöltés (importálás) után újra alkalmazzuk.
+    </p>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if session('success') %}
+    <div class="alert alert-success"><i class="bi bi-check-circle"></i> {{ session('success') }}</div>
+{% endif %}
+
+<div class="verse-fixes-editor">
+    <div class="card mb-4">
+        <div class="card-header bg-light"><h5 class="mb-0">Új javítás: vers keresése</h5></div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('editor.verseFixes.index') }}" class="row g-2">
+                <div class="col-md-4">
+                    <select name="translation_id" class="form-select" aria-label="Fordítás">
+                        <option value="">Fordítás…</option>
+                        {% for translation in translations %}
+                            <option value="{{ translation.id }}" {{ translationId == translation.id ? 'selected' }}>{{ translation.name }} ({{ translation.abbrev }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" name="reference" value="{{ reference }}" placeholder="Hivatkozás, pl. Jn 3,16">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-search"></i> Vers betöltése</button>
+                </div>
+            </form>
+
+            {% if lookupError %}
+                <div class="alert alert-warning mt-3 mb-0">{{ lookupError }}</div>
+            {% endif %}
+
+            {% if lookupVerses|length > 0 %}
+                <div class="table-responsive mt-3">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Hely</th>
+                                <th>Típus</th>
+                                <th>Szöveg</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in lookupVerses %}
+                                <tr>
+                                    <td class="text-nowrap">{{ item.verse.book.abbrev }} {{ item.verse.chapter }},{{ item.verse.numv }}</td>
+                                    <td class="text-nowrap"><small class="text-muted">{{ item.verse.getType() }} ({{ item.verse.tip }})</small></td>
+                                    <td><code class="text-body">{{ item.verse.verse }}</code></td>
+                                    <td class="text-nowrap">
+                                        {% if item.verseFix %}
+                                            <a href="{{ route('editor.verseFixes.edit', item.verseFix.id) }}" class="btn btn-sm btn-outline-secondary">
+                                                <span class="badge {{ item.verseFix.status.badgeClass() }}">{{ item.verseFix.status.label() }}</span> Javítás megnyitása
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ route('editor.verseFixes.create', {'verse_id': item.verse.id}) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i> Javítás
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="GET" action="{{ route('editor.verseFixes.index') }}" class="row g-2 mb-3">
+        <div class="col-md-4">
+            <select name="translation_id" class="form-select" aria-label="Szűrés fordításra">
+                <option value="">Minden fordítás</option>
+                {% for translation in translations %}
+                    <option value="{{ translation.id }}" {{ translationId == translation.id ? 'selected' }}>{{ translation.abbrev }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select name="status" class="form-select" aria-label="Szűrés állapotra">
+                <option value="">Minden állapot</option>
+                {% for statusOption in statuses %}
+                    <option value="{{ statusOption.value }}" {{ status and status.value == statusOption.value ? 'selected' }}>{{ statusOption.label() }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-outline-secondary w-100"><i class="bi bi-funnel"></i> Szűrés</button>
+        </div>
+    </form>
+
+    {% if verseFixes.count() > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fordítás</th>
+                        <th>Hely</th>
+                        <th>Állapot</th>
+                        <th>Javított szöveg</th>
+                        <th>Megjegyzés</th>
+                        <th>Módosítva</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for verseFix in verseFixes %}
+                        <tr>
+                            <td>{{ verseFix.translation.abbrev ?? verseFix.translation_id }}</td>
+                            <td class="text-nowrap">{{ bookAbbrevs[verseFix.translation_id ~ '_' ~ verseFix.usx_code] ?? verseFix.usx_code }} {{ verseFix.chapter }},{{ verseFix.numv }}</td>
+                            <td><span class="badge {{ verseFix.status.badgeClass() }}">{{ verseFix.status.label() }}</span></td>
+                            <td><small>{{ verseFix.fixed_text|striptags|str_limit(120, '…') }}</small></td>
+                            <td><small class="text-muted">{{ verseFix.note|str_limit(80, '…') }}</small></td>
+                            <td class="text-nowrap"><small>{{ verseFix.updated_at|date('Y-m-d H:i') }}</small></td>
+                            <td>
+                                <a href="{{ route('editor.verseFixes.edit', verseFix.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Szerkesztés
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if verseFixes.hasPages() %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if verseFixes.onFirstPage() %}
+                    <li class="page-item disabled"><span class="page-link">Előző</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="{{ verseFixes.previousPageUrl() }}">Előző</a></li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">{{ verseFixes.currentPage() }} / {{ verseFixes.lastPage() }}</span>
+                </li>
+                {% if verseFixes.hasMorePages() %}
+                    <li class="page-item"><a class="page-link" href="{{ verseFixes.nextPageUrl() }}">Következő</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Következő</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> Nincs még szövegjavítás.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

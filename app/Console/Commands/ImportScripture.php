@@ -27,6 +27,7 @@ use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Verse;
 use SzentirasHu\Data\UsxCodes;
 use SzentirasHu\Data\ProtestantBookNames;
+use SzentirasHu\Service\Text\VerseFixService;
 
 define('BOOKCODE', 'gepi');
 define('BOOKABBREV', 'rov');
@@ -95,7 +96,6 @@ class ImportScripture extends Command
      */
     public function handle(): int
     {
-        Artisan::call("cache:clear");
         if (!$this->option('no-hunspell')) {
             $this->testHunspell();
         }
@@ -159,9 +159,27 @@ class ImportScripture extends Command
 
             $this->info("Versek tárolása...");
             $this->storeVerses($translation, $verseInserts);
+
+            $this->reapplyVerseFixes($translation);
         });
+        // Cleared only now, while the site is still down: clearing before the import
+        // let visitors re-cache the old texts during the (long) import.
+        Artisan::call('cache:clear');
         Artisan::call('up');
         $this->info("Adatok sikeresen elmentve.");
+    }
+
+    /**
+     * Apply the manual verse text fixes again on the freshly imported texts.
+     */
+    protected function reapplyVerseFixes(Translation $translation): void
+    {
+        $this->info("Szövegjavítások alkalmazása...");
+        $statusCounts = $this->laravel->make(VerseFixService::class)->reapplyForTranslation($translation->id);
+        $this->table(['Állapot', 'Javítások'], collect($statusCounts)->map(fn (int $count, string $status): array => [$status, $count])->values()->all());
+        if ($statusCounts['conflict'] > 0) {
+            $this->warn("{$statusCounts['conflict']} szövegjavítás ütközik a betöltött szöveggel, ellenőrizd a szerkesztőfelületen.");
+        }
     }
 
     protected function storeBooks(Translation $translation, array $bookInserts): void

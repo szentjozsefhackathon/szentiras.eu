@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Spatie\FlareClient\Api;
 use SzentirasHu\Service\Ai\AiPromptService;
+use SzentirasHu\Service\Cdn\CacheTagCollector;
 use SzentirasHu\Service\Cdn\CloudflareCacheService;
 use SzentirasHu\Service\Editor\EditorService;
 use Twig\Environment;
@@ -96,6 +97,8 @@ class AppServiceProvider extends ServiceProvider
         });
         
         $this->app->alias(AiPromptService::class, 'ai-prompt');
+
+        $this->app->scoped(CacheTagCollector::class);
 
         $this->app->bind(CloudflareCacheService::class, function ($app) {
             return new CloudflareCacheService(

@@ -5,14 +5,17 @@ namespace SzentirasHu\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use SzentirasHu\Service\Cdn\CacheTagCollector;
 
 /**
  * Makes anonymous, read-only responses safe to store in a shared (CDN) cache.
  *
  * For routes flagged with the "cacheable" middleware, an anonymous visitor (no
  * anonymous_token cookie) receives a cookie-free "Cache-Control: public"
- * response that Cloudflare can cache. Visitors carrying an anonymous_token get
- * a private, non-stored response so their personalised page is never shared.
+ * response that Cloudflare can cache, tagged with the texts it shows
+ * (Cache-Tag header) so a text change purges only the affected pages.
+ * Visitors carrying an anonymous_token get a private, non-stored response so
+ * their personalised page is never shared.
  *
  * This middleware must run outside Laravel's session middleware (prepended to
  * the web group) so the session and queued cookies have already been attached
@@ -20,6 +23,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CacheAnonymousResponse
 {
+    public function __construct(
+        protected CacheTagCollector $cacheTagCollector,
+    ) {}
+
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
@@ -46,6 +53,11 @@ class CacheAnonymousResponse
             $response->setPublic();
             $response->setMaxAge($browserMaxAge);
             $response->setSharedMaxAge($cdnMaxAge);
+
+            $cacheTags = $this->cacheTagCollector->all();
+            if ($cacheTags !== []) {
+                $response->headers->set('Cache-Tag', implode(',', $cacheTags));
+            }
         } else {
             $response->setPrivate();
             $response->headers->addCacheControlDirective('no-store');

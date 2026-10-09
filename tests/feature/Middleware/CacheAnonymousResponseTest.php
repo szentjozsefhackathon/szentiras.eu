@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 use SzentirasHu\Http\Middleware\CacheAnonymousResponse;
+use SzentirasHu\Service\Cdn\CacheTagCollector;
 use SzentirasHu\Test\Common\TestCase;
 
 class CacheAnonymousResponseTest extends TestCase
 {
     private function handle(Request $request, Response $response): Response
     {
-        return (new CacheAnonymousResponse())->handle($request, fn () => $response);
+        return $this->app->make(CacheAnonymousResponse::class)->handle($request, fn () => $response);
     }
 
     private function cacheableGet(): Request
@@ -41,6 +42,27 @@ class CacheAnonymousResponseTest extends TestCase
         $this->assertStringContainsString('max-age=' . config('page_cache.browser_max_age'), $cacheControl);
         $this->assertEmpty($result->headers->getCookies());
         $this->assertNull($result->headers->get('Set-Cookie'));
+    }
+
+    public function test_anonymous_cacheable_get_carries_collected_cache_tags(): void
+    {
+        $this->app->make(CacheTagCollector::class)->add('text-szit-luk');
+        $this->app->make(CacheTagCollector::class)->add('text-szit');
+
+        $result = $this->handle($this->cacheableGet(), new Response('ok', 200));
+
+        $this->assertSame('text-szit-luk,text-szit', $result->headers->get('Cache-Tag'));
+    }
+
+    public function test_private_response_carries_no_cache_tags(): void
+    {
+        $this->app->make(CacheTagCollector::class)->add('text-szit-luk');
+        $request = $this->cacheableGet();
+        $request->cookies->set('anonymous_token', 'some-token');
+
+        $result = $this->handle($request, new Response('ok', 200));
+
+        $this->assertNull($result->headers->get('Cache-Tag'));
     }
 
     public function test_visitor_with_anonymous_token_gets_private_response(): void

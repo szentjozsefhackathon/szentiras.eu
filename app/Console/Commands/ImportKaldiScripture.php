@@ -13,6 +13,7 @@ use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Data\Entity\Verse;
 use SzentirasHu\Data\UsxCodes;
+use SzentirasHu\Service\Text\VerseFixService;
 
 class ImportKaldiScripture extends Command
 {
@@ -107,7 +108,6 @@ class ImportKaldiScripture extends Command
             \Laravel\Telescope\Telescope::stopRecording();
         }
 
-        Artisan::call('cache:clear');
         DB::connection()->disableQueryLog();
 
         $translationAbbrev = (string) $this->option('translation');
@@ -189,6 +189,12 @@ class ImportKaldiScripture extends Command
             );
             $this->releaseMemoryAfterBook();
         }
+
+        $this->info('Szövegjavítások alkalmazása...');
+        $statusCounts = $this->laravel->make(VerseFixService::class)->reapplyForTranslation($translation->id);
+        $this->table(['Állapot', 'Javítások'], collect($statusCounts)->map(fn (int $count, string $status): array => [$status, $count])->values()->all());
+
+        Artisan::call('cache:clear');
 
         $this->info('Kaldi import finished successfully.');
         $this->info('Reindex Sphinx so search picks up the changes: touch /opt/sphinx/trigger/indexer in the sphinx container (the watcher reindexes within ~30s), or restart the sphinx container for a full rebuild.');
