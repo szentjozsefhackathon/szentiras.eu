@@ -14,7 +14,7 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
                     <div class="alert alert-primary" role="alert">
                         Regisztráció/belépés nélkül is használhatod a szemantikus keresőt, de egy munkamenetben legfeljebb {{ config_get('settings.ai.unregisteredSearchLimit') }} keresést végezhetsz. 
                         Eddig {{ session_get('semanticSearchCalls', 0) }} keresést végeztél.
-                        Ha többre van szükséged, <a href="/login{% set currentPath = app.request.pathInfo %}{% if currentPath != '/login' %}?r={{ currentPath|url_encode }}{% endif %}">lépj be</a> vagy <a href="/register{% if currentPath != '/register' %}?r={{ currentPath|url_encode }}{% endif %}">regisztrálj</a>, ha még nem tetted</a>!
+                        Ha többre van szükséged, <a href="/login?r={{ '/ai-search'|url_encode }}">lépj be</a> vagy <a href="/register?r={{ '/ai-search'|url_encode }}">regisztrálj</a>, ha még nem tetted</a>!
                     </div>
                     {%  if not form.captchaValidated %}
                         <div class="cf-turnstile" data-sitekey="{{ config_get('services.cloudflare_turnstile.site_key') }}"></div>
