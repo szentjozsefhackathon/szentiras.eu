@@ -46,7 +46,7 @@ else
     echo "🔄 Building Docker image for commit $GIT_SHORT_HASH..."
     
     # Build with git hash as build argument
-    APP_DOMAIN=szentiras.eu GIT_COMMIT_HASH=$GIT_FULL_HASH docker compose -f docker-compose.prod.yml build app
+    APP_DOMAIN=szentiras.eu GIT_COMMIT_HASH=$GIT_FULL_HASH docker compose -f docker-compose.prod.yml build --pull app
     docker save szeu-app-prod:latest | gzip > "$FILE_PATH"
     
     echo "✅ Docker image saved to $FILE_PATH"
