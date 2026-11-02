@@ -76,6 +76,11 @@ class AppServiceProvider extends ServiceProvider
 
             return \Illuminate\Cache\RateLimiting\Limit::perMinute($rate)->by($apiKey->id);
         });
+
+        // The public reference data is served from the CDN; this only shields the origin.
+        RateLimiter::for('reference_data', function ($request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(60)->by($request->ip());
+        });
     }
 
     /**
