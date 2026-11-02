@@ -7,9 +7,12 @@ use OpenAI\Laravel\Facades\OpenAI;
 use Pgvector\Laravel\Vector;
 use Redirect;
 use SzentirasHu\Http\Controllers\Controller;
+use SzentirasHu\Http\Requests\ExtendedSearchApiRequest;
 use SzentirasHu\Http\Requests\GreekSearchApiRequest;
 use SzentirasHu\Http\Requests\SearchApiRequest;
 use SzentirasHu\Service\Reference\ParsingException;
+use SzentirasHu\Service\Search\ExtendedSearchHit;
+use SzentirasHu\Service\Search\ExtendedSearchParams;
 use SzentirasHu\Service\Search\FullTextSearchParams;
 use SzentirasHu\Service\Search\GreekSearchParams;
 use SzentirasHu\Service\Search\GreekSearchService;
@@ -66,6 +69,7 @@ class ApiController extends Controller
         BookRepository $bookRepository,
         ReferenceService $referenceService,
         SearchService $searchService,
+        protected SearcherFactory $searcherFactory,
         protected TranslationService $translationService,
         protected BookService $bookService,
         protected SemanticSearchService $semanticSearchService,
@@ -205,6 +209,47 @@ class ApiController extends Controller
         $params->synonyms = true;
         $results = $this->searchService->getDetailedResults($params);
         return $this->formatJsonResponse(["fullTextResult" => $this->formatSearchResults($results)]);
+    }
+
+    /**
+     * The verses matching the search with their Sphinx weights, for callers that rank and
+     * merge the hits themselves. The answer is kept small: no verse text, and a translation
+     * is named by its abbreviation only.
+     */
+    public function getExtendedSearch(ExtendedSearchApiRequest $request, string $text, string|false $translationAbbrev = false)
+    {
+        $params = new ExtendedSearchParams();
+        $params->text = $text;
+        $params->translationIds = $translationAbbrev
+            ? [$this->findExistingTranslation($translationAbbrev)->id]
+            : $this->translationService->getAllTranslations()
+                ->sortBy(fn (Translation $translation): bool => $translation->id !== $this->translationService->getDefaultTranslation()->id)
+                ->pluck('id')->values()->all();
+        $params->usxCodes = $request->usxCodes();
+        $params->limit = $request->limit();
+        $params->quorum = $request->quorum();
+        $params->onePerVerse = $request->onePerVerse();
+
+        $result = $this->searcherFactory->createExtendedSearcherFor($params)->get();
+        $translationAbbrevs = $this->translationService->getAllTranslations()->pluck('abbrev', 'id');
+
+        return $this->formatJsonResponse([
+            'extendedSearchResult' => [
+                'totalHitCount' => $result->totalHitCount,
+                'queryWordCount' => $result->queryWordCount,
+                'questionWordCount' => $result->questionWordCount,
+                'hits' => array_map(fn (ExtendedSearchHit $hit): array => [
+                    'usx' => $hit->usxCode,
+                    'chapter' => $hit->chapter,
+                    'verse' => $hit->verse,
+                    'translation' => $translationAbbrevs[$hit->translationId] ?? null,
+                    'weight' => $hit->weight,
+                    'lcs' => $hit->longestRun,
+                    'wordCount' => $hit->wordCount,
+                    'exactHit' => $hit->exactHit,
+                ], $result->hits),
+            ],
+        ]);
     }
 
     public function getGreekSearch(GreekSearchApiRequest $request, $text, $translationAbbrev = false)

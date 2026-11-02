@@ -15,4 +15,9 @@ class SearcherFactory {
         return new SphinxSearcher($params);
     }
 
+    public function createExtendedSearcherFor(ExtendedSearchParams $params): ExtendedSphinxSearcher
+    {
+        return new ExtendedSphinxSearcher($params);
+    }
+
 } 

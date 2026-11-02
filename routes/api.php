@@ -9,6 +9,7 @@ Route::middleware(['apiKey', 'throttle:api_key'])->group(function () {
     Route::get("books/{translationAbbrev?}", 'Api\ApiController@getBooks');
     Route::get("ref/{ref}/{translationAbbrev?}", 'Api\ApiController@getRef');
     Route::get("search/{text}/{translationAbbrev?}", 'Api\ApiController@getSearch');
+    Route::get("search-extended/{text}/{translationAbbrev?}", 'Api\ApiController@getExtendedSearch');
     Route::get("greek-search/{text}/{translationAbbrev?}", 'Api\ApiController@getGreekSearch');
     Route::get('/API', 'Api\ApiController@getLegacyEndpoint');
     // Route::get('/cosine', 'Api\ApiController@getCosineSimilarity');

@@ -13,6 +13,10 @@ class SphinxSearch
   private int $_limit = 100;
   private bool $_groupGepi = false;
   private bool $_countOnly = false;
+  /** @var array<int, string> */
+  private array $_groupBy = [];
+  private ?string $_groupTieBreak = null;
+  private ?string $_ranker = null;
   private array $_filters = [];
   private PDO $_pdo;
 
@@ -49,6 +53,94 @@ class SphinxSearch
     return $this;
   }
 
+  public function match(string $string): self
+  {
+    $this->_search_string = $string;
+    return $this;
+  }
+
+  /**
+   * Collapses the hits to one per distinct value of the given attributes, keeping the best
+   * weighted hit of each group; among equally weighted hits the one with the lowest tie break
+   * expression.
+   *
+   * @param  array<int, string>  $attributes
+   */
+  public function groupBy(array $attributes, ?string $tieBreak = null): self
+  {
+    $this->_groupBy = $attributes;
+    $this->_groupTieBreak = $tieBreak;
+    return $this;
+  }
+
+  /**
+   * A ranking expression over Sphinx's ranking factors instead of the default ranker.
+   */
+  public function ranker(string $expression): self
+  {
+    $this->_ranker = $expression;
+    return $this;
+  }
+
+  /**
+   * The words of the text as the index holds them, in order, each with the share of the
+   * indexed verses it stands in.
+   *
+   * @return array<int, array{word: string, share: float}>
+   */
+  public function keywords(string $text): array
+  {
+    $status = $this->_pdo->query("SHOW INDEX verse STATUS")->fetchAll(PDO::FETCH_KEY_PAIR);
+    $documentCount = max(1, (int) ($status['indexed_documents'] ?? 0));
+    $query = $this->_pdo->prepare("CALL KEYWORDS(?, 'verse', 1)");
+    $query->execute([$text]);
+    return array_map(fn (array $keyword): array => [
+      'word' => (string) $keyword['normalized'],
+      'share' => (int) $keyword['docs'] / $documentCount,
+    ], $query->fetchAll(PDO::FETCH_ASSOC));
+  }
+
+  /**
+   * The number of hits (or groups) of the last query, regardless of its limit.
+   */
+  public function totalFound(): int
+  {
+    $meta = $this->_pdo->query("SHOW META LIKE 'total_found'")->fetch(PDO::FETCH_ASSOC);
+    return (int) ($meta['Value'] ?? 0);
+  }
+
+  /**
+   * Sphinx's ranking factors of the given verses against a match of the verse field: the
+   * longest run of the matched words in query order, the number of distinct words matched,
+   * and whether the field is exactly the query. Verses the match does not hit are missing.
+   *
+   * @param  array<int, int>  $ids
+   * @return array<int, array{lcs: int, word_count: int, exact_hit: int}>
+   */
+  public function verseFieldFactors(string $match, array $ids): array
+  {
+    if ($ids === []) {
+      return [];
+    }
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $query = $this->_pdo->prepare("SELECT id, PACKEDFACTORS() AS factors FROM verse WHERE MATCH(?) AND id IN ({$placeholders}) LIMIT " . count($ids) . " OPTION ranker=expr('sum(lcs)')");
+    $query->bindValue(1, $match, PDO::PARAM_STR);
+    foreach (array_values($ids) as $i => $id) {
+      $query->bindValue($i + 2, $id, PDO::PARAM_INT);
+    }
+    $query->execute();
+    $factors = [];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+      $field = json_decode($row['factors'], true)['fields'][0] ?? [];
+      $factors[(int) $row['id']] = [
+        'lcs' => (int) ($field['lcs'] ?? 0),
+        'word_count' => (int) ($field['word_count'] ?? 0),
+        'exact_hit' => (int) ($field['exact_hit'] ?? 0),
+      ];
+    }
+    return $factors;
+  }
+
   /**
    * @return array
    * @throws \ErrorException
@@ -72,7 +164,18 @@ class SphinxSearch
     if ($this->_countOnly) {
       $queryString = "SELECT count(distinct id) as hitcount FROM verse, verseroot WHERE {$filterString}";
     } else {
-      $queryString = "SELECT *, WEIGHT() FROM verse, verseroot WHERE {$filterString} " . ($this->_groupGepi ? "GROUP BY gepi" : "") . " ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit} OPTION field_weights=(verse=100,verseroot=10),index_weights=(verse=2,verseroot=1)";
+      $columns = "*, WEIGHT()";
+      if ($this->_groupBy !== []) {
+        $grouping = "GROUP BY " . implode(', ', $this->_groupBy) . " WITHIN GROUP ORDER BY WEIGHT() DESC";
+        if ($this->_groupTieBreak !== null) {
+          $columns .= ", {$this->_groupTieBreak} AS tie_break";
+          $grouping .= ", tie_break ASC";
+        }
+      } else {
+        $grouping = $this->_groupGepi ? "GROUP BY gepi" : "";
+      }
+      $ranker = $this->_ranker !== null ? "ranker=expr('{$this->_ranker}'), " : "";
+      $queryString = "SELECT {$columns} FROM verse, verseroot WHERE {$filterString} {$grouping} ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit} OPTION {$ranker}field_weights=(verse=100,verseroot=10),index_weights=(verse=2,verseroot=1)";
     }
     $query = $this->_pdo->prepare($queryString);
     

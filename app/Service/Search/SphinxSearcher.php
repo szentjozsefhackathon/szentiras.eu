@@ -21,14 +21,25 @@ class SphinxSearcher implements Searcher
      */
     private $params;
 
-    private function addAlternatives($params)
+    /**
+     * The search text with everything but letters and numbers removed, so that nothing in it
+     * is read as a Sphinx operator.
+     */
+    public static function sanitize(string $text): string
     {
-        // keep only the letters and numbers, taking care of unicode characters
-        $text = trim(preg_replace('/[^\p{L}\p{N}]+/u', ' ', $params->text));        
+        return trim(preg_replace('/[^\p{L}\p{N}]+/u', ' ', $text));
+    }
+
+    /**
+     * The Sphinx match expression of the search: the phrase, all the words, or every word
+     * with its synonyms, each in a field of its own so that they weigh differently.
+     */
+    public static function matchExpressionFor(string $text): string
+    {
+        $text = self::sanitize($text);
         $originalWords = preg_split('/\W+/u', $text);
         $searchedTerm = " ( @verse \"{$text}\"~".(count($originalWords)+2)." ) ";
         $searchedTerm .= " | ( @verse2 ( {$text} | *{$text}* ) )";        
-        $synonyms = [];
         $synonymRepository = \App::make('SzentirasHu\Data\Repository\SynonymRepository');
         $searchedTerm .= ' | ( ';
         foreach ($originalWords as $word) {
@@ -36,11 +47,8 @@ class SphinxSearcher implements Searcher
             $searchedTerm .= "\"{$word}\" | {$word} | *{$word}*";
             $foundSyns = $synonymRepository->findSynonyms($word);
             if ($foundSyns) {
-                $synonyms = array_merge($synonyms, $foundSyns->all());
-                if (count($synonyms) > 0) {
-                    foreach ($synonyms as $syn) {
-                        $searchedTerm .= ' | ' . $syn->word;
-                    }
+                foreach ($foundSyns as $syn) {
+                    $searchedTerm .= ' | ' . $syn->word;
                 }
             }
             $searchedTerm .= "))";
@@ -54,7 +62,7 @@ class SphinxSearcher implements Searcher
 
     public function __construct(FullTextSearchParams $params)
     {
-        $term = $this->addAlternatives($params);
+        $term = self::matchExpressionFor((string) $params->text);
         $this->sphinxClient = new SphinxSearch($term);
         \Log::debug('searching', ['params' => $params, 'term' => $term]);
         

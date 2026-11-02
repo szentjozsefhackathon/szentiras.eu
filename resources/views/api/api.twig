@@ -155,6 +155,39 @@ curl -H "X-API-Key: {{ key }}" "{{ url('api/search/szeretet') }}?book=Jn&amp;gro
         <dd>A visszaadott versek maximális száma, 1 és 1000 között. Érdemes kicsire venni, a válasz mérete ezzel arányos.</dd>
     </dl>
 
+    <h3 class="h6"><code>search-extended</code> – keresés súlyokkal</h3>
+    <p>Ugyanaz a keresés, mint a <code>search</code>, de tömör válasszal, saját rangsorolást végző programok számára: minden találat egy vers egy fordításban, szöveg nélkül, a keresőmotor által adott súllyal (<code>weight</code>). A találatok csökkenő súly szerint érkeznek; a pontos szóalak, a kifejezés egyezése és a megtalált szavak száma nagyobb súlyt ad. A súly skálája a keresőindextől függ, ezért sorrendezésre való; hogy a vers mennyit tartalmaz a keresett szövegből, azt a szóadatok mutatják.</p>
+    <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/search-extended/kezdetben teremtette') }}"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/search-extended/szeretet türelmes/SZIT') }}?book=new_testament&amp;limit=20"
+curl -H "X-API-Key: {{ key }}" "{{ url('api/search-extended/kezdetben alkotta isten') }}?quorum=0.6&amp;onePerVerse=true"</code></pre>
+    <pre class="bg-body-secondary p-3 rounded"><code>{"extendedSearchResult": {"totalHitCount": 2, "queryWordCount": 5, "questionWordCount": 8, "hits": [
+  {"usx": "GEN", "chapter": 1, "verse": 1, "translation": "RUF", "weight": 3106196.8,
+   "lcs": 8, "wordCount": 5, "exactHit": true}, …]}}</code></pre>
+    <dl>
+        <dt>keresendő szöveg, fordítás, <code>book</code>, <code>limit</code></dt>
+        <dd>Ugyanaz, mint a <code>search</code> végpontnál. Csoportosítás nincs, a találat mindig vers.</dd>
+        <dt><code>quorum</code></dt>
+        <dd>A szavak aránya (0-nál nagyobb, legfeljebb 1), amelyet egy versnek tartalmaznia kell, pl. <code>0.6</code>. Így egy rosszul emlékezett szó nem üríti ki a találatokat, csak csökkenti a vers súlyát. A versek több mint tizedében előforduló szavak (pl. <code>a</code>, <code>az</code>, <code>és</code>) nem számítanak bele. Megadása nélkül minden szó kell.</dd>
+        <dt><code>onePerVerse</code></dt>
+        <dd><code>true</code> esetén egy vers csak egyszer szerepel, a legjobban illeszkedő fordításában; azonos súlynál az alapértelmezett fordításban (SZIT). Alapértelmezés szerint minden fordítás külön találat.</dd>
+    </dl>
+    <p>A válasz mezői:</p>
+    <dl>
+        <dt><code>totalHitCount</code></dt>
+        <dd>A limittől független teljes találatszám (az <code>onePerVerse</code> szerint számolva).</dd>
+        <dt><code>queryWordCount</code></dt>
+        <dd>A keresett szavak száma, mindegyik egyszer, a gyakori szavak nélkül. A <code>quorum</code> ennek az aránya.</dd>
+        <dt><code>questionWordCount</code></dt>
+        <dd>A keresett szöveg összes szava, a gyakoriakkal együtt: az <code>lcs</code> legnagyobb lehetséges értéke.</dd>
+        <dt><code>lcs</code></dt>
+        <dd>A keresett szöveg leghosszabb, a versben is egymás után, ugyanabban a sorrendben álló szakaszának szószáma.</dd>
+        <dt><code>wordCount</code></dt>
+        <dd>A <code>queryWordCount</code> szavai közül hányat tartalmaz a vers. A <code>wordCount / queryWordCount</code> arány a vers egyezése a keresett szöveggel.</dd>
+        <dt><code>exactHit</code></dt>
+        <dd>A vers szövege pontosan a keresett szöveg.</dd>
+    </dl>
+    <p>A szóadatok a vers szövegét a beírt szóalakokkal vetik össze; a szinonimák és szórészletek csak a súlyba számítanak bele.</p>
+
     <h3 class="h6"><code>greek-search</code> – görög keresés</h3>
     <p>Keresés az Újszövetség eredeti görög szövegében. A találatok a görög szöveget és a hozzájuk tartozó magyar verseket is tartalmazzák. Görögül csak az Újszövetség érhető el.</p>
     <pre class="bg-body-secondary p-3 rounded"><code>curl -H "X-API-Key: {{ key }}" "{{ url('api/greek-search/agape') }}"
