@@ -48,7 +48,14 @@ return [
 'pixabay' => [
     'key' => env('PIXABAY_API_KEY'),
     'base_url' => 'https://pixabay.com/api/'
-]
+],
+
+'magister' => [
+    'url' => env('MAGISTER_URL', 'https://magister.szentiras.eu'),
+    'timeout' => env('MAGISTER_TIMEOUT', 15),
+    // Magister answers with references in this translation's numbering and book abbreviations
+    'reference_translation' => env('MAGISTER_REFERENCE_TRANSLATION', 'SZIT'),
+],
 
 
 ];

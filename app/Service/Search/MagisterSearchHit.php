@@ -1,0 +1,22 @@
+<?php
+
+namespace SzentirasHu\Service\Search;
+
+use SzentirasHu\Data\Entity\Translation;
+use SzentirasHu\Service\Magister\MagisterPassage;
+
+/**
+ * One passage of the meaning search, rendered in every translation that has it.
+ */
+class MagisterSearchHit
+{
+    /**
+     * @param  array<int, array{translation: Translation, reference: string, verseContainers: array<int, mixed>, highlightedGepis: array<int, string>}>  $translations
+     * @param  array<string, string>  $citedBy  unit ID => its page on Magister
+     */
+    public function __construct(
+        public MagisterPassage $passage,
+        public array $translations,
+        public array $citedBy,
+    ) {}
+}

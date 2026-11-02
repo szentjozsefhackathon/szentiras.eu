@@ -4,15 +4,14 @@ namespace SzentirasHu\Http\Controllers\Search;
 
 use Config;
 use Illuminate\Http\Request;
-use SzentirasHu\Data\Entity\EmbeddedExcerptScope;
+use SzentirasHu\Data\Repository\BookRepository;
 use SzentirasHu\Http\Controllers\Controller;
-use SzentirasHu\Http\Controllers\Search\SearchForm;
 use SzentirasHu\Http\Controllers\Search\SemanticSearchForm;
 use SzentirasHu\Http\Requests\SemanticSearchFormRequest;
 use SzentirasHu\Rules\TurnstileValidationRule;
-use SzentirasHu\Service\Search\SemanticSearchParams;
-use SzentirasHu\Service\Search\SemanticSearchResult;
-use SzentirasHu\Service\Search\SemanticSearchService;
+use SzentirasHu\Service\Magister\MagisterUnavailableException;
+use SzentirasHu\Service\Reference\ReferenceDetector;
+use SzentirasHu\Service\Search\MagisterSemanticSearchService;
 use SzentirasHu\Service\Text\BookService;
 use SzentirasHu\Service\Text\TranslationService;
 use View;
@@ -21,9 +20,11 @@ class SemanticSearchController extends Controller
 {
 
     public function __construct(
-        protected SemanticSearchService $semanticSearchService,
+        protected MagisterSemanticSearchService $magisterSemanticSearchService,
         protected TranslationService $translationService,
-        protected BookService $bookService
+        protected BookService $bookService,
+        protected ReferenceDetector $referenceDetector,
+        protected BookRepository $bookRepository,
     ) {}
 
     public function anySearch(SemanticSearchFormRequest $request)
@@ -33,6 +34,10 @@ class SemanticSearchController extends Controller
             return $this->getIndex($request);
         }
         $form = $this->prepareForm($request);
+        $passageUrl = $this->passageUrl($textToSearch, $form->translationAbbrev);
+        if ($passageUrl !== null) {
+            return redirect($passageUrl);
+        }
 
         if (!session()->get('anonymous_token')) {
             if (!$form->captchaValidated) {
@@ -60,7 +65,37 @@ class SemanticSearchController extends Controller
 
     public function getIndex(Request $request)
     {
-        return $this->getView($this->prepareForm($request));
+        $form = $this->prepareForm($request);
+        $passageUrl = $this->passageUrl((string) $form->textToSearchAi, $form->translationAbbrev);
+        if ($passageUrl !== null) {
+            return redirect($passageUrl);
+        }
+
+        return $this->getView($form);
+    }
+
+    /**
+     * A typed reference ("Efezus 2,8", "103. zsoltár") is not a question: it goes straight to the
+     * passage, in the chosen translation if that has the book, otherwise in the default one.
+     */
+    private function passageUrl(string $text, ?string $translationAbbrev): ?string
+    {
+        $detected = $this->referenceDetector->detect($text);
+        if ($detected === null) {
+            return null;
+        }
+        $defaultTranslation = $this->translationService->getDefaultTranslation();
+        $translation = $this->translationService->getAllTranslations()->firstWhere('abbrev', $translationAbbrev) ?? $defaultTranslation;
+        $book = $this->bookRepository->getByUsxCodeForTranslation($detected->usxCode, $translation);
+        if ($book === null && $translation->id !== $defaultTranslation->id) {
+            $translation = $defaultTranslation;
+            $book = $this->bookRepository->getByUsxCodeForTranslation($detected->usxCode, $translation);
+        }
+        if ($book === null) {
+            return null;
+        }
+
+        return "/{$translation->abbrev}/{$book->abbrev}{$detected->chapterVerses}";
     }
 
     private function getView($form)
@@ -89,59 +124,16 @@ class SemanticSearchController extends Controller
         return $form;
     }
 
-    /**
-     * @param SemanticSearchResult[] $results
-     * @return array
-     */
-    private function groupResponses($results)
-    {
-        $groupedResponses = [];
-        foreach ($results as $item) {
-            $embeddedExcerpt = $item->embeddedExcerpt;
-            if ($embeddedExcerpt->scope == EmbeddedExcerptScope::Verse) {
-                $gepi = $embeddedExcerpt->gepi;
-            } else if ($embeddedExcerpt->scope == EmbeddedExcerptScope::Chapter) {
-                $gepi = "{$embeddedExcerpt->usx_code}_{$embeddedExcerpt->chapter}";
-            } else {
-                $gepi = "{$embeddedExcerpt->usx_code}_{$embeddedExcerpt->chapter}_{$embeddedExcerpt->verse}_{$embeddedExcerpt->to_chapter}_{$embeddedExcerpt->to_verse}";
-            }
-            if (!isset($groupedResponses[$gepi])) {
-                $groupedResponses[$gepi] = ['items' => [], 'totalSimilarity' => 0, 'count' => 0];
-            }
-            $groupedResponses[$gepi]['items'][] = $item;
-            $groupedResponses[$gepi]['totalSimilarity'] += $item->similarity;
-            $groupedResponses[$gepi]['count']++;
-
-            usort($groupedResponses[$gepi]['items'], function ($a, $b) {
-                return $a->verseContainers[0]->book->translation->order <=> $b->verseContainers[0]->book->translation->order;
-            });
-        }
-
-        foreach ($groupedResponses as $gepi => $data) {
-            $groupedResponses[$gepi]['averageSimilarity'] = $data['totalSimilarity'] / $data['count'];
-            $groupedResponses[$gepi]['similarity'] = $groupedResponses[$gepi]['averageSimilarity'];
-        }
-        $groupedResponses = array_sort($groupedResponses, function ($value) {
-            return 1 - $value['averageSimilarity'];
-        });
-        return $groupedResponses;
-    }
-
     private function semanticSearch(SemanticSearchForm $form, $view)
     {
-        $semanticSearchParams = new SemanticSearchParams();
-        $semanticSearchParams->text = $form->textToSearchAi;
-        $semanticSearchParams->translationAbbrev = $form->translationAbbrev;
-        $semanticSearchParams->usxCodes = array_keys(SearchController::extractBookUsxCodes($form->usxCode));
-        $aiResult = $this->semanticSearchService->generateVector($form->textToSearchAi);
-        $response = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Verse, 25);
-        $chapterResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Chapter);
-        $rangeResponse = $this->semanticSearchService->findNeighbors($semanticSearchParams, $aiResult->vector, EmbeddedExcerptScope::Range);
+        $usxCodes = array_keys(SearchController::extractBookUsxCodes($form->usxCode));
+        $view = $view->with('magisterQuestionUrl', $this->magisterSemanticSearchService->questionUrl($form->textToSearchAi));
+        try {
+            $hits = $this->magisterSemanticSearchService->search($form->textToSearchAi, $form->translationAbbrev, $usxCodes);
+        } catch (MagisterUnavailableException) {
+            return $view->with('magisterUnavailable', true);
+        }
 
-        $view = $view->with('groupedResponses', $this->groupResponses($response->results));
-        $view = $view->with('groupedRangeResponses', $this->groupResponses($rangeResponse->results));
-        $view = $view->with('groupedChapterResponses', $this->groupResponses($chapterResponse->results));
-
-        return $view;
+        return $view->with('hits', $hits);
     }
 }

@@ -56,51 +56,54 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
 
     </div>          
 
-{% macro groupedResponseView(groupedResponseList) %}
-    {% from 'macros' import similarityCircle %}
-    <div class="mb-2"></div>
-    {% for gepi, result in groupedResponseList %}        
-        <blockquote class="searchResult blockquote mb-3">
-            {{ similarityCircle(result.similarity, color: 'grey', size: 20) }}
-            {%  for semanticSearchResult in result.items  %}       
-                <a data-target="#g{{ gepi }}_{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}" class="searchResultTranslationSelector btn btn-outline-secondary btn-sm {% if loop.first %}active{% endif %}">
-                    <i class="bi bi-book"></i> <span>{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}</span>
-                    <span class="header-bookabbrev {{ loop.first ? 'active d-sm-inline' : 'inactive d-md-inline'}}">{{ semanticSearchResult.embeddedExcerpt.reference   }}</span> 
-                </a>
-            {% endfor %}
-            <div>
-                {%  for semanticSearchResult in result.items  %}
-                    <div class="searchResultTranslationText searchResultVerse {% if loop.first %}active{% endif %}" id="g{{ gepi }}_{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}">
-                        <a href="/{{ semanticSearchResult.embeddedExcerpt.translation_abbrev }}/{{ semanticSearchResult.embeddedExcerpt.reference }}"><i class="bi-arrow-right-circle-fill float-start pe-2"></i></a>
-                        {% for verseContainer in semanticSearchResult.verseContainers %}
-                            {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' :  semanticSearchResult.embeddedExcerpt.translation, 'highlightedGepis' : semanticSearchResult.highlightedGepis } %}
+    {% if magisterUnavailable is defined %}
+        <div class="alert alert-warning" role="alert">
+            A jelentés szerinti kereső most nem érhető el. Próbáld újra néhány perc múlva, vagy keress a <a href="/kereses">Részletes keresőben</a>!
+        </div>
+    {% elseif hits is defined %}
+        <div class="mb-2">
+            {% if hits is empty %}
+                <p>Nem találtunk a kérdéshez illő szentírási szakaszt.</p>
+            {% endif %}
+            {% for hit in hits %}
+                {% set hitId = 'h' ~ loop.index %}
+                <blockquote class="searchResult blockquote mb-3">
+                    {% if hit.passage.heading %}
+                        <div class="fw-semibold mb-1">{{ hit.passage.heading }}</div>
+                    {% endif %}
+                    {% for rendered in hit.translations %}
+                        <a data-target="#{{ hitId }}_{{ rendered.translation.abbrev }}" class="searchResultTranslationSelector btn btn-outline-secondary btn-sm {% if loop.first %}active{% endif %}">
+                            <i class="bi bi-book"></i> <span>{{ rendered.translation.abbrev }}</span>
+                            <span class="header-bookabbrev {{ loop.first ? 'active d-sm-inline' : 'inactive d-md-inline' }}">{{ rendered.reference }}</span>
+                        </a>
+                    {% endfor %}
+                    <div>
+                        {% for rendered in hit.translations %}
+                            <div class="searchResultTranslationText searchResultVerse {% if loop.first %}active{% endif %}" id="{{ hitId }}_{{ rendered.translation.abbrev }}">
+                                <a href="/{{ rendered.translation.abbrev }}/{{ rendered.reference }}"><i class="bi-arrow-right-circle-fill float-start pe-2"></i></a>
+                                {% for verseContainer in rendered.verseContainers %}
+                                    {% include 'textDisplay.parsedVerseContainer' with { 'verseContainer' : verseContainer, 'translation' : rendered.translation, 'highlightedGepis' : rendered.highlightedGepis } %}
+                                {% endfor %}
+                            </div>
                         {% endfor %}
                     </div>
-                {% endfor %}                        
-            </div>
-        </blockquote>
-    {% endfor %}        
-{% endmacro %}
-
-    {% if groupedResponses is defined %}
-        <div>
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="nav-item"><a class="nav-link active" role="tab" type="button" data-bs-target="#versek" data-bs-toggle="tab">Versek <span class="badge text-bg-primary">{{ groupedResponses|length }}</span></a></li>
-            <li role="presentation" class="nav-item"><a class="nav-link" role="tab" type="button" data-bs-target="#szakaszok" data-bs-toggle="tab" >Szakaszok <span class="badge text-bg-primary">{{ groupedRangeResponses|length }}</span></a></li>
-            <li role="presentation" class="nav-item"><a class="nav-link" role="tab" type="button" data-bs-target="#fejezetek" data-bs-toggle="tab">Fejezetek <span class="badge text-bg-primary">{{ groupedChapterResponses|length }}</span></a></li>
-        </ul>
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="versek">
-                {{ _self.groupedResponseView(groupedResponses) }}        
-            </div>
-            <div role="tabpanel" class="tab-pane" id="szakaszok">
-                {{ _self.groupedResponseView(groupedRangeResponses) }}        
-            </div>
-            <div role="tabpanel" class="tab-pane" id="fejezetek">
-                {{ _self.groupedResponseView(groupedChapterResponses) }}        
-            </div>
+                    {% if hit.citedBy is not empty %}
+                        <div class="small mt-1 magisterCitedBy">
+                            <i class="bi bi-bank"></i> Az Egyház tanításában:
+                            {% for unitId, url in hit.citedBy %}
+                                <a href="{{ url }}" target="_blank" rel="noopener">{{ unitId }}</a>{{ not loop.last ? ', ' }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </blockquote>
+            {% endfor %}
         </div>
-    </div>
+    {% endif %}
+    {% if magisterQuestionUrl is defined %}
+        <div class="alert alert-light mb-2">
+            <i class="bi bi-bank"></i> Mit tanít erről az Egyház? Keresd meg a kérdésedet a Katekizmusban és az egyházi dokumentumokban a
+            <a href="{{ magisterQuestionUrl }}" target="_blank" rel="noopener">Magister forráskeresőben</a>!
+        </div>
     {% endif %}
 
     <div class="card bg-light mb-2">
@@ -113,11 +116,12 @@ Keresés jelentés szerint mesterséges intelligencia segítségével | Szentír
         <div class="card-body">
             {% apply markdown_to_html %}
 A „jelentés szerinti” keresés mesterséges intelligenciát használ a kereséshez, és **másképp működik, mint a hagyományos keresés**. A használatához néhány fontos szempont:
-- Mivel nagy a számításigénye, mi is kísérletezünk a legjobb/leghatékonyabb működéssel. A pozitív és negatív visszajelzéseknek egyaránt örülünk, [Facebook](https://facebook.com/szentiras.eu) oldalunkon vagy Messengeren.</li>
+- A találatokat a [Magister](https://magister.szentiras.eu) forráskereső adja: a jelentés mellett azt is figyelembe veszi, hogy a Katekizmus és más egyházi dokumentumok mely szakaszokat idézik a témához.
+- A pozitív és negatív visszajelzéseknek egyaránt örülünk, [Facebook](https://facebook.com/szentiras.eu) oldalunkon vagy Messengeren.
 - Pontos idézeteket, szavakat, mondatokat a [Részletes keresőben](/kereses) keress!
 - Minél több kontextust adsz a keresésben, annál pontosabbak lesznek a találatok. A *Mit mond Jézus az ellenség szeretetéről?* sokkal jobb lehet, mint az *ellenségszeretet*.
 - Ha idézetet keresel, csak nem tudod pontosan a szövegét, akkor próbáld meg idézőjelek között is.
-- Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási részekkel (versekkel, nagyobb szakaszokkal és fejezetekkel) válaszol.
+- Kereshetsz bármilyen nyelven bármit, a kereső a jelentéséhez közelálló szentírási szakaszokkal válaszol, a leginkább illő verset kiemelve.
             {% endapply %}
         </div>
     </div>
