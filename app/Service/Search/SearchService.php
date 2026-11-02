@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Config;
 use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Service\Reference\CanonicalReference;
 use SzentirasHu\Service\Reference\ParsingException;
+use SzentirasHu\Service\Reference\ReferenceDetector;
+use SzentirasHu\Data\Repository\BookRepository;
 use SzentirasHu\Service\Reference\ReferenceService;
 use SzentirasHu\Service\VerseContainer;
 use SzentirasHu\Data\Entity\Verse;
@@ -38,7 +40,7 @@ class SearchService
      */
     private $referenceService;
 
-    function __construct(SearcherFactory $searcherFactory, VerseRepository $verseRepository, TranslationRepository $translationRepository, ReferenceService $referenceService, protected TranslationService $translationService)
+    function __construct(SearcherFactory $searcherFactory, VerseRepository $verseRepository, TranslationRepository $translationRepository, ReferenceService $referenceService, protected TranslationService $translationService, protected ReferenceDetector $referenceDetector, protected BookRepository $bookRepository)
     {
         $this->searcherFactory = $searcherFactory;
         $this->verseRepository = $verseRepository;
@@ -303,6 +305,31 @@ class SearchService
     {
         $searcher = $this->searcherFactory->createSearcherFor($params);
         return $searcher->get();
+    }
+
+    /**
+     * The search text as a reference the parser knows: as typed when it already is one ("Ef 2,8"),
+     * rewritten with the default translation's abbreviation when it is typed the way people type
+     * it ("Efezus 2,8" → "Ef 2,8"), null when it is not a reference.
+     */
+    public function resolveReferenceText(?string $text): ?string
+    {
+        if ($text === null || trim($text) === '') {
+            return null;
+        }
+        if (!empty($this->findTranslatedRefs($text))) {
+            return $text;
+        }
+        $detected = $this->referenceDetector->detect($text);
+        if ($detected === null) {
+            return null;
+        }
+        $book = $this->bookRepository->getByUsxCodeForTranslation($detected->usxCode, $this->translationService->getDefaultTranslation());
+        if ($book === null) {
+            return null;
+        }
+
+        return trim("{$book->abbrev} {$detected->chapterVerses}");
     }
 
     /**

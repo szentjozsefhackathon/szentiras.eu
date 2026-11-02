@@ -72,7 +72,8 @@ class SearchController extends Controller
     {
         $result = [];
         $term = Request::input('term');
-        $refs = $this->searchService->findTranslatedRefs($term);
+        $referenceText = $this->searchService->resolveReferenceText($term);
+        $refs = $referenceText !== null ? $this->searchService->findTranslatedRefs($referenceText) : [];
         if (!empty($refs)) {
             $labels = [];
             foreach ($refs as $ref) {
@@ -273,10 +274,11 @@ class SearchController extends Controller
     private function searchBookRef(SearchForm $form, $view)
     {
         $augmentedView = $view;
-        $translatedRefs = $this->searchService->findTranslatedRefs($form->textToSearch, $form->translation);
+        $referenceText = $this->searchService->resolveReferenceText($form->textToSearch);
+        $translatedRefs = $referenceText !== null ? $this->searchService->findTranslatedRefs($referenceText, $form->translation) : [];
         if (!empty($translatedRefs)) {
             $translation = $form->translation ? $form->translation : $this->translationService->getDefaultTranslation();
-            $verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($form->textToSearch), $translation);
+            $verseContainers = $this->textService->getTranslatedVerses(CanonicalReference::fromString($referenceText), $translation);
             $labels = [];
             foreach ($translatedRefs as $ref) {
                 $labels[] = $ref->toString();
