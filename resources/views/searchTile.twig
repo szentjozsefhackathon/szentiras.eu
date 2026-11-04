@@ -4,18 +4,17 @@
             <i class="bi-search display-5 me-3" style="color: #7a9e87;"></i>
             <h5 class="card-title mb-0" style="color: #4a5568;">Keresés</h5>
         </div>
-        <p class="card-text mb-2 d-none d-md-block" style="color: #718096;">Keress szavakat, kifejezéseket a teljes Bibliában</p>
-        
+
         <div class="mt-2 text-start">
         <form id="quickSearchForm" role="form" method="post" class="form-inline"
-                action="/kereses/quicksearch" id="quickSearchForm">
+                action="/kereses/quicksearch">
             <div class="form-group">
                 <div class="input-group">
-                    <input id="quickSearch" autocomplete="off" type="text" class="form-control" name="textToSearch" value="{{ form.textToSearch }}" placeholder="Gyorskeresés" style="border-color: #d4cfc9; background-color: #fdfcfb;">
+                    <input id="quickSearch" autocomplete="off" type="text" class="form-control" name="textToSearch" value="{{ form.textToSearch }}" placeholder="Gyorskeresés" aria-label="Gyorskeresés" aria-describedby="quickSearchHelp" style="border-color: #d4cfc9; background-color: #fdfcfb;">
                     <input id="grouping" type="hidden" class="form-control" name="grouping" value="verse">
                     {{ csrf_field() }}
                     <div class="input-group-append position-relative">
-                        <a href="javascript:void(0)" class="quickSearchButton btn btn-default" style="color: #fff; background-color: #7a9e87; border-color: #7a9e87;">
+                        <a href="javascript:void(0)" class="quickSearchButton btn btn-default" title="Keresés" aria-label="Keresés" style="color: #fff; background-color: #7a9e87; border-color: #7a9e87;">
                             <span id="quickSearchHitsButtonContent"><i class="bi-search"></i></span>
                             <span id="quickSearchResultsBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none z-3">
                                 <span id="quickSearchResultsCount">0</span>
@@ -23,24 +22,21 @@
                             </span>
                         </a>
                     </div>
-                    <div class="input-group-append">
-                        <a href="javascript:void(0)" title="Részletes keresés" class="quickSearchButton {{ fullQuickSearch ? 'd-none' : 'd-md-none d-lg-none' }} btn btn-default" style="color: #6b6560; background-color: #ede9e4; border-color: #d4cfc9;"><i class="bi-gear"></i></a></span>
-                    </div>
-                    <div class="input-group-append">
-                        <a href="/ai-search" title="MI keresés" class="{{ fullQuickSearch ? 'd-none' : 'd-md-none d-lg-none' }} btn btn-default" style="color: #6b6560; background-color: #ede9e4; border-color: #d4cfc9;"><i class="bi-robot"></i></a></span>
-                    </div>
-
                 </div>
             </div>
         </form>
-        <div class="d-flex flex-wrap">
-        <div class="{{ fullQuickSearch ? '' : 'd-none d-md-block' }} text-center mt-2 flex-fill">
-            <a href="javascript:void(0)" role="button" class="quickSearchButton btn btn-default" style="color: #6b6560; background-color: #ede9e4; border-color: #d4cfc9;"><i class="bi-gear"></i> Részletes keresés</a>
+        <p id="quickSearchHelp" class="card-text small mt-1 mb-0" style="color: #718096;">Szavak, kifejezések vagy igehely (pl. Jn 3,16) a teljes Bibliában</p>
+
+        <div class="row row-cols-1 row-cols-sm-2 g-2 mt-1">
+            <div class="col">
+                <a href="javascript:void(0)" role="button" class="quickSearchButton btn btn-default w-100" style="color: #6b6560; background-color: #ede9e4; border-color: #d4cfc9;"><i class="bi-gear me-1"></i> Részletes keresés</a>
+                <p class="card-text small mt-1 mb-0" style="color: #718096;">Szavakra, kifejezésekre keres, fordítás és könyv szerint szűrve, csoportosítható találatokkal</p>
+            </div>
+            <div class="col">
+                <a href="/ai-search" role="button" class="btn btn-default w-100" style="color: #6b6560; background-color: #ede9e4; border-color: #d4cfc9;"><i class="bi-robot me-1"></i> MI keresés</a>
+                <p class="card-text small mt-1 mb-0" style="color: #718096;">Pontos szöveg nélkül is: jelentés szerint keres, az Egyház tanítását is figyelembe véve</p>
+            </div>
         </div>
-        <div class="{{ fullQuickSearch ? '' : 'd-none d-md-block' }} text-center mt-2 flex-fill">
-            <a href="/ai-search" role="button" class="btn btn-default" style="color: #6b6560; background-color: #ede9e4; border-color: #d4cfc9;"><i class="bi-robot"></i> MI keresés</a>
-        </div>
-    </div>
         </div>
     </div>
 </div>
