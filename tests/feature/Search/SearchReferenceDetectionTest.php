@@ -3,9 +3,12 @@
 namespace SzentirasHu\Test\Search;
 
 use Illuminate\Support\Facades\Cache;
+use Mockery;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Data\Entity\Translation;
 use SzentirasHu\Data\Entity\Verse;
+use SzentirasHu\Service\Search\Searcher;
+use SzentirasHu\Service\Search\SearcherFactory;
 use SzentirasHu\Service\Search\SearchService;
 use SzentirasHu\Test\Common\FastDatabaseTestCase;
 
@@ -94,9 +97,25 @@ class SearchReferenceDetectionTest extends FastDatabaseTestCase
 
     public function test_search_page_shows_the_typed_reference(): void
     {
+        $this->withoutFullTextHits();
+
         $this->post('/kereses/search', ['textToSearch' => 'Efezus 2,8'])
             ->assertOk()
             ->assertSee('Kegyelemből üdvözültetek, Ef 2,8')
             ->assertSee('href="/SZIT/Ef 2,8"', false);
+    }
+
+    /**
+     * The page also runs a full-text search, which needs Sphinx; the reference box does not.
+     */
+    private function withoutFullTextHits(): void
+    {
+        $searcher = Mockery::mock(Searcher::class);
+        $searcher->shouldReceive('get')->andReturnNull();
+
+        $searcherFactory = Mockery::mock(SearcherFactory::class);
+        $searcherFactory->shouldReceive('createSearcherFor')->andReturn($searcher);
+
+        $this->app->instance(SearcherFactory::class, $searcherFactory);
     }
 }
