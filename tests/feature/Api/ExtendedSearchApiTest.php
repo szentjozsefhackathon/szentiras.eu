@@ -5,6 +5,7 @@ namespace SzentirasHu\Test\Api;
 use Illuminate\Support\Facades\Cache;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
+use SzentirasHu\Service\Search\ExtendedSearchHeadingHit;
 use SzentirasHu\Service\Search\ExtendedSearchHit;
 use SzentirasHu\Service\Search\ExtendedSearchParams;
 use SzentirasHu\Service\Search\ExtendedSearchResult;
@@ -71,8 +72,55 @@ class ExtendedSearchApiTest extends FastDatabaseTestCase
                         ['usx' => 'GEN', 'chapter' => 1, 'verse' => 1, 'translation' => 'TESTTRANS', 'weight' => 42938.5, 'lcs' => 8, 'wordCount' => 5, 'exactHit' => true],
                         ['usx' => 'JHN', 'chapter' => 1, 'verse' => 3, 'translation' => 'TESTTRANS2', 'weight' => 1200.0, 'lcs' => 1, 'wordCount' => 2, 'exactHit' => false],
                     ],
+                    'headingHitCount' => 0,
+                    'headings' => [],
                 ],
             ]);
+    }
+
+    public function test_a_heading_no_verse_holds_comes_back_apart_from_the_verses(): void
+    {
+        $this->fakeExtendedSearch(new ExtendedSearchResult(
+            [new ExtendedSearchHit('MAT', 11, 27, 1001, 226314.2, longestRun: 1, wordCount: 1)],
+            146,
+            queryWordCount: 2,
+            questionWordCount: 2,
+            headings: [
+                new ExtendedSearchHeadingHit(new ExtendedSearchHit('LUK', 15, 11, 1001, 644465.9, longestRun: 2, wordCount: 2), 'A tékozló fiú.'),
+                new ExtendedSearchHeadingHit(new ExtendedSearchHit('LUK', 15, 11, 1002, 644465.9, longestRun: 2, wordCount: 2), 'A tékozló fiú'),
+            ],
+            headingHitCount: 17,
+        ));
+
+        $this->getJson('/api/search-extended/tékozló fiú?quorum=0.6')
+            ->assertOk()
+            ->assertJsonPath('extendedSearchResult.totalHitCount', 146)
+            ->assertJsonPath('extendedSearchResult.headingHitCount', 17)
+            ->assertJsonCount(1, 'extendedSearchResult.hits')
+            ->assertJsonPath('extendedSearchResult.headings', [
+                ['usx' => 'LUK', 'chapter' => 15, 'verse' => 11, 'translation' => 'TESTTRANS', 'weight' => 644465.9, 'lcs' => 2, 'wordCount' => 2, 'exactHit' => false, 'text' => 'A tékozló fiú.'],
+                ['usx' => 'LUK', 'chapter' => 15, 'verse' => 11, 'translation' => 'TESTTRANS2', 'weight' => 644465.9, 'lcs' => 2, 'wordCount' => 2, 'exactHit' => false, 'text' => 'A tékozló fiú'],
+            ]);
+    }
+
+    public function test_a_search_both_a_heading_and_verses_hold_returns_each_in_its_own_list(): void
+    {
+        $this->fakeExtendedSearch(new ExtendedSearchResult(
+            [new ExtendedSearchHit('LUK', 10, 33, 1001, 640000.0, longestRun: 2, wordCount: 2)],
+            3,
+            queryWordCount: 2,
+            questionWordCount: 2,
+            headings: [new ExtendedSearchHeadingHit(new ExtendedSearchHit('LUK', 10, 25, 1001, 642751.1, longestRun: 2, wordCount: 2, exactHit: true), 'Az irgalmas szamaritánus.')],
+            headingHitCount: 1,
+        ));
+
+        $response = $this->getJson('/api/search-extended/irgalmas szamaritánus')->assertOk();
+
+        $response->assertJsonPath('extendedSearchResult.hits.0.verse', 33);
+        $response->assertJsonMissingPath('extendedSearchResult.hits.0.text');
+        $response->assertJsonPath('extendedSearchResult.headings.0.verse', 25);
+        $response->assertJsonPath('extendedSearchResult.headings.0.exactHit', true);
+        $response->assertJsonPath('extendedSearchResult.headings.0.text', 'Az irgalmas szamaritánus.');
     }
 
     public function test_search_without_hits_answers_with_an_empty_result(): void
@@ -81,7 +129,7 @@ class ExtendedSearchApiTest extends FastDatabaseTestCase
 
         $this->getJson('/api/search-extended/nincsilyen')
             ->assertOk()
-            ->assertExactJson(['extendedSearchResult' => ['totalHitCount' => 0, 'queryWordCount' => 0, 'questionWordCount' => 0, 'hits' => []]]);
+            ->assertExactJson(['extendedSearchResult' => ['totalHitCount' => 0, 'queryWordCount' => 0, 'questionWordCount' => 0, 'hits' => [], 'headingHitCount' => 0, 'headings' => []]]);
     }
 
     public function test_every_enabled_translation_is_searched_by_default(): void

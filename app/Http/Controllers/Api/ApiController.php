@@ -2,6 +2,7 @@
 
 namespace SzentirasHu\Http\Controllers\Api;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use OpenAI\Laravel\Facades\OpenAI;
 use Pgvector\Laravel\Vector;
@@ -11,6 +12,7 @@ use SzentirasHu\Http\Requests\ExtendedSearchApiRequest;
 use SzentirasHu\Http\Requests\GreekSearchApiRequest;
 use SzentirasHu\Http\Requests\SearchApiRequest;
 use SzentirasHu\Service\Reference\ParsingException;
+use SzentirasHu\Service\Search\ExtendedSearchHeadingHit;
 use SzentirasHu\Service\Search\ExtendedSearchHit;
 use SzentirasHu\Service\Search\ExtendedSearchParams;
 use SzentirasHu\Service\Search\FullTextSearchParams;
@@ -238,18 +240,32 @@ class ApiController extends Controller
                 'totalHitCount' => $result->totalHitCount,
                 'queryWordCount' => $result->queryWordCount,
                 'questionWordCount' => $result->questionWordCount,
-                'hits' => array_map(fn (ExtendedSearchHit $hit): array => [
-                    'usx' => $hit->usxCode,
-                    'chapter' => $hit->chapter,
-                    'verse' => $hit->verse,
-                    'translation' => $translationAbbrevs[$hit->translationId] ?? null,
-                    'weight' => $hit->weight,
-                    'lcs' => $hit->longestRun,
-                    'wordCount' => $hit->wordCount,
-                    'exactHit' => $hit->exactHit,
-                ], $result->hits),
+                'hits' => array_map(fn (ExtendedSearchHit $hit): array => $this->formatExtendedSearchHit($hit, $translationAbbrevs), $result->hits),
+                'headingHitCount' => $result->headingHitCount,
+                'headings' => array_map(fn (ExtendedSearchHeadingHit $heading): array => [
+                    ...$this->formatExtendedSearchHit($heading->hit, $translationAbbrevs),
+                    'text' => $heading->text,
+                ], $result->headings),
             ],
         ]);
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, string>  $translationAbbrevs  keyed by translation id
+     * @return array{usx: string, chapter: int, verse: int, translation: string|null, weight: float, lcs: int, wordCount: int, exactHit: bool}
+     */
+    private function formatExtendedSearchHit(ExtendedSearchHit $hit, Collection $translationAbbrevs): array
+    {
+        return [
+            'usx' => $hit->usxCode,
+            'chapter' => $hit->chapter,
+            'verse' => $hit->verse,
+            'translation' => $translationAbbrevs[$hit->translationId] ?? null,
+            'weight' => $hit->weight,
+            'lcs' => $hit->longestRun,
+            'wordCount' => $hit->wordCount,
+            'exactHit' => $hit->exactHit,
+        ];
     }
 
     public function getGreekSearch(GreekSearchApiRequest $request, $text, $translationAbbrev = false)

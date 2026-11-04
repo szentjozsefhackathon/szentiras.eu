@@ -125,7 +125,7 @@ $(".translationHit").on('click', function () {
   $(this).closest('form').trigger("submit");
 });
 
-$('.searchResultTranslationSelector').on('click', function () {
+$(document).on('click', '.searchResultTranslationSelector', function () {
   $(this).siblings().removeClass('active');
   $(this).addClass('active');
   const idToShow = $(this).data('target');

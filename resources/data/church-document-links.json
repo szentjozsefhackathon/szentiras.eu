@@ -1,0 +1,1850 @@
+{
+ "documents": {
+  "AA": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19651118_apostolicam-actuositatem_hu.html",
+  "ABE": "https://katolikus.hu/dokumentumtar/allasfoglalas-a-bejegyzett-elettarsi-kapcsolatrol",
+  "ACE": "https://katolikus.hu/dokumentumtar/auspicato-concessum-est",
+  "ADK": "https://katolikus.hu/dokumentumtar/az-allando-diakonusok-kepzesenek-szabalyai",
+  "ADS": "https://katolikus.hu/dokumentumtar/arcanum-divin-sapienti",
+  "AE": "https://katolikus.hu/dokumentumtar/az-egyhazi-leveltarak-szerepe-a-lelkipasztori-eletben",
+  "AFM": "https://katolikus.hu/dokumentumtar/az-antiszemitizmus-es-a-faji-megkulonboztetes-ellen",
+  "AG": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19651207_ad-gentes_hu.html",
+  "AHH": "https://katolikus.hu/dokumentumtar/az-apostoli-hitvallas-hiszekegy",
+  "AHV": "https://katolikus.hu/dokumentumtar/allasfoglalas-a-helyhatosagi-valasztasokkal-kapcsolatban",
+  "AI": "https://katolikus.hu/dokumentumtar/aperuit-illis",
+  "AJV": "https://katolikus.hu/dokumentumtar/aggodalmak-a-jelenlegi-vilagesemenyek-miatt",
+  "AL": "https://katolikus.hu/dokumentumtar/amoris-laetitia",
+  "AL2": "https://katolikus.hu/dokumentumtar/apostoli-level",
+  "ALO": "https://katolikus.hu/dokumentumtar/apostoli-level-az-ormeny-nep-megkeresztelkedesenek-1700-evforduloja-alkalmabol",
+  "AP": "https://katolikus.hu/dokumentumtar/aperite-portas-redemptori",
+  "AS": "https://katolikus.hu/dokumentumtar/admirabile-signum",
+  "ATF": "https://katolikus.hu/dokumentumtar/ad-tuendam-fidem",
+  "AUU": "https://katolikus.hu/dokumentumtar/szentsegek-2",
+  "BAE": "https://katolikus.hu/dokumentumtar/beszed-athenban-az-elnoki-palotaban-tartott-fogadasi-szertartason",
+  "BAN": "https://katolikus.hu/dokumentumtar/bucsuzas-az-asztanai-nemzetkozi-repuloteren",
+  "BB": "https://katolikus.hu/dokumentumtar/beszed-a-biborosokhoz",
+  "BC": "https://katolikus.hu/dokumentumtar/a-boldogabb-csaladokert",
+  "BDN": "https://katolikus.hu/dokumentumtar/bucsuzas-damaszkusz-nemzetkozi-repuloteren",
+  "BEO": "https://katolikus.hu/dokumentumtar/beszed-az-egyetemi-oktatok-vilagtalalkozojanak-reszvevoihez",
+  "BFF": "https://katolikus.hu/dokumentumtar/a-belso-forum-fontossagarol-es-a-szentsegi-pecset-serthetetlensegerol",
+  "BGO": "https://katolikus.hu/dokumentumtar/beszed-a-gorog-ortodox-patriarkatus-trontermeben-tartott-okumenikus-talalkozon",
+  "BII": "https://katolikus.hu/dokumentumtar/beszed-az-isteni-irgalmassag-bazilika-folszentelesen",
+  "BJI": "https://katolikus.hu/dokumentumtar/bucsuval-jaro-imadsagok-es-ahitatgyakorlatok",
+  "BJN": "https://katolikus.hu/dokumentumtar/bucsuzas-jerevanban-a-nemzetkozi-repuloteren",
+  "BK": "https://katolikus.hu/dokumentumtar/a-beke-ajandekanak-ritualis-kifejezeserol-a-szentmiseben",
+  "BKR": "https://katolikus.hu/dokumentumtar/bucsu-a-kolni-repuloteren",
+  "BKR2": "https://katolikus.hu/dokumentumtar/bucsu-a-krakkoi-repuloteren",
+  "BLN": "https://katolikus.hu/dokumentumtar/bucsuzas-a-lvovi-nemzetkozi-repuloteren",
+  "BMG": "https://katolikus.hu/dokumentumtar/bucsu-maltatol-a-gudjai-nemzetkozi-repuloteren",
+  "BPE": "https://katolikus.hu/dokumentumtar/benedek-papa-elso-uzenete",
+  "BPS": "https://katolikus.hu/dokumentumtar/benedek-papa-szekfoglalo-szentmisejenek-homiliaja",
+  "BRC": "https://katolikus.hu/dokumentumtar/bevezeto-a-regina-coeli-imadsaghoz",
+  "BRK": "https://katolikus.hu/dokumentumtar/bucsu-a-romai-klerustol",
+  "BRU": "https://katolikus.hu/dokumentumtar/bizanci-ritusu-ukran-nyelvu-szentmise-es-boldoggaavatas-a-lvovi-loversenyteren",
+  "BRU2": "https://katolikus.hu/dokumentumtar/bizanci-ritusu-ukran-nyelvu-szentmise-a-kijevi-csajka-repuloteren",
+  "BVM": "https://katolikus.hu/dokumentumtar/a-betegek-15-vilagnapjara-meghirdetett-rendkivuli-bucsurol",
+  "CA": "https://katolikus.hu/dokumentumtar/centesimus-annus",
+  "CC": "https://katolikus.hu/dokumentumtar/casti-connubii",
+  "CC2": "https://katolikus.hu/dokumentumtar/csaladjogi-charta",
+  "CD": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19651028_christus-dominus_hu.html",
+  "CEL": "https://katolikus.hu/dokumentumtar/cest-la-confiance",
+  "CHC": "https://katolikus.hu/dokumentumtar/communique-of-the-hungarian-catholic-bishops-conference-2",
+  "CJB": "https://katolikus.hu/dokumentumtar/a-csaladok-jubileuma-2000-ben",
+  "CL": "https://katolikus.hu/dokumentumtar/christifideles-laici",
+  "CP": "https://katolikus.hu/dokumentumtar/iranyelvek-a-ciganypasztoracioban",
+  "CT": "https://katolikus.hu/dokumentumtar/catechesi-tradendae",
+  "CV": "https://katolikus.hu/dokumentumtar/christus-vivit",
+  "CV2": "https://katolikus.hu/dokumentumtar/caritas-in-veritate",
+  "DA": "https://katolikus.hu/dokumentumtar/dilecti-amici---parati-semper",
+  "DCE": "https://katolikus.hu/dokumentumtar/deus-caritas-est",
+  "DD": "https://katolikus.hu/dokumentumtar/desiderio-desideravi",
+  "DD2": "https://katolikus.hu/dokumentumtar/dies-domini",
+  "DF": "https://katolikus.hu/dokumentumtar/demografiai-fejlodesfolyamatok-etikai-es-pasztoralis-szempontok",
+  "DI": "https://katolikus.hu/dokumentumtar/diuturnum-illud",
+  "DI2": "https://katolikus.hu/dokumentumtar/dominus-iesus",
+  "DIM": "https://katolikus.hu/dokumentumtar/divini-illius-magistri",
+  "DIN": "https://katolikus.hu/dokumentumtar/dignitas-infinita---nyilatkozat-az-emberi-meltosagrol",
+  "DM": "https://katolikus.hu/dokumentumtar/dives-in-misericordia",
+  "DN": "https://katolikus.hu/dokumentumtar/dilexit-nos",
+  "DN2": "https://katolikus.hu/dokumentumtar/datis-nuperrimis",
+  "DR": "https://katolikus.hu/dokumentumtar/divini-redemptoris",
+  "DV": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_const_19651118_dei-verbum_hu.html",
+  "DV2": "https://katolikus.hu/dokumentumtar/dominum-et-vivificantem",
+  "DV4": "https://katolikus.hu/dokumentumtar/donum-vitae",
+  "DiH": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decl_19651207_dignitatis-humanae_hu.html",
+  "E": "https://katolikus.hu/dokumentumtar/in-eminenti",
+  "EBM": "https://katolikus.hu/dokumentumtar/elso-beszede-megvalasztasa-utan",
+  "EBN": "https://katolikus.hu/dokumentumtar/az-egyhaz-bunbanati-napjai",
+  "EC": "https://katolikus.hu/dokumentumtar/ex-corde-ecclesiae",
+  "ED": "https://katolikus.hu/dokumentumtar/ecclesia-dei",
+  "EE": "https://katolikus.hu/dokumentumtar/ecclesia-de-eucharistia",
+  "EEE": "https://katolikus.hu/dokumentumtar/az-emberi-elet-ertek-es-ajandek",
+  "EEJ": "https://katolikus.hu/dokumentumtar/az-erkolcsi-ertekek-jelentosege-a-politikai-eletben",
+  "EEK": "https://katolikus.hu/dokumentumtar/az-eucharisztia-evenek-kezdeten",
+  "EEV": "https://katolikus.hu/dokumentumtar/az-emberi-elet-vedelmeben",
+  "EFP": "https://katolikus.hu/dokumentumtar/az-egyhaz-founnepei-es-parancsolt-unnepei",
+  "EG": "https://katolikus.hu/dokumentumtar/evangelii-gaudium",
+  "EH": "https://katolikus.hu/dokumentumtar/elso-homiliaja",
+  "EI": "https://katolikus.hu/dokumentumtar/az-egyhaz-es-az-internet",
+  "EJE": "https://katolikus.hu/dokumentumtar/az-egyhaz-jelenlete-az-egyetemen-es-az-egyetemi-kulturaban",
+  "EK": "https://katolikus.hu/dokumentumtar/pasztoralis-iranyelvek-az-emberkereskedelemrol",
+  "EK2": "https://katolikus.hu/dokumentumtar/emlekezet-es-kiengesztelodes",
+  "EK3": "https://katolikus.hu/dokumentumtar/az-elet-kulturajaert",
+  "EKA": "https://katolikus.hu/dokumentumtar/elmelkedesek-a-keresztuti-ajtatossagon-a-2000-ev-nagypenteken",
+  "EM": "https://katolikus.hu/dokumentumtar/euntes-in-mundum",
+  "EMU": "https://katolikus.hu/dokumentumtar/az-egyhazi-mozgalmakrol-es-uj-kozossegekrol",
+  "EN": "https://katolikus.hu/dokumentumtar/evangelii-nuntiandi",
+  "EOV": "https://katolikus.hu/dokumentumtar/egyetemi-oktatok-vilagtalalkozoja-a-nagy-jubileum-alkalmabol",
+  "EP": "https://katolikus.hu/dokumentumtar/az-egyhaz-parancsolatai",
+  "EPB": "https://katolikus.hu/dokumentumtar/erdo-peter-biboros-az-europai-puspoki-konferenciak-tanacsa-ccee-elnokenek-kozlemenye",
+  "EPE": "https://katolikus.hu/dokumentumtar/eucharisztia-papsag-es-egyhazi-kozosseg",
+  "ERU": "https://katolikus.hu/dokumentumtar/az-elso-radios-uzenet",
+  "ESM": "https://katolikus.hu/dokumentumtar/120-eve-szuletett-mindszenty-biboros",
+  "ETF": "https://katolikus.hu/dokumentumtar/elso-talalkozas-a-fiatalokkal-a-rajna-partjan",
+  "EUK": "https://katolikus.hu/dokumentumtar/az-eucharisztia-unneplesevel-kapcsolatos-kerdesekrol",
+  "EV": "https://katolikus.hu/dokumentumtar/evangelium-vitae",
+  "EV2": "https://katolikus.hu/dokumentumtar/ehezes-a-vilagban",
+  "F": "https://katolikus.hu/dokumentumtar/a-foparancs",
+  "FC": "https://katolikus.hu/dokumentumtar/familiaris-consortio",
+  "FDP": "https://katolikus.hu/dokumentumtar/fin-dal-principio",
+  "FEG": "https://katolikus.hu/dokumentumtar/fur-eine-gerechtere-und-bruderlichere-welt",
+  "FIS": "https://katolikus.hu/dokumentumtar/folajanlo-imadsag-a-szuzanya-szeplotelen-szivehez",
+  "FKB": "https://katolikus.hu/dokumentumtar/fogadas-a-kolnbonni-nemzetkozi-repuloteren",
+  "FKN": "https://katolikus.hu/dokumentumtar/fogadas-a-kijevi-nemzetkozi-repuloteren",
+  "FMS": "https://katolikus.hu/dokumentumtar/fogadas-malta-szigeten-a-gudjai-nemzetkozi-repuloteren",
+  "FNE": "https://katolikus.hu/dokumentumtar/a-ferfi-es-no-egyuttmukodeserol-az-egyhazban-es-a-vilagban",
+  "FPB": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-a-magyar-zarandokokhoz-72286248",
+  "FPB2": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-a-pazmany-peter-katolikus-egyetemen",
+  "FPB3": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-a-szentmise-vegen",
+  "FPB4": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-a-fiatalokhoz-a-papp-laszlo-sportarenaban-47464315",
+  "FPB5": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-a-szegenyekkel-es-menekultekkel-valo-talalkozon",
+  "FPB6": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-a-boldog-batthyany-strattmann-laszlo-otthonban",
+  "FPB7": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-a-szent-istvan-bazilikaban",
+  "FPB8": "https://katolikus.hu/dokumentumtar/ferenc-papa-beszede-az-allami-es-diplomaciai-testuletek-kepviseloi-elott",
+  "FPC": "https://katolikus.hu/dokumentumtar/ferenc-papa-csiksomlyon-ez-a-zarandoklat-erdely-oroksege-39201203",
+  "FPE": "https://katolikus.hu/dokumentumtar/ferenc-papa-elso-szavai-a-hivekhez",
+  "FPH": "https://katolikus.hu/dokumentumtar/ferenc-papa-homiliaja-a-kossuth-teri-szentmisen",
+  "FPR": "https://katolikus.hu/dokumentumtar/ferenc-papa-reszletes-budapesti-programja",
+  "FPV": "https://katolikus.hu/dokumentumtar/ferenc-papa-visszaemlekezese-magyarorszagi-utjara",
+  "FR": "https://katolikus.hu/dokumentumtar/fides-et-ratio",
+  "FSD": "https://katolikus.hu/dokumentumtar/fogadasi-szertartas-damaszkusz-nemzetkozi-repuloteren",
+  "FSN": "https://katolikus.hu/dokumentumtar/fiducia-supplicans---nyilatkozat-az-aldasok-lelkipasztori-jelenteserol",
+  "FT": "https://katolikus.hu/dokumentumtar/fratelli-tutti---mindnyajan-testverek-enciklika",
+  "FTV": "https://katolikus.hu/dokumentumtar/felelossegunk-a--teremtett-vilagert",
+  "FU": "https://katolikus.hu/dokumentumtar/fatima-uzenete",
+  "G": "https://katolikus.hu/dokumentumtar/gloria",
+  "GAV": "https://katolikus.hu/dokumentumtar/a-gyontato-atyak-vademecuma",
+  "GE": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decl_19651028_gravissimum-educationis_hu.html",
+  "GE2": "https://katolikus.hu/dokumentumtar/gaudete-et-exsultate",
+  "GM": "https://katolikus.hu/dokumentumtar/grande-munus",
+  "GS": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_const_19651207_gaudium-et-spes_hu.html",
+  "GV": "https://katolikus.hu/dokumentumtar/gestis-verbisque",
+  "H": "https://katolikus.hu/dokumentumtar/utmutato-egyhazi-kifejezesek-helyesirasahoz",
+  "HES": "https://katolikus.hu/dokumentumtar/a-helyi-egyhazrol-szolo-tanitas-kialakulasanak-ujszovetsegi-hattere",
+  "HF": "https://katolikus.hu/dokumentumtar/hitunk-foigazsagai",
+  "HF2": "https://katolikus.hu/dokumentumtar/a-het-fobun",
+  "HFJ": "https://katolikus.hu/dokumentumtar/homilia-fatimaban-jacinta-es-ferenc-boldogga-avatasa-alkalmabol",
+  "HG": "https://katolikus.hu/dokumentumtar/hungarorum-gens",
+  "HG2": "https://katolikus.hu/dokumentumtar/humanum-genus",
+  "HH": "https://katolikus.hu/dokumentumtar/homilia-hamvazoszerdan",
+  "HHT": "https://katolikus.hu/dokumentumtar/halaadas-a-hosok-teren",
+  "HJS": "https://katolikus.hu/dokumentumtar/homilia-jezus-szentseges-szivenek-unnepen",
+  "HJS2": "https://katolikus.hu/dokumentumtar/homilia-jeruzsalemben-a-szent-sir-templomban-bemutatott-szentmisen",
+  "HKA": "https://katolikus.hu/dokumentumtar/hittani-kongregacio-az-azonos-nemuekrol",
+  "HKD": "https://katolikus.hu/dokumentumtar/a-hittani-kongregacio-dokumentuma-a-szexualitasrol",
+  "HKE": "https://katolikus.hu/dokumentumtar/a-hittani-kongregacio-egyhaztani-dokumentuma",
+  "HKN": "https://katolikus.hu/dokumentumtar/homilia-es-konyorgesek-2000-nagybojtjenek-elso-vasarnapjan",
+  "HKP": "https://katolikus.hu/dokumentumtar/a-horn-kormany-programja-a-vallasszabadsagrol",
+  "HNA": "https://katolikus.hu/dokumentumtar/homilia-nazaretben-az-angyali-udvozlet-bazilikaban",
+  "HS": "https://katolikus.hu/dokumentumtar/az-emberi-szexualitas-jelentese-es-jelentosege",
+  "HSP": "https://katolikus.hu/dokumentumtar/homilia-a-szent-peter-teren-tartott-elso-unnepelyes-szentmiseben",
+  "HSP2": "https://katolikus.hu/dokumentumtar/hamvazas-szertartasa-a-pandemia-idejen",
+  "HV": "https://katolikus.hu/dokumentumtar/humanae-vitae",
+  "HZK": "https://katolikus.hu/dokumentumtar/homilia-a-zebrydowski-kalvaria-bazilikaban",
+  "IB": "https://katolikus.hu/dokumentumtar/idegen-bunok",
+  "IBQ": "https://katolikus.hu/dokumentumtar/imadsag-a-bekeert-a-quneitrai-gorog-ortodox-romtemplomban",
+  "IC": "https://katolikus.hu/dokumentumtar/az-irgalmassag-cselekedetei",
+  "ID": "https://katolikus.hu/dokumentumtar/indulgentiarum-doctrina",
+  "IDA": "https://katolikus.hu/dokumentumtar/insignes-deo-aeterno",
+  "IE": "https://katolikus.hu/dokumentumtar/az-internet-etikaja",
+  "IGI": "https://katolikus.hu/dokumentumtar/instrukcio-a-gyogyito-imakrol",
+  "IJP": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-utolso-misszios-napi-uzenete",
+  "IJP10": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-homiliaja-jeruzsalemben-az-utolso-vacsora-termeben-bemutatott-szentmisen",
+  "IJP11": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-beszede-hechal-shlomoban-a-ket-forabbinal-tett-latogataskor",
+  "IJP12": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-beszede-az-autonom-palesztin-teruleten-levo-dheishehi-palesztin-menekulttaborban",
+  "IJP13": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-homiliaja-betlehemben-a-szentmisen",
+  "IJP14": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-beszede-betlehemben-az-autonom-palesztin-teruletekre-valo-megerkezesekor",
+  "IJP15": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-beszede-tel-avivban-a-ben-gurion-repuloteren-megerkezesekor",
+  "IJP17": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-homiliaja-az-ammani-stadionban-bemutatott-szentmisen",
+  "IJP18": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-beszede-az-ammani-repuloteren-megerkezesekor",
+  "IJP2": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-lengyelorszagi-latogatasa",
+  "IJP20": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-bucsubeszede-a-ferihegyi-repuloteren-2",
+  "IJP21": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-a-gyoriekkel",
+  "IJP22": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-a-puspoki-konferencia-tagjaival",
+  "IJP23": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-szentbeszede-gyorben",
+  "IJP24": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-a-pannonhalmi-bazilikaban",
+  "IJP25": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-idos-es-beteg-szerzetesekkel",
+  "IJP26": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-erkezese-a-ferihegyi-repuloterre-2",
+  "IJP27": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-bucsubeszede-a-ferihegyi-repuloteren",
+  "IJP28": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-az-mkpk--tagjaival",
+  "IJP29": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-szentmiseje-a-hosok-teren",
+  "IJP3": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-lelkipasztori-latogatasa-kazahsztanban-es-ormenyorszagban",
+  "IJP30": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-az-oregekkel-es-betegekkel",
+  "IJP31": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-az-ifjusaggal",
+  "IJP32": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-kispapokkal-es-szerzetesnovendekekkel",
+  "IJP33": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-szombathelyen",
+  "IJP34": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-a-zsido-kozosseg-kepviseloivel",
+  "IJP35": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-debrecenben",
+  "IJP36": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-mariapocsi-szentmiseje",
+  "IJP37": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-diplomatakkal",
+  "IJP38": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-talalkozasa-a-tudomany-es-a-muveszet-szemelyisegeivel",
+  "IJP39": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-szentmiseje-pecsen",
+  "IJP4": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-lelkipasztori-latogatasa-ukrajnaban",
+  "IJP40": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-a-parlamentben",
+  "IJP41": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-esztergomban",
+  "IJP42": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-erkezese-a-ferihegyi-repuloterre",
+  "IJP5": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-utja-gorogorszagban-sziriaban-es-maltan",
+  "IJP6": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-homiliaja-a-boldogsagok-hegyen-a-fiatalokkal-bemutatott-szentmisen",
+  "IJP7": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-jeruzsalemben-a-notre-dame-papai-intezetben",
+  "IJP8": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-beszede-a-jad-vasem-emlekhelyen",
+  "IJP9": "https://katolikus.hu/dokumentumtar/ii-janos-pal-papa-beszede-ezer-weizman-allamelnok-urnal-tett-latogatasa-alkalmabol",
+  "IJU": "https://katolikus.hu/dokumentumtar/imadsag-a-jubileum-utolso-elokeszuleti-evre",
+  "IKE": "https://katolikus.hu/dokumentumtar/instrukcio-a-keleti-egyhazak-kanonjainak-torvenykonyve-brliturgikus-eloirasainak-alkalmazasahoz",
+  "IM": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19631204_inter-mirifica_hu.html",
+  "IM2": "https://katolikus.hu/dokumentumtar/incarnationis---mysterium",
+  "IN": "https://katolikus.hu/dokumentumtar/iampridem-nobis",
+  "INL": "https://katolikus.hu/dokumentumtar/imaev-a-nemzet-lelki-megujulasaert",
+  "IR": "https://katolikus.hu/dokumentumtar/il-rapido-sviluppo---a-gyors-fejlodes",
+  "IT": "https://katolikus.hu/dokumentumtar/isten-tizparancsolata",
+  "ITV": "https://katolikus.hu/dokumentumtar/igazsagosabb-es-testveriesebb-vilagot---30-ev-utan",
+  "ITV2": "https://katolikus.hu/dokumentumtar/igazsagosabb-es-testveriesebb-vilagot",
+  "JBE": "https://katolikus.hu/dokumentumtar/a-jubileumi-bucsu-elnyeresenek-szabalyai",
+  "JKT": "https://katolikus.hu/dokumentumtar/jezus-krisztus-tanitvanyai-es-misszionariusai",
+  "JLU": "https://katolikus.hu/dokumentumtar/javaslatok-es-lelkipasztori-utmutatas-a-hit-evehez",
+  "K": "https://katolikus.hu/dokumentumtar/a-katekezis-altalanos-direktoriuma",
+  "K2": "https://katolikus.hu/dokumentumtar/kozlemeny-21554440",
+  "K3": "https://katolikus.hu/dokumentumtar/kozlemeny-87745156",
+  "K4": "https://katolikus.hu/dokumentumtar/a-keresztvetes",
+  "KAH": "https://katolikus.hu/dokumentumtar/korlevel-arpad-hazi-szent-erzsebet-unnepere---2020",
+  "KBE": "https://katolikus.hu/dokumentumtar/korlevel-a-biblia-evenek-kezdetere",
+  "KBV": "https://katolikus.hu/dokumentumtar/korlevel-a-betegek-32-vilagnapjara",
+  "KCN": "https://katolikus.hu/dokumentumtar/korlevel-a-csalad-nemzetkozi-eve-befejezese-alkalmabol",
+  "KCN2": "https://katolikus.hu/dokumentumtar/korlevel-a-csalad-nemzetkozi-eve-megnyitasara",
+  "KD": "https://katolikus.hu/dokumentumtar/magyar-kateketikai-direktorium",
+  "KE": "https://katolikus.hu/dokumentumtar/a-kereszteny-elmelkedes-nehany-szempontja",
+  "KE2": "https://katolikus.hu/dokumentumtar/krisztus-az-elet",
+  "KFM": "https://katolikus.hu/dokumentumtar/kozlemeny-fulopszigetek-megsegiteserol",
+  "KFN": "https://katolikus.hu/dokumentumtar/korlevel-a-fold-napja-alkalmabol---2024",
+  "KHE": "https://katolikus.hu/dokumentumtar/korlevel-a-hit-eve-megnyitojara",
+  "KHJ": "https://katolikus.hu/dokumentumtar/kozi-horvath-jozsef-mindszenty-biboros",
+  "KHM": "https://katolikus.hu/dokumentumtar/krisztust-hirdetjuk-mindenkinek",
+  "KI": "https://katolikus.hu/dokumentumtar/korlevel-az-ifjusaghoz",
+  "KI2": "https://katolikus.hu/dokumentumtar/krisztus-az-igazsag",
+  "KIH": "https://katolikus.hu/dokumentumtar/a-katolikus-iskola-a-harmadik-evezred-kuszoben",
+  "KLG": "https://katolikus.hu/dokumentumtar/karacsonyi-level-a-gyermekeknek-a-csalad-eveben",
+  "KME": "https://katolikus.hu/dokumentumtar/korlevel-a-megszentelt-elet-unnepere",
+  "KN": "https://katolikus.hu/dokumentumtar/karacsonyi-nyilatkozat",
+  "KNE": "https://katolikus.hu/dokumentumtar/kozos-nyilatkozat-europa-kereszteny-gyokereirol",
+  "KNH": "https://katolikus.hu/dokumentumtar/kozos-nyilatkozat-a-holocaust-otvenedik-evforduloja-alkalmabol",
+  "KRM": "https://katolikus.hu/dokumentumtar/katolikusok-reszvetele-es-magatartasa-a-politikai-eletben",
+  "KSM": "https://katolikus.hu/dokumentumtar/koszonto-szavai-megvalasztasa-utan",
+  "KSM2": "https://katolikus.hu/dokumentumtar/korlevel-a-szent-marton-ev-megnyitasara",
+  "KSP": "https://katolikus.hu/dokumentumtar/korlevel-a-szent-pal-ev-megnyitasa-alkalmabol",
+  "KSV": "https://katolikus.hu/dokumentumtar/krisztus-szeretete-a-vandorlok-irant",
+  "KU": "https://katolikus.hu/dokumentumtar/krisztus-az-ut",
+  "KUU": "https://katolikus.hu/dokumentumtar/karacsonyi-uzenet-es-urbi-et-orbi-aldas",
+  "KV": "https://katolikus.hu/dokumentumtar/a-keresztenyseg-es-a-vallasok",
+  "Komp": "https://katolikus.hu/dokumentumtar/a-katolikus-egyhaz-katekizmusanak-kompendiuma",
+  "L": "https://katolikus.hu/dokumentumtar/libertas",
+  "LA": "https://katolikus.hu/dokumentumtar/laetamur-admodum",
+  "LAI": "https://katolikus.hu/dokumentumtar/level-az-augusztus-15-i-esztergomi-millenniumi-unnepseg-alkalmabol",
+  "LBV": "https://katolikus.hu/dokumentumtar/a-lepras-betegek-54-vilagnapja",
+  "LC": "https://katolikus.hu/dokumentumtar/level-a-csaladokhoz",
+  "LD": "https://katolikus.hu/dokumentumtar/laudate-deum",
+  "LDS": "https://katolikus.hu/dokumentumtar/latogatas-a-damaszkuszi-szent-pal-emlekhazban",
+  "LE": "https://katolikus.hu/dokumentumtar/laborem-exercens",
+  "LE2": "https://katolikus.hu/dokumentumtar/luctuosissimi-eventus",
+  "LF": "https://katolikus.hu/dokumentumtar/lumen-fidei",
+  "LG": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_const_19641121_lumen-gentium_hu.html",
+  "LK": "https://katolikus.hu/dokumentumtar/level-az-irodalom-szereperol-a-kepzesben",
+  "LKD": "https://katolikus.hu/dokumentumtar/latogatas-a-kolni-domban",
+  "LKZ": "https://katolikus.hu/dokumentumtar/latogatas-a-kolni-zsinagogaban",
+  "LLI": "https://katolikus.hu/dokumentumtar/lelkipasztori-level-az-irorszagi-katolikusokhoz",
+  "LLL": "https://katolikus.hu/dokumentumtar/level-lekai-laszlo-biboros-primas-esztergomi-ersekhez",
+  "LM": "https://katolikus.hu/dokumentumtar/level-a-muveszeknek",
+  "LN": "https://katolikus.hu/dokumentumtar/level-a-noknek",
+  "LO": "https://katolikus.hu/dokumentumtar/level-az-oregekhez",
+  "LPM": "https://katolikus.hu/dokumentumtar/level-a-papsag-megszentelodesenek-vilagnapjara",
+  "LPS": "https://katolikus.hu/dokumentumtar/leo-papa-szekfoglalo-szentmisejenek-homiliaja",
+  "LS": "https://katolikus.hu/dokumentumtar/laudato-si",
+  "LS2": "https://katolikus.hu/dokumentumtar/level-a-szeminaristakhoz",
+  "LSS": "https://katolikus.hu/dokumentumtar/latin-szertartasu-szentmise-ecsmiadzinban-a-nagy-szabadteri-oltarnal",
+  "LSS2": "https://katolikus.hu/dokumentumtar/latin-szertartasu-szentmise-a-lvovi-loversenyteren",
+  "LSU": "https://katolikus.hu/dokumentumtar/latin-szertartasu-ukran-latin-nyelvu-szentmise-keresztelo-szent-janos-szuletese-unnepen-a-kijevi-csajka-repuloteren",
+  "LU": "https://katolikus.hu/dokumentumtar/lelkipasztori-uzenet",
+  "M": "https://katolikus.hu/dokumentumtar/magnificat",
+  "M2": "https://katolikus.hu/dokumentumtar/miserend",
+  "MA": "https://katolikus.hu/dokumentumtar/mortalium-animos",
+  "MAS": "https://katolikus.hu/dokumentumtar/maganlatogatas-az-atheni-szent-denes-katolikus-szekesegyhazban",
+  "MAT": "https://katolikus.hu/dokumentumtar/a-mkpk-allando-tanacsanak-kozlemenye",
+  "MBP": "https://katolikus.hu/dokumentumtar/mindszenty-biboros-pere-dokumentum-gyujtemeny",
+  "MBS": "https://katolikus.hu/dokumentumtar/mit-brennender-sorge",
+  "MC": "https://katolikus.hu/dokumentumtar/marialis-cultus",
+  "MC2": "https://katolikus.hu/dokumentumtar/mirae-caritatis",
+  "MD": "https://katolikus.hu/dokumentumtar/mulieris-dignitatem",
+  "MEB": "https://katolikus.hu/dokumentumtar/megerkezes-ecsmiadzinba-beszed-az-apostoli-szekesegyhazban",
+  "MEK": "https://katolikus.hu/dokumentumtar/az-mkpk-elnokenek-kozlemenye",
+  "MEV": "https://katolikus.hu/dokumentumtar/a-megfogant-elet-vedelme",
+  "MF": "https://katolikus.hu/dokumentumtar/mysterium-fidei",
+  "MGH": "https://katolikus.hu/dokumentumtar/az-mkpk-gyujtest-hirdet",
+  "MHH": "https://katolikus.hu/dokumentumtar/magnifica-humanitas---hamarosan",
+  "MIJ": "https://katolikus.hu/dokumentumtar/az-mkpk-intezkedesei-jarvany-megelozese-erdekeben-442603",
+  "MJ": "https://katolikus.hu/dokumentumtar/mitis-iudex",
+  "MJZ": "https://katolikus.hu/dokumentumtar/megerkezes-a-jerevani-zvartnotz-nemzetkozi-repuloterre",
+  "MK": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-35245633",
+  "MK11": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-22624609",
+  "MK2": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-4776086",
+  "MK4": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-68670914",
+  "MK5": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-21702614",
+  "MK6": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-35153699",
+  "MK7": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-57370100",
+  "MK8": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-88957481",
+  "MK9": "https://katolikus.hu/dokumentumtar/az-mkpk-kozlemenye-70280080",
+  "MKA": "https://katolikus.hu/dokumentumtar/megerkezes-kazahsztanba-az-asztanai-nemzetkozi-repuloterre",
+  "MKE": "https://katolikus.hu/dokumentumtar/mkpk-korlevel-a-2026-evi-nagybojti-tartoselelmiszer-gyujtesrol",
+  "MKP": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-nagybojti-korlevele---2026",
+  "MKP10": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-nyilatkozata-a-muvi-meddove-tetelrol",
+  "MKP11": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-nyilatkozata-az-ugynoktorveny-tervezett-modositasarol",
+  "MKP2": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-korlevele-a-hit--es-erkolcstan-oktatasrol",
+  "MKP3": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-titkarsaganak-kozlemenye",
+  "MKP4": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-korlevele-a-valasztasokra",
+  "MKP6": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-nyilatkozata",
+  "MKP8": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-kozlemenye-a-bejegyzett-elettarsi-kapcsolatrol-szolo-torvenyrol",
+  "MKP9": "https://katolikus.hu/dokumentumtar/a-magyar-katolikus-puspoki-konferencia-nyilatkozata-91985925",
+  "MKS": "https://katolikus.hu/dokumentumtar/az-mkpk-korlevele-szent-erzsebet-szuletesenek-800-evforduloja-alkalmabol",
+  "ML": "https://katolikus.hu/dokumentumtar/mindenszentek-litaniaja",
+  "MMA": "https://katolikus.hu/dokumentumtar/a-meot-es-az-mkpk-allando-tanacsanak-nyilatkozata",
+  "MN": "https://katolikus.hu/dokumentumtar/mane-nobiscum-domine",
+  "MN2": "https://katolikus.hu/dokumentumtar/mens-nostra",
+  "MNK": "https://katolikus.hu/dokumentumtar/manhattani-nyilatkozat-a-kereszteny-lelkiismeret-hivo-szava",
+  "MPK": "https://katolikus.hu/dokumentumtar/a-magyar-puspoki-kar-pasztorlevele-a-magzati-elet-vedelmerol-1992",
+  "MPK2": "https://katolikus.hu/dokumentumtar/a-magyar-puspoki-kar-korlevele-az-abortusz-ellen",
+  "MR": "https://katolikus.hu/dokumentumtar/miserentissimus-redemptor",
+  "MS": "https://katolikus.hu/dokumentumtar/megfontolasok-a-soarol",
+  "MS2": "https://katolikus.hu/dokumentumtar/megujulas-a-szeretetben",
+  "MSA": "https://katolikus.hu/dokumentumtar/martyr-of-service-and-charity-life-of-baron-vilmos-apor",
+  "MTE": "https://katolikus.hu/dokumentumtar/a-magyarorszagi-tortenelmi-egyhazak-nyilatkozata",
+  "MTK": "https://katolikus.hu/dokumentumtar/a-megvaltas-teologiajaval-kapcsolatos-nehany-kerdes",
+  "MV": "https://katolikus.hu/dokumentumtar/misericordiae-vultus",
+  "N": "https://katolikus.hu/dokumentumtar/ecclesia-in-europa",
+  "N2": "https://katolikus.hu/dokumentumtar/nyilatkozat-25817096",
+  "NA": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decl_19651028_nostra-aetate_hu.html",
+  "NAJ": "https://katolikus.hu/dokumentumtar/nyilatkozat-antall-jozsef-halalara",
+  "NB": "https://katolikus.hu/dokumentumtar/a-nyolc-boldogsag",
+  "NEK": "https://katolikus.hu/dokumentumtar/az-52-nemzetkozi-eucharisztikus-kongresszus-meghirdetese",
+  "NEM": "https://katolikus.hu/dokumentumtar/nos-es-muy-conocida",
+  "NGG": "https://katolikus.hu/dokumentumtar/nobilissima-gallorum-gens",
+  "NH": "https://katolikus.hu/dokumentumtar/a-niceai-hitvallas",
+  "NI": "https://katolikus.hu/dokumentumtar/nova-impendet",
+  "NJL": "https://katolikus.hu/dokumentumtar/a-nepi-jamborsag-es-liturgia-direktoriuma",
+  "NKS": "https://katolikus.hu/dokumentumtar/nyilatkozat-a-katonai-szolgalatrol",
+  "NKT": "https://katolikus.hu/dokumentumtar/nyilatkozat-a-kozoktatasi-torveny-kapcsan",
+  "NLA": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-az-aldozopapokhoz-2005-ben",
+  "NLA2": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-az-aldozopapokhoz-2004-ben",
+  "NLP": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-a-papokhoz-2002-ben",
+  "NLP2": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-a-papokhoz-2001-ben",
+  "NLP3": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-a-papokhoz-2000-ben",
+  "NLP4": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-a-papokhoz-1999-ben",
+  "NLP5": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-a-papokhoz-1997-ben",
+  "NLP6": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-a-papokhoz-1996-ban",
+  "NLP7": "https://katolikus.hu/dokumentumtar/nagycsutortoki-level-a-papokhoz-1985-ben",
+  "NM": "https://katolikus.hu/dokumentumtar/novo-millennio-ineunte",
+  "NME": "https://katolikus.hu/dokumentumtar/nyilatkozat-a-megfogant-elet-vedelmeben",
+  "NRJ": "https://katolikus.hu/dokumentumtar/nyilatkozat-az-ru-486-jelu-abortusztablettarol",
+  "NTV": "https://katolikus.hu/dokumentumtar/nyilatkozat-a-tarsadalombiztositasi-valasztasokrol",
+  "NUB": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2012-ben",
+  "NUB10": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2002-ben",
+  "NUB11": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2001-ben",
+  "NUB12": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-1999-ben",
+  "NUB2": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2011-ben",
+  "NUB3": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2010-ben",
+  "NUB4": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2009-ben",
+  "NUB5": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2008-ban",
+  "NUB6": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2007-ben",
+  "NUB7": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2006-ban",
+  "NUB8": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2005-ben",
+  "NUB9": "https://katolikus.hu/dokumentumtar/nagybojti-uzenet-2004-ben",
+  "NVE": "https://katolikus.hu/dokumentumtar/nyilatkozat-valasztasok-elott",
+  "NVM": "https://katolikus.hu/dokumentumtar/nepszamlalas-2011-valljuk-meg-hogy-katolikusok-vagyunk",
+  "OD": "https://katolikus.hu/dokumentumtar/okumenikus-direktorium",
+  "OD2": "https://katolikus.hu/dokumentumtar/orientalium-dignitas",
+  "OE": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19641121_orientalium-ecclesiarum_hu.html",
+  "OIK": "https://katolikus.hu/dokumentumtar/az-oltariszentseg-imadasahoz-kapcsolt-teljes-bucsukrol",
+  "OJ": "https://katolikus.hu/dokumentumtar/az-oregkor-a-jovonk",
+  "OKP": "https://katolikus.hu/dokumentumtar/az-orban-kormany-programja-a-vallasszabadsagrol",
+  "OL": "https://katolikus.hu/dokumentumtar/orientale-lumen",
+  "OSJ": "https://katolikus.hu/dokumentumtar/okumenikus-szertartas-jerevanban-az-uj-vilagosito-szent-gergely-szekesegyhazban",
+  "OT": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19651028_optatam-totius_hu.html",
+  "OT2": "https://katolikus.hu/dokumentumtar/okumenikus-talalkozo",
+  "OTM": "https://katolikus.hu/dokumentumtar/okumenikus-talalkozo-a-maria-elszenderulese-gorog-ortodox-szekesegyhazban",
+  "PC": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19651028_perfectae-caritatis_hu.html",
+  "PCA": "https://katolikus.hu/dokumentumtar/patris-corde---apai-szivvel",
+  "PCJ": "https://katolikus.hu/dokumentumtar/a-prisoner-of-christ-jesus-by-fr-pal-bolvary",
+  "PD": "https://katolikus.hu/dokumentumtar/pastores-dabo-vobis",
+  "PDG": "https://katolikus.hu/dokumentumtar/pascendi-dominici-gregis",
+  "PE": "https://katolikus.hu/dokumentumtar/a-papi-elet-es-szolgalat-direktoriuma",
+  "PEK": "https://katolikus.hu/dokumentumtar/praedicate-evangelium---konstitucio",
+  "PET": "https://katolikus.hu/dokumentumtar/pornografia-es-eroszak-a-tomegkommunikacios-eszkozokben",
+  "PET2": "https://katolikus.hu/dokumentumtar/pasztorlevel-az-egyhazmegyek-teruletenek-atrendezeserol",
+  "PEV": "https://katolikus.hu/dokumentumtar/pasztorlevel-az-1994-evi-valasztasok-alkalmabol",
+  "PFH": "https://katolikus.hu/dokumentumtar/porta-fidei---a-hit-kapuja",
+  "PG": "https://katolikus.hu/dokumentumtar/pastores-gregis",
+  "PGD": "https://katolikus.hu/dokumentumtar/pascite-gregem-dei",
+  "PH": "https://katolikus.hu/dokumentumtar/iranyelvek-a-pszichologia-hasznalatarol-a-novendekek-felveteleben-es-a-papnevelesben",
+  "PIH": "https://katolikus.hu/dokumentumtar/a-pap-az-ige-hirdetoje-a-szentsegek-kiszolgaltatoja-es-a-kozosseg-vezetoje-a-harmadik-kereszteny-evezred-tavlataban",
+  "PKK": "https://katolikus.hu/dokumentumtar/a-puspoki-konferencia-kozlemenye",
+  "PKT": "https://katolikus.hu/dokumentumtar/a-puspoki-konferenciak-teologiai-es-jogi-termeszeterol",
+  "PMP": "https://katolikus.hu/dokumentumtar/a-pap-mint-a-plebaniai-kozosseg-pasztora-es-vezetoje",
+  "PN": "https://katolikus.hu/dokumentumtar/pnitemini",
+  "PO": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19651207_presbyterorum-ordinis_hu.html",
+  "POV": "https://katolikus.hu/dokumentumtar/pasztorlevel-az-onkormanyzati-valasztasok-alkalmaval",
+  "PP": "https://katolikus.hu/dokumentumtar/populorum-progressio",
+  "PSX": "https://katolikus.hu/dokumentumtar/a-puspoki-szinodus-xvi-rendes-kozgyulese---munkadokumentum-az-elso-ulesszakhoz",
+  "PT": "https://katolikus.hu/dokumentumtar/pacem-in-terris",
+  "QA": "https://katolikus.hu/dokumentumtar/quinquagesimo-ante",
+  "QAM": "https://katolikus.hu/dokumentumtar/quod-apostolici-muneris",
+  "QP": "https://katolikus.hu/dokumentumtar/quas-primas",
+  "R": "https://katolikus.hu/dokumentumtar/rendelkezes",
+  "RA": "https://katolikus.hu/dokumentumtar/a-rozsafuzer-ajtatossag",
+  "RC": "https://katolikus.hu/dokumentumtar/redemptoris-custos",
+  "RCI": "https://katolikus.hu/dokumentumtar/regina-coeli-imadsag-a-damaszkuszi-abbassin-stadionban",
+  "RD": "https://katolikus.hu/dokumentumtar/redemptionis-donum",
+  "RGO": "https://katolikus.hu/dokumentumtar/romano-guardini-orokmecs",
+  "RH": "https://katolikus.hu/dokumentumtar/redemptor-hominis",
+  "RJA": "https://katolikus.hu/dokumentumtar/remenyt-es-jovot-adok-nektek",
+  "RM": "https://katolikus.hu/dokumentumtar/redemptoris-missio",
+  "RM2": "https://katolikus.hu/dokumentumtar/redemptoris-mater",
+  "RN": "https://katolikus.hu/dokumentumtar/rerum-novarum",
+  "RP": "https://katolikus.hu/dokumentumtar/reconciliatio-et-poenitentia",
+  "RS": "https://katolikus.hu/dokumentumtar/redemptionis-sacramentum",
+  "RV": "https://katolikus.hu/dokumentumtar/rosarium-virginis-mariae",
+  "SA": "https://katolikus.hu/dokumentumtar/slavorum-apostoli",
+  "SAO": "https://katolikus.hu/dokumentumtar/szentmise-az-atheni-olimpiai-kozpont-sportpalotajaban",
+  "SAR": "https://katolikus.hu/dokumentumtar/a-szentmise-allando-reszei-latinul",
+  "SAR2": "https://katolikus.hu/dokumentumtar/a-szentmise-allando-reszei-magyarul",
+  "SBA": "https://katolikus.hu/dokumentumtar/szentmise-es-boldogga-avatas-vallettaban-a-granai-di-floriana-teren",
+  "SBG": "https://katolikus.hu/dokumentumtar/a-szentatya-beszede-gyurcsany-ferenc-kormanyfohoz",
+  "SBO": "https://katolikus.hu/dokumentumtar/szentmise-a-bonie-parkban",
+  "SC": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_const_19631204_sacrosanctum-concilium_hu.html",
+  "SC2": "https://katolikus.hu/dokumentumtar/sacramentum-caritatis",
+  "SD": "https://katolikus.hu/dokumentumtar/salvifici-doloris",
+  "SDA": "https://katolikus.hu/dokumentumtar/szentmise-a-damaszkuszi-abbassin-stadionban",
+  "SDC": "https://katolikus.hu/dokumentumtar/sancta-dei-civitas",
+  "SDK": "https://katolikus.hu/dokumentumtar/a-szentharomsag-dicsoitese-kis-doxologia",
+  "SE": "https://katolikus.hu/dokumentumtar/szentirasmagyarazat-az-egyhazban",
+  "SEB": "https://katolikus.hu/dokumentumtar/a-szentlelek-elleni-bunok",
+  "SF": "https://katolikus.hu/dokumentumtar/spectata-fides",
+  "SH": "https://katolikus.hu/dokumentumtar/szolj-hozzam",
+  "SHT": "https://katolikus.hu/dokumentumtar/szentbeszed-a-hosok-teren",
+  "SI": "https://katolikus.hu/dokumentumtar/salutaris-ille",
+  "SIK": "https://katolikus.hu/dokumentumtar/a-szerzetesi-intezmenyek-kozotti-egyuttmukodes-a-kepzesben",
+  "SK": "https://katolikus.hu/dokumentumtar/a-szentiras-es-a-krisztologia",
+  "SKK": "https://katolikus.hu/dokumentumtar/szentszeki-kozlemeny-a-krisztus-legioja-kongregacioval-kapcsolatban",
+  "SLV": "https://katolikus.hu/dokumentumtar/a-szentatya-levele-a-vilag-puspokeinek",
+  "SM": "https://katolikus.hu/dokumentumtar/szentmise-mariamezon",
+  "SM2": "https://katolikus.hu/dokumentumtar/szinodusi-munkadokumentum---2022",
+  "SM3": "https://katolikus.hu/dokumentumtar/a-szentszek-es-magyarorszag",
+  "SMH": "https://katolikus.hu/dokumentumtar/sublimitas-et-miseria-hominis",
+  "SNC": "https://katolikus.hu/dokumentumtar/spes-non-confundit---bulla",
+  "SP": "https://katolikus.hu/dokumentumtar/summorum-pontificum",
+  "SPS": "https://katolikus.hu/dokumentumtar/szentmise-a-papokkal-szerzetesekkel-es-szerzetesnokkel",
+  "SR": "https://katolikus.hu/dokumentumtar/sollicitudo-rei-socialis",
+  "SS": "https://katolikus.hu/dokumentumtar/spe-salvi",
+  "SSA": "https://katolikus.hu/dokumentumtar/szabadteri-szentmise-asztanaban-az-edes-haza-teren",
+  "SSE": "https://katolikus.hu/dokumentumtar/a-sebek-sosem-evulnek-el",
+  "SV": "https://katolikus.hu/dokumentumtar/sacra-virginitas",
+  "SVI": "https://katolikus.hu/dokumentumtar/splendor-veritatis---az-igazsag-ragyogasa",
+  "SZ": "https://katolikus.hu/dokumentumtar/nyilatkozat-a-szuletesek-vilagmeretu-visszaeseserol",
+  "SZ2": "https://katolikus.hu/dokumentumtar/szinodusi-zarodokumentum---2022",
+  "SZE": "https://katolikus.hu/dokumentumtar/egy-szinodalis-egyhazert---kozosseg-reszvetel-kuldetes",
+  "SZL": "https://katolikus.hu/dokumentumtar/a-szent-zene---a-logoszra-hangolt-muveszet",
+  "T": "https://katolikus.hu/dokumentumtar/tiltakozas",
+  "TAA": "https://katolikus.hu/dokumentumtar/talalkozas-asztanaban-az-apostoli-nunciaturan-belso-azsia-egyhazi-vezetoivel",
+  "TC": "https://katolikus.hu/dokumentumtar/traditionis-custodes",
+  "TCK": "https://katolikus.hu/dokumentumtar/traditionis-custodes-kisero-levele",
+  "TDM": "https://katolikus.hu/dokumentumtar/transiturus-de-mundo",
+  "TEV": "https://katolikus.hu/dokumentumtar/talalkozo-az-egyhazak-es-vallasos-szervezetek-panukran-tanacsanak-kepviseloivel-a-nemzeti-filharmonia-kijevi-palotajaban",
+  "TFD": "https://katolikus.hu/dokumentumtar/talalkozas-a-fiatalokkal-a-damaszkuszi-gorog-katolikus-szekesegyhazban",
+  "TFE": "https://katolikus.hu/dokumentumtar/talalkozas-a-fiatalokkal-az-eurazsia-egyetemen",
+  "TFL": "https://katolikus.hu/dokumentumtar/talalkozo-a-fiatalokkal-a-lvovi-szikiv-teren-igeliturgia-kereteben",
+  "TGP": "https://katolikus.hu/dokumentumtar/talalkozas-gorogorszag-puspokeivel-az-atheni-apostoli-nunciaturan",
+  "TID": "https://katolikus.hu/dokumentumtar/teged-isten-dicserunk",
+  "TKE": "https://katolikus.hu/dokumentumtar/a-tortenelmi-kereszteny-egyhazak-kozlemenye-a-2010-es-parlamenti-valasztasokrol",
+  "TKM": "https://katolikus.hu/dokumentumtar/talalkozo-a-kultura-a-muveszet-es-a-tudomany-kepviseloivel-a-kongresszusi-palota-disztermeben",
+  "TKT": "https://katolikus.hu/dokumentumtar/talalkozas-a-kereszteny-tanitas-tarsasaganak-tagjaival",
+  "TLS": "https://katolikus.hu/dokumentumtar/tra-le-solicitudini",
+  "TM": "https://katolikus.hu/dokumentumtar/tertio-millennio-adveniente",
+  "TM2": "https://katolikus.hu/dokumentumtar/temak-mutatoja",
+  "TM3": "https://katolikus.hu/dokumentumtar/a-teologia-ma",
+  "TME": "https://katolikus.hu/dokumentumtar/talalkozo-a-magyarorszagi-egyhazak-okumenikus-tanacsanak-kepviseloivel",
+  "TMJ": "https://katolikus.hu/dokumentumtar/toward-a-more-just-and-brotherly-world",
+  "TMK": "https://katolikus.hu/dokumentumtar/talalkozo-a-muszlim-kozosseg-kepviseloivel",
+  "TMK2": "https://katolikus.hu/dokumentumtar/talalkozas-a-muszlim-kozosseggel",
+  "TMP": "https://katolikus.hu/dokumentumtar/talalkozo-a-magyar-puspokokkel",
+  "TNP": "https://katolikus.hu/dokumentumtar/talalkozas-a-nemet-puspokokkel",
+  "TP": "https://katolikus.hu/dokumentumtar/terni-patris",
+  "TPK": "https://katolikus.hu/dokumentumtar/talalkozas-a-politikai-kulturalis-tudomanyos-es-gazdasagi-elet-kepviseloivel-a-kijevi-marijinszki-elnoki-palotaban",
+  "TPS": "https://katolikus.hu/dokumentumtar/talalkozas-a-papsaggal-szerzetesekkel-es-laikusokkal-a-damaszkuszi-szir-ortodox-szekesegyhazban",
+  "TS": "https://katolikus.hu/dokumentumtar/talalkozo-a-szeminaristakkal",
+  "TSP": "https://katolikus.hu/dokumentumtar/talalkozas-a-sziriai-patriarkakkal-es-puspokokkel-a-damaszkuszi-gorog-melkita-patriarkatuson",
+  "TSZ": "https://katolikus.hu/dokumentumtar/temetoi-szabalyzat",
+  "TTM": "https://katolikus.hu/dokumentumtar/talalkozot-tartott-a-magyar-es-a-romaniai-puspoki-konferencia-allando-tanacsa",
+  "TUR": "https://katolikus.hu/dokumentumtar/talalkozo-az-ukran-romai-katolikus-latin-es-bizanci-szertartasu-puspokokkel-a-kijevi-nunciaturan",
+  "UA": "https://katolikus.hu/dokumentumtar/az-urangyala-angelus",
+  "UAD": "https://katolikus.hu/dokumentumtar/ubi-arcano-dei-consilio",
+  "UAK": "https://katolikus.hu/dokumentumtar/utolso-altalanos-kihallgatasa",
+  "UBV": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-34-vilagnapjara",
+  "UBV10": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-55-vilagnapjara",
+  "UBV11": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-29-vilagnapjara",
+  "UBV12": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-54-vilagnapjara",
+  "UBV13": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-28-vilagnapjara",
+  "UBV14": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-53-vilagnapjara",
+  "UBV15": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-27-vilagnapjara",
+  "UBV16": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-52-vilagnapjara",
+  "UBV17": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-26-vilagnapjara",
+  "UBV18": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-51-vilagnapjara",
+  "UBV19": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-25-vilagnapjara",
+  "UBV2": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-59-vilagnapjara",
+  "UBV20": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-50-vilagnapjara",
+  "UBV21": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-24-vilagnapjara",
+  "UBV22": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-49-vilagnapjara",
+  "UBV23": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-23-vilagnapjara",
+  "UBV24": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-48-vilagnapjara",
+  "UBV25": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-22-vilagnapjara",
+  "UBV26": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-47-vilagnapjara",
+  "UBV27": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-21-vilagnapjara",
+  "UBV28": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-46-vilagnapjara",
+  "UBV29": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-20-vilagnapjara",
+  "UBV3": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-33-vilagnapjara",
+  "UBV30": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-45-vilagnapjara",
+  "UBV31": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-19-vilagnapjara",
+  "UBV32": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-44-vilagnapjara",
+  "UBV33": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-18-vilagnapjara",
+  "UBV34": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-43-vilagnapjara",
+  "UBV35": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-17-vilagnapjara",
+  "UBV36": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-42-vilagnapjara",
+  "UBV37": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-16-vilagnapjara",
+  "UBV38": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-41-vilagnapjara",
+  "UBV39": "https://katolikus.hu/dokumentumtar/uzenete-a-betegek-15-vilagnapjara",
+  "UBV4": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-58-vilagnapjara",
+  "UBV40": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-40-vilagnapjara",
+  "UBV41": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-14-vilagnapjara",
+  "UBV42": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-39-vilagnapjara",
+  "UBV43": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-13-vilagnapjara",
+  "UBV44": "https://katolikus.hu/dokumentumtar/uzenete-a-beke-38-vilagnapjara",
+  "UBV45": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-12-vilagnapjara",
+  "UBV46": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-37-vilagnapjara",
+  "UBV47": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-11-vilagnapjara",
+  "UBV48": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-36-vilagnapjara",
+  "UBV49": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-10-vilagnapjara",
+  "UBV5": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-32-vilagnapjara",
+  "UBV50": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-35-vilagnapjara",
+  "UBV51": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-9-vilagnapjara",
+  "UBV52": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-8-vilagnapjara",
+  "UBV6": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-57-vilagnapjara",
+  "UBV7": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-31-vilagnapjara",
+  "UBV8": "https://katolikus.hu/dokumentumtar/uzenet-a-beke-56-vilagnapjara",
+  "UBV9": "https://katolikus.hu/dokumentumtar/uzenet-a-betegek-30-vilagnapjara",
+  "UDG": "https://katolikus.hu/dokumentumtar/universi-dominici-gregis",
+  "UEM": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-112-vilagnapjara",
+  "UEM10": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-106-vilagnapjara",
+  "UEM11": "https://katolikus.hu/dokumentumtar/uzenet-a-2019-evi-misszios-vilagnapra",
+  "UEM12": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-105-vilagnapjara",
+  "UEM13": "https://katolikus.hu/dokumentumtar/uzenet-a-2018-evi-misszios-vilagnapra",
+  "UEM14": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-104-vilagnapjara",
+  "UEM15": "https://katolikus.hu/dokumentumtar/uzenet-a-2017-evi-misszios-vilagnapra",
+  "UEM16": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-103-vilagnapjara",
+  "UEM17": "https://katolikus.hu/dokumentumtar/uzenet-a-2016-evi-misszios-vilagnapra",
+  "UEM18": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-102vilagnapjara",
+  "UEM19": "https://katolikus.hu/dokumentumtar/uzenet-a-2015-evi-misszios-vilagnapra",
+  "UEM2": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-111-vilagnapjara",
+  "UEM20": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-101-vilagnapjara",
+  "UEM21": "https://katolikus.hu/dokumentumtar/uzenet-a-2014-evi-misszios-vilagnapra",
+  "UEM22": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-100-vilagnapjara",
+  "UEM23": "https://katolikus.hu/dokumentumtar/uzenet-a-2013-evi-misszios-vilagnapra",
+  "UEM24": "https://katolikus.hu/dokumentumtar/uzenet-a-2012-evi-misszios-vilagnapra",
+  "UEM25": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-98-vilagnapjara",
+  "UEM26": "https://katolikus.hu/dokumentumtar/uzenet-a-2011-evi-misszios-vilagnapra",
+  "UEM27": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-97-vilagnapjara",
+  "UEM28": "https://katolikus.hu/dokumentumtar/uzenet-a-2010-evi-misszios-vilagnapra",
+  "UEM29": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-96-vilagnapjara",
+  "UEM3": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-110-vilagnapjara",
+  "UEM30": "https://katolikus.hu/dokumentumtar/uzenet-a-2009-evi-misszios-vilagnapra",
+  "UEM31": "https://katolikus.hu/dokumentumtar/uzenet-a-2008-evi-misszios-vilagnapra",
+  "UEM32": "https://katolikus.hu/dokumentumtar/uzenet-a-2007-evi-misszios-vilagnapra",
+  "UEM33": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-93-vilagnapjara",
+  "UEM34": "https://katolikus.hu/dokumentumtar/uzenet-a-2006-evi-misszios-vilagnapra",
+  "UEM35": "https://katolikus.hu/dokumentumtar/uzenet-a-2001-evi-misszios-vilagnapra",
+  "UEM4": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-109-vilagnapjara",
+  "UEM5": "https://katolikus.hu/dokumentumtar/uzenet-a-2022-evi-misszios-vilagnapra",
+  "UEM6": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-108-vilagnapjara",
+  "UEM7": "https://katolikus.hu/dokumentumtar/uzenet-a-2021-evi-misszios-vilagnapra",
+  "UEM8": "https://katolikus.hu/dokumentumtar/uzenet-az-elvandorlok-es-menekultek-107-vilagnapjara",
+  "UEM9": "https://katolikus.hu/dokumentumtar/uzenet-a-2020-evi-misszios-vilagnapra",
+  "UEN": "https://katolikus.hu/dokumentumtar/uzenet-a-2000-ev-nagybojtjere",
+  "UGE": "https://katolikus.hu/dokumentumtar/uzenet-a-gyermekek-elso-vilagnapjara",
+  "UHV": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-63-vilagnapjara",
+  "UHV10": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-54-vilagnapjara",
+  "UHV11": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-53-vilagnapjara",
+  "UHV12": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-52-vilagnapjara",
+  "UHV13": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-51-vilagnapjara",
+  "UHV14": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-50-vilagnapjara",
+  "UHV15": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-44-vilagnapjara",
+  "UHV16": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-49-vilagnapjara",
+  "UHV17": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-48-vilagnapjara",
+  "UHV18": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-47-vilagnapjara",
+  "UHV19": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-45-vilagnapjara",
+  "UHV2": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-62-vilagnapjara",
+  "UHV20": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-43-vilagnapjara",
+  "UHV21": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-42-vilagnapjara",
+  "UHV22": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-41-vilagnapjara",
+  "UHV23": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-40-vilagnapjara",
+  "UHV24": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-39-vilagnapjara",
+  "UHV25": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-38-vilagnapjara",
+  "UHV3": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-61-vilagnapjara",
+  "UHV4": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-60-vilagnapjara",
+  "UHV5": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-59-vilagnapjara",
+  "UHV6": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-58-vilagnapjara",
+  "UHV7": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-57-vilagnapjara",
+  "UHV8": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-56-vilagnapjara",
+  "UHV9": "https://katolikus.hu/dokumentumtar/uzenet-a-hivatasok-55-vilagnapjara",
+  "UIM": "https://katolikus.hu/dokumentumtar/urangyala-imadsag-mariamezon",
+  "UIM2": "https://katolikus.hu/dokumentumtar/az-ur-imadsaga-miatyank",
+  "UIV": "https://katolikus.hu/dokumentumtar/uzenet-a-40-ifjusagi-vilagnapra",
+  "UIV10": "https://katolikus.hu/dokumentumtar/uzenet-a-30-ifjusagi-vilagnapra",
+  "UIV11": "https://katolikus.hu/dokumentumtar/uzenet-a-29-ifjusagi-vilagnapra",
+  "UIV12": "https://katolikus.hu/dokumentumtar/uzenet-a-25-ifjusagi-vilagnapra",
+  "UIV13": "https://katolikus.hu/dokumentumtar/uzenet-a-24-ifjusagi-vilagnapra",
+  "UIV14": "https://katolikus.hu/dokumentumtar/uzenet-a-23-ifjusagi-vilagtalalkozora",
+  "UIV15": "https://katolikus.hu/dokumentumtar/uzenet-a-21-ifjusagi-vilagtalalkozora",
+  "UIV16": "https://katolikus.hu/dokumentumtar/uzenet-a-20-ifjusagi-vilagtalalkozora",
+  "UIV17": "https://katolikus.hu/dokumentumtar/uzenet-a-18-ifjusagi-vilagnapra",
+  "UIV18": "https://katolikus.hu/dokumentumtar/uzenet-a-17-ifjusagi-vilagnap-megnyitasara",
+  "UIV19": "https://katolikus.hu/dokumentumtar/uzenet-az-ifjusag-14-vilagnapjara",
+  "UIV2": "https://katolikus.hu/dokumentumtar/uzenet-a-39-ifjusagi-vilagnapra",
+  "UIV3": "https://katolikus.hu/dokumentumtar/uzenet-a-38-ifjusagi-vilagnapra",
+  "UIV4": "https://katolikus.hu/dokumentumtar/uzenet-a-37-ifjusagi-vilagnapra",
+  "UIV5": "https://katolikus.hu/dokumentumtar/uzenet-a-36-ifjusagi-vilagnapra",
+  "UIV6": "https://katolikus.hu/dokumentumtar/uzenet-a-35-ifjusagi-vilagnapra",
+  "UIV7": "https://katolikus.hu/dokumentumtar/uzenet-a-33-ifjusagi-vilagnapra",
+  "UIV8": "https://katolikus.hu/dokumentumtar/uzenet-a-32-ifjusagi-vilagnapra",
+  "UIV9": "https://katolikus.hu/dokumentumtar/uzenet-a-31-ifjusagi-vilagnapra",
+  "UKC": "https://katolikus.hu/dokumentumtar/uzenet-a-krakkoi-communio-sanctorum-kapolna-megaldasanak-unnepere",
+  "UKV": "https://katolikus.hu/dokumentumtar/uzenet-a-kommunikacio-38-vilagnapjara",
+  "UKV2": "https://katolikus.hu/dokumentumtar/uzenet-a-kommunikacio-36-vilagnapjara",
+  "ULK": "https://katolikus.hu/dokumentumtar/udvariassagi-latogatas-a-koztarsasagi-elnoknel-asztanaban",
+  "ULO": "https://katolikus.hu/dokumentumtar/udvariassagi-latogatas-oboldogsaga-khrisztodulosz-athen-es-egesz-gorogorszag-ersekenel",
+  "UMV": "https://katolikus.hu/dokumentumtar/uzenet-a-missziok-100-vilagnapjara",
+  "UMV2": "https://katolikus.hu/dokumentumtar/uzenet-a-missziok-99-vilagnapjara",
+  "UMV3": "https://katolikus.hu/dokumentumtar/uzenet-a-missziok-98-vilagnapjara",
+  "UMV4": "https://katolikus.hu/dokumentumtar/uzenet-a-97-misszios-vilagnapra",
+  "UN": "https://katolikus.hu/dokumentumtar/uzenet-2026-nagybojtjere",
+  "UN10": "https://katolikus.hu/dokumentumtar/uzenet-2017-nagybojtjere",
+  "UN11": "https://katolikus.hu/dokumentumtar/uzenet-2016-nagybojtjere",
+  "UN12": "https://katolikus.hu/dokumentumtar/uzenet-2015-nagybojtjere",
+  "UN13": "https://katolikus.hu/dokumentumtar/uzenet-2014-nagybojtjere",
+  "UN14": "https://katolikus.hu/dokumentumtar/uzenet-2013-nagybojtjere",
+  "UN2": "https://katolikus.hu/dokumentumtar/uzenet-2025-nagybojtjere",
+  "UN3": "https://katolikus.hu/dokumentumtar/uzenet-2024-nagybojtjere",
+  "UN4": "https://katolikus.hu/dokumentumtar/uzenet-2023-nagybojtjere",
+  "UN5": "https://katolikus.hu/dokumentumtar/uzenet-2022-nagybojtjere",
+  "UN6": "https://katolikus.hu/dokumentumtar/uzenet-2021-nagybojtjere",
+  "UN7": "https://katolikus.hu/dokumentumtar/uzenet-2020-nagybojtjere",
+  "UN8": "https://katolikus.hu/dokumentumtar/uzenet-2019-nagybojtjere",
+  "UN9": "https://katolikus.hu/dokumentumtar/uzenet-2018-nagybojtjere",
+  "UNI": "https://katolikus.hu/dokumentumtar/uzenet-a-nagyszulok-es-idosek-5-vilagnapjara",
+  "UNI2": "https://katolikus.hu/dokumentumtar/uzenet-a-nagyszulok-es-idosek-4-vilagnapjara",
+  "UNI3": "https://katolikus.hu/dokumentumtar/uzenet-a-nagyszulok-es-az-idosek-3-vilagnapjara",
+  "UNI4": "https://katolikus.hu/dokumentumtar/uzenet-a-nagyszulok-es-az-idosek-2-vilagnapjara",
+  "UNI5": "https://katolikus.hu/dokumentumtar/uzenet-a-nagyszulok-es-idosek-elso-vilagnapjara",
+  "UP": "https://katolikus.hu/dokumentumtar/ubi-primum",
+  "UPS": "https://katolikus.hu/dokumentumtar/uzenet-a-papi-es-szerzetesi-hivatasok-37-vilagnapjara",
+  "UPT": "https://katolikus.hu/dokumentumtar/uzenet-a-papai-tudomanyos-akademia-teljes-ulesehez",
+  "UR": "https://www.vatican.va/archive/hist_councils/ii_vatican_council/documents/vat-ii_decree_19641121_unitatis-redintegratio_hu.html",
+  "URK": "https://katolikus.hu/dokumentumtar/az-udvozules-remenye-a-keresztseg-nelkul-meghalt-kisgyermekek-szamara",
+  "US": "https://katolikus.hu/dokumentumtar/ut-unum-sint",
+  "USV": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-9-vilagnapjara",
+  "USV2": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-8-vilagnapjara",
+  "USV3": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-7-vilagnapjara",
+  "USV4": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-6-vilagnapjara",
+  "USV5": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-5-vilagnapjara",
+  "USV6": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-4-vilagnapjara",
+  "USV7": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-3-vilagnapjara",
+  "USV8": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-2-vilagnapjara-21107650",
+  "USV9": "https://katolikus.hu/dokumentumtar/uzenet-a-szegenyek-1-vilagnapjara",
+  "UTI": "https://katolikus.hu/dokumentumtar/uzenet-a-teremtesvedelem-10-imanapjara",
+  "UTI2": "https://katolikus.hu/dokumentumtar/uzenet-a-teremtesvedelmi-imanapra---2024",
+  "UTI3": "https://katolikus.hu/dokumentumtar/uzenet-a-teremtesvedelmi-imanapra---2023",
+  "UTI4": "https://katolikus.hu/dokumentumtar/uzenet-a-teremtesvedelmi-imanapra---2022",
+  "UTK": "https://katolikus.hu/dokumentumtar/uzenet-a-tarsadalmi-kommunikacio-60-vilagnapjara",
+  "UTK2": "https://katolikus.hu/dokumentumtar/uzenet-a-tarsadalmi-kommunikacio-59-vilagnapjara",
+  "UTK3": "https://katolikus.hu/dokumentumtar/uzenet-a-tarsadalmi-kommunikacio-58-vilagnapjara",
+  "UTK4": "https://katolikus.hu/dokumentumtar/uzenet-a-tarsadalmi-kommunikacio-57-vilagnapjara",
+  "UTV": "https://katolikus.hu/dokumentumtar/uzenet-a-teremtesvedelem-11-vilagnapjara",
+  "UTV10": "https://katolikus.hu/dokumentumtar/uzenet-az-48-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UTV11": "https://katolikus.hu/dokumentumtar/uzenet-a-tomegtajekoztatas-47-vilagnapjara",
+  "UTV12": "https://katolikus.hu/dokumentumtar/uzenete-a-tomegtajekoztatas-41-vilagnapjara",
+  "UTV13": "https://katolikus.hu/dokumentumtar/uzenet-a-tomegtajekoztatas-46-vilagnapjara",
+  "UTV14": "https://katolikus.hu/dokumentumtar/uzenet-a-45-tomegtajekoztatasi-vilagnapra",
+  "UTV15": "https://katolikus.hu/dokumentumtar/uzenet-a-44-tomegtajekoztatasi-vilagnapra",
+  "UTV16": "https://katolikus.hu/dokumentumtar/uzenet-a-tomegtajekoztatas-43-vilagnapjara",
+  "UTV17": "https://katolikus.hu/dokumentumtar/uzenet-a-42-tomegtajekoztatasi-vilagnapra",
+  "UTV18": "https://katolikus.hu/dokumentumtar/uzenet-a-tomegtajekoztatas-40-vilagnapjara",
+  "UTV19": "https://katolikus.hu/dokumentumtar/uzenet-a-39-tomegtajekoztatasi-vilagnapra",
+  "UTV2": "https://katolikus.hu/dokumentumtar/uzenet-a-tomegtajekoztatas-56-vilagnapjara",
+  "UTV20": "https://katolikus.hu/dokumentumtar/uzenet-a-turizmus-22-vilagnapjara",
+  "UTV3": "https://katolikus.hu/dokumentumtar/uzenet-az-55-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UTV4": "https://katolikus.hu/dokumentumtar/uzenet-az-54-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UTV5": "https://katolikus.hu/dokumentumtar/uzenet-az-53-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UTV6": "https://katolikus.hu/dokumentumtar/uzenet-az-52-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UTV7": "https://katolikus.hu/dokumentumtar/uzenet-az-51-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UTV8": "https://katolikus.hu/dokumentumtar/uzenet-az-50-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UTV9": "https://katolikus.hu/dokumentumtar/uzenet-az-49-tomegtajekoztatasi-vilagnap-alkalmabol",
+  "UVM": "https://katolikus.hu/dokumentumtar/uzenet-a-vandorlok-es-menekultek-99-vilagnapjara",
+  "UVM2": "https://katolikus.hu/dokumentumtar/uzenet-a-vandorlok-es-menekultek-95-vilagnapjara",
+  "UVM3": "https://katolikus.hu/dokumentumtar/uzenet-a-vandorlok-es-menekultek-94-vilagnapjara",
+  "UVM4": "https://katolikus.hu/dokumentumtar/uzenet-a-vandorlok-es-menekultek-92-vilagnapjara",
+  "UVM5": "https://katolikus.hu/dokumentumtar/uzenet-a-vandorlok-es-a-menekultek-89-vilagnapjara",
+  "VC": "https://katolikus.hu/dokumentumtar/vita-consecrata",
+  "VC2": "https://katolikus.hu/dokumentumtar/vigilanti-cura",
+  "VD": "https://katolikus.hu/dokumentumtar/verbum-domini",
+  "VEL": "https://katolikus.hu/dokumentumtar/vos-estis-lux-mundi",
+  "VFM": "https://katolikus.hu/dokumentumtar/virrasztas-a-fiatalokkal-mariamezon",
+  "VMA": "https://katolikus.hu/dokumentumtar/valogatas-marton-aron-irasaibol-es-beszedeibol",
+  "VS": "https://katolikus.hu/dokumentumtar/veritatis-splendor",
+  "XBP": "https://katolikus.hu/dokumentumtar/xvi-benedek-papa-lemondasa-a-peteri-szolgalatarol",
+  "XBP2": "https://katolikus.hu/dokumentumtar/xvi-benedek-papa-levele-a-szent-erzsebet-ev-alkalmabol",
+  "XBP3": "https://katolikus.hu/dokumentumtar/xvi-benedek-papa-szent-pal-evet-meghirdeto-gondolatai",
+  "XBP4": "https://katolikus.hu/dokumentumtar/xvi-benedek-papa-es-i-bartolomaiosz-okumenikus-patriarka-kozos-nyilatkozata",
+  "XBP5": "https://katolikus.hu/dokumentumtar/xvi-benedek-papa-egyutt-unnepelunk-a-magyarsaggal",
+  "XHE": "https://katolikus.hu/dokumentumtar/xv-heilige-elisabeth-feier-in-sarospatak",
+  "ZNS": "https://katolikus.hu/dokumentumtar/a-zsido-nep-es-szent-iratai-a-kereszteny-bibliaban"
+ },
+ "paragraphPages": {
+  "KEK": [
+   [
+    1,
+    "https://katolikus.hu/dokumentumtar/kek-017-022"
+   ],
+   [
+    26,
+    "https://katolikus.hu/dokumentumtar/kek-023-030"
+   ],
+   [
+    50,
+    "https://katolikus.hu/dokumentumtar/kek-031-051"
+   ],
+   [
+    142,
+    "https://katolikus.hu/dokumentumtar/kek-052-063"
+   ],
+   [
+    185,
+    "https://katolikus.hu/dokumentumtar/kek-064-066"
+   ],
+   [
+    198,
+    "https://katolikus.hu/dokumentumtar/kek-067-120"
+   ],
+   [
+    422,
+    "https://katolikus.hu/dokumentumtar/kek-121-198"
+   ],
+   [
+    683,
+    "https://katolikus.hu/dokumentumtar/kek-199-298"
+   ],
+   [
+    1066,
+    "https://katolikus.hu/dokumentumtar/kek-299-303"
+   ],
+   [
+    1076,
+    "https://katolikus.hu/dokumentumtar/kek-305-319"
+   ],
+   [
+    1135,
+    "https://katolikus.hu/dokumentumtar/kek-320-337"
+   ],
+   [
+    1210,
+    "https://katolikus.hu/dokumentumtar/kek-338-387"
+   ],
+   [
+    1420,
+    "https://katolikus.hu/dokumentumtar/kek-388-414"
+   ],
+   [
+    1533,
+    "https://katolikus.hu/dokumentumtar/kek-415-448"
+   ],
+   [
+    1667,
+    "https://katolikus.hu/dokumentumtar/kek-449-454"
+   ],
+   [
+    1691,
+    "https://katolikus.hu/dokumentumtar/kek-455-459"
+   ],
+   [
+    1699,
+    "https://katolikus.hu/dokumentumtar/kek-461-495"
+   ],
+   [
+    1877,
+    "https://katolikus.hu/dokumentumtar/kek-496-509"
+   ],
+   [
+    1949,
+    "https://katolikus.hu/dokumentumtar/kek-510-533"
+   ],
+   [
+    2052,
+    "https://katolikus.hu/dokumentumtar/kek-534-540"
+   ],
+   [
+    2083,
+    "https://katolikus.hu/dokumentumtar/kek-541-565"
+   ],
+   [
+    2196,
+    "https://katolikus.hu/dokumentumtar/kek-566-644"
+   ],
+   [
+    2558,
+    "https://katolikus.hu/dokumentumtar/kek-645-649"
+   ],
+   [
+    2566,
+    "https://katolikus.hu/dokumentumtar/kek-650-670"
+   ],
+   [
+    2650,
+    "https://katolikus.hu/dokumentumtar/kek-671-682"
+   ],
+   [
+    2697,
+    "https://katolikus.hu/dokumentumtar/kek-683-696"
+   ],
+   [
+    2759,
+    "https://katolikus.hu/dokumentumtar/kek-697-723"
+   ]
+  ],
+  "CIC": [
+   [
+    1,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0001-0006_hu.html"
+   ],
+   [
+    7,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0007-0022_hu.html"
+   ],
+   [
+    23,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0023-0028_hu.html"
+   ],
+   [
+    29,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0029-0034_hu.html"
+   ],
+   [
+    35,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0035-0047_hu.html"
+   ],
+   [
+    48,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0048-0058_hu.html"
+   ],
+   [
+    59,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0059-0075_hu.html"
+   ],
+   [
+    76,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0076-0084_hu.html"
+   ],
+   [
+    85,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0085-0093_hu.html"
+   ],
+   [
+    94,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0094-0095_hu.html"
+   ],
+   [
+    96,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0096-0112_hu.html"
+   ],
+   [
+    113,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0113-0123_hu.html"
+   ],
+   [
+    124,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0124-0128_hu.html"
+   ],
+   [
+    129,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0129-0144_hu.html"
+   ],
+   [
+    145,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0145_hu.html"
+   ],
+   [
+    146,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0146-0156_hu.html"
+   ],
+   [
+    157,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0157_hu.html"
+   ],
+   [
+    158,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0158-0163_hu.html"
+   ],
+   [
+    164,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0164-0179_hu.html"
+   ],
+   [
+    180,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0180-0183_hu.html"
+   ],
+   [
+    184,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0184-0186_hu.html"
+   ],
+   [
+    187,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0187-0189_hu.html"
+   ],
+   [
+    190,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0190-0191_hu.html"
+   ],
+   [
+    192,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0192-0195_hu.html"
+   ],
+   [
+    196,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0196_hu.html"
+   ],
+   [
+    197,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0197-0199_hu.html"
+   ],
+   [
+    200,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvI_0200-0203_hu.html"
+   ],
+   [
+    204,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0204-0207_hu.html"
+   ],
+   [
+    208,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0208-0223_hu.html"
+   ],
+   [
+    224,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0224-0231_hu.html"
+   ],
+   [
+    232,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0232-0264_hu.html"
+   ],
+   [
+    265,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0265-0272_hu.html"
+   ],
+   [
+    273,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0273-0289_hu.html"
+   ],
+   [
+    290,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0290-0293_hu.html"
+   ],
+   [
+    294,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0294-0297_hu.html"
+   ],
+   [
+    298,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0298-0311_hu.html"
+   ],
+   [
+    312,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0312-0320_hu.html"
+   ],
+   [
+    321,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0321-0326_hu.html"
+   ],
+   [
+    327,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0327-0329_hu.html"
+   ],
+   [
+    330,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0330_hu.html"
+   ],
+   [
+    331,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0331-0335_hu.html"
+   ],
+   [
+    336,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0336-0341_hu.html"
+   ],
+   [
+    342,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0342-0348_hu.html"
+   ],
+   [
+    349,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0349-0359_hu.html"
+   ],
+   [
+    360,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0360-0361_hu.html"
+   ],
+   [
+    362,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0362-0367_hu.html"
+   ],
+   [
+    368,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0368-0374_hu.html"
+   ],
+   [
+    375,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0375-0380_hu.html"
+   ],
+   [
+    381,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0381-0402_hu.html"
+   ],
+   [
+    403,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0403-0411_hu.html"
+   ],
+   [
+    412,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0412-0415_hu.html"
+   ],
+   [
+    416,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0416-0430_hu.html"
+   ],
+   [
+    431,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0431-0434_hu.html"
+   ],
+   [
+    435,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0435-0438_hu.html"
+   ],
+   [
+    439,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0439-0446_hu.html"
+   ],
+   [
+    447,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0447-0459_hu.html"
+   ],
+   [
+    460,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0460-0468_hu.html"
+   ],
+   [
+    469,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0469-0474_hu.html"
+   ],
+   [
+    475,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0475-0481_hu.html"
+   ],
+   [
+    482,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0482-0491_hu.html"
+   ],
+   [
+    492,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0492-0494_hu.html"
+   ],
+   [
+    495,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0495-0502_hu.html"
+   ],
+   [
+    503,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0503-0510_hu.html"
+   ],
+   [
+    511,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0511-0514_hu.html"
+   ],
+   [
+    515,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0515-0552_hu.html"
+   ],
+   [
+    553,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0553-0555_hu.html"
+   ],
+   [
+    556,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0556-0563_hu.html"
+   ],
+   [
+    564,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0564-0572_hu.html"
+   ],
+   [
+    573,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0573-0606_hu.html"
+   ],
+   [
+    607,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0607_hu.html"
+   ],
+   [
+    608,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0608-0616_hu.html"
+   ],
+   [
+    617,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0617-0630_hu.html"
+   ],
+   [
+    631,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0631-0633_hu.html"
+   ],
+   [
+    634,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0634-0640_hu.html"
+   ],
+   [
+    641,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0641-0645_hu.html"
+   ],
+   [
+    646,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0646-0653_hu.html"
+   ],
+   [
+    654,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0654-0658_hu.html"
+   ],
+   [
+    659,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0659-0661_hu.html"
+   ],
+   [
+    662,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0662-0672_hu.html"
+   ],
+   [
+    673,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0673-0683_hu.html"
+   ],
+   [
+    684,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0684-0685_hu.html"
+   ],
+   [
+    686,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0686-0693_hu.html"
+   ],
+   [
+    694,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0694-0704_hu.html"
+   ],
+   [
+    705,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0705-0707_hu.html"
+   ],
+   [
+    708,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0708-0709_hu.html"
+   ],
+   [
+    710,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0710-0730_hu.html"
+   ],
+   [
+    731,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvII_0731-0746_hu.html"
+   ],
+   [
+    747,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0747-0755_hu.html"
+   ],
+   [
+    756,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0756-0761_hu.html"
+   ],
+   [
+    762,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0762-0772_hu.html"
+   ],
+   [
+    773,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0773-0780_hu.html"
+   ],
+   [
+    781,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0781-0792_hu.html"
+   ],
+   [
+    793,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0793-0795_hu.html"
+   ],
+   [
+    796,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0796-0806_hu.html"
+   ],
+   [
+    807,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0807-0814_hu.html"
+   ],
+   [
+    815,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0815-0821_hu.html"
+   ],
+   [
+    822,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0822-0832_hu.html"
+   ],
+   [
+    833,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIII_0833_hu.html"
+   ],
+   [
+    834,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0834-0839_hu.html"
+   ],
+   [
+    840,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0840-0848_hu.html"
+   ],
+   [
+    849,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0849_hu.html"
+   ],
+   [
+    850,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0850-0860_hu.html"
+   ],
+   [
+    861,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0861-0863_hu.html"
+   ],
+   [
+    864,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0864-0871_hu.html"
+   ],
+   [
+    872,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0872-0874_hu.html"
+   ],
+   [
+    875,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0875-0878_hu.html"
+   ],
+   [
+    879,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0879_hu.html"
+   ],
+   [
+    880,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0880-0881_hu.html"
+   ],
+   [
+    882,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0882-0888_hu.html"
+   ],
+   [
+    889,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0889-0891_hu.html"
+   ],
+   [
+    892,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0892-0893_hu.html"
+   ],
+   [
+    894,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0894-0896_hu.html"
+   ],
+   [
+    897,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0897-0898_hu.html"
+   ],
+   [
+    899,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0899_hu.html"
+   ],
+   [
+    900,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0900-0911_hu.html"
+   ],
+   [
+    912,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0912-0923_hu.html"
+   ],
+   [
+    924,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0924-0930_hu.html"
+   ],
+   [
+    931,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0931-0933_hu.html"
+   ],
+   [
+    934,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0934-0944_hu.html"
+   ],
+   [
+    945,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0945-0958_hu.html"
+   ],
+   [
+    959,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0959_hu.html"
+   ],
+   [
+    960,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0960-0964_hu.html"
+   ],
+   [
+    965,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0965-0986_hu.html"
+   ],
+   [
+    987,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0987-0991_hu.html"
+   ],
+   [
+    992,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0992-0997_hu.html"
+   ],
+   [
+    998,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0998_hu.html"
+   ],
+   [
+    999,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_0999-1002_hu.html"
+   ],
+   [
+    1003,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1003_hu.html"
+   ],
+   [
+    1004,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1004-1007_hu.html"
+   ],
+   [
+    1008,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1008-1009_hu.html"
+   ],
+   [
+    1010,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1010-1023_hu.html"
+   ],
+   [
+    1024,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1024-1025_hu.html"
+   ],
+   [
+    1026,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1026-1032_hu.html"
+   ],
+   [
+    1033,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1033-1039_hu.html"
+   ],
+   [
+    1040,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1040-1049_hu.html"
+   ],
+   [
+    1050,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1050-1052_hu.html"
+   ],
+   [
+    1053,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1053-1054_hu.html"
+   ],
+   [
+    1055,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1055-1062_hu.html"
+   ],
+   [
+    1063,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1063-1072_hu.html"
+   ],
+   [
+    1073,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1073-1082_hu.html"
+   ],
+   [
+    1083,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1083-1094_hu.html"
+   ],
+   [
+    1095,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1095-1107_hu.html"
+   ],
+   [
+    1108,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1108-1123_hu.html"
+   ],
+   [
+    1124,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1124-1129_hu.html"
+   ],
+   [
+    1130,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1130-1133_hu.html"
+   ],
+   [
+    1134,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1134-1140_hu.html"
+   ],
+   [
+    1141,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1141-1150_hu.html"
+   ],
+   [
+    1151,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1151-1155_hu.html"
+   ],
+   [
+    1156,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1156-1160_hu.html"
+   ],
+   [
+    1161,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1161-1165_hu.html"
+   ],
+   [
+    1166,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1166-1172_hu.html"
+   ],
+   [
+    1173,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1173-1175_hu.html"
+   ],
+   [
+    1176,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1176_hu.html"
+   ],
+   [
+    1177,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1177-1182_hu.html"
+   ],
+   [
+    1183,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1183-1185_hu.html"
+   ],
+   [
+    1186,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1186-1190_hu.html"
+   ],
+   [
+    1191,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1191-1198_hu.html"
+   ],
+   [
+    1199,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1199-1204_hu.html"
+   ],
+   [
+    1205,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1205-1213_hu.html"
+   ],
+   [
+    1214,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1214-1222_hu.html"
+   ],
+   [
+    1223,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1223-1229_hu.html"
+   ],
+   [
+    1230,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1230-1234_hu.html"
+   ],
+   [
+    1235,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1235-1239_hu.html"
+   ],
+   [
+    1240,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1240-1243_hu.html"
+   ],
+   [
+    1244,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1244-1245_hu.html"
+   ],
+   [
+    1246,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1246-1248_hu.html"
+   ],
+   [
+    1249,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvIV_1249-1253_hu.html"
+   ],
+   [
+    1254,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvV_1254-1258_hu.html"
+   ],
+   [
+    1259,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvV_1259-1272_hu.html"
+   ],
+   [
+    1273,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvV_1273-1289_hu.html"
+   ],
+   [
+    1290,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvV_1290-1298_hu.html"
+   ],
+   [
+    1299,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvV_1299-1310_hu.html"
+   ],
+   [
+    1311,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1311-1312_hu.html"
+   ],
+   [
+    1313,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1313-1320_hu.html"
+   ],
+   [
+    1321,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1321-1330_hu.html"
+   ],
+   [
+    1331,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1331-1335_hu.html"
+   ],
+   [
+    1336,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1336-1338_hu.html"
+   ],
+   [
+    1339,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1339-1340_hu.html"
+   ],
+   [
+    1341,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1341-1353_hu.html"
+   ],
+   [
+    1354,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1354-1363_hu.html"
+   ],
+   [
+    1364,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1364-1369_hu.html"
+   ],
+   [
+    1370,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1370-1378_hu.html"
+   ],
+   [
+    1379,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1379-1389_hu.html"
+   ],
+   [
+    1390,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1390-1391_hu.html"
+   ],
+   [
+    1392,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1392-1396_hu.html"
+   ],
+   [
+    1397,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1397-1398_hu.html"
+   ],
+   [
+    1399,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVI_1399_hu.html"
+   ],
+   [
+    1400,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1400-1403_hu.html"
+   ],
+   [
+    1404,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1404-1416_hu.html"
+   ],
+   [
+    1417,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1417-1418_hu.html"
+   ],
+   [
+    1419,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1419-1427_hu.html"
+   ],
+   [
+    1428,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1428-1429_hu.html"
+   ],
+   [
+    1430,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1430-1437_hu.html"
+   ],
+   [
+    1438,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1438-1441_hu.html"
+   ],
+   [
+    1442,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1442-1445_hu.html"
+   ],
+   [
+    1446,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1446-1457_hu.html"
+   ],
+   [
+    1458,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1458-1464_hu.html"
+   ],
+   [
+    1465,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1465-1467_hu.html"
+   ],
+   [
+    1468,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1468-1469_hu.html"
+   ],
+   [
+    1470,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1470-1475_hu.html"
+   ],
+   [
+    1476,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1476-1480_hu.html"
+   ],
+   [
+    1481,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1481-1490_hu.html"
+   ],
+   [
+    1491,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1491-1495_hu.html"
+   ],
+   [
+    1496,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1496-1500_hu.html"
+   ],
+   [
+    1501,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1501-1506_hu.html"
+   ],
+   [
+    1507,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1507-1512_hu.html"
+   ],
+   [
+    1513,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1513-1516_hu.html"
+   ],
+   [
+    1517,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1517-1525_hu.html"
+   ],
+   [
+    1526,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1526-1529_hu.html"
+   ],
+   [
+    1530,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1530-1538_hu.html"
+   ],
+   [
+    1539,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1539_hu.html"
+   ],
+   [
+    1540,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1540-1543_hu.html"
+   ],
+   [
+    1544,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1544-1546_hu.html"
+   ],
+   [
+    1547,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1547-1548_hu.html"
+   ],
+   [
+    1549,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1549-1550_hu.html"
+   ],
+   [
+    1551,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1551-1557_hu.html"
+   ],
+   [
+    1558,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1558-1571_hu.html"
+   ],
+   [
+    1572,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1572-1573_hu.html"
+   ],
+   [
+    1574,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1574-1581_hu.html"
+   ],
+   [
+    1582,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1582-1583_hu.html"
+   ],
+   [
+    1584,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1584-1586_hu.html"
+   ],
+   [
+    1587,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1587-1591_hu.html"
+   ],
+   [
+    1592,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1592-1595_hu.html"
+   ],
+   [
+    1596,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1596-1597_hu.html"
+   ],
+   [
+    1598,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1598-1606_hu.html"
+   ],
+   [
+    1607,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1607-1618_hu.html"
+   ],
+   [
+    1619,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1619-1627_hu.html"
+   ],
+   [
+    1628,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1628-1640_hu.html"
+   ],
+   [
+    1641,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1641-1644_hu.html"
+   ],
+   [
+    1645,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1645-1648_hu.html"
+   ],
+   [
+    1649,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1649_hu.html"
+   ],
+   [
+    1650,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1650-1655_hu.html"
+   ],
+   [
+    1656,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1656-1670_hu.html"
+   ],
+   [
+    1671,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1671-1673_hu.html"
+   ],
+   [
+    1674,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1674_hu.html"
+   ],
+   [
+    1675,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1675-1678_hu.html"
+   ],
+   [
+    1679,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1679-1682_hu.html"
+   ],
+   [
+    1683,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1683-1687_hu.html"
+   ],
+   [
+    1688,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1688-1690_hu.html"
+   ],
+   [
+    1691,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1691_hu.html"
+   ],
+   [
+    1692,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1692-1696_hu.html"
+   ],
+   [
+    1697,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1697-1706_hu.html"
+   ],
+   [
+    1707,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1707_hu.html"
+   ],
+   [
+    1708,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1708-1712_hu.html"
+   ],
+   [
+    1713,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1713-1716_hu.html"
+   ],
+   [
+    1717,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1717-1719_hu.html"
+   ],
+   [
+    1720,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1720-1728_hu.html"
+   ],
+   [
+    1729,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1729-1731_hu.html"
+   ],
+   [
+    1732,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1732-1739_hu.html"
+   ],
+   [
+    1740,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1740-1747_hu.html"
+   ],
+   [
+    1748,
+    "https://torvenykonyv.katolikus.hu/www.vatican.va/archive/cod-iuris-canonici/hu/documents/cic_konyvVII_1748-1752_hu.html"
+   ]
+  ]
+ }
+}

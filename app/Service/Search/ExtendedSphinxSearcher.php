@@ -3,12 +3,14 @@
 namespace SzentirasHu\Service\Search;
 
 use Illuminate\Support\Facades\Config;
+use SzentirasHu\Data\Entity\Verse;
 use SzentirasHu\Service\Sphinx\SphinxSearch;
 
 /**
  * Runs an {@see ExtendedSearchParams} search on the Sphinx verse index. It matches the same
  * way the full text search does, so its phrase and exact form preferences show in the
- * weights, and with a quorum it also accepts verses that miss some of the words.
+ * weights, and with a quorum it also accepts verses that miss some of the words. The headings
+ * are searched the same way, apart from the verses.
  */
 class ExtendedSphinxSearcher
 {
@@ -34,36 +36,85 @@ class ExtendedSphinxSearcher
             return new ExtendedSearchResult([], 0);
         }
 
-        $sphinxClient = new SphinxSearch('');
-        $keywords = $sphinxClient->keywords(SphinxSearcher::sanitize($this->params->text));
+        $keywords = (new SphinxSearch(''))->keywords(SphinxSearcher::sanitize($this->params->text));
         $questionWords = array_column($keywords, 'word');
         $countedWords = self::countedWords($keywords);
-        $sphinxClient->match($this->matchExpression($countedWords));
+
+        $verseQuery = $this->query($countedWords, self::verseTextTypes());
+        if ($this->params->onePerVerse) {
+            $verseQuery->groupBy(['gepi'], $this->translationPreference());
+        } else {
+            $verseQuery->groupBy(['gepi', 'trans']);
+        }
+        $verseRows = $verseQuery->get();
+        $totalHitCount = $verseQuery->totalFound();
+        $hits = $this->hitsOf($verseRows, $verseQuery, $countedWords, $questionWords);
+
+        $headingQuery = $this->query($countedWords, self::headingTypes());
+        $headingQuery->groupBy(['gepi', 'trans']);
+        $headingQuery->orderTieBreak($this->translationPreference());
+        $headingRows = $headingQuery->get();
+        $headingHitCount = $headingQuery->totalFound();
+        $headingTexts = Verse::query()
+            ->whereIn('id', array_map(fn (array $row): int => (int) $row['id'], $headingRows))
+            ->pluck('verse', 'id');
+        $headings = array_map(
+            fn (array $row, ExtendedSearchHit $hit): ExtendedSearchHeadingHit => new ExtendedSearchHeadingHit($hit, self::headingText((string) ($headingTexts[(int) $row['id']] ?? ''))),
+            $headingRows,
+            $this->hitsOf($headingRows, $headingQuery, $countedWords, $questionWords),
+        );
+
+        return new ExtendedSearchResult($hits, $totalHitCount, count($countedWords), count($questionWords), $headings, $headingHitCount);
+    }
+
+    /**
+     * A query of the rows of the given types with the search's match, ranking, limit and
+     * filters, before grouping.
+     *
+     * @param  array<int, string>  $countedWords
+     * @param  array<int, int>  $types
+     */
+    private function query(array $countedWords, array $types): SphinxSearch
+    {
+        $sphinxClient = new SphinxSearch($this->matchExpression($countedWords));
         $sphinxClient->ranker(self::RANKER);
         $sphinxClient->limit($this->params->resolvedLimit());
         $sphinxClient->filter('trans', $this->params->translationIds);
-        $sphinxClient->filter('tip', self::verseTextTypes());
+        $sphinxClient->filter('tip', $types);
         if ($this->params->usxCodes !== []) {
             $sphinxClient->filter('usx_code', array_keys($this->params->usxCodes));
         }
-        if ($this->params->onePerVerse) {
-            $sphinxClient->groupBy(['gepi'], $this->translationPreference());
-        } else {
-            $sphinxClient->groupBy(['gepi', 'trans']);
-        }
 
-        $rows = $sphinxClient->get();
-        $totalHitCount = $sphinxClient->totalFound();
+        return $sphinxClient;
+    }
+
+    /**
+     * The rows as hits with their word factors, measured the same way for verses and headings.
+     *
+     * @param  array<int, array<string, mixed>>  $rows
+     * @param  array<int, string>  $countedWords
+     * @param  array<int, string>  $questionWords
+     * @return array<int, ExtendedSearchHit>
+     */
+    private function hitsOf(array $rows, SphinxSearch $sphinxClient, array $countedWords, array $questionWords): array
+    {
         $ids = array_map(fn (array $row): int => (int) $row['id'], $rows);
         $countedWordFactors = $sphinxClient->verseFieldFactors(self::anyWordMatch($countedWords), $ids);
         $questionFactors = $sphinxClient->verseFieldFactors(self::anyWordMatch($questionWords), $ids);
-        $hits = array_map(fn (array $row): ExtendedSearchHit => ExtendedSearchHit::fromSphinxRow($row, [
+
+        return array_map(fn (array $row): ExtendedSearchHit => ExtendedSearchHit::fromSphinxRow($row, [
             'lcs' => $questionFactors[(int) $row['id']]['lcs'] ?? 0,
             'word_count' => $countedWordFactors[(int) $row['id']]['word_count'] ?? 0,
             'exact_hit' => $questionFactors[(int) $row['id']]['exact_hit'] ?? 0,
         ]), $rows);
+    }
 
-        return new ExtendedSearchResult($hits, $totalHitCount, count($countedWords), count($questionWords));
+    /**
+     * The heading as the reader sees it, as plain text: its lines joined by spaces.
+     */
+    public static function headingText(string $storedText): string
+    {
+        return trim(preg_replace('/\s+/u', ' ', preg_replace('/<[^>]*>/', ' ', $storedText)));
     }
 
     /**
@@ -126,7 +177,7 @@ class ExtendedSphinxSearcher
 
     /**
      * The verse types holding the text of a verse in any translation; the index also holds
-     * headings, which carry the place of the verse they stand before.
+     * headings, which carry the place of the verse they stand before, see {@see headingTypes()}.
      *
      * @return array<int, int>
      */
@@ -137,6 +188,21 @@ class ExtendedSphinxSearcher
                 ...$definition['verseTypes']['text'] ?? [],
                 ...$definition['verseTypes']['poemLine'] ?? [],
             ])
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * The verse types holding a heading in any translation: the translators' titles of the
+     * books, sections and pericopes, each at the place of the first verse under it.
+     *
+     * @return array<int, int>
+     */
+    public static function headingTypes(): array
+    {
+        return collect(Config::get('translations.definitions'))
+            ->flatMap(fn (array $definition): array => array_keys($definition['verseTypes']['heading'] ?? []))
             ->unique()
             ->values()
             ->all();

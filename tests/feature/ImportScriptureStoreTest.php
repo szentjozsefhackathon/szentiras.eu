@@ -47,6 +47,25 @@ class ImportScriptureStoreTest extends FastDatabaseTestCase
         $this->assertSame(VerseFixStatus::Active, $verseFix->fresh()->status);
     }
 
+    public function test_headings_are_stemmed_like_the_verses_so_the_search_finds_them_by_lemma(): void
+    {
+        $szitTypes = ImportScripture::stemmedVerseTypesFor('SZIT');
+        $this->assertContains(901, $szitTypes);
+        foreach ([3001, 3002, 3003, 3004, 3005] as $headingType) {
+            $this->assertContains($headingType, $szitTypes);
+        }
+
+        $knbTypes = ImportScripture::stemmedVerseTypesFor('KNB');
+        $this->assertContains(680, $knbTypes);
+        $this->assertContains(702, $knbTypes);
+        $this->assertNotContains(120, $knbTypes);
+    }
+
+    public function test_a_translation_without_headings_stems_the_common_types(): void
+    {
+        $this->assertEqualsCanonicalizing(ImportScripture::STEMMED_VERSE_TYPES, ImportScripture::stemmedVerseTypesFor('STL'));
+    }
+
     /**
      * @param  list<array<string, mixed>>  $bookInserts
      * @param  list<array<string, mixed>>  $verseInserts

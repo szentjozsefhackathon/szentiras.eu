@@ -53,6 +53,18 @@ class ImportScripture extends Command
 
     protected $translationRepository;
     protected $hunspellEnabled = false;
+
+    /**
+     * The verse types stemmed regardless of the translation.
+     */
+    public const STEMMED_VERSE_TYPES = [60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704];
+
+    /**
+     * The verse types stemmed in the translation being imported, see {@see stemmedVerseTypesFor()}.
+     *
+     * @var array<int, int>
+     */
+    protected array $stemmedVerseTypes = self::STEMMED_VERSE_TYPES;
     protected $newStems = 0;
     protected $sourceDirectory;
     protected $importableTranslations = ['BD', 'KG', 'KNB', 'RUF', 'UF', 'SZIT', 'STL'];
@@ -275,8 +287,24 @@ class ImportScripture extends Command
         return "book_{$order}_{$translation}";
     }
 
+    /**
+     * The verse types whose text is stemmed into verseroot: the common ones plus the headings of
+     * the translation, so that the search finds a heading by the lemmas of its words as it
+     * finds a verse.
+     *
+     * @return array<int, int>
+     */
+    public static function stemmedVerseTypesFor(string $transAbbrev): array
+    {
+        return array_values(array_unique([
+            ...self::STEMMED_VERSE_TYPES,
+            ...array_keys(Config::get("translations.definitions.{$transAbbrev}.verseTypes.heading", [])),
+        ]));
+    }
+
     protected function readInserts(Translation $translation, string $transAbbrevToImport, string $filePath): array
     {
+        $this->stemmedVerseTypes = self::stemmedVerseTypesFor($transAbbrevToImport);
         $this->info("A $filePath fájl betöltése...");
         $reader = new Reader();
         $reader->open($filePath);
@@ -463,7 +491,7 @@ class ImportScripture extends Command
         $result['tip'] = $row->getCellAtIndex($verseSheetHeaders['jelstatusz'])->getValue();
         $result['verse'] = $row->getCellAtIndex($verseSheetHeaders['jel'])->getValue();
         $result['verseroot'] = null;
-        if ($this->hunspellEnabled && in_array($result['tip'], [60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704])) {
+        if ($this->hunspellEnabled && in_array($result['tip'], $this->stemmedVerseTypes)) {
             $result['verseroot'] = $this->executeStemming($result['verse'], $pipes);
         }
         if (isset($verseSheetHeaders['ido'])) {

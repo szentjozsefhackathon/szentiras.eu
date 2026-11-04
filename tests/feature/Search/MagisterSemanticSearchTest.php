@@ -36,7 +36,7 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         ]);
         Cache::flush();
 
-        AnonymousId::query()->create(['token' => 'magister-test-token']);
+        AnonymousId::query()->create(['token' => 'meaning-test-token']);
 
         config([
             'translations.ids.' . self::SZIT_ID => 'SZIT',
@@ -131,7 +131,7 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
      */
     private function search(array $parameters = []): \Illuminate\Testing\TestResponse
     {
-        return $this->withSession(['anonymous_token' => 'magister-test-token'])
+        return $this->withSession(['anonymous_token' => 'meaning-test-token'])
             ->post('/ai-search/search', array_merge(['textToSearchAi' => 'áteredő bűn'], $parameters));
     }
 
@@ -158,8 +158,22 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         $response->assertSee('href="/SZIT/Róm 5,12-14"', false);
         $response->assertSee('href="/TESTTRANS/Róm 5,12-14"', false);
         $response->assertSee('Az Egyház tanításában:');
-        $response->assertSee('href="' . self::MAGISTER_URL . '/?q=KEK%20388"', false);
-        $response->assertSee('KEK 602');
+        $response->assertSee('href="https://katolikus.hu/dokumentumtar/kek-067-120#K0388"', false);
+        $response->assertSee('href="https://katolikus.hu/dokumentumtar/kek-121-198#K0602"', false);
+    }
+
+    public function test_score_is_shown(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $this->search()->assertSee('title="Relevancia: 45,20"', false);
+    }
+
+    public function test_zero_score_shows_no_score(): void
+    {
+        $this->fakeMagister([array_merge($this->romansPassage(), ['score' => 0])]);
+
+        $this->search()->assertOk()->assertDontSee('title="Relevancia', false);
     }
 
     public function test_best_matching_verse_is_highlighted(): void
@@ -171,11 +185,34 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         $this->assertSame(['24500501300'], $hits[0]->translations[0]['highlightedGepis']);
     }
 
-    public function test_page_links_the_question_to_magister(): void
+    public function test_citing_document_without_a_known_page_is_shown_unlinked(): void
+    {
+        $this->fakeMagister([array_merge($this->romansPassage(), ['cited_by' => ['XYZ 7']])]);
+
+        $response = $this->search();
+
+        $response->assertSee('Az Egyház tanításában:');
+        $response->assertSee('XYZ 7');
+        $response->assertDontSee('>XYZ 7</a>', false);
+    }
+
+    /**
+     * Magister is not public yet: it answers in the background, the page neither names nor links it.
+     */
+    public function test_page_does_not_mention_magister(): void
     {
         $this->fakeMagister([$this->romansPassage()]);
 
-        $this->search()->assertSee('href="' . self::MAGISTER_URL . '/?q=%C3%A1tered%C5%91%20b%C5%B1n"', false);
+        $response = $this->search();
+
+        $response->assertSee('SZIT ROM 5,12 szövege');
+        $response->assertDontSee('Magister');
+        $response->assertDontSee('magister');
+    }
+
+    public function test_search_page_does_not_mention_magister(): void
+    {
+        $this->get('/ai-search')->assertOk()->assertDontSee('Magister')->assertDontSee('magister');
     }
 
     public function test_book_filter_drops_passages_of_other_books(): void
@@ -306,5 +343,147 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         $this->get('/ai-search?textToSearchAi=' . rawurlencode('áteredő bűn'))
             ->assertOk()
             ->assertSee('value="áteredő bűn"', false);
+    }
+
+    /**
+     * @param  array<string, string>  $parameters
+     * @return array<int, array<string, mixed>>
+     */
+    private function streamEvents(array $parameters = []): array
+    {
+        $response = $this->withSession(['anonymous_token' => 'meaning-test-token'])
+            ->post('/ai-search/stream', array_merge(['textToSearchAi' => 'áteredő bűn'], $parameters), ['Accept' => 'application/json']);
+        $response->assertOk();
+
+        return $this->eventsOf($response);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function eventsOf(\Illuminate\Testing\TestResponse $response): array
+    {
+        $content = $response->baseResponse instanceof \Symfony\Component\HttpFoundation\StreamedResponse
+            ? $response->streamedContent()
+            : $response->getContent();
+        $lines = array_filter(explode("\n", $content), fn (string $line): bool => trim($line) !== '');
+
+        return array_values(array_map(fn (string $line): array => json_decode($line, true, flags: JSON_THROW_ON_ERROR), $lines));
+    }
+
+    public function test_stream_reports_each_step_before_the_result(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $events = $this->streamEvents();
+
+        $this->assertSame(['step', 'step', 'result'], array_column($events, 'event'));
+        $this->assertSame(['search', 'verses'], array_column(array_slice($events, 0, 2), 'step'));
+        $this->assertStringContainsString('SZIT ROM 5,12 szövege', $events[2]['html']);
+        $this->assertStringContainsString('Az Egyház tanításában:', $events[2]['html']);
+        $this->assertStringContainsString('id="semanticSearchForm"', $events[2]['html']);
+    }
+
+    public function test_stream_is_not_buffered(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $response = $this->withSession(['anonymous_token' => 'meaning-test-token'])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json']);
+
+        $response->assertHeader('Content-Type', 'application/x-ndjson');
+        $response->assertHeader('X-Accel-Buffering', 'no');
+    }
+
+    public function test_stream_result_does_not_mention_magister(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $events = $this->streamEvents();
+
+        $this->assertStringNotContainsStringIgnoringCase('magister', json_encode($events, JSON_UNESCAPED_UNICODE));
+    }
+
+    public function test_stream_applies_the_book_filter(): void
+    {
+        $this->fakeMagister([$this->genesisPassage(), $this->romansPassage()]);
+
+        $html = $this->streamEvents(['usxCode' => 'ROM'])[2]['html'];
+
+        $this->assertStringContainsString('SZIT ROM 5,12 szövege', $html);
+        $this->assertStringNotContainsString('SZIT GEN 1,1 szövege', $html);
+    }
+
+    public function test_stream_reports_magister_failure_after_the_search_step(): void
+    {
+        Http::fake([self::MAGISTER_URL . '/*' => Http::response('Bad Gateway', 502)]);
+
+        $events = $this->streamEvents();
+
+        $this->assertSame(['step', 'result'], array_column($events, 'event'));
+        $this->assertStringContainsString('A jelentés szerinti kereső most nem érhető el.', $events[1]['html']);
+    }
+
+    public function test_stream_sends_a_typed_reference_to_the_passage(): void
+    {
+        Http::fake();
+
+        $events = $this->streamEvents(['textToSearchAi' => 'Római 5:12']);
+
+        $this->assertSame([['event' => 'redirect', 'url' => '/SZIT/Róm5,12']], $events);
+        Http::assertNothingSent();
+    }
+
+    public function test_stream_rejects_an_empty_question(): void
+    {
+        $this->withSession(['anonymous_token' => 'meaning-test-token'])
+            ->post('/ai-search/stream', ['textToSearchAi' => ''], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('textToSearchAi');
+    }
+
+    public function test_stream_asks_an_anonymous_visitor_for_the_captcha(): void
+    {
+        Http::fake();
+
+        $this->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('cf-turnstile-response');
+        Http::assertNothingSent();
+    }
+
+    public function test_stream_tells_an_anonymous_visitor_over_the_limit(): void
+    {
+        Http::fake();
+        config(['settings.ai.unregisteredSearchLimit' => 2]);
+
+        $response = $this->withSession(['semanticSearchCalls' => 2])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'captchaValidated' => '1'], ['Accept' => 'application/json']);
+
+        $events = $this->eventsOf($response->assertOk());
+        $this->assertSame('result', $events[0]['event']);
+        $this->assertStringContainsString('legfeljebb 2 MI alapú keresést', $events[0]['html']);
+        Http::assertNothingSent();
+    }
+
+    public function test_stream_counts_the_search_of_an_anonymous_visitor(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+        config(['settings.ai.unregisteredSearchLimit' => 5]);
+
+        $response = $this->withSession(['semanticSearchCalls' => 1])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'captchaValidated' => '1'], ['Accept' => 'application/json']);
+
+        $response->assertOk()->assertSessionHas('semanticSearchCalls', 2);
+        $this->assertStringContainsString('Eddig 2 keresést végeztél.', $this->eventsOf($response)[2]['html']);
+    }
+
+    public function test_search_page_has_the_progress_steps(): void
+    {
+        $this->get('/ai-search')
+            ->assertOk()
+            ->assertSee('data-stream-action="' . url('/ai-search/stream') . '"', false)
+            ->assertSee('id="semanticSearchProgress"', false)
+            ->assertSee('Szentírási szakaszok keresése jelentés szerint');
     }
 }

@@ -37,19 +37,6 @@ class MagisterClient
     }
 
     /**
-     * Magister's units link to its question page, which resolves a unit ID given as the question.
-     */
-    public function unitUrl(string $unitId): string
-    {
-        return $this->questionUrl($unitId);
-    }
-
-    public function questionUrl(string $question): string
-    {
-        return rtrim(config('services.magister.url'), '/') . '/?' . http_build_query(['q' => $question], '', '&', PHP_QUERY_RFC3986);
-    }
-
-    /**
      * @return array<int, array<string, mixed>>
      */
     private function fetchPassages(string $question, int $limit): array
