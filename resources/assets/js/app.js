@@ -1,4 +1,5 @@
 import './quickSearch.js';
+import './semanticSearch.js';
 import {
     FONT_SCALES,
     FONT_SCALE_STORAGE_KEY,
@@ -145,12 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
             applyStoredTheme('system');
         }
     });
-});
-
-$('#semanticSearchForm').on('submit', function (event) {
-    event.preventDefault();
-    $('#interstitial').show();
-    event.target.submit();
 });
 
 $('.interstitial').on('click', () =>

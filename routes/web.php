@@ -71,6 +71,8 @@ Route::post("/kereses/greekSearch", '\SzentirasHu\Http\Controllers\Search\Search
 Route::get("/ai-search", '\SzentirasHu\Http\Controllers\Search\SemanticSearchController@getIndex');
 Route::post("/ai-search/search", '\SzentirasHu\Http\Controllers\Search\SemanticSearchController@anySearch')
     ->middleware('throttle:100,1');
+Route::post("/ai-search/stream", '\SzentirasHu\Http\Controllers\Search\SemanticSearchController@streamSearch')
+    ->middleware('throttle:100,1');
 
 Route::get("/ai-tool/{translationAbbrev}/{refString}", [AiController::class, 'getAiToolPopover']);
 Route::get("/ai-greek/find-all/{strongNumber}/{offset?}", [AiController::class, 'getAllInstancesOfGreekWord']);

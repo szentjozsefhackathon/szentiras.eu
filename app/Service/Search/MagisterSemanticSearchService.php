@@ -45,11 +45,34 @@ class MagisterSemanticSearchService
      */
     public function search(string $question, ?string $translationAbbrev = null, array $usxCodes = []): array
     {
+        return $this->hitsOf($this->candidates($question), $translationAbbrev, $usxCodes);
+    }
+
+    /**
+     * The passages Magister ranks for a question, before they are filtered and rendered: the slow
+     * step of a search, which the page reports separately.
+     *
+     * @return array<int, MagisterPassage>
+     *
+     * @throws MagisterUnavailableException
+     */
+    public function candidates(string $question): array
+    {
+        return $this->magisterClient->searchBible($question, self::CANDIDATES);
+    }
+
+    /**
+     * @param  array<int, MagisterPassage>  $passages  as {@see candidates()} returns them
+     * @param  array<int, string>  $usxCodes  books to keep; empty keeps all
+     * @return array<int, MagisterSearchHit>
+     */
+    public function hitsOf(array $passages, ?string $translationAbbrev = null, array $usxCodes = []): array
+    {
         $referenceTranslation = $this->translationService->getByAbbreviation(config('services.magister.reference_translation'));
         $translations = $this->displayedTranslations($translationAbbrev);
 
         $hits = [];
-        foreach ($this->magisterClient->searchBible($question, self::CANDIDATES) as $passage) {
+        foreach ($passages as $passage) {
             $hit = $this->toHit($passage, $referenceTranslation, $translations, $usxCodes);
             if ($hit !== null) {
                 $hits[] = $hit;

@@ -345,4 +345,145 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
             ->assertSee('value="áteredő bűn"', false);
     }
 
+    /**
+     * @param  array<string, string>  $parameters
+     * @return array<int, array<string, mixed>>
+     */
+    private function streamEvents(array $parameters = []): array
+    {
+        $response = $this->withSession(['anonymous_token' => 'meaning-test-token'])
+            ->post('/ai-search/stream', array_merge(['textToSearchAi' => 'áteredő bűn'], $parameters), ['Accept' => 'application/json']);
+        $response->assertOk();
+
+        return $this->eventsOf($response);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function eventsOf(\Illuminate\Testing\TestResponse $response): array
+    {
+        $content = $response->baseResponse instanceof \Symfony\Component\HttpFoundation\StreamedResponse
+            ? $response->streamedContent()
+            : $response->getContent();
+        $lines = array_filter(explode("\n", $content), fn (string $line): bool => trim($line) !== '');
+
+        return array_values(array_map(fn (string $line): array => json_decode($line, true, flags: JSON_THROW_ON_ERROR), $lines));
+    }
+
+    public function test_stream_reports_each_step_before_the_result(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $events = $this->streamEvents();
+
+        $this->assertSame(['step', 'step', 'result'], array_column($events, 'event'));
+        $this->assertSame(['search', 'verses'], array_column(array_slice($events, 0, 2), 'step'));
+        $this->assertStringContainsString('SZIT ROM 5,12 szövege', $events[2]['html']);
+        $this->assertStringContainsString('Az Egyház tanításában:', $events[2]['html']);
+        $this->assertStringContainsString('id="semanticSearchForm"', $events[2]['html']);
+    }
+
+    public function test_stream_is_not_buffered(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $response = $this->withSession(['anonymous_token' => 'meaning-test-token'])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json']);
+
+        $response->assertHeader('Content-Type', 'application/x-ndjson');
+        $response->assertHeader('X-Accel-Buffering', 'no');
+    }
+
+    public function test_stream_result_does_not_mention_magister(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $events = $this->streamEvents();
+
+        $this->assertStringNotContainsStringIgnoringCase('magister', json_encode($events, JSON_UNESCAPED_UNICODE));
+    }
+
+    public function test_stream_applies_the_book_filter(): void
+    {
+        $this->fakeMagister([$this->genesisPassage(), $this->romansPassage()]);
+
+        $html = $this->streamEvents(['usxCode' => 'ROM'])[2]['html'];
+
+        $this->assertStringContainsString('SZIT ROM 5,12 szövege', $html);
+        $this->assertStringNotContainsString('SZIT GEN 1,1 szövege', $html);
+    }
+
+    public function test_stream_reports_magister_failure_after_the_search_step(): void
+    {
+        Http::fake([self::MAGISTER_URL . '/*' => Http::response('Bad Gateway', 502)]);
+
+        $events = $this->streamEvents();
+
+        $this->assertSame(['step', 'result'], array_column($events, 'event'));
+        $this->assertStringContainsString('A jelentés szerinti kereső most nem érhető el.', $events[1]['html']);
+    }
+
+    public function test_stream_sends_a_typed_reference_to_the_passage(): void
+    {
+        Http::fake();
+
+        $events = $this->streamEvents(['textToSearchAi' => 'Római 5:12']);
+
+        $this->assertSame([['event' => 'redirect', 'url' => '/SZIT/Róm5,12']], $events);
+        Http::assertNothingSent();
+    }
+
+    public function test_stream_rejects_an_empty_question(): void
+    {
+        $this->withSession(['anonymous_token' => 'meaning-test-token'])
+            ->post('/ai-search/stream', ['textToSearchAi' => ''], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('textToSearchAi');
+    }
+
+    public function test_stream_asks_an_anonymous_visitor_for_the_captcha(): void
+    {
+        Http::fake();
+
+        $this->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('cf-turnstile-response');
+        Http::assertNothingSent();
+    }
+
+    public function test_stream_tells_an_anonymous_visitor_over_the_limit(): void
+    {
+        Http::fake();
+        config(['settings.ai.unregisteredSearchLimit' => 2]);
+
+        $response = $this->withSession(['semanticSearchCalls' => 2])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'captchaValidated' => '1'], ['Accept' => 'application/json']);
+
+        $events = $this->eventsOf($response->assertOk());
+        $this->assertSame('result', $events[0]['event']);
+        $this->assertStringContainsString('legfeljebb 2 MI alapú keresést', $events[0]['html']);
+        Http::assertNothingSent();
+    }
+
+    public function test_stream_counts_the_search_of_an_anonymous_visitor(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+        config(['settings.ai.unregisteredSearchLimit' => 5]);
+
+        $response = $this->withSession(['semanticSearchCalls' => 1])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'captchaValidated' => '1'], ['Accept' => 'application/json']);
+
+        $response->assertOk()->assertSessionHas('semanticSearchCalls', 2);
+        $this->assertStringContainsString('Eddig 2 keresést végeztél.', $this->eventsOf($response)[2]['html']);
+    }
+
+    public function test_search_page_has_the_progress_steps(): void
+    {
+        $this->get('/ai-search')
+            ->assertOk()
+            ->assertSee('data-stream-action="' . url('/ai-search/stream') . '"', false)
+            ->assertSee('id="semanticSearchProgress"', false)
+            ->assertSee('Szentírási szakaszok keresése jelentés szerint');
+    }
 }
