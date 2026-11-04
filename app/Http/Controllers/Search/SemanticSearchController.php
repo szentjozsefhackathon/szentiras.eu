@@ -127,7 +127,6 @@ class SemanticSearchController extends Controller
     private function semanticSearch(SemanticSearchForm $form, $view)
     {
         $usxCodes = array_keys(SearchController::extractBookUsxCodes($form->usxCode));
-        $view = $view->with('magisterQuestionUrl', $this->magisterSemanticSearchService->questionUrl($form->textToSearchAi));
         try {
             $hits = $this->magisterSemanticSearchService->search($form->textToSearchAi, $form->translationAbbrev, $usxCodes);
         } catch (MagisterUnavailableException) {

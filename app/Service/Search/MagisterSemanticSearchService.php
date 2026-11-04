@@ -18,6 +18,8 @@ use SzentirasHu\Service\Text\TranslationService;
  * The meaning search of /ai-search, answered by Magister rather than our own vectors: Magister
  * ranks pericopes and lifts the ones the Church documents cite (the "bridge"), which finds the
  * passages a question is really about. We only render its references in our translations.
+ * Magister is not public yet: nothing on the page names it or links to it, the citing documents
+ * link to katolikus.hu (ChurchDocumentLinks).
  */
 class MagisterSemanticSearchService
 {
@@ -32,6 +34,7 @@ class MagisterSemanticSearchService
         protected TextService $textService,
         protected ReferenceService $referenceService,
         protected BookRepository $bookRepository,
+        protected ChurchDocumentLinks $churchDocumentLinks,
     ) {}
 
     /**
@@ -57,11 +60,6 @@ class MagisterSemanticSearchService
         }
 
         return $hits;
-    }
-
-    public function questionUrl(string $question): string
-    {
-        return $this->magisterClient->questionUrl($question);
     }
 
     /**
@@ -116,7 +114,7 @@ class MagisterSemanticSearchService
 
         $citedBy = [];
         foreach ($passage->citedBy as $unitId) {
-            $citedBy[$unitId] = $this->magisterClient->unitUrl($unitId);
+            $citedBy[$unitId] = $this->churchDocumentLinks->urlOf($unitId);
         }
 
         return new MagisterSearchHit($passage, $rendered, $citedBy);

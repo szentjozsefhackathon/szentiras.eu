@@ -36,7 +36,7 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         ]);
         Cache::flush();
 
-        AnonymousId::query()->create(['token' => 'magister-test-token']);
+        AnonymousId::query()->create(['token' => 'meaning-test-token']);
 
         config([
             'translations.ids.' . self::SZIT_ID => 'SZIT',
@@ -131,7 +131,7 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
      */
     private function search(array $parameters = []): \Illuminate\Testing\TestResponse
     {
-        return $this->withSession(['anonymous_token' => 'magister-test-token'])
+        return $this->withSession(['anonymous_token' => 'meaning-test-token'])
             ->post('/ai-search/search', array_merge(['textToSearchAi' => 'áteredő bűn'], $parameters));
     }
 
@@ -158,8 +158,22 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         $response->assertSee('href="/SZIT/Róm 5,12-14"', false);
         $response->assertSee('href="/TESTTRANS/Róm 5,12-14"', false);
         $response->assertSee('Az Egyház tanításában:');
-        $response->assertSee('href="' . self::MAGISTER_URL . '/?q=KEK%20388"', false);
-        $response->assertSee('KEK 602');
+        $response->assertSee('href="https://katolikus.hu/dokumentumtar/kek-067-120#K0388"', false);
+        $response->assertSee('href="https://katolikus.hu/dokumentumtar/kek-121-198#K0602"', false);
+    }
+
+    public function test_score_is_shown(): void
+    {
+        $this->fakeMagister([$this->romansPassage()]);
+
+        $this->search()->assertSee('title="Relevancia: 45,20"', false);
+    }
+
+    public function test_zero_score_shows_no_score(): void
+    {
+        $this->fakeMagister([array_merge($this->romansPassage(), ['score' => 0])]);
+
+        $this->search()->assertOk()->assertDontSee('title="Relevancia', false);
     }
 
     public function test_best_matching_verse_is_highlighted(): void
@@ -171,11 +185,34 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         $this->assertSame(['24500501300'], $hits[0]->translations[0]['highlightedGepis']);
     }
 
-    public function test_page_links_the_question_to_magister(): void
+    public function test_citing_document_without_a_known_page_is_shown_unlinked(): void
+    {
+        $this->fakeMagister([array_merge($this->romansPassage(), ['cited_by' => ['XYZ 7']])]);
+
+        $response = $this->search();
+
+        $response->assertSee('Az Egyház tanításában:');
+        $response->assertSee('XYZ 7');
+        $response->assertDontSee('>XYZ 7</a>', false);
+    }
+
+    /**
+     * Magister is not public yet: it answers in the background, the page neither names nor links it.
+     */
+    public function test_page_does_not_mention_magister(): void
     {
         $this->fakeMagister([$this->romansPassage()]);
 
-        $this->search()->assertSee('href="' . self::MAGISTER_URL . '/?q=%C3%A1tered%C5%91%20b%C5%B1n"', false);
+        $response = $this->search();
+
+        $response->assertSee('SZIT ROM 5,12 szövege');
+        $response->assertDontSee('Magister');
+        $response->assertDontSee('magister');
+    }
+
+    public function test_search_page_does_not_mention_magister(): void
+    {
+        $this->get('/ai-search')->assertOk()->assertDontSee('Magister')->assertDontSee('magister');
     }
 
     public function test_book_filter_drops_passages_of_other_books(): void
@@ -307,4 +344,5 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
             ->assertOk()
             ->assertSee('value="áteredő bűn"', false);
     }
+
 }
