@@ -162,7 +162,10 @@ curl -H "X-API-Key: {{ key }}" "{{ url('api/search-extended/szeretet türelmes/S
 curl -H "X-API-Key: {{ key }}" "{{ url('api/search-extended/kezdetben alkotta isten') }}?quorum=0.6&amp;onePerVerse=true"</code></pre>
     <pre class="bg-body-secondary p-3 rounded"><code>{"extendedSearchResult": {"totalHitCount": 2, "queryWordCount": 5, "questionWordCount": 8, "hits": [
   {"usx": "GEN", "chapter": 1, "verse": 1, "translation": "RUF", "weight": 3106196.8,
-   "lcs": 8, "wordCount": 5, "exactHit": true}, …]}}</code></pre>
+   "lcs": 8, "wordCount": 5, "exactHit": true}, …],
+  "headingHitCount": 1, "headings": [
+  {"usx": "LUK", "chapter": 15, "verse": 11, "translation": "SZIT", "weight": 72647.45,
+   "lcs": 2, "wordCount": 2, "exactHit": false, "text": "A tékozló fiú."}]}}</code></pre>
     <dl>
         <dt>keresendő szöveg, fordítás, <code>book</code>, <code>limit</code></dt>
         <dd>Ugyanaz, mint a <code>search</code> végpontnál. Csoportosítás nincs, a találat mindig vers.</dd>
@@ -185,6 +188,8 @@ curl -H "X-API-Key: {{ key }}" "{{ url('api/search-extended/kezdetben alkotta is
         <dd>A <code>queryWordCount</code> szavai közül hányat tartalmaz a vers. A <code>wordCount / queryWordCount</code> arány a vers egyezése a keresett szöveggel.</dd>
         <dt><code>exactHit</code></dt>
         <dd>A vers szövege pontosan a keresett szöveg.</dd>
+        <dt><code>headings</code>, <code>headingHitCount</code></dt>
+        <dd>A keresett szöveget tartalmazó szakaszcímek, a versektől külön, ugyanazzal a keresési feltétellel (<code>quorum</code>, <code>book</code>, fordítás, <code>limit</code>) és ugyanazokkal a mezőkkel, valamint a cím szövegével (<code>text</code>). A hely (<code>chapter</code>, <code>verse</code>) a cím alatti első vers. Egy cím fordításonként egyszer szerepel; azonos súlynál az alapértelmezett fordítás (SZIT) áll elöl. A címek a fordítók címadásai, nem a Szentírás szövege. A <code>headingHitCount</code> a limittől független címtalálatszám; a <code>totalHitCount</code> csak a verseket számolja.</dd>
     </dl>
     <p>A szóadatok a vers szövegét a beírt szóalakokkal vetik össze; a szinonimák és szórészletek csak a súlyba számítanak bele.</p>
 

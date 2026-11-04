@@ -51,6 +51,7 @@ class ImportScriptureXml extends ImportScripture
 
         // Load heading mapping for this translation
         $this->loadHeadingMapping($transAbbrevToImport);
+        $this->stemmedVerseTypes = self::stemmedVerseTypesFor($transAbbrevToImport);
 
         // Hunspell stemming setup
         $pipes = [];
@@ -238,7 +239,7 @@ class ImportScriptureXml extends ImportScripture
         }
 
         $verseroot = null;
-        if ($this->hunspellEnabled && in_array($tip, [60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704])) {
+        if ($this->hunspellEnabled && in_array($tip, $this->stemmedVerseTypes)) {
             $verseroot = $this->executeStemming($text, $pipes);
         }
 
@@ -282,7 +283,7 @@ class ImportScriptureXml extends ImportScripture
             $text = (string) $verse->VersAlapszoveg;
             $tip = 901;
             $verseroot = null;
-            if ($this->hunspellEnabled && in_array($tip, [60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704])) {
+            if ($this->hunspellEnabled && in_array($tip, $this->stemmedVerseTypes)) {
                 $verseroot = $this->executeStemming($text, $pipes);
             }
             $verseInsert = [
@@ -311,7 +312,7 @@ class ImportScriptureXml extends ImportScripture
                     }
                 }
                 $verseroot = null;
-                if ($this->hunspellEnabled && in_array($tip, [60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704])) {
+                if ($this->hunspellEnabled && in_array($tip, $this->stemmedVerseTypes)) {
                     $verseroot = $this->executeStemming($text, $pipes);
                 }
                 $verseInsert = [

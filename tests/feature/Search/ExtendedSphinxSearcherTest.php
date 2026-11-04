@@ -130,6 +130,28 @@ class ExtendedSphinxSearcherTest extends FastDatabaseTestCase
         $this->assertNotContains(3000, $verseTextTypes);
     }
 
+    public function test_headings_of_every_translation_are_searched_apart_from_the_verses(): void
+    {
+        $headingTypes = ExtendedSphinxSearcher::headingTypes();
+
+        $this->assertContains(3001, $headingTypes);
+        $this->assertContains(3004, $headingTypes);
+        $this->assertContains(3005, $headingTypes);
+        $this->assertContains(701, $headingTypes);
+        $this->assertContains(703, $headingTypes);
+        $this->assertContains(680, $headingTypes);
+        $this->assertSame([], array_intersect($headingTypes, ExtendedSphinxSearcher::verseTextTypes()));
+    }
+
+    public function test_heading_text_is_plain_with_its_lines_joined(): void
+    {
+        $this->assertSame('A tékozló fiú.', ExtendedSphinxSearcher::headingText('A tékozló fiú.'));
+        $this->assertSame(
+            'Jézus bemutatása a templomban Simeon és Anna',
+            ExtendedSphinxSearcher::headingText('Jézus bemutatása a templomban<br>Simeon és Anna<br>')
+        );
+    }
+
     public function test_hit_carries_its_word_factors(): void
     {
         $hit = ExtendedSearchHit::fromSphinxRow(

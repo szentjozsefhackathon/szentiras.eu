@@ -16,6 +16,7 @@ class SphinxSearch
   /** @var array<int, string> */
   private array $_groupBy = [];
   private ?string $_groupTieBreak = null;
+  private ?string $_orderTieBreak = null;
   private ?string $_ranker = null;
   private array $_filters = [];
   private PDO $_pdo;
@@ -70,6 +71,15 @@ class SphinxSearch
   {
     $this->_groupBy = $attributes;
     $this->_groupTieBreak = $tieBreak;
+    return $this;
+  }
+
+  /**
+   * Orders equally weighted hits by the given expression, lowest first, before their place.
+   */
+  public function orderTieBreak(string $expression): self
+  {
+    $this->_orderTieBreak = $expression;
     return $this;
   }
 
@@ -174,8 +184,13 @@ class SphinxSearch
       } else {
         $grouping = $this->_groupGepi ? "GROUP BY gepi" : "";
       }
+      $ordering = "WEIGHT() DESC, gepi ASC";
+      if ($this->_orderTieBreak !== null) {
+        $columns .= ", {$this->_orderTieBreak} AS order_tie_break";
+        $ordering = "WEIGHT() DESC, order_tie_break ASC, gepi ASC";
+      }
       $ranker = $this->_ranker !== null ? "ranker=expr('{$this->_ranker}'), " : "";
-      $queryString = "SELECT {$columns} FROM verse, verseroot WHERE {$filterString} {$grouping} ORDER BY WEIGHT() DESC, gepi ASC LIMIT {$this->_limit} OPTION {$ranker}field_weights=(verse=100,verseroot=10),index_weights=(verse=2,verseroot=1)";
+      $queryString = "SELECT {$columns} FROM verse, verseroot WHERE {$filterString} {$grouping} ORDER BY {$ordering} LIMIT {$this->_limit} OPTION {$ranker}field_weights=(verse=100,verseroot=10),index_weights=(verse=2,verseroot=1)";
     }
     $query = $this->_pdo->prepare($queryString);
     
