@@ -21,6 +21,22 @@ use SzentirasHu\Data\Enum\VerseFixStatus;
  * @property string|null $editor_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property-read VerseFix $verseFix
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\VerseFixRevisionFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereEditorToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereFixedText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereOriginalText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFixRevision whereVerseFixId($value)
+ * @mixin \Eloquent
  */
 class VerseFixRevision extends Model
 {

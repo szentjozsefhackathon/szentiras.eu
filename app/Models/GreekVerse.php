@@ -45,6 +45,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property-read array<int, array{printed: string, strong: ?string, translit: ?string, usx_code: string, chapter: int, verse: int, i: int, hasBreak: bool}> $annotatedWords
  * @property int|null $verse_analysis_id
  * @property-read bool $has_verse_analysis
+ * @property-read \SzentirasHu\Models\array<int, array{printed: $annotated_words
+ * @method static Builder<static>|GreekVerse withVerseAnalysisAvailability(string $locale = 'hu')
  * @mixin \Eloquent
  */
 class GreekVerse extends Model

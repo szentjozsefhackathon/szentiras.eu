@@ -41,6 +41,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereThrottleRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereUsageCount($value)
+ * @method static \Database\Factories\Data\Entity\ApiKeyFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereIsSelfService($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ApiKey whereKeyPlain($value)
  * @mixin \Eloquent
  */
 class ApiKey extends Model

@@ -30,6 +30,26 @@ use SzentirasHu\Data\Enum\VerseFixStatus;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Translation|null $translation
  * @property-read \Illuminate\Database\Eloquent\Collection<int, VerseFixRevision> $revisions
+ * @property-read int|null $revisions_count
+ * @method static \Database\Factories\VerseFixFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereChapter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereFixedText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereGepi($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereLastAppliedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereNumv($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereOriginalText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereTip($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereTranslationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VerseFix whereUsxCode($value)
+ * @mixin \Eloquent
  */
 class VerseFix extends Model
 {
