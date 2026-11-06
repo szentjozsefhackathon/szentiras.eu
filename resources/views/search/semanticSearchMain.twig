@@ -2,18 +2,18 @@
                 <div class="card-body">                    
             <form role="form" class="form-horizontal" method="post"
                   action="{{ action('Search\\SemanticSearchController@anySearch') }}" data-stream-action="{{ action('Search\\SemanticSearchController@streamSearch') }}" id="semanticSearchForm">
-                  {% if not session_get("anonymous_token") %}
-                    <div class="alert alert-primary" role="alert">
-                        Regisztráció/belépés nélkül is használhatod a szemantikus keresőt, de egy munkamenetben legfeljebb {{ config_get('settings.ai.unregisteredSearchLimit') }} keresést végezhetsz. 
-                        Eddig {{ session_get('semanticSearchCalls', 0) }} keresést végeztél.
-                        Ha többre van szükséged, <a href="/login?r={{ '/ai-search'|url_encode }}">lépj be</a> vagy <a href="/register?r={{ '/ai-search'|url_encode }}">regisztrálj</a>, ha még nem tetted</a>!
-                    </div>
-                    {%  if not form.captchaValidated %}
-                        <div class="cf-turnstile" data-sitekey="{{ config_get('services.cloudflare_turnstile.site_key') }}"></div>
-                    {% else %}
-                        <input type="hidden" name="captchaValidated" value="1"/>
+                {% if not session_get("anonymous_token") %}
+                    {% if config_get('settings.ai.unregisteredSearchLimit') != -1 %}
+                        <div class="alert alert-primary" role="alert">
+                            Regisztráció/belépés nélkül is használhatod a szemantikus keresőt, de egy munkamenetben legfeljebb {{ config_get('settings.ai.unregisteredSearchLimit') }} keresést végezhetsz.
+                            Eddig {{ session_get('semanticSearchCalls', 0) }} keresést végeztél.
+                            Ha többre van szükséged, <a href="/login?r={{ '/ai-search'|url_encode }}">lépj be</a> vagy <a href="/register?r={{ '/ai-search'|url_encode }}">regisztrálj</a>, ha még nem tetted!
+                        </div>
                     {% endif %}
-                {% endif %}                    
+                    {% if not form.captchaValidated %}
+                        <div class="cf-turnstile" data-sitekey="{{ config_get('services.cloudflare_turnstile.site_key') }}"></div>
+                    {% endif %}
+                {% endif %}
                 <div class="mb-2">
                     <label for="textToSearchAi" class="form-label" required>Keresendő</label>
                     <input required type="text" autocomplete="off" name="textToSearchAi" id="textToSearchAi" value="{{ form.textToSearchAi }}" class="form-control"/>                    

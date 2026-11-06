@@ -18,7 +18,7 @@ return [
     'ai' => [
         'embeddingModel' => env("APP_EMBEDDING_MODEL", 'text-embedding-3-large'),
         'embeddingDimensions' => env("APP_EMBEDDING_DIMENSIONS", 512),
-        'unregisteredSearchLimit' => env("APP_UNREGISTERED_SEARCH_LIMIT", 5),
+        'unregisteredSearchLimit' => env("APP_UNREGISTERED_SEARCH_LIMIT", -1),
     ],
     'brand' => [
         'domain' => env("APP_BRAND_DOMAIN", 'szentiras.eu')

@@ -452,13 +452,39 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         Http::assertNothingSent();
     }
 
+    public function test_stream_does_not_take_the_form_field_for_a_passed_captcha(): void
+    {
+        Http::fake();
+
+        $this->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'captchaValidated' => '1'], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('cf-turnstile-response');
+        Http::assertNothingSent();
+    }
+
+    public function test_stream_remembers_the_passed_captcha_for_the_session(): void
+    {
+        $this->fakeMagisterAndTurnstile();
+
+        $this->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'cf-turnstile-response' => 'token'], ['Accept' => 'application/json'])
+            ->assertOk()
+            ->assertSessionHas('semanticSearchCaptchaValidated', true);
+
+        $response = $this->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json']);
+
+        $events = $this->eventsOf($response->assertOk());
+        $this->assertSame('result', end($events)['event']);
+        $this->assertStringContainsString('A bűn és a kegyelem szembeállítása.', end($events)['html']);
+        $this->assertStringNotContainsString('cf-turnstile', end($events)['html']);
+    }
+
     public function test_stream_tells_an_anonymous_visitor_over_the_limit(): void
     {
         Http::fake();
         config(['settings.ai.unregisteredSearchLimit' => 2]);
 
-        $response = $this->withSession(['semanticSearchCalls' => 2])
-            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'captchaValidated' => '1'], ['Accept' => 'application/json']);
+        $response = $this->withSession(['semanticSearchCalls' => 2, 'semanticSearchCaptchaValidated' => true])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json']);
 
         $events = $this->eventsOf($response->assertOk());
         $this->assertSame('result', $events[0]['event']);
@@ -471,11 +497,49 @@ class MagisterSemanticSearchTest extends FastDatabaseTestCase
         $this->fakeMagister([$this->romansPassage()]);
         config(['settings.ai.unregisteredSearchLimit' => 5]);
 
-        $response = $this->withSession(['semanticSearchCalls' => 1])
-            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn', 'captchaValidated' => '1'], ['Accept' => 'application/json']);
+        $response = $this->withSession(['semanticSearchCalls' => 1, 'semanticSearchCaptchaValidated' => true])
+            ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json']);
 
         $response->assertOk()->assertSessionHas('semanticSearchCalls', 2);
         $this->assertStringContainsString('Eddig 2 keresést végeztél.', $this->eventsOf($response)[2]['html']);
+    }
+
+    public function test_search_tells_an_anonymous_visitor_over_the_limit(): void
+    {
+        Http::fake();
+        config(['settings.ai.unregisteredSearchLimit' => 2]);
+
+        $this->withSession(['semanticSearchCalls' => 2, 'semanticSearchCaptchaValidated' => true])
+            ->post('/ai-search/search', ['textToSearchAi' => 'áteredő bűn'])
+            ->assertOk()
+            ->assertSee('legfeljebb 2 MI alapú keresést');
+        Http::assertNothingSent();
+    }
+
+    public function test_an_anonymous_visitor_has_no_search_limit_by_default(): void
+    {
+        $this->fakeMagisterAndTurnstile();
+        config(['settings.ai.unregisteredSearchLimit' => -1]);
+
+        foreach (range(1, 12) as $ignored) {
+            $events = $this->eventsOf($this->withSession(['semanticSearchCaptchaValidated' => true])
+                ->post('/ai-search/stream', ['textToSearchAi' => 'áteredő bűn'], ['Accept' => 'application/json'])
+                ->assertOk());
+            $this->assertStringContainsString('A bűn és a kegyelem szembeállítása.', end($events)['html']);
+        }
+        $this->assertSame(0, session('semanticSearchCalls', 0));
+    }
+
+    private function fakeMagisterAndTurnstile(): void
+    {
+        Http::fake([
+            self::MAGISTER_URL . '/api/szentiras_kereses*' => Http::response([
+                'question' => 'áteredő bűn',
+                'translations' => ['SZIT'],
+                'passages' => [$this->romansPassage()],
+            ]),
+            'challenges.cloudflare.com/*' => Http::response(['success' => true]),
+        ]);
     }
 
     public function test_search_page_has_the_progress_steps(): void

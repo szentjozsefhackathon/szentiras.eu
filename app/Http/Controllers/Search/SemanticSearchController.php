@@ -2,7 +2,6 @@
 
 namespace SzentirasHu\Http\Controllers\Search;
 
-use Config;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use SzentirasHu\Data\Repository\BookRepository;
@@ -20,6 +19,9 @@ use View;
 
 class SemanticSearchController extends Controller
 {
+    private const CAPTCHA_SESSION_KEY = 'semanticSearchCaptchaValidated';
+
+    private const SEARCH_COUNT_SESSION_KEY = 'semanticSearchCalls';
 
     public function __construct(
         protected MagisterSemanticSearchService $magisterSemanticSearchService,
@@ -44,8 +46,6 @@ class SemanticSearchController extends Controller
         if (! $this->admit($request, $form)) {
             return view('search.semanticSearchThrottle');
         }
-
-        $form->captchaValidated = true;
         $view = $this->getView($form);
         $view = $this->semanticSearch($form, $view);
         return $view;
@@ -67,7 +67,6 @@ class SemanticSearchController extends Controller
         if (! $this->admit($request, $form)) {
             return response()->json(['event' => 'result', 'html' => $this->mainHtml($form, ['throttled' => true])]);
         }
-        $form->captchaValidated = true;
         $usxCodes = array_keys(SearchController::extractBookUsxCodes($form->usxCode));
 
         return response()->stream(function () use ($form, $usxCodes): void {
@@ -90,8 +89,9 @@ class SemanticSearchController extends Controller
     }
 
     /**
-     * Checks the captcha and counts the search against the per-session limit of anonymous
-     * visitors; false once the limit is exceeded.
+     * Admits the search of an anonymous visitor: asks for the captcha once per session (a passed
+     * captcha is kept in the session), then counts the search against the per-session limit of
+     * settings.ai.unregisteredSearchLimit (-1: no limit); false once the limit is exceeded.
      */
     private function admit(Request $request, SemanticSearchForm $form): bool
     {
@@ -102,14 +102,16 @@ class SemanticSearchController extends Controller
             $request->validate([
                 'cf-turnstile-response' => ['required', new TurnstileValidationRule()],
             ]);
+            $request->session()->put(self::CAPTCHA_SESSION_KEY, true);
+            $form->captchaValidated = true;
         }
-        if (Config::get('settings.ai.unregisteredSearchLimit') != -1) {
-            $key = 'semanticSearchCalls';
-            $count = $request->session()->get($key, 0) + 1;
-            if ($count > Config::get('settings.ai.unregisteredSearchLimit')) {
+        $limit = (int) config('settings.ai.unregisteredSearchLimit');
+        if ($limit !== -1) {
+            $count = $request->session()->get(self::SEARCH_COUNT_SESSION_KEY, 0) + 1;
+            if ($count > $limit) {
                 return false;
             }
-            $request->session()->put($key, $count);
+            $request->session()->put(self::SEARCH_COUNT_SESSION_KEY, $count);
         }
 
         return true;
@@ -193,7 +195,7 @@ class SemanticSearchController extends Controller
         $form = new SemanticSearchForm();
         $form->textToSearchAi = $request->get('textToSearchAi');
         $form->usxCode =  $request->get('usxCode');
-        $form->captchaValidated =  $request->get('captchaValidated');
+        $form->captchaValidated = (bool) $request->session()->get(self::CAPTCHA_SESSION_KEY, false);
 
         if ($request->get('translationAbbrev') != '0') {
             $form->translationAbbrev = $request->get('translationAbbrev');
