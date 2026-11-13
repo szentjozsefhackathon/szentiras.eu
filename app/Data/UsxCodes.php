@@ -601,6 +601,34 @@ class UsxCodes
         ],
     ];
 
+    /**
+     * Books with a single chapter, where "2Jn 4-9" means verses rather than chapters.
+     */
+    public const SINGLE_CHAPTER_BOOKS = ['OBA', 'PHM', '2JN', '3JN', 'JUD'];
+
+    /**
+     * Without a translation the abbreviation must not denote a multi-chapter book in any
+     * translation, as "Jud" is Júdás by default but Judit in SZIT.
+     */
+    public static function isSingleChapterBook(string $bookAbbrev, ?string $translation = null): bool
+    {
+        if ($translation !== null) {
+            return in_array(self::getUsxFromBookAbbrevAndTranslation($bookAbbrev, $translation), self::SINGLE_CHAPTER_BOOKS, true);
+        }
+        if (!in_array(self::getUsxFromBookAbbrevAndTranslation($bookAbbrev), self::SINGLE_CHAPTER_BOOKS, true)) {
+            return false;
+        }
+        $translations = array_unique(array_merge(...array_map('array_keys', array_values(self::fullMapping()))));
+        foreach ($translations as $translationName) {
+            $usxCode = self::getUsxFromBookAbbrevAndTranslation($bookAbbrev, $translationName);
+            if ($usxCode !== null && !in_array($usxCode, self::SINGLE_CHAPTER_BOOKS, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static function oldTestamentUsx(): array
     {
         return array_keys(UsxCodes::OLD_TESTAMENT);

@@ -41,6 +41,12 @@ class CanonicalReference
         $ref = new CanonicalReference();
         $parser = new ReferenceParser($s);
         $bookRefs = $parser->bookRefs();
+        $translationAbbrev = $translationId ? config("translations.ids.{$translationId}") : null;
+        foreach ($bookRefs as $bookRef) {
+            if (UsxCodes::isSingleChapterBook($bookRef->bookId, $translationAbbrev)) {
+                $bookRef->convertChaptersToVersesOfSingleChapter();
+            }
+        }
         $ref->bookRefs = $bookRefs;
         $ref->translationId = $translationId;
         return $ref;
