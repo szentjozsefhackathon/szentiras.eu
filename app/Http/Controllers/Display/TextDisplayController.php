@@ -20,6 +20,7 @@ use SzentirasHu\Data\Repository\BookRepository;
 use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
 use SzentirasHu\Data\Repository\ReadingPlanRepository;
+use SzentirasHu\Models\BookIntroduction;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Models\Media;
 use SzentirasHu\Data\Entity\Place;
@@ -423,6 +424,7 @@ class TextDisplayController extends Controller
                 'metaTitle' => $this->getTitle($verseContainers, $translation, $pageHeading),
                 'metaReference' => $this->getReference($verseContainers),
                 'pageHeading' => $pageHeading,
+                'bookIntroductionLink' => $this->bookIntroductionLink($verseContainers, $translation),
                 'teaser' => $this->buildMetaDescription($verseContainers, $translation),
                 'chapterLinks' => $chapterLinks,
                 'media' => $mediaVerses ?? [],
@@ -662,6 +664,7 @@ class TextDisplayController extends Controller
         }
         $allTranslations = $this->translationRepository->getAllOrderedByDenom();
         $bookTranslations = $this->getAllBookTranslations($book->usx_code);
+        $introductions = BookIntroduction::query()->forBook($translation->id, $book->usx_code)->get();
         $bookViewArray = [
             'translation' => $translation,
             'reference' => $translatedRef,
@@ -669,6 +672,7 @@ class TextDisplayController extends Controller
             'teaser' => trim("{$book->name} – {$translation->name}. {$leadVerseText}"),
             'chapters' => $chapters,
             'headings' => $chapterHeadings,
+            'introductions' => $introductions,
             'translations' => $allTranslations,
             'translationLinks' => $allTranslations->map(
                 function ($translation) use ($canonicalRef, $bookTranslations) {
@@ -694,6 +698,24 @@ class TextDisplayController extends Controller
             })->values()
         ];
         return $bookViewArray;
+    }
+
+    /**
+     * Link to the introduction on the book page, when the displayed text is from
+     * a single book that has an introduction in this translation.
+     *
+     * @param VerseContainer[] $verseContainers
+     */
+    private function bookIntroductionLink(array $verseContainers, Translation $translation): ?string
+    {
+        if (count($verseContainers) !== 1) {
+            return null;
+        }
+
+        $book = $verseContainers[0]->book;
+        $hasIntroduction = BookIntroduction::query()->forBook($translation->id, $book->usx_code)->exists();
+
+        return $hasIntroduction ? "/{$translation->abbrev}/{$book->abbrev}#bevezetes" : null;
     }
 
     /**

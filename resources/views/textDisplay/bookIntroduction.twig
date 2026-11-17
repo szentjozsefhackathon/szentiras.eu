@@ -1,0 +1,25 @@
+{# One book or book-group introduction. Expects `introduction` and `translation`. #}
+{% for paragraph in introduction.paragraphs %}
+    {% set paragraphText = paragraph.segments|map(segment => segment.text)|join('') %}
+    {% set tabStyle = "\t" in paragraphText ? ' style="white-space: pre-wrap; tab-size: 2;"' : '' %}
+    {% set content %}
+        {%- for segment in paragraph.segments -%}
+            {%- if segment.reference is defined -%}
+                <a href="/{{ translation.abbrev }}/{{ segment.reference|replace({' ': ''}) }}">{{ segment.text }}</a>
+            {%- elseif segment.italic is defined and segment.italic -%}
+                <em>{{ segment.text }}</em>
+            {%- else -%}
+                {{ segment.text }}
+            {%- endif -%}
+        {%- endfor -%}
+    {% endset %}
+    {% if paragraph.style == 'heading' %}
+        <h3 class="h6 mt-3">{{ content|trim|raw }}</h3>
+    {% elseif paragraph.style == 'subheading' %}
+        <h4 class="h6 fst-italic mt-2">{{ content|trim|raw }}</h4>
+    {% elseif paragraph.style == 'note' %}
+        <p class="small text-muted"{{ tabStyle|raw }}>{{ content|raw }}</p>
+    {% else %}
+        <p{{ tabStyle|raw }}>{{ content|raw }}</p>
+    {% endif %}
+{% endfor %}

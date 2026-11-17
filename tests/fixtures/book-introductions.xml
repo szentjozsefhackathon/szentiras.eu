@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BibliaForditas xmlns:xlink="http://www.w3.org/1999/xlink">
+    <ForditasRovidites>TESTTRANS</ForditasRovidites>
+    <Corpus Megnev="ÓSZÖVETSÉG">
+        <SubCorpus Megnev="A Törvény könyvei">
+            <Bevezeto hiv="GEN-NUM">
+                <Bek Style="Bevezető főcím">
+                    <Sz Nr="0" St="n"><T>Bevezetés a Törvény könyveihez</T></Sz>
+                </Bek>
+                <Bek Style="Bevezető">
+                    <Sz Nr="0" St="n"><T>A KÖNYVEK SZERKEZETE</T></Sz>
+                </Bek>
+                <Bek Style="Bevezető">
+                    <Sz Nr="0" St="n"><T>Ter 1-11:|őstörténet</T></Sz>
+                </Bek>
+            </Bevezeto>
+            <Book usxrov="GEN" SajatNev="Teremtés könyve">
+                <Bevezeto hiv="GEN bev">
+                    <TordKv Design="HG12">
+                        <O Nr="10" DesHiv="HG12" SzHiv="-1" Tesztelt="0" />
+                    </TordKv>
+                    <Bek Style="Bevezető">
+                        <Sz Nr="0" St="n"><T>A teremtés </T></Sz>
+                        <Sz Nr="1" St="i"><T>kezdetén</T></Sz>
+                        <Sz Nr="2" St="n"><T> Isten szól (vö. </T></Sz>
+                        <K SzHiv="0" KNr="0" G="EXO 20" F="Kiv 20)" />
+                        <Sz Nr="3" St="n"><T>.</T></Sz>
+                    </Bek>
+                    <Bek Style="Bevezető">
+                        <UresSorBesz SzHiv="-1" magassag="11" />
+                    </Bek>
+                    <Bek Style="Bevezető alcím">
+                        <Sz Nr="0" St="n"><T>Az ősatyák</T></Sz>
+                    </Bek>
+                </Bevezeto>
+            </Book>
+            <Book usxrov="EXO" SajatNev="Kivonulás könyve" />
+            <Book usxrov="LEV" SajatNev="Leviták könyve" />
+            <Book usxrov="NUM" SajatNev="Számok könyve" />
+        </SubCorpus>
+        <SubCorpus Megnev="A Krónikák, Ezdrás és Nehemiás könyvei">
+            <Bevezeto hiv="1CH-NEH">
+                <Bek Style="Bevezető">
+                    <Sz Nr="0" St="n"><T>A Krónikák könyveiről.</T></Sz>
+                </Bek>
+            </Bevezeto>
+            <Book usxrov="1CH" SajatNev="A Krónikák első könyve" />
+            <Book usxrov="2CH" SajatNev="A Krónikák második könyve" />
+        </SubCorpus>
+        <SubCorpus Megnev="A Krónikák, Ezdrás és Nehemiás könyvei">
+            <Bevezeto hiv="1CH-NEH">
+                <Bek Style="Bevezető">
+                    <Sz Nr="0" St="n"><T>Ezdrás és Nehemiás könyvéről.</T></Sz>
+                </Bek>
+            </Bevezeto>
+            <Book usxrov="EZR" SajatNev="Ezdrás könyve" />
+            <Book usxrov="NEH" SajatNev="Nehemiás könyve" />
+        </SubCorpus>
+    </Corpus>
+    <Corpus Megnev="ÚJSZÖVETSÉG">
+        <Book usxrov="2TH" SajatNev="Pál második levele a tesszalonikaiaknak" />
+        <SubCorpus Megnev="A katolikus levelek">
+            <Bevezeto hiv="2TH bev">
+                <Bek Style="Bevezető">
+                    <Sz Nr="0" St="n"><T>A katolikus levelek nem egy közösségnek szólnak.</T></Sz>
+                </Bek>
+                <Bek Style="Bevezető lábjegyzet">
+                    <Sz Nr="0" St="n"><T>* Jegyzet a bevezetőhöz.</T></Sz>
+                </Bek>
+            </Bevezeto>
+            <Book usxrov="1JN" SajatNev="János első levele" />
+            <Book usxrov="2JN" SajatNev="János második levele" />
+        </SubCorpus>
+    </Corpus>
+</BibliaForditas>

@@ -27,6 +27,23 @@ Fejezetválasztás <span class="caret"></span></button>
         </div>
     </div>
 
+    {% if introductions is not empty %}
+        <section id="bevezetes" class="book-introductions my-4">
+            {% for introduction in introductions %}
+                <details class="mb-3">
+                    {% if introduction.is_group %}
+                        <summary class="fw-semibold">{{ introduction.title ?: 'Bevezetés a könyvcsoporthoz' }}</summary>
+                    {% else %}
+                        <summary><h2 class="h5 d-inline">{{ introduction.title ?: 'Bevezetés a könyvhöz' }}</h2></summary>
+                    {% endif %}
+                    <div class="mt-2">
+                        {% include 'textDisplay.bookIntroduction' with { 'introduction': introduction, 'translation': translation } %}
+                    </div>
+                </details>
+            {% endfor %}
+        </section>
+    {% endif %}
+
 
     <div class="tailwind-scope">
     <div class="flex flex-col gap-4 py-8">

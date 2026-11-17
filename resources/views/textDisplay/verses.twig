@@ -73,6 +73,9 @@
     {% if not readingPlanDay and (pageHeading or metaReference) %}
         <h1 class="h4">{{ pageHeading ? pageHeading : metaReference }}</h1>
     {% endif %}
+    {% if bookIntroductionLink %}
+        <p class="small mb-2"><a href="{{ bookIntroductionLink }}"><i class="bi bi-book"></i> Bevezetés a könyvhöz</a></p>
+    {% endif %}
     <div class="translationButtons">
         {% include 'textDisplay.translationButtons' with { 'translations': translations, 'translation': translation, 'mediaEnabled': mediaEnabled} %}
     </div>
