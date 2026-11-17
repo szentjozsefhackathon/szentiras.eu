@@ -258,9 +258,9 @@ class SmokeTest extends TestCase
     public function testChapterPageHasSeoTitleAndH1() {
         $response = $this->get('/TESTTRANS/Ter2');
         $response->assertStatus(200);
-        // Canonical chapter pages use the full book and chapter names consistently
-        // in the title and visible heading so search engines have a clear title.
-        $response->assertSee('<title>Ter. – 2. fejezet | Translation Name 1</title>', false);
+        // The title leads with the name people search for; the visible heading keeps
+        // the translation's own book name.
+        $response->assertSee('<title>Teremtés könyve 2. fejezet – Translation Name 1 (TESTTRANS)</title>', false);
         $response->assertSee('<h1 class="h4">Ter. – 2. fejezet</h1>', false);
     }
 
@@ -280,16 +280,16 @@ class SmokeTest extends TestCase
         $response = $this->get('/TESTTRANS/Zsolt2');
 
         $response->assertStatus(200);
-        $response->assertSee('<title>Zsoltárok könyve – 2. zsoltár | Translation Name 1</title>', false);
+        $response->assertSee('<title>2. zsoltár – Translation Name 1 (TESTTRANS)</title>', false);
         $response->assertSee('<h1 class="h4">Zsoltárok könyve – 2. zsoltár</h1>', false);
     }
 
     public function testChapterPageHasDescriptiveMetaDescription() {
         $description = $this->metaDescription($this->get('/TESTTRANS/Ter2')->getContent());
-        // The chapter description leads with the reference and translation name
-        // so it is descriptive and unique even for short chapters, instead of a
-        // single short verse (Bing reports those as too short).
-        $this->assertStringContainsString('Ter 2 – Translation Name 1.', $description);
+        // The chapter description leads with the searched chapter name, the reference
+        // and the translation name so it is descriptive and unique even for short
+        // chapters, instead of a single short verse (Bing reports those as too short).
+        $this->assertStringContainsString('Teremtés könyve 2. fejezet (Ter 2) – Translation Name 1.', $description);
     }
 
     /**

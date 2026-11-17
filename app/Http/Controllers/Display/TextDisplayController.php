@@ -780,17 +780,46 @@ class TextDisplayController extends Controller
     }
 
     /**
+     * Whole-chapter pages lead with what people type ("23. zsoltár", "Máté evangéliuma
+     * 5. fejezet") and name the translation the way it is searched ("Károli Biblia"), so the
+     * translations of a chapter do not all compete with the same title.
+     *
      * @param VerseContainer[] $verseContainers
      */
     private function getTitle(array $verseContainers, Translation $translation, ?string $pageHeading): string
     {
-        if ($pageHeading !== null) {
-            return "{$pageHeading} | {$translation->name}";
+        $chapterSearchName = $this->chapterSearchName($verseContainers, $translation);
+        if ($chapterSearchName !== null) {
+            $translationName = Config::get("translations.definitions.{$translation->abbrev}.commonName") ?? $translation->name;
+
+            return "{$chapterSearchName} – {$translationName} ({$translation->abbrev})";
         }
 
         $reference = $this->getReference($verseContainers);
 
         return $reference !== "" ? "{$reference} – {$translation->name}" : $translation->name;
+    }
+
+    /**
+     * "23. zsoltár" or "Máté evangéliuma 5. fejezet" for a whole-chapter page, null otherwise.
+     *
+     * @param VerseContainer[] $verseContainers
+     */
+    private function chapterSearchName(array $verseContainers, Translation $translation): ?string
+    {
+        $chapterId = $this->wholeChapterId($verseContainers);
+        if ($chapterId === null) {
+            return null;
+        }
+
+        $book = $verseContainers[0]->book;
+        if ($book->usx_code === 'PSA') {
+            return "{$chapterId}. zsoltár";
+        }
+        $bookName = BookCommonNames::titleNameFor($book->usx_code, $book->name, $this->isProtestant($translation))
+            ?? BookCommonNames::withoutArticle($book->name);
+
+        return "{$bookName} {$chapterId}. fejezet";
     }
 
     private function isProtestant(Translation $translation): bool
@@ -805,20 +834,39 @@ class TextDisplayController extends Controller
      */
     private function getChapterPageHeading(array $verseContainers): ?string
     {
+        $chapterId = $this->wholeChapterId($verseContainers);
+        if ($chapterId === null) {
+            return null;
+        }
+
+        $book = $verseContainers[0]->book;
+        $isPsalm = $book->usx_code === 'PSA';
+        $chapterType = $isPsalm ? 'zsoltár' : 'fejezet';
+        $bookName = $isPsalm
+            ? (preg_replace('/^A\s+/u', '', $book->name) ?? $book->name)
+            : $book->name;
+
+        return "{$bookName} – {$chapterId}. {$chapterType}";
+    }
+
+    /**
+     * The chapter number when the page shows exactly one whole chapter, null otherwise.
+     *
+     * @param VerseContainer[] $verseContainers
+     */
+    private function wholeChapterId(array $verseContainers): ?string
+    {
         if (count($verseContainers) !== 1) {
             return null;
         }
 
-        $verseContainer = $verseContainers[0];
-        $chapterRanges = $verseContainer->bookRef?->chapterRanges ?? [];
-
+        $chapterRanges = $verseContainers[0]->bookRef?->chapterRanges ?? [];
         if (count($chapterRanges) !== 1) {
             return null;
         }
 
         $chapterRange = $chapterRanges[0];
         $chapterRef = $chapterRange->chapterRef;
-
         if (
             $chapterRange->untilChapterRef !== null
             || $chapterRef->chapterPart !== null
@@ -827,13 +875,7 @@ class TextDisplayController extends Controller
             return null;
         }
 
-        $isPsalm = $verseContainer->book->usx_code === 'PSA';
-        $chapterType = $isPsalm ? 'zsoltár' : 'fejezet';
-        $bookName = $isPsalm
-            ? (preg_replace('/^A\s+/u', '', $verseContainer->book->name) ?? $verseContainer->book->name)
-            : $verseContainer->book->name;
-
-        return "{$bookName} – {$chapterRef->chapterId}. {$chapterType}";
+        return (string) $chapterRef->chapterId;
     }
 
     /**
@@ -865,6 +907,10 @@ class TextDisplayController extends Controller
     {
         $reference = $this->getReference($verseContainers);
         $scripture = $this->textService->getTeaser($verseContainers);
+        $chapterSearchName = $this->chapterSearchName($verseContainers, $translation);
+        if ($chapterSearchName !== null) {
+            $reference = "{$chapterSearchName} ({$reference})";
+        }
         $prefix = $reference !== "" ? "{$reference} – {$translation->name}." : "{$translation->name}.";
 
         return trim("{$prefix} {$scripture}");

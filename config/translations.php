@@ -54,6 +54,7 @@ return [
             'id' => 3,
             'order' => 1,
             'copyright' => 'A Szent Jeromos Katolikus Bibliatársulat ideiglenes engedélyével. (Megújítva: 2025. április)',
+            'commonName' => 'Káldi-Neovulgáta',
             'publisher' => [ 'name' => 'Szent Jeromos Katolikus Bibliatársulat', 'url' => 'https://www.biblia-tarsulat.hu'],
             'toc_heading_levels' => '5-9'
         ],
@@ -70,6 +71,7 @@ return [
             'id' => 4,
             'order' => 11,
             'copyright' => 'A szöveg nem jogvédett.',
+            'commonName' => 'Károli Biblia',
             'publisher' => [ 'name' => '', 'url' => 'https//theword.net'],
             'toc_heading_levels' => '5-9'
 
@@ -87,6 +89,7 @@ return [
             'id' => 1,
             'order' => 3,
             'copyright' => 'A Szent István Társulat Szentírás-Bizottságának fordítása, új bevezetőkkel és magyarázatokkal; sajtó alá rendezte Rózsa Huba.  (Megújítva: 2025. február).',
+            'commonName' => 'Szent István Társulati Biblia',
             'publisher' => [ 'name' => 'Szent István Társulat', 'url' => 'https://szitkonyvek.hu/'],
             'toc_heading_levels' => '4-9'
         ],
@@ -114,6 +117,7 @@ return [
             'id' => 5,
             'order' => 5,
             'copyright' => 'A Bencés Kiadó engedélyével. (Megújítva: 2025. február).',
+            'commonName' => 'Békés–Dalos Újszövetség',
             'publisher' => [ 'name' => 'Bencés Kiadó', 'url' => 'https://www.benceskiado.hu'],
             'toc_heading_levels' => '5-9'
 
@@ -131,6 +135,7 @@ return [
             'id' => 6,
             'order' => 9,
             'copyright' => 'A 2014-es revidált Bibliát a Magyar Bibliatársulat ideiglenes engedélyével publikáljuk. A hivatalos változat http://abibliamindenkie.hu/ oldalon látható.',
+            'commonName' => 'Újfordítású Biblia 2014',
             'publisher' => [ 'name' => 'Magyar Bibliatársulat', 'url' => 'https://bibliatarsulat.hu'],
             'toc_heading_levels' => '5-9'
 
@@ -146,6 +151,7 @@ return [
             'id' => 7,
             'order' => 4,
             'copyright' => 'A Bencés Kiadó engedélyével. (Megújítva: 2025. február).',
+            'commonName' => 'Simon Tamás László Újszövetség',
             'publisher' => [ 'name' => 'Bencés Kiadó', 'url' => 'https://www.benceskiado.hu'],
             'toc_heading_levels' => '5-9'
         ],
@@ -158,6 +164,7 @@ return [
             'id' => 8,
             'order' => 99,
             'copyright' => 'Open Greek New Testament (OGNT) project, CC BY-SA 4.0.',
+            'commonName' => 'Görög Újszövetség',
             'publisher' => [ 'name' => 'OpenGNT Project', 'url' => 'https://github.com/eliranwong/OpenGNT'],
             'toc_heading_levels' => '5-9'
         ],
@@ -171,6 +178,7 @@ return [
             'id' => 9,
             'order' => 12,
             'copyright' => 'Káldi György SJ 1626-os fordításának Tárkányi Béla által elvégzett revíziója, 1865 (nem jogvédett)',
+            'commonName' => 'Káldi Biblia 1626',
             'publisher' => [ 'name' => 'Káldi Biblia Gitlab Projekt', 'url' => 'https://kaldibiblia.gitlab.io/'],
             'toc_heading_levels' => '5-9'
         ]
