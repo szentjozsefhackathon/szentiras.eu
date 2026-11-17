@@ -22,7 +22,7 @@
 
             {% if todayDailyReading is not null %}
             <div class="mt-2">
-                <a href="/{{ todayDailyReading.combinedRefString }}" class="btn btn-sm w-100" style="color: #7a6b4e; border-color: #c4a96a; background-color: #faf5ec;">
+                <a href="{{ defaultTranslationPath }}/{{ todayDailyReading.combinedRefString }}" class="btn btn-sm w-100" style="color: #7a6b4e; border-color: #c4a96a; background-color: #faf5ec;">
                     <i class="bi-sun me-1"></i> Mai olvasmányok
                     {% if todayDailyReading.celebration_name is not null %}
                     <span class="d-block small text-muted" style="font-size: 0.75em;">{{ todayDailyReading.celebration_name }}</span>

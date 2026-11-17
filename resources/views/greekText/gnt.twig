@@ -6,9 +6,13 @@
     {% set pageTitle = 'Görög Újszövetség és magyar újszövetségi szószedet, magyarázatokkal' %}
 {% endif %}
 
-{% block meta %}
+{% block canonical %}
     {% set gntPath = '/GNT' ~ (book ? '/' ~ book.abbrev ~ (currentChapter is not null ? currentChapter : '') : '') %}
     <link rel="canonical" href="{{ url(gntPath) }}" />
+{% endblock %}
+
+{% block meta %}
+    {% set gntPath = '/GNT' ~ (book ? '/' ~ book.abbrev ~ (currentChapter is not null ? currentChapter : '') : '') %}
     <meta property="og:url" content="{{ url(gntPath) }}">
     <meta property="og:title" content="{{ pageTitle }}">
     <meta property="og:description" content="{{ teaser }}">

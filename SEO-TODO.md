@@ -60,7 +60,16 @@ Google Search Console, web search, 2026-08-16 – 2026-11-15:
   - Protestant translations keep their own book names ("Mózes első könyve 1. fejezet – Újfordítású Biblia 2014 (RUF)").
   - The H1 keeps the official name; the meta description starts with the same name plus the reference.
   - Verse-range pages ("Mt 5,3-12") are unchanged.
+  - This does **not** stop the translations competing for generic queries ("23 zsoltár"): every translation page is still its own canonical. It makes whichever page Google shows match the query and name its translation.
   - Baseline for "23 zsoltár" (3 months to 2026-11-15): Google mostly showed `/KNB/Zsolt23` (1,838 impressions, position 6.8, 1.6% CTR), rarely `/SZIT/Zsolt23` (283 impressions, position 3.0, 23.7% CTR). Re-export after deploying.
+
+- [x] **2026-11-17 Canonical and robots signals.**
+  - Every page declares a canonical URL. The layout default is the URL without its query string, so `/?utm_source=…` points to `/`. Chapter, book, search, Greek and dictionary pages keep their own rules.
+  - Translation-less URLs (`/Mt5`) stay visible short URLs with a canonical to `/SZIT/Mt5`; no 301 on purpose.
+  - Verse-range pages (`/SZIT/Mt5,3-12`): `noindex,follow` with canonical to the chapter (was `nofollow`, which dropped the links on pages where external links land). The interactive variants (`?fullContext`, `?media`, `?compare`) stay `noindex,nofollow`.
+  - Utility pages and fragments (contact, login, register, profile, inbox, quiz rooms, dictionary filter, place popovers) send `X-Robots-Tag: noindex`.
+  - Homepage links point to `/SZIT/...` directly, matching the canonicals.
+  - `sitemap-copy.xml` was a broken symlink (403) since 2026-07-25; fixed in `deploy-prod.sh`.
 
 ## To do
 
@@ -92,6 +101,10 @@ Google Search Console, web search, 2026-08-16 – 2026-11-15:
   10. Préd 3
 - [ ] **Second batch:** Róm 8, Jn 10, Jn 15, Jer 29,11, Lk 15, Lk 2, Zsolt 90.
 - [ ] **Content workflow:** AI draft from the real text and Greek analysis, then human review before publishing.
+
+### Open question: verse searches
+
+- [ ] **"máté 11:28"-type searches** (842 impressions, position 7.1) can only land on the chapter page, because verse pages are not indexed. Indexing every verse range gave poor results on the old site, so it stays off. Chapter pages already have verse anchors (`/SZIT/Mt11#v_MAT_11_28`, self-linked from the verse number), so Google can jump to the verse. Remaining options: the searched wording ("Máté 11,28") in the verse anchor's label, and passage pages for the most searched verses.
 
 ### Later
 

@@ -30,6 +30,7 @@ class HomeController extends Controller
             'otherBibles' => $this->translationRepository->getByDenom('protestáns'),
             'fullQuickSearch' => true,
             'hideLeftColumn' => true,
+            'defaultTranslationPath' => '/'.config('settings.defaultTranslationAbbrev'),
             'todayDailyReading' => ($todayReading && $todayReading->isAvailable()) ? $todayReading : null,
         ]);
     }

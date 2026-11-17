@@ -3,6 +3,7 @@
 namespace SzentirasHu\Http\Controllers;
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Log;
 use Storage;
 use Symfony\Component\Mime\MimeTypes;
@@ -12,6 +13,9 @@ class MediaController extends Controller
 {
     public function show($uuid)
     {
+        if (! Str::isUuid($uuid)) {
+            abort(404);
+        }
         $record = Media::where('uuid', $uuid)->with('mediaType')->firstOrFail();
         // Check if image path exists
         $imagePath = "media/{$record->id}";

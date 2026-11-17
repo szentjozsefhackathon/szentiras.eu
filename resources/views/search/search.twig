@@ -2,8 +2,9 @@
 
 {% set pageTitle = 'Keresés' ~ (form.textToSearch is defined and form.textToSearch ? ': ' ~ form.textToSearch : '') ~ ' | Szentírás' %}
 
+{% block canonical %}<link rel="canonical" href="{{ url('/kereses') }}" />{% endblock %}
+
 {% block meta %}
-    <link rel="canonical" href="{{ url('/kereses') }}" />
     <meta property="og:url" content="{{ url('/kereses') }}">
     <meta property="og:title" content="Keresés | Szentírás">
     <meta property="og:description" content="{{ teaser }}">

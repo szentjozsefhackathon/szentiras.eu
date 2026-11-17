@@ -2,10 +2,13 @@
 
 {% set loadCommentaryPolling = true %}
 
+{% block canonical %}<link rel="canonical" href="{{ url('/' ~ seoUrl ) }}" />{% endblock %}
+
 {% block meta %}
-    <link rel="canonical" href="{{ url('/' ~ seoUrl ) }}" />
-    {% if seoUrl != canonicalUrl or mediaEnabled or fullContext or compareTranslation %}
+    {% if mediaEnabled or fullContext or compareTranslation %}
         <meta name="robots" content="noindex,nofollow">
+    {% elseif seoUrl != canonicalUrl %}
+        <meta name="robots" content="noindex,follow">
     {% endif %}
 
     <meta property="og:url" content="{{ url('/' ~ canonicalUrl ) }}">

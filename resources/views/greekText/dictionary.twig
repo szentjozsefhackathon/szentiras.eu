@@ -2,8 +2,9 @@
 
 {% set pageTitle = 'Görög szótár | Szentírás' %}
 
+{% block canonical %}<link rel="canonical" href="{{ route('greekDictionary.index') }}" />{% endblock %}
+
 {% block meta %}
-    <link rel="canonical" href="{{ route('greekDictionary.index') }}" />
     <meta property="og:url" content="{{ route('greekDictionary.index') }}">
     <meta property="og:title" content="Görög szótár | Szentírás">
     <meta property="og:description" content="{{ teaser }}">

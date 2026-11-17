@@ -9,6 +9,7 @@ use SzentirasHu\Http\Middleware\CheckCommentaryGeneration;
 use SzentirasHu\Http\Middleware\CheckEditor;
 use SzentirasHu\Http\Middleware\FillAnonymousIdFromCookie;
 use SzentirasHu\Http\Middleware\MarkCacheable;
+use SzentirasHu\Http\Middleware\NoIndex;
 use SzentirasHu\Http\Middleware\SameOrigin;
 use SzentirasHu\Http\Middleware\ValidateAnonymousId;
 use SzentirasHu\Http\Middleware\VerifyApiKey;
@@ -31,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'apiKey' => VerifyApiKey::class,
             'same-origin' => SameOrigin::class,
             'cacheable' => MarkCacheable::class,
+            'noindex' => NoIndex::class,
         ]);
         $middleware->web(prepend: [CacheAnonymousResponse::class]);
         $middleware->web(append: [FillAnonymousIdFromCookie::class]);

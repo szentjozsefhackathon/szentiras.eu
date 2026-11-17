@@ -108,7 +108,7 @@ Route::get('/verse-card/download/{sessionId}', '\SzentirasHu\Http\Controllers\Di
 Route::get('/verse-card/asset/{assetId}/{type}', '\SzentirasHu\Http\Controllers\Display\VerseCardController@serveAsset')->name('verse-card.asset');
 
 /** Places */
-Route::get('/place/{placeIds}', [TextDisplayController::class, 'showPlaceDetails'])->where('placeIds', '[0-9,]+');
+Route::get('/place/{placeIds}', [TextDisplayController::class, 'showPlaceDetails'])->where('placeIds', '[0-9,]+')->middleware('noindex');
 
 /** QR code */
 Route::get('/qr/dialog/{url}', '\SzentirasHu\Http\Controllers\Display\\QrCodeController@dialog')->where('url', '.+');
@@ -124,12 +124,12 @@ Route::get('/tervek/{id}', '\SzentirasHu\Http\Controllers\Display\\TextDisplayCo
 
 Route::get('/tervek', '\SzentirasHu\Http\Controllers\Display\\TextDisplayController@showReadingPlanList');
 
-Route::get('/register', [AnonymousIdController::class, 'showAnonymousRegistrationForm']);
+Route::get('/register', [AnonymousIdController::class, 'showAnonymousRegistrationForm'])->middleware('noindex');
 Route::post('/register', [AnonymousIdController::class, 'registerAnonymousId']);
 
 // Self-service API keys (require anonymous login).
 // Declared before /profile/{PROFILE_ID} so these specific paths take precedence.
-Route::middleware('anonymousId')->prefix('profile/api-keys')->name('profile.apiKeys.')->group(function () {
+Route::middleware(['anonymousId', 'noindex'])->prefix('profile/api-keys')->name('profile.apiKeys.')->group(function () {
     Route::get('/', [ProfileApiKeyController::class, 'index'])->name('index');
     Route::get('/create', [ProfileApiKeyController::class, 'create'])->name('create');
     Route::post('/', [ProfileApiKeyController::class, 'store'])->name('store');
@@ -138,18 +138,18 @@ Route::middleware('anonymousId')->prefix('profile/api-keys')->name('profile.apiK
 });
 
 Route::get('/profile/{PROFILE_ID}', [AnonymousIdController::class, 'showProfile'])
-    ->middleware('throttle:100,1');
+    ->middleware(['throttle:100,1', 'noindex']);
 Route::get('/profile', [AnonymousIdController::class, 'showProfile'])
-    ->middleware('anonymousId');
+    ->middleware(['anonymousId', 'noindex']);
 Route::get('/logout', [AnonymousIdController::class, 'logout'])
     ->middleware('anonymousId');
 Route::post('/login', [AnonymousIdController::class, 'login']);
-Route::get('/login', [AnonymousIdController::class, 'showLoginForm']);
+Route::get('/login', [AnonymousIdController::class, 'showLoginForm'])->middleware('noindex');
 
 // Contact routes
-Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
+Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form')->middleware('noindex');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
-Route::get('/contact/thankyou', [ContactController::class, 'thankYou'])->name('contact.thankyou');
+Route::get('/contact/thankyou', [ContactController::class, 'thankYou'])->name('contact.thankyou')->middleware('noindex');
 
 // Tools routes
 Route::get('/tools', [ToolsController::class, 'index'])->name('tools.index');
@@ -165,8 +165,8 @@ Route::match(['get', 'post'], '/tools/word-from-next-verse', [WordFromNextVerseC
 Route::prefix('quiz')->name('quiz.')->group(function () {
     Route::get('/', [QuizGameController::class, 'index'])->name('index');
     Route::post('/create', [QuizGameController::class, 'createGame'])->name('create');
-    Route::get('/teacher/{roomCode}', [QuizGameController::class, 'teacherView'])->name('teacher');
-    Route::get('/player/{roomCode}', [QuizGameController::class, 'playerView'])->name('player');
+    Route::get('/teacher/{roomCode}', [QuizGameController::class, 'teacherView'])->name('teacher')->middleware('noindex');
+    Route::get('/player/{roomCode}', [QuizGameController::class, 'playerView'])->name('player')->middleware('noindex');
     Route::get('/animals/{roomCode}', [QuizGameController::class, 'getAvailableAnimals'])->name('animals');
     Route::get('/animals-svgs', [QuizGameController::class, 'getAllAnimalSvgs'])->name('animals-svgs');
     Route::post('/join/{roomCode}', [QuizGameController::class, 'joinGame'])->name('join');
@@ -179,7 +179,7 @@ Route::prefix('quiz')->name('quiz.')->group(function () {
 });
 
 // User inbox routes (require anonymous login)
-Route::middleware('anonymousId')->group(function () {
+Route::middleware(['anonymousId', 'noindex'])->group(function () {
     Route::get('/inbox', [InboxController::class, 'index'])->name('contact.inbox');
     Route::get('/inbox/{message}', [InboxController::class, 'showThread'])->name('contact.thread');
     Route::post('/inbox/{message}/reply', [InboxController::class, 'reply'])->name('contact.reply');
@@ -289,7 +289,7 @@ Route::prefix('api/media')->middleware('editor')->group(function () {
 });
 
 Route::get('/gorog-szotar', [GreekDictionaryController::class, 'index'])->name('greekDictionary.index');
-Route::get('/gorog-szotar/filter', [GreekDictionaryController::class, 'filter'])->name('greekDictionary.filter');
+Route::get('/gorog-szotar/filter', [GreekDictionaryController::class, 'filter'])->name('greekDictionary.filter')->middleware('noindex');
 
 Route::get('/GNT/verse-analysis/{gepi}', GreekVerseAnalysisController::class)
     ->name('greekVerseAnalysis.show')

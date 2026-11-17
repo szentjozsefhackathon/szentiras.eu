@@ -2,8 +2,9 @@
 
 {% set pageTitle = bookPageTitle %}
 
+{% block canonical %}<link rel="canonical" href="{{ url('/' ~ translation.abbrev ~ '/' ~ book.abbrev) }}" />{% endblock %}
+
 {% block meta %}
-    <link rel="canonical" href="{{ url('/' ~ translation.abbrev ~ '/' ~ book.abbrev) }}" />
     <script type="application/ld+json">{{ structuredDataJson|raw }}</script>
 {% endblock %}
 

@@ -62,6 +62,6 @@ class VerseAnchorLinkTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('<link rel="canonical" href="' . url('/TESTTRANS/Ter2') . '" />', false);
-        $response->assertSee('name="robots" content="noindex,nofollow"', false);
+        $response->assertSee('name="robots" content="noindex,follow"', false);
     }
 }
