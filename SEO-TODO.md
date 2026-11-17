@@ -66,8 +66,8 @@ Google Search Console, web search, 2026-08-16 – 2026-11-15:
 
 ### Next
 
-- [ ] **Deploy the book introductions:** run `php artisan migrate`, then `szentiras:import-book-introductions` for SZIT, KNB and BD.
-- [ ] **Deploy the popular book names and chapter titles**, then watch the book queries in Search Console ("jelenések könyve", "zsoltárok", "példabeszédek", "énekek éneke").
+- [x] **2026-11-17 Deployed** the homepage title, book introductions (imported for SZIT, KNB and BD), popular book names and chapter titles.
+- [ ] **Watch Search Console** from about 2026-12-01: the book queries ("jelenések könyve", "zsoltárok", "példabeszédek", "énekek éneke") and "23 zsoltár" (re-export and compare with the baseline above).
 
 ### Famous passage pages (`/igehely/{slug}`)
 
