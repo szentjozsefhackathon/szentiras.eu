@@ -6,6 +6,7 @@ use Cache;
 use Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use Redirect;
 use SzentirasHu\Http\Controllers\Controller;
 use SzentirasHu\Service\Reference\CanonicalReference;
@@ -20,6 +21,8 @@ use SzentirasHu\Data\Repository\BookRepository;
 use SzentirasHu\Data\Repository\TranslationRepository;
 use SzentirasHu\Data\Repository\VerseRepository;
 use SzentirasHu\Data\Repository\ReadingPlanRepository;
+use SzentirasHu\Data\BookCommonNames;
+use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Models\BookIntroduction;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Models\Media;
@@ -665,11 +668,16 @@ class TextDisplayController extends Controller
         $allTranslations = $this->translationRepository->getAllOrderedByDenom();
         $bookTranslations = $this->getAllBookTranslations($book->usx_code);
         $introductions = BookIntroduction::query()->forBook($translation->id, $book->usx_code)->get();
+        $commonNames = BookCommonNames::alternativesTo($book->usx_code, $book->name);
+        $leadingName = BookCommonNames::titleNameFor($book->usx_code, $book->name, $this->isProtestant($translation));
         $bookViewArray = [
             'translation' => $translation,
             'reference' => $translatedRef,
             'book' => $book,
-            'teaser' => trim("{$book->name} – {$translation->name}. {$leadVerseText}"),
+            'bookPageTitle' => $this->bookPageTitle($book, $translation, $leadingName, $introductions->isNotEmpty()),
+            'teaser' => $this->bookTeaser($book, $translation, $leadingName, $introductions, $leadVerseText),
+            'commonNames' => $commonNames,
+            'structuredDataJson' => $this->bookStructuredDataJson($book, $translation, $commonNames),
             'chapters' => $chapters,
             'headings' => $chapterHeadings,
             'introductions' => $introductions,
@@ -698,6 +706,59 @@ class TextDisplayController extends Controller
             })->values()
         ];
         return $bookViewArray;
+    }
+
+    /**
+     * Leads with the name people search for ("Máté evangéliuma"), keeping the translation's own
+     * book name ("Az evangélium Máté szerint") when it differs.
+     */
+    private function bookPageTitle(Book $book, Translation $translation, ?string $commonName, bool $hasIntroduction): string
+    {
+        $contents = $hasIntroduction ? 'bevezetés és teljes szöveg' : 'teljes szöveg';
+        if ($commonName === null) {
+            return "{$book->name} – {$contents} | {$translation->name}";
+        }
+
+        return "{$commonName} – {$contents} | {$book->name} ({$translation->abbrev})";
+    }
+
+    /**
+     * Starts from the book's own introduction when there is one, otherwise from the chapter openings.
+     *
+     * @param \Illuminate\Support\Collection<int, BookIntroduction> $introductions
+     */
+    private function bookTeaser(Book $book, Translation $translation, ?string $commonName, $introductions, string $leadVerseText): string
+    {
+        $introduction = $introductions->firstWhere('is_group', false) ?? $introductions->first();
+        $introductionText = '';
+        foreach ($introduction === null ? [] : $introduction->paragraphs as $paragraph) {
+            if ($paragraph['style'] === 'paragraph') {
+                $introductionText = implode('', array_column($paragraph['segments'], 'text'));
+                break;
+            }
+        }
+        $names = $commonName === null ? $book->name : "{$commonName} ({$book->name})";
+        $text = $introductionText !== '' ? $introductionText : $leadVerseText;
+
+        return trim(Str::limit(trim(preg_replace('/\s+/u', ' ', "{$names} – {$translation->name}. {$text}")), 300, '…', true));
+    }
+
+    /**
+     * @param list<string> $commonNames
+     */
+    private function bookStructuredDataJson(Book $book, Translation $translation, array $commonNames): string
+    {
+        $structuredData = array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'Book',
+            'name' => $book->name,
+            'alternateName' => $commonNames ?: null,
+            'inLanguage' => 'hu',
+            'url' => url("/{$translation->abbrev}/{$book->abbrev}"),
+            'isPartOf' => ['@type' => 'Book', 'name' => $translation->name],
+        ]);
+
+        return json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG);
     }
 
     /**
@@ -730,6 +791,11 @@ class TextDisplayController extends Controller
         $reference = $this->getReference($verseContainers);
 
         return $reference !== "" ? "{$reference} – {$translation->name}" : $translation->name;
+    }
+
+    private function isProtestant(Translation $translation): bool
+    {
+        return $translation->denom === 'protestáns';
     }
 
     /**

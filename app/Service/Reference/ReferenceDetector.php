@@ -10,12 +10,16 @@ use SzentirasHu\Data\UsxCodes;
  * Recognises a Bible reference typed the way people type it ("Efezus 2,8", "103. zsoltár",
  * "I. Timóteushoz", "Júdás levele"). The whole input must be a reference, so a quotation or a
  * question never matches. A book without chapter only counts with a book word ("könyve",
- * "levele", "-hoz"), so a bare name like "Sámuel" stays a search.
+ * "levele", "-hoz") or as a multi-word book name ("Apostolok cselekedetei"), so a bare name
+ * like "Sámuel" stays a search. An ordinal may also follow the name ("Mózes első könyve").
  */
 class ReferenceDetector
 {
     private const NUMBER_WORDS = ['i' => 1, 'ii' => 2, 'iii' => 3, 'iv' => 4, 'v' => 5,
         'elso' => 1, 'masodik' => 2, 'harmadik' => 3, 'negyedik' => 4, 'otodik' => 5];
+
+    /** Ordinals that may follow the name, as in "Mózes első könyve". */
+    private const ORDINAL_WORDS = ['elso' => 1, 'masodik' => 2, 'harmadik' => 3, 'negyedik' => 4, 'otodik' => 5];
 
     private const FUZZY_MIN_LENGTH = 5;
 
@@ -48,6 +52,8 @@ class ReferenceDetector
         foreach ($words as $word) {
             if (in_array($word, BookNames::BOOK_WORDS, true)) {
                 $hasBookWord = true;
+            } elseif ($number === null && $nameWords !== [] && isset(self::ORDINAL_WORDS[$word])) {
+                $number = self::ORDINAL_WORDS[$word];
             } else {
                 $nameWords[] = $word;
             }
@@ -61,7 +67,8 @@ class ReferenceDetector
             $hasBookWord = true;
         }
         $nameWords[] = $last;
-        if ($rest === '' && ! $hasBookWord) {
+        $isMultiWordBookName = count($nameWords) > 1 && isset(BookNames::NAMES[implode(' ', $nameWords)]);
+        if ($rest === '' && ! $hasBookWord && ! $isMultiWordBookName) {
             return null;
         }
 

@@ -1,14 +1,20 @@
 {% extends 'layout' %}
 
-{% set pageTitle %}
-{{ book.name }} | {{ translation.name }} | Szentírás
-{% endset %}
+{% set pageTitle = bookPageTitle %}
+
+{% block meta %}
+    <link rel="canonical" href="{{ url('/' ~ translation.abbrev ~ '/' ~ book.abbrev) }}" />
+    <script type="application/ld+json">{{ structuredDataJson|raw }}</script>
+{% endblock %}
 
 {% block content %}
 
     {% include 'textDisplay.breadcrumb' %}
 
     <h1 class="h4">{{ book.name }}</h1>
+    {% if commonNames is not empty %}
+        <p class="small text-muted mb-2">Más néven: {{ commonNames|join(', ') }}</p>
+    {% endif %}
 
     <div class="translationButtons">
         <div class="dropdown bookChapterSelector mb-1">
