@@ -16,6 +16,15 @@ class HomeSearchTileTest extends FastDatabaseTestCase
         $response->assertSeeInOrder(['MI keresés', 'Pontos szöveg nélkül is', 'az Egyház tanítását is figyelembe véve']);
     }
 
+    public function test_home_page_title_and_description_target_online_bible_searches(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('<title>Biblia online – a Szentírás katolikus és protestáns fordításokban</title>', false);
+        $response->assertSee('<meta name="description" content="Olvasd és keresd a Bibliát online, ingyen:', false);
+    }
+
     public function test_search_tile_shows_the_search_type_buttons_on_every_screen_size(): void
     {
         $response = $this->get('/');

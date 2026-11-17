@@ -24,7 +24,8 @@ class HomeController extends Controller
         $todayReading = DailyReading::whereDate('date', Carbon::today())->first();
 
         return \View::make("home", [
-            'pageTitle' => 'Szentírás - A Biblia teljes szövege, katolikus és protestáns fordításokban',
+            'pageTitle' => 'Biblia online – a Szentírás katolikus és protestáns fordításokban',
+            'teaser' => 'Olvasd és keresd a Bibliát online, ingyen: a teljes Szentírás magyarul, katolikus és protestáns fordításokban, a görög Újszövetséggel és MI kereséssel.',
             'cathBibles' => $this->translationRepository->getByDenom('katolikus'),
             'otherBibles' => $this->translationRepository->getByDenom('protestáns'),
             'fullQuickSearch' => true,
