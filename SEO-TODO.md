@@ -78,16 +78,21 @@ Google Search Console, web search, 2026-08-16 – 2026-11-15:
 - [x] **2026-11-17 Deployed** the homepage title, book introductions (imported for SZIT, KNB and BD), popular book names and chapter titles.
 - [ ] **Watch Search Console** from about 2026-12-01: the book queries ("jelenések könyve", "zsoltárok", "példabeszédek", "énekek éneke") and "23 zsoltár" (re-export and compare with the baseline above).
 
-### Famous passage pages (`/igehely/{slug}`)
+### Famous passage pages (`/szakasz/{slug}`)
 
-- [ ] **Data model and editor.** Use the same pattern as guides. Fields: name, slug, alternative names, reference, introduction, Markdown body, SEO title and description.
-- [ ] **What each page shows:**
-  - the text in the default translation (SZIT), with tabs for the other translations;
-  - the key verse in every translation side by side;
+Wording: Catholic usage, "Nevezetes szentírási szakaszok" / "szentírási hely", not the Protestant "igehely" and not "ismert".
+
+- [x] **Data model and editor** (deployed 2026-11-18). `FamousPassage`, editor under Szerkesztés → Nevezetes szakaszok. Fields: name, slug, alternative names, reference, key verse, introduction, Markdown body, SEO title and description, active flag. Drafts are visible to editors only. Saving purges the book's cached chapter pages.
+- [x] **Page, first version:** the text in the default translation (SZIT), the key verse in every translation with links to each translation's chapter, the Markdown body. KAL is shown in its own Vulgate numbering (`'numberingScheme' => 'vulgata'`, `NumberingSchemeService::toVulgata()`).
+- [ ] **Page, later:**
   - Greek key words (New Testament only);
   - when the passage is read in the liturgy, worked out from the daily-readings data;
-  - context, common questions, related passages, verse card and PDF.
-- [ ] **Internal links:** a banner on the chapter page ("Ez a rész ismert mint …"), a homepage tile, an entry in the sitemap, and quick search by name.
+  - structured data (FAQ for the common questions), verse card and PDF.
+- [x] **Chapter banner** ("23. zsoltár – Az Úr az én pásztorom (Zsolt 23): magyarázat és fordítások") and **sitemap entry** (in `sitemap-guides.xml`).
+- [ ] **More internal links:** a homepage tile, a menu link to `/szakasz`, and quick search by name.
+- [x] **KNB text from the XML** (imported on production 2026-11-18). KNB switches to `szentiras:importScriptureXml` (`xml/KNB.xml`): the revised text replaces the pre-2020 wording the xlsx import showed, and the stray "0" lines are gone. Same heading structure as SZIT (book parts, sections at level 4, TOC levels 4–9). The revision renumbers a few verses (Józs 4,25→4,24, Józs 5,16→5,15, Jób 16, Bír 5,32, 2Mak 12,46), and verses missing from the Neovulgata are empty. Italics come from the XML's web layout (psalm superscriptions, the words quoted literally from the OT, 869 lines), and the synoptic parallels become cross-references (716). KNB now has stems too, so stem search works for it (it had none before). Import workflow: run the import locally with Hunspell, which updates `database/preload/stems.json`; commit and deploy; then on production `printf 'KNB\n' | php artisan szentiras:importScriptureXml --no-hunspell`, which takes the stems from that file (site is in maintenance mode for a few minutes).
+- [ ] **3 KNB verse fixes conflict** with the imported text: check them in the editor (Szövegjavítások).
+- [ ] **Poem lines (902) get no stems** (`ImportScripture::STEMMED_VERSE_TYPES` lacks 902), so stem search misses most of the Psalms in KNB and SZIT.
 - [ ] **First batch,** ordered by Search Console demand:
   1. Zsolt 23
   2. Mt 5 (Hegyi beszéd, Boldogmondások)
