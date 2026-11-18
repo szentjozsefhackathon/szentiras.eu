@@ -98,7 +98,7 @@ Wording: Catholic usage, "Nevezetes szentírási szakaszok" / "szentírási hely
   2. Re-import KNB and SZIT locally with Hunspell, so `stems.json` gets the new words, and commit it.
   3. Deploy, then re-import both on production with `--no-hunspell`.
   4. Check: a search for "pásztor" in Zsolt finds "Az Úr az én pásztorom" (Zsolt 23,1).
-- [ ] **First batch,** ordered by Search Console demand:
+- [x] **First batch,** ordered by Search Console demand:
   1. Zsolt 23
   2. Mt 5 (Hegyi beszéd, Boldogmondások)
   3. 1Kor 13 (Szeretethimnusz)
@@ -109,11 +109,12 @@ Wording: Catholic usage, "Nevezetes szentírási szakaszok" / "szentírási hely
   8. Mt 11,28
   9. Jn 1,1-18
   10. Préd 3
-- [ ] **Second batch:** Róm 8, Jn 10, Jn 15, Jer 29,11, Lk 15, Lk 2, Zsolt 90.
+- [x] **Second batch:** Róm 8, Jn 10, Jn 15, Jer 29,11, Lk 15, Lk 2, Zsolt 90.
 - [x] **Drafts of both batches** (`resources/data/famous-passages.json`): `php artisan szentiras:import-famous-passages` creates the missing ones as inactive drafts (name, alternative names, reference, key verse; no AI-written introduction) and collects their Church citations. Existing slugs are skipped.
 - [x] **Church documents citing the passage:** quoted in their own words from the Catechism, Vatican II, encyclicals and apostolic documents, collected from Hittéka, formerly Magister (`/api/kerdes?q=<reference>&forras=<group>`) by `php artisan szentiras:famous-passage-citations [slug…]` and stored with the passage. Rerun after changing a reference. The page names and links Hittéka (`MAGISTER_PUBLIC_URL`, default https://hitteka.szentiras.eu) only when `MAGISTER_BRAND_PUBLIC=true`; until then it shows only the count of citing places.
 - [x] **Commentaries:** the chapter pages' commentary box (with its verification label) under the text.
-- [ ] **Review and publish** the drafts in the editor; Zsolt 90 has no Church citations, Zsolt 91, Préd 3 and Jer 29 only one or two.
+- [x] **On production** (2026-11-18): all 18 passages imported with their Church citations and published, without introduction or body text.
+- [ ] **Review** the published passages in the editor (names, references, key verses), and write the introductions; Zsolt 90 has no Church citations, Zsolt 91, Préd 3 and Jer 29 only one or two.
 - [ ] **Content workflow** for the body: from the real text and Greek analysis, reviewed before publishing.
 
 ### Open question: verse searches
