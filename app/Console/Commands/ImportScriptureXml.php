@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\Storage;
 class ImportScriptureXml extends ImportScripture
 {
     /**
+     * St. Jerome's notes in Daniel (`Cimsor Szint="SzJ"`) are no headings: they keep the
+     * source's own type code, which no translation displays.
+     */
+    public const JEROME_NOTE_TYPE = 893;
+
+    /**
      * The console command name.
      *
      * @var string
@@ -37,6 +43,11 @@ class ImportScriptureXml extends ImportScripture
      * @var array<int, int>
      */
     private $headingSzintToTip = [];
+
+    /**
+     * The cross-reference type of the current translation, null if it has none.
+     */
+    private ?int $xrefType = null;
 
     /**
      * {@inheritdoc}
@@ -129,7 +140,7 @@ class ImportScriptureXml extends ImportScripture
     }
 
     /**
-     * Load heading mapping from config for the given translation abbreviation.
+     * Load heading mapping and cross-reference type from config for the given translation abbreviation.
      *
      * @param string $transAbbrev
      * @return void
@@ -142,6 +153,7 @@ class ImportScriptureXml extends ImportScripture
         foreach ($config as $tip => $szint) {
             $this->headingSzintToTip[$szint] = $tip;
         }
+        $this->xrefType = Config::get("translations.definitions.{$transAbbrev}.verseTypes.xref.0");
     }
 
     /**
@@ -225,8 +237,9 @@ class ImportScriptureXml extends ImportScripture
         ?int $chapterNr = null,
         array $pipes = []
     ): void {
-        $szint = (int) $heading['Szint'];
-        $tip = $this->headingSzintToTip[$szint] ?? 401;
+        $szintAttribute = (string) $heading['Szint'];
+        $szint = (int) $szintAttribute;
+        $tip = ctype_digit($szintAttribute) ? ($this->headingSzintToTip[$szint] ?? 401) : self::JEROME_NOTE_TYPE;
         $text = (string) $heading->Alapszoveg;
 
         // Determine chapter and verse from ElsoVers attribute if present
@@ -298,8 +311,14 @@ class ImportScriptureXml extends ImportScripture
             ];
             $verseInserts[] = $verseInsert;
         } else {
-            // Process each Strofa as separate verse record
+            $hasText = false;
             foreach ($strofaElements as $strofa) {
+                $hasText = $hasText || ! $this->isDeletedStrofa($strofa);
+            }
+            foreach ($strofaElements as $strofa) {
+                if ($hasText && $this->isDeletedStrofa($strofa)) {
+                    continue;
+                }
                 $style = (string) $strofa['Style'];
                 $text = (string) $strofa->Alapszoveg;
                 // Determine tip based on style
@@ -315,6 +334,7 @@ class ImportScriptureXml extends ImportScripture
                 if ($this->hunspellEnabled && in_array($tip, $this->stemmedVerseTypes)) {
                     $verseroot = $this->executeStemming($text, $pipes);
                 }
+                $text = $this->withItalics($strofa, $text);
                 $verseInsert = [
                     'original_book_code' => sprintf('%03d%03d%03d', $order, $chapterNr, $verseNr),
                     'order' => $order,
@@ -333,6 +353,61 @@ class ImportScriptureXml extends ImportScripture
         foreach ($verse->Labjegyzet as $footnote) {
             $this->processFootnote($footnote, $order, $usxCode, $chapterNr, $verseNr, $verseInserts, $pipes);
         }
+    }
+
+    /**
+     * The line with its italic words marked: the web layout (TordWeb) splits the line into
+     * segments with a style, italic ones ("i", "id", "id1"…) set e.g. a psalm superscription or
+     * the words quoted literally from the Old Testament. The segments use layout marks (ł line
+     * break, _ non-breaking space, ° soft hyphen); when they don't add up to the line's text,
+     * the line stays as it is.
+     */
+    private function withItalics(SimpleXMLElement $strofa, string $text): string
+    {
+        if ($text === '' || ! isset($strofa->TordWeb->Sz)) {
+            return $text;
+        }
+
+        $runs = [];
+        foreach ($strofa->TordWeb->Sz as $segment) {
+            $segmentText = str_replace(['ł', '_', '%', '°', '˥'], [' ', ' ', ' ', '', ''], (string) $segment->T);
+            $italic = str_starts_with((string) $segment['St'], 'i');
+            $last = count($runs) - 1;
+            if ($last >= 0 && $runs[$last]['italic'] === $italic) {
+                $runs[$last]['text'] .= $segmentText;
+            } else {
+                $runs[] = ['text' => $segmentText, 'italic' => $italic];
+            }
+        }
+
+        $collapse = fn (string $value): string => trim(preg_replace('/\s+/u', ' ', $value));
+        if ($collapse(implode('', array_column($runs, 'text'))) !== $collapse($text)) {
+            return $text;
+        }
+        if (! in_array(true, array_column($runs, 'italic'), true)) {
+            return $text;
+        }
+
+        $html = '';
+        foreach ($runs as $run) {
+            $runText = preg_replace('/\s+/u', ' ', $run['text']);
+            if ($run['italic'] && trim($runText) !== '') {
+                preg_match('/^(\s*)(.*?)(\s*)$/su', $runText, $parts);
+                $runText = "{$parts[1]}<i>{$parts[2]}</i>{$parts[3]}";
+            }
+            $html .= $runText;
+        }
+
+        return trim($html);
+    }
+
+    /**
+     * A line a revision deleted: its text is `<Null/>`, the old wording lives on in RegiSzoveg.
+     * A verse whose every line was deleted still gets one empty record, so its number remains.
+     */
+    private function isDeletedStrofa(SimpleXMLElement $strofa): bool
+    {
+        return trim((string) $strofa->Alapszoveg) === '';
     }
 
     /**
@@ -355,6 +430,25 @@ class ImportScriptureXml extends ImportScripture
         array &$verseInserts,
         array $pipes = []
     ): void {
+        if (isset($footnote->SzinoptikusHiv) && $this->xrefType !== null) {
+            foreach ($this->synopticReferences($footnote->SzinoptikusHiv) as $reference) {
+                $verseInserts[] = [
+                    'original_book_code' => sprintf('%03d%03d%03d', $order, $chapterNr, $verseNr),
+                    'order' => $order,
+                    'chapter' => $chapterNr,
+                    'numv' => $verseNr,
+                    'tip' => $this->xrefType,
+                    'verse' => $reference,
+                    'verseroot' => null,
+                    'ido' => null,
+                ];
+            }
+        }
+
+        if (! isset($footnote->LabjSzoveg)) {
+            return;
+        }
+
         // Collect text from LabjSzoveg children (Sz and K)
         $text = '';
         foreach ($footnote->LabjSzoveg->children() as $child) {
@@ -380,6 +474,39 @@ class ImportScriptureXml extends ImportScripture
             'ido' => null,
         ];
         $verseInserts[] = $verseInsert;
+    }
+
+    /**
+     * The references of a synoptic parallel note ("ǁ Mk 1,7k; Lk 3,15-17; 12,3."), one per parallel
+     * passage: a reference without a book takes the previous one's, and "7k" (the verse and the
+     * next one) becomes "7-8", which the reference parser understands.
+     *
+     * @return list<string>
+     */
+    private function synopticReferences(SimpleXMLElement $synopticNote): array
+    {
+        $text = '';
+        foreach ($synopticNote->children() as $child) {
+            $text .= $child->getName() === 'K' ? (string) $child['F'] : (string) $child->T;
+        }
+        $text = trim(str_replace('ǁ', '', $text), " \t\n.;");
+
+        $references = [];
+        $book = null;
+        foreach (preg_split('/\s*;\s*/u', $text, -1, PREG_SPLIT_NO_EMPTY) as $reference) {
+            if (preg_match('/^(\d?\s?\p{L}+)\s+\d/u', $reference, $matches)) {
+                $book = $matches[1];
+            } elseif ($book !== null && preg_match('/^\d/', $reference)) {
+                $reference = "{$book} {$reference}";
+            }
+            $references[] = preg_replace_callback(
+                '/([,.])(\d+)k(?!\p{L})/u',
+                fn (array $verse): string => $verse[1].$verse[2].'-'.((int) $verse[2] + 1),
+                $reference,
+            );
+        }
+
+        return $references;
     }
 
     /**

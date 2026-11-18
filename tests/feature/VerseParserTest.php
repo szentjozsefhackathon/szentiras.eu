@@ -37,6 +37,44 @@ class VerseParserTest extends TestCase
 
     }
 
+    public function testKNBKeepsItalics(): void
+    {
+        $parser = new KNBVerseParser();
+        $book = new Book();
+        $book->abbrev = "Zsolt";
+
+        $verse = new Verse();
+        $verse->chapter = 23;
+        $verse->numv = 1;
+        $verse->verse = '<i>Dávid zsoltára.</i>';
+        $verse->tip = 901;
+        $verse->trans = 3;
+
+        $this->assertEquals('<i>Dávid zsoltára.</i>', $parser->parse([$verse], $book)->getText());
+    }
+
+    public function testKNBCrossReferenceRecordsAreShownAfterTheVerse(): void
+    {
+        $parser = new KNBVerseParser();
+        $book = new Book();
+        $book->abbrev = "Mt";
+
+        $records = [];
+        foreach ([[901, 'Azokban a napokban fellépett Keresztelő János.'], [920, 'Mk 1,2-6'], [920, '{Lk 3,3-6}']] as [$tip, $text]) {
+            $verse = new Verse();
+            $verse->chapter = 3;
+            $verse->numv = 1;
+            $verse->verse = $text;
+            $verse->tip = $tip;
+            $verse->trans = 3;
+            $records[] = $verse;
+        }
+        $verseData = $parser->parse($records, $book);
+
+        $this->assertEquals('Azokban a napokban fellépett Keresztelő János.', $verseData->getText());
+        $this->assertSame(['Mk 1,2-6', 'Lk 3,3-6'], array_map(fn ($xref) => $xref->text, array_values($verseData->xrefs)));
+    }
+
     public function testKGVerseParser()
     {
 

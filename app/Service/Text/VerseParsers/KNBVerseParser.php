@@ -17,14 +17,10 @@ class KNBVerseParser extends DefaultVerseParser
         $rawText = preg_replace('/<tk>/', '', $rawText);
         $rawText = preg_replace('/<br>/', '<br>', $rawText);
         $rawText = preg_replace('/<brx>/', '<br>', $rawText);
-        // the current KNB text <i> tags are terrible, they are not opened neither closed properly
-        $rawText = preg_replace('/<i>/', '', $rawText);
-        $rawText = preg_replace('/<\/i>/', '', $rawText);
         $rawText = preg_replace('/<fs>/', '', $rawText);
         $rawText = preg_replace('/<khiv>/', '', $rawText);
         $rawText = preg_replace('/<\/khiv>/', '', $rawText);
         $purified = preg_replace('/\s*'.self::XREF_REGEXP.'/u', '', $rawText);
-        $purified = preg_replace('/<\/?i>/', '', $purified);
         return $purified;
     }
 
@@ -44,10 +40,14 @@ class KNBVerseParser extends DefaultVerseParser
         return $rawText;
     }
 
+    /**
+     * A cross-reference record holds one reference, e.g. a synoptic parallel ("Mk 1,2-6");
+     * older imports wrapped it in braces.
+     */
     protected function parseXrefverse($book, $rawVerse, VerseData $verse)
     {
         $xref = new Xref();
-        $xref->text = substr($rawVerse->verse, 1, -1);
+        $xref->text = trim($rawVerse->verse, '{}');
         $verse->xrefs[]= $xref;
     }
 

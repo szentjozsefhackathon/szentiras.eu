@@ -108,6 +108,10 @@ class ImportScripture extends Command
      */
     public function handle(): int
     {
+        if (class_exists(\Laravel\Telescope\Telescope::class)) {
+            \Laravel\Telescope\Telescope::stopRecording();
+        }
+
         if (!$this->option('no-hunspell')) {
             $this->testHunspell();
         }

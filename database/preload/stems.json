@@ -222,6 +222,7 @@
         "adj": true,
         "adja": true,
         "adjak": true,
+        "adjam": true,
         "adjanak": true,
         "adjatok": true,
         "adjon": true,
@@ -251,6 +252,7 @@
         "adom\u00e1nya": true,
         "adom\u00e1nyb\u00f3l": true,
         "adom\u00e1nyk\u00e9nt": true,
+        "adom\u00e1nyok": true,
         "adom\u00e1nyokat": true,
         "adom\u00e1nyokb\u00f3l": true,
         "adom\u00e1nyokra": true,
@@ -271,6 +273,7 @@
         "adull\u00e1m": true,
         "adull\u00e1mi": true,
         "adunk": true,
+        "ad\u00e1ja": true,
         "ad\u00e1j\u00e1": true,
         "ad\u00e1r": true,
         "ad\u00e1sv\u00e9tel": true,
@@ -405,6 +408,7 @@
         "aj\u00e1nd\u00e9k": true,
         "aj\u00e1nd\u00e9ka": true,
         "aj\u00e1nd\u00e9kaikkal": true,
+        "aj\u00e1nd\u00e9kaitokon": true,
         "aj\u00e1nd\u00e9kok": true,
         "aj\u00e1nd\u00e9kokat": true,
         "aj\u00e1nd\u00e9komat": true,
@@ -472,6 +476,7 @@
         "akart\u00e1k": true,
         "akart\u00e1l": true,
         "akarunk": true,
+        "akar\u00e1st": true,
         "akar\u00f3": true,
         "akaszd": true,
         "akaszt": true,
@@ -566,6 +571,7 @@
         "alak\u00edt": true,
         "alak\u00fa": true,
         "alamizsna": true,
+        "alamizsnak\u00e9nt": true,
         "alamizsn\u00e1id": true,
         "alamizsn\u00e1lkodik": true,
         "alamizsn\u00e1lkod\u00f3": true,
@@ -599,6 +605,8 @@
         "alattomos": true,
         "alattval\u00f3": true,
         "alattval\u00f3i": true,
+        "alexander": true,
+        "alexandernek": true,
         "alexandriai": true,
         "alfa": true,
         "alfeus": true,
@@ -634,6 +642,7 @@
         "alkat": true,
         "alkony": true,
         "alkonyat": true,
+        "alkonyatra": true,
         "alkonyodik": true,
         "alkonyul": true,
         "alkossunk": true,
@@ -815,6 +824,7 @@
         "am\u00e1sz\u00e1val": true,
         "am\u00edg": true,
         "am\u00fagy": true,
+        "ananiel": true,
         "anarchia": true,
         "andal\u00edt": true,
         "andr\u00e1s": true,
@@ -858,6 +868,7 @@
         "anyja": true,
         "anyjuk": true,
         "anyjukat": true,
+        "anyjukkal": true,
         "anyj\u00e1hoz": true,
         "anyj\u00e1nak": true,
         "anyj\u00e1t": true,
@@ -897,6 +908,7 @@
         "apj\u00e1t": true,
         "apj\u00e1t\u00f3l": true,
         "apj\u00e1val": true,
+        "apokalipszis": true,
         "apoll\u00f3niusz": true,
         "apoll\u00f3ni\u00e1n": true,
         "apoll\u00f3sra": true,
@@ -907,6 +919,8 @@
         "apostolkodik": true,
         "apostolok": true,
         "apostolokk\u00e1": true,
+        "apostoloknak": true,
+        "apostolokt\u00f3l": true,
         "apostolokul": true,
         "apostols\u00e1g": true,
         "appajim": true,
@@ -1055,6 +1069,7 @@
         "arr\u00f3l": true,
         "art": true,
         "artahsaszt\u00e1": true,
+        "artaxerx\u00e9sz": true,
         "artemisz": true,
         "arvad": true,
         "ar\u00e1bia": true,
@@ -1120,6 +1135,7 @@
         "aszal\u00f3dik": true,
         "aszerint": true,
         "aszfalt": true,
+        "aszfaltot": true,
         "aszik": true,
         "aszinkritoszt": true,
         "aszk\u00f3r": true,
@@ -1173,6 +1189,7 @@
         "aty\u00e1inkat": true,
         "aty\u00e1inkkal": true,
         "aty\u00e1itok": true,
+        "aty\u00e1k": true,
         "aty\u00e1m": true,
         "aty\u00e1mfia": true,
         "aty\u00e1mnak": true,
@@ -1438,6 +1455,7 @@
         "becs\u00fclt\u00e9k": true,
         "becs\u00fcl\u00f6d": true,
         "bec\u00e9z": true,
+        "bedobott": true,
         "bedugja": true,
         "beesett": true,
         "beesteledett": true,
@@ -1466,6 +1484,7 @@
         "begy": true,
         "begy\u00e9t": true,
         "begy\u00f3gyult": true,
+        "behajolt": true,
         "behajt\u00e1s": true,
         "behaj\u00f3z": true,
         "behatol": true,
@@ -1503,6 +1522,7 @@
         "bej\u00f6vetel": true,
         "bej\u00f6v\u00fcnk": true,
         "bej\u00f6v\u0151": true,
+        "bek": true,
         "beka": true,
         "beker": true,
         "beker\u00edtett": true,
@@ -1790,6 +1810,7 @@
         "bev\u00e1lt\u00e1s": true,
         "bev\u00e9gzem": true,
         "bev\u00e9gz\u00e9s": true,
+        "bev\u00e9gz\u0151j\u00e9re": true,
         "bev\u00e9tel": true,
         "bezekben": true,
         "bezzeg": true,
@@ -1879,6 +1900,7 @@
         "birtok\u00e1t": true,
         "birtok\u00e1v\u00e1": true,
         "bisl\u00e1m": true,
+        "bisszusba": true,
         "bit": true,
         "bitangol": true,
         "bitinia": true,
@@ -1900,6 +1922,7 @@
         "bizalmi": true,
         "bizalom": true,
         "bizalommal": true,
+        "bizalomteli": true,
         "bizodalm\u00e1t": true,
         "bizodalom": true,
         "bizonnyal": true,
@@ -1949,6 +1972,7 @@
         "bocs\u00e1t": true,
         "bocs\u00e1tja": true,
         "bocs\u00e1tkozik": true,
+        "bocs\u00e1tkozott": true,
         "bocs\u00e1tkozzanak": true,
         "bocs\u00e1tod": true,
         "bocs\u00e1tok": true,
@@ -1975,6 +1999,7 @@
         "boldog": true,
         "boldognak": true,
         "boldogok": true,
+        "boldogs": true,
         "boldogs\u00e1g": true,
         "boldogtalan": true,
         "boldogul": true,
@@ -2165,6 +2190,7 @@
         "bukkan": true,
         "bukk\u00ed": true,
         "buktat": true,
+        "buk\u00e1sa": true,
         "buk\u00e1somra": true,
         "buk\u00e1suk": true,
         "buk\u00e1s\u00e1t": true,
@@ -2253,6 +2279,7 @@
         "b\u00e1m\u00e9szkodik": true,
         "b\u00e1m\u00f3tb\u00f3l": true,
         "b\u00e1n": true,
+        "b\u00e1na": true,
         "b\u00e1nat": true,
         "b\u00e1natos": true,
         "b\u00e1natot": true,
@@ -2324,6 +2351,7 @@
         "b\u00e1rmit": true,
         "b\u00e1rsony": true,
         "b\u00e1rsonyos": true,
+        "b\u00e1ruk": true,
         "b\u00e1r\u00e1k": true,
         "b\u00e1r\u00e1kot": true,
         "b\u00e1r\u00e1nnyal": true,
@@ -2413,6 +2441,7 @@
         "b\u00e9k\u00e9t": true,
         "b\u00e9k\u00e9tlen": true,
         "b\u00e9k\u00e9tlenkedik": true,
+        "b\u00e9k\u00e9tlenked\u0151k": true,
         "b\u00e9k\u00e9tlens\u00e9g": true,
         "b\u00e9k\u00e9vel": true,
         "b\u00e9k\u00edt": true,
@@ -2456,6 +2485,9 @@
         "b\u00e9teli": true,
         "b\u00e9telt": true,
         "b\u00e9telt\u0151l": true,
+        "b\u00e9tsett\u00e1ig": true,
+        "b\u00e9ts\u00e1n": true,
+        "b\u00e9ts\u00e1nt\u00f3l": true,
         "b\u00edbor": true,
         "b\u00edborba": true,
         "b\u00edborban": true,
@@ -2487,6 +2519,7 @@
         "b\u00edr\u00f3": true,
         "b\u00edr\u00f3hoz": true,
         "b\u00edr\u00f3k": true,
+        "b\u00edr\u00f3r\u00f3l": true,
         "b\u00edr\u00f3s\u00e1g": true,
         "b\u00edr\u00f3v\u00e1": true,
         "b\u00edz": true,
@@ -2658,6 +2691,7 @@
         "b\u0171n": true,
         "b\u0171nbe": true,
         "b\u0171nbees\u00e9s": true,
+        "b\u0171nben": true,
         "b\u0171nbocs\u00e1nat": true,
         "b\u0171nb\u00e1nat": true,
         "b\u0171nb\u00e1nata": true,
@@ -2709,6 +2743,7 @@
         "b\u0171n\u00f6z\u0151": true,
         "b\u0171n\u00fck": true,
         "b\u0171n\u00fcket": true,
+        "b\u0171n\u00fckr\u0151l": true,
         "b\u0171v\u00e9sz": true,
         "b\u0171v\u00e9szkedik": true,
         "b\u0171v\u00f6l": true,
@@ -2736,6 +2771,7 @@
         "cidkijj\u00e1": true,
         "cidkijj\u00e1nak": true,
         "cidkijj\u00e1t": true,
+        "cif": true,
         "cifra": true,
         "cifr\u00e1zat": true,
         "cikk": true,
@@ -2752,6 +2788,7 @@
         "cin": true,
         "cinkos": true,
         "cinkost\u00e1rs": true,
+        "cint": true,
         "cint\u00e1ny\u00e9r": true,
         "cint\u00e1ny\u00e9rok": true,
         "cint\u00e1ny\u00e9rokat": true,
@@ -2923,6 +2960,7 @@
         "csavarg\u00f3k": true,
         "csavarodik": true,
         "csavarog": true,
+        "csavarogni": true,
         "csavart": true,
         "csavarva": true,
         "csecs": true,
@@ -2941,6 +2979,8 @@
         "cselekedet": true,
         "cselekedeteidr\u0151l": true,
         "cselekedeteikkel": true,
+        "cselekedeteinek": true,
+        "cselekedeteink\u00e9rt": true,
         "cselekedetek": true,
         "cselekedetekben": true,
         "cselekedeteket": true,
@@ -2948,6 +2988,7 @@
         "cselekedett": true,
         "cselekedik": true,
         "cselekedj": true,
+        "cselekedned": true,
         "cselekedni": true,
         "cselekedtek": true,
         "cselekedtem": true,
@@ -3094,6 +3135,7 @@
         "csit\u00edtgat": true,
         "csit\u00edtotta": true,
         "csizma": true,
+        "csod": true,
         "csoda": true,
         "csodatev\u0151": true,
         "csod\u00e1idat": true,
@@ -3170,6 +3212,7 @@
         "cs\u00e1b\u00edt": true,
         "cs\u00e1b\u00edtgat": true,
         "cs\u00e1b\u00edtja": true,
+        "cs\u00e1b\u00edt\u00e1s": true,
         "cs\u00e1b\u00edt\u00f3": true,
         "cs\u00e1csog": true,
         "cs\u00e1csog\u00f3": true,
@@ -3508,6 +3551,7 @@
         "dics\u0151\u00edtitek": true,
         "dics\u0151\u00edts\u00e9tek": true,
         "dics\u0151\u00edtve": true,
+        "dics\u0151\u00edt\u0151": true,
         "dics\u0151\u00fcl": true,
         "dics\u0151\u00fclt": true,
         "dikt\u00e1l": true,
@@ -3519,6 +3563,7 @@
         "din\u00e1hoz": true,
         "dioszkurok": true,
         "diszkosz": true,
+        "diszn": true,
         "diszn\u00f3": true,
         "diszn\u00f3h\u00fas": true,
         "diszn\u00f3h\u00fast": true,
@@ -3666,6 +3711,7 @@
         "d\u00e1vid": true,
         "d\u00e1viddal": true,
         "d\u00e1vidhoz": true,
+        "d\u00e1vidi": true,
         "d\u00e1vidig": true,
         "d\u00e1vidnak": true,
         "d\u00e1vidot": true,
@@ -4242,6 +4288,7 @@
         "elfoglal\u00e1s": true,
         "elfogott": true,
         "elfogta": true,
+        "elfogtak": true,
         "elfogt\u00e1k": true,
         "elfogult": true,
         "elfogy": true,
@@ -4282,6 +4329,7 @@
         "elhagytad": true,
         "elhagytak": true,
         "elhagytuk": true,
+        "elhagytunk": true,
         "elhagyt\u00e1k": true,
         "elhagy\u00e1s": true,
         "elhajtj\u00e1k": true,
@@ -4343,6 +4391,7 @@
         "elindul\u00e1s": true,
         "elind\u00edtotta": true,
         "elint\u00e9zetlen": true,
+        "elisa": true,
         "elismert": true,
         "elismerv\u00e9ny": true,
         "elismer\u00e9s": true,
@@ -4351,6 +4400,7 @@
         "elizeusnak": true,
         "elizeusra": true,
         "elizeust\u00f3l": true,
+        "eli\u00fa": true,
         "eljegyzel": true,
         "eljegyzett": true,
         "eljegyz\u00e9s": true,
@@ -4379,6 +4429,7 @@
         "elj\u00f6vend\u0151": true,
         "elj\u00f6vetel": true,
         "elj\u00f6vetel\u00e9nek": true,
+        "elj\u00f6vetel\u00e9t": true,
         "elj\u00f6v\u00f6k": true,
         "elkanyarodik": true,
         "elker\u00fclhetetlen": true,
@@ -4752,6 +4803,7 @@
         "eltemessem": true,
         "eltemess\u00e9k": true,
         "eltemette": true,
+        "eltemettem": true,
         "eltemett\u00e9k": true,
         "eltemet\u00e9s": true,
         "elterjedt": true,
@@ -4792,6 +4844,7 @@
         "elt\u00f6rl\u00e9s": true,
         "elt\u00f6rl\u00f6m": true,
         "elt\u00f6rtem": true,
+        "elt\u00f6rt\u00e9k": true,
         "elt\u00f6r\u00f6llek": true,
         "elt\u00f6r\u00f6lte": true,
         "elt\u0171nik": true,
@@ -4822,6 +4875,7 @@
         "elveszt\u00e9s": true,
         "elvesz\u00edt": true,
         "elvesz\u00edted": true,
+        "elvesz\u00edti": true,
         "elvesz\u00fcnk": true,
         "elveted": true,
         "elvetem\u00fcl": true,
@@ -4844,6 +4898,7 @@
         "elvezettek": true,
         "elvi": true,
         "elvigyem": true,
+        "elviselek": true,
         "elviselhetetlen": true,
         "elviselni": true,
         "elviselt": true,
@@ -4859,6 +4914,7 @@
         "elvitt\u00e9k": true,
         "elvitt\u00e9tek": true,
         "elvonni": true,
+        "elvonul": true,
         "elvonult": true,
         "elvonultok": true,
         "elvonul\u00e1s": true,
@@ -5002,6 +5058,7 @@
         "el\u0151kel\u0151kre": true,
         "el\u0151kel\u0151s\u00e9g": true,
         "el\u0151k\u00e9p": true,
+        "el\u0151k\u00e9sz\u00edteni": true,
         "el\u0151k\u00e9sz\u00edt\u00e9s": true,
         "el\u0151k\u00e9sz\u00edt\u0151": true,
         "el\u0151k\u00e9sz\u00fclet": true,
@@ -5182,6 +5239,7 @@
         "eml\u00e9kezve": true,
         "eml\u00e9kezz": true,
         "eml\u00e9kezzetek": true,
+        "eml\u00e9kezz\u00e9k": true,
         "eml\u00e9kezz\u00e9l": true,
         "eml\u00e9kirat": true,
         "eml\u00e9km\u0171": true,
@@ -5197,6 +5255,7 @@
         "eml\u0151": true,
         "eml\u0151iket": true,
         "eml\u0151kre": true,
+        "em\u00e1n": true,
         "em\u00e9szt": true,
         "em\u00e9sztet": true,
         "em\u00e9sztette": true,
@@ -5213,6 +5272,7 @@
         "engedelem": true,
         "engedelmes": true,
         "engedelmesen": true,
+        "engedelmeskedett": true,
         "engedelmeskedik": true,
         "engedelmeskedjetek": true,
         "engedelmeskedni": true,
@@ -5221,6 +5281,7 @@
         "engedelmeskedtetek": true,
         "engedelmess\u00e9g": true,
         "engedelmess\u00e9ggel": true,
+        "engedelmess\u00e9g\u00e9re": true,
         "engedelmess\u00e9g\u00e9rt": true,
         "engedetlen": true,
         "engedetlenek": true,
@@ -5286,6 +5347,7 @@
         "eperfa": true,
         "epeszt": true,
         "epikureus": true,
+        "epil": true,
         "er": true,
         "erasztosz": true,
         "erdei": true,
@@ -5432,9 +5494,11 @@
         "eseng": true,
         "eset": true,
         "esetleg": true,
+        "esetleges": true,
         "esett": true,
         "eshet\u0151s\u00e9g": true,
         "esik": true,
+        "esk": true,
         "eskesse": true,
         "esket": true,
         "esk\u00f3l": true,
@@ -5642,6 +5706,7 @@
         "ez\u00fcstj\u00fcket": true,
         "ez\u00fcstk\u00f6t\u00e9l": true,
         "ez\u00fcstnek": true,
+        "ez\u00fcstolvaszt\u00f3": true,
         "ez\u00fcstp\u00e9nz": true,
         "ez\u00fcsttel": true,
         "ez\u00fcstt\u00e1l": true,
@@ -5683,6 +5748,7 @@
         "fajzik": true,
         "fakad": true,
         "fakadt": true,
+        "fakad\u00f3": true,
         "fakassz": true,
         "fakaszt": true,
         "fakasztott\u00e1l": true,
@@ -5802,6 +5868,7 @@
         "fegyelmez": true,
         "fegyelmezetlen": true,
         "fegyelmezett": true,
+        "fegyelmezetts": true,
         "fegyver": true,
         "fegyverbe": true,
         "fegyvered": true,
@@ -6071,6 +6138,7 @@
         "felhalmozott": true,
         "felharsan": true,
         "felhaszn\u00e1lt": true,
+        "felhaszn\u00e1lt\u00e1k": true,
         "felhaszn\u00e1l\u00e1s": true,
         "felhatalmaz\u00e1s": true,
         "felhatalmaz\u00e1s\u00e1val": true,
@@ -6113,6 +6181,7 @@
         "felj\u00f6n": true,
         "felj\u00f6vetel": true,
         "felkavarodik": true,
+        "felkel": true,
         "felkelt": true,
         "felkeltek": true,
         "felkel\u00e9s": true,
@@ -6173,6 +6242,7 @@
         "felruh\u00e1zta": true,
         "felsorakoztatta": true,
         "felsorol\u00e1s": true,
+        "felsz": true,
         "felszerel\u00e9s": true,
         "felszerel\u00e9st": true,
         "felszisszen": true,
@@ -6196,9 +6266,11 @@
         "fels\u0151rend\u0171": true,
         "fels\u0151ruha": true,
         "fels\u0151ruh\u00e1j\u00e1t": true,
+        "felt": true,
         "feltornyosult": true,
         "felt\u00e1madt": true,
         "felt\u00e1mad\u00e1s": true,
+        "felt\u00e1mad\u00e1sa": true,
         "felt\u00e1masztani": true,
         "felt\u00e1masztja": true,
         "felt\u00e1masztotta": true,
@@ -6234,6 +6306,7 @@
         "felv\u00e9tetik": true,
         "fel\u00e1ldoztad": true,
         "fel\u00e1ldozt\u00e1k": true,
+        "fel\u00e1ldozz\u00e1k": true,
         "fel\u00e1ll\u00edtotta": true,
         "fel\u00e1ll\u00edtott\u00e1k": true,
         "fel\u00e1ll\u00edttatta": true,
@@ -6320,6 +6393,7 @@
         "fenntartsam": true,
         "fenntart\u00e1s": true,
         "fenn\u00e1ll\u00e1s": true,
+        "fens": true,
         "fens\u00e9g": true,
         "fens\u00e9ges": true,
         "fens\u00e9ggel": true,
@@ -6333,6 +6407,7 @@
         "fenyegeti": true,
         "fenyegette": true,
         "fenyeget\u00e9s": true,
+        "fenyeget\u00e9sek": true,
         "fenyeget\u00e9s\u00e9re": true,
         "fenyeget\u0151": true,
         "fenyeget\u0151zik": true,
@@ -6379,6 +6454,7 @@
         "fesz\u00fclt": true,
         "fetreng": true,
         "fetreng\u00fcnk": true,
+        "fetruszimot": true,
         "fi": true,
         "fia": true,
         "fiacska": true,
@@ -6418,6 +6494,7 @@
         "fiai\u00e9rt": true,
         "fiak": true,
         "fiakat": true,
+        "fiakhoz": true,
         "fiakkal": true,
         "fiaknak": true,
         "fial": true,
@@ -6460,6 +6537,7 @@
         "figyelmeztettek": true,
         "figyelmeztettem": true,
         "figyelmeztet\u00e9ssel": true,
+        "figyelmeztet\u00e9st": true,
         "figyelni": true,
         "figyelt": true,
         "figyeltek": true,
@@ -6485,6 +6563,7 @@
         "filiszteust": true,
         "filiszte\u00e1nak": true,
         "fill\u00e9r": true,
+        "fill\u00e9rt": true,
         "filol\u00f3gus": true,
         "filoz\u00f3fus": true,
         "fil\u00e9": true,
@@ -6512,6 +6591,7 @@
         "fiuk": true,
         "fiv\u00e9r": true,
         "fiv\u00e9reimet": true,
+        "fiv\u00e9r\u00e9nek": true,
         "fizess": true,
         "fizessen": true,
         "fizet": true,
@@ -6680,6 +6760,7 @@
         "fog\u00f3dik": true,
         "fog\u00f3dzik": true,
         "fog\u00f3zik": true,
+        "foh": true,
         "foh\u00e1sz": true,
         "foh\u00e1szkodik": true,
         "foh\u00e1szkodnak": true,
@@ -6773,6 +6854,7 @@
         "fon\u00e1lb\u00f3l": true,
         "fon\u00f3": true,
         "fon\u00f3dik": true,
+        "ford": true,
         "fordul": true,
         "fordulat": true,
         "fordulatot": true,
@@ -6792,6 +6874,7 @@
         "ford\u00edtott": true,
         "ford\u00edtotta": true,
         "ford\u00edtott\u00e1l": true,
+        "ford\u00edtsa": true,
         "ford\u00edtsd": true,
         "ford\u00edtva": true,
         "forgalom": true,
@@ -6841,6 +6924,7 @@
         "fortyog": true,
         "fort\u00e9ly": true,
         "fort\u00e9lyos": true,
+        "for\u00e1ta": true,
         "fossz\u00e1k": true,
         "foszlik": true,
         "foszlott": true,
@@ -7072,6 +7156,7 @@
         "f\u00e9nyes": true,
         "f\u00e9nyesebb": true,
         "f\u00e9nyesedik": true,
+        "f\u00e9nyesen": true,
         "f\u00e9nyeskedik": true,
         "f\u00e9nyes\u00edt": true,
         "f\u00e9nyez": true,
@@ -7341,6 +7426,7 @@
         "f\u00fajj\u00e1k": true,
         "f\u00fajj\u00e1tok": true,
         "f\u00fajni": true,
+        "f\u00fajta": true,
         "f\u00fajtat": true,
         "f\u00fajtat\u00f3": true,
         "f\u00fal": true,
@@ -7611,6 +7697,7 @@
         "ged\u00f3r": true,
         "gekk\u00f3": true,
         "gemarj\u00e1nak": true,
+        "genez\u00e1reti": true,
         "genneusz": true,
         "genny": true,
         "gennyed": true,
@@ -7748,6 +7835,7 @@
         "gonoszak": true,
         "gonoszok": true,
         "gonoszs\u00e1g": true,
+        "gonoszs\u00e1ga": true,
         "gonoszs\u00e1gnak": true,
         "gonoszs\u00e1god": true,
         "gonoszs\u00e1got": true,
@@ -7903,6 +7991,7 @@
         "gyilkolt\u00e1k": true,
         "gyilkos": true,
         "gyilkosok": true,
+        "gyilkosokat": true,
         "gyilkoss\u00e1gaikb\u00f3l": true,
         "gyilkoss\u00e1gok": true,
         "gyilkost": true,
@@ -7992,6 +8081,7 @@
         "gy\u00f3gy\u00edts\u00e1tok": true,
         "gy\u00f3gy\u00edt\u00e1s": true,
         "gy\u00f3gy\u00edt\u00e1snak": true,
+        "gy\u00f3gy\u00edt\u00e1sok": true,
         "gy\u00f3gy\u00edt\u00e1sra": true,
         "gy\u00f6k": true,
         "gy\u00f6kere": true,
@@ -8066,6 +8156,7 @@
         "gy\u00fclekezethez": true,
         "gy\u00fclekezetnek": true,
         "gy\u00fclekezettel": true,
+        "gy\u00fclekezet\u00e9be": true,
         "gy\u00fclekezet\u00e9hez": true,
         "gy\u00fclekezet\u00e9nek": true,
         "gy\u00fclekezik": true,
@@ -8486,6 +8577,7 @@
         "hajol": true,
         "hajoljon": true,
         "hajolt": true,
+        "hajsz": true,
         "hajsza": true,
         "hajszol": true,
         "hajszolt": true,
@@ -8546,6 +8638,7 @@
         "haj\u00f3zott": true,
         "haj\u00f3ztunk": true,
         "haj\u00f3z\u00e1s": true,
+        "haj\u00f3z\u00e1st": true,
         "haj\u00f3\u00fat": true,
         "hakk\u00f3c": true,
         "hak\u00edl\u00e1": true,
@@ -8626,6 +8719,7 @@
         "hallgat\u00f3s\u00e1g": true,
         "hallgat\u00f3zik": true,
         "hallgat\u00f3zott": true,
+        "hallhassuk": true,
         "hallik": true,
         "hallja": true,
         "halljam": true,
@@ -8704,6 +8798,8 @@
         "hal\u00e1lt": true,
         "hal\u00e1ltusa": true,
         "hal\u00e1lt\u00f3l": true,
+        "hal\u00e1lvesz\u00e9lyben": true,
+        "hal\u00e1l\u00e1n": true,
         "hal\u00e1l\u00e1r\u00f3l": true,
         "hal\u00e1l\u00e1t": true,
         "hal\u00e1nt\u00e9k": true,
@@ -8912,6 +9008,7 @@
         "harsog\u00f3": true,
         "harsona": true,
         "harson\u00e1k": true,
+        "harson\u00e1kat": true,
         "harson\u00e1t": true,
         "harson\u00e1zik": true,
         "hars\u00e1b\u00f3l": true,
@@ -8934,6 +9031,7 @@
         "hasmen\u00e9s": true,
         "hasogat": true,
         "hasonlat": true,
+        "hasonlatok": true,
         "hasonlatos": true,
         "hasonlik": true,
         "hasonl\u00edt": true,
@@ -9009,6 +9107,7 @@
         "hatalm\u00e1nak": true,
         "hatalm\u00e1t": true,
         "hatalm\u00e1t\u00f3l": true,
+        "hatalm\u00e1val": true,
         "hatalom": true,
         "hatalommal": true,
         "hatalomnak": true,
@@ -9265,6 +9364,7 @@
         "helyr\u0151l": true,
         "helysz\u00edn": true,
         "helys\u00e9g": true,
+        "helys\u00e9gek": true,
         "helyt": true,
         "helytart\u00f3": true,
         "helytart\u00f3ja": true,
@@ -9458,6 +9558,7 @@
         "hitben": true,
         "hitb\u00e9li": true,
         "hitb\u0151l": true,
+        "hite": true,
         "hitedr\u0151l": true,
         "hiteget": true,
         "hitehagyott": true,
@@ -9472,6 +9573,7 @@
         "hitetekben": true,
         "hitetlen": true,
         "hitetlenek": true,
+        "hitetlenekkel": true,
         "hitetleneknek": true,
         "hitetlenkedik": true,
         "hith\u0171": true,
@@ -9666,6 +9768,7 @@
         "hozatok": true,
         "hozatott": true,
         "hozd": true,
+        "hozhatn\u00e1": true,
         "hoznak": true,
         "hozni": true,
         "hozok": true,
@@ -9827,6 +9930,7 @@
         "h\u00e1laad\u00e1sa": true,
         "h\u00e1laad\u00f3": true,
         "h\u00e1latelt": true,
+        "h\u00e1la\u00e9nek": true,
         "h\u00e1lt": true,
         "h\u00e1ltak": true,
         "h\u00e1lyog": true,
@@ -9917,6 +10021,7 @@
         "h\u00e1r\u00edt": true,
         "h\u00e1r\u00edtotta": true,
         "h\u00e1sum": true,
+        "h\u00e1szaja": true,
         "h\u00e1t": true,
         "h\u00e1tamat": true,
         "h\u00e1tamon": true,
@@ -10140,6 +10245,7 @@
         "h\u00edvtam": true,
         "h\u00edvt\u00e1k": true,
         "h\u00edvt\u00e1l": true,
+        "h\u00edv\u00e1snak": true,
         "h\u00edv\u0151": true,
         "h\u00edv\u0151k": true,
         "h\u00edv\u0151kkel": true,
@@ -10227,6 +10333,7 @@
         "h\u00fasv\u00e9t": true,
         "h\u00fasv\u00e9ti": true,
         "h\u00fasz": true,
+        "h\u00faszan": true,
         "h\u00faszezer": true,
         "h\u00faszk\u00f6ny\u00f6knyi": true,
         "h\u00faszk\u00f6ny\u00f6knyire": true,
@@ -10248,6 +10355,7 @@
         "h\u00faztam": true,
         "h\u00fazz": true,
         "h\u00fazza": true,
+        "h\u00fazzatok": true,
         "h\u00faz\u00f3dik": true,
         "h\u00faz\u00f3dj": true,
         "h\u00faz\u00f3djatok": true,
@@ -10304,6 +10412,7 @@
         "h\u0171tlen\u00fcl": true,
         "h\u0171v\u00f6s": true,
         "i": true,
+        "id": true,
         "idd\u00f3": true,
         "idd\u00f3nak": true,
         "idd\u00f3\u00e9ban": true,
@@ -10340,6 +10449,7 @@
         "idelenn": true,
         "idelent": true,
         "ide\u00e9r": true,
+        "iditun": true,
         "idom\u00edt": true,
         "idus": true,
         "id\u00e1ig": true,
@@ -10503,6 +10613,7 @@
         "ihletett": true,
         "ihol": true,
         "ii": true,
+        "iii": true,
         "ijed": true,
         "ijedelem": true,
         "ijedez": true,
@@ -10636,6 +10747,7 @@
         "indulni": true,
         "indult": true,
         "indultak": true,
+        "indultunk": true,
         "indul\u00f3": true,
         "ind\u00edt": true,
         "ind\u00edtanak": true,
@@ -10703,6 +10815,7 @@
         "int\u00e9zett": true,
         "int\u00e9zkedett": true,
         "int\u00e9zkedik": true,
+        "int\u00e9z\u0151je": true,
         "int\u00e9z\u0151s\u00e9g": true,
         "in\u00e1t": true,
         "ion": true,
@@ -10719,6 +10832,7 @@
         "irgalmasak": true,
         "irgalmasan": true,
         "irgalmass\u00e1g": true,
+        "irgalmass\u00e1got": true,
         "irgalmass\u00e1g\u00e1ra": true,
         "irgalmat": true,
         "irgalmatlan": true,
@@ -10762,6 +10876,7 @@
         "ir\u00e1nyt": true,
         "ir\u00e1nyul": true,
         "ir\u00e1nyult": true,
+        "ir\u00e1nyul\u00f3": true,
         "ir\u00e1nyzat": true,
         "ir\u00e1nyzatr\u00f3l": true,
         "ir\u00e1ny\u00e1ban": true,
@@ -10861,12 +10976,14 @@
         "istenf\u00e9l\u0151kkel": true,
         "istenhez": true,
         "isteni": true,
+        "istenk": true,
         "istenk\u00e1roml\u00e1s": true,
         "istenk\u00e1roml\u00f3": true,
         "istennek": true,
         "istennel": true,
         "istenn\u0151": true,
         "istenre": true,
+        "istenr\u0151l": true,
         "istenszobrot": true,
         "istens\u00e9g": true,
         "istent": true,
@@ -10959,6 +11076,7 @@
         "iv\u00f3dik": true,
         "iv\u00f3poh\u00e1r": true,
         "iv\u00f3v\u00edz": true,
+        "izaj\u00e1s": true,
         "izeg": true,
         "izgalom": true,
         "izgat": true,
@@ -10972,7 +11090,9 @@
         "izmaelt": true,
         "izmos": true,
         "izom": true,
+        "izrael": true,
         "izraelita": true,
+        "izrael\u00e9rt": true,
         "izr\u00e1el": true,
         "izr\u00e1elben": true,
         "izr\u00e1elb\u0151l": true,
@@ -11003,8 +11123,10 @@
         "izzik": true,
         "izz\u00edt": true,
         "izz\u00f3": true,
+        "iz\u00e1j": true,
         "iz\u00e9": true,
         "i\u00f3ta": true,
+        "j": true,
         "ja": true,
         "jaak\u00e1n": true,
         "jaak\u00e1nb\u00f3l": true,
@@ -11017,6 +11139,7 @@
         "jahacig": true,
         "jahat": true,
         "jahaz\u00ed\u00e9l": true,
+        "jahve": true,
         "jaj": true,
         "jajdul": true,
         "jajgass": true,
@@ -11094,6 +11217,7 @@
         "jegyezt\u00e9k": true,
         "jegyezve": true,
         "jegyezz\u00e9k": true,
+        "jegyz": true,
         "jegyz\u00e9k": true,
         "jegyz\u00e9kbe": true,
         "jegyz\u00e9ke": true,
@@ -11155,6 +11279,8 @@
         "jelk\u00e9p\u00e9t": true,
         "jelleg": true,
         "jellem": true,
+        "jellemez": true,
+        "jellemz": true,
         "jelnek": true,
         "jelsz\u00f3": true,
         "jelt": true,
@@ -11175,6 +11301,7 @@
         "jer": true,
         "jerahme\u00e9l": true,
         "jerahme\u00e9lnek": true,
+        "jerame\u00e9l": true,
         "jeredet": true,
         "jeremi\u00e1s": true,
         "jeremi\u00e1shoz": true,
@@ -11190,6 +11317,7 @@
         "jerobo\u00e1m": true,
         "jerobo\u00e1mnak": true,
         "jerobo\u00e1mot": true,
+        "jeromos": true,
         "jertek": true,
         "jerubbaal": true,
         "jeruzs\u00e1lem": true,
@@ -11216,6 +11344,7 @@
         "jeter": true,
         "jeteri": true,
         "jet\u00far": true,
+        "jezreel": true,
         "jezr\u00e9el": true,
         "jezr\u00e9elbe": true,
         "jezr\u00e9elb\u0151l": true,
@@ -11294,11 +11423,13 @@
         "jogtipr\u00f3": true,
         "jogunk": true,
         "jog\u00e1t": true,
+        "joj\u00e1rib": true,
         "jokne\u00e1mot": true,
         "joks\u00e1n": true,
         "joks\u00e1nt": true,
         "jokt\u00e1n": true,
         "jonat\u00e1n": true,
+        "jopp\u00e9ba": true,
         "jopp\u00e9ban": true,
         "jord\u00e1n": true,
         "jord\u00e1nban": true,
@@ -11365,6 +11496,7 @@
         "juttatja": true,
         "juttatta": true,
         "jut\u00f3": true,
+        "j\u00e1bes": true,
         "j\u00e1b\u00e9s": true,
         "j\u00e1b\u00e9sba": true,
         "j\u00e1b\u00edn": true,
@@ -11397,6 +11529,7 @@
         "j\u00e1rjanak": true,
         "j\u00e1rjatok": true,
         "j\u00e1rjon": true,
+        "j\u00e1rjunk": true,
         "j\u00e1rj\u00e1k": true,
         "j\u00e1rj\u00e1tok": true,
         "j\u00e1rk\u00e1l": true,
@@ -11432,10 +11565,12 @@
         "j\u00e1ruljon": true,
         "j\u00e1ruljunk": true,
         "j\u00e1rulnak": true,
+        "j\u00e1rultatok": true,
         "j\u00e1rul\u00e9k": true,
         "j\u00e1runk": true,
         "j\u00e1rv\u00e1ny": true,
         "j\u00e1r\u00e1sa": true,
+        "j\u00e1r\u00e1sra": true,
         "j\u00e1r\u00f3": true,
         "j\u00e1r\u00f3f\u00f6ldre": true,
         "j\u00e1r\u00f3kat": true,
@@ -11469,6 +11604,7 @@
         "j\u00e9zus": true,
         "j\u00e9zushoz": true,
         "j\u00e9zusnak": true,
+        "j\u00e9zusra": true,
         "j\u00e9zust": true,
         "j\u00f3": true,
         "j\u00f3akarat": true,
@@ -11619,6 +11755,7 @@
         "j\u00f3zsefhez": true,
         "j\u00f3zsefnek": true,
         "j\u00f3zsef\u00e9": true,
+        "j\u00f3zsue": true,
         "j\u00f3zsu\u00e9": true,
         "j\u00f3zsu\u00e9hoz": true,
         "j\u00f3zsu\u00e9nak": true,
@@ -11661,6 +11798,7 @@
         "j\u00f6vedelmez": true,
         "j\u00f6vend\u00f6l": true,
         "j\u00f6vend\u00f6l\u00e9s": true,
+        "j\u00f6vend\u00f6l\u00e9sek": true,
         "j\u00f6vend\u00f6l\u00e9st": true,
         "j\u00f6vend\u0151": true,
         "j\u00f6vend\u0151mond\u00e1s": true,
@@ -11795,6 +11933,7 @@
         "kaparint": true,
         "kapaszkodik": true,
         "kapat": true,
+        "kapcs": true,
         "kapcsait": true,
         "kapcsokat": true,
         "kapcsokkal": true,
@@ -11828,6 +11967,7 @@
         "kaptat": true,
         "kaptatok": true,
         "kaptok": true,
+        "kaptuk": true,
         "kapt\u00e1k": true,
         "kapu": true,
         "kapuban": true,
@@ -11939,6 +12079,7 @@
         "kast\u00e9ly": true,
         "kasza": true,
         "kaszabol": true,
+        "kaszluimot": true,
         "kasztr\u00e1l": true,
         "kasz\u00e1l": true,
         "katlan": true,
@@ -12154,6 +12295,7 @@
         "kerek": true,
         "kerekded": true,
         "kerekedik": true,
+        "kerekedtek": true,
         "kerekeit": true,
         "kerekek": true,
         "kerekeket": true,
@@ -12246,6 +12388,7 @@
         "ker\u00e9tiek": true,
         "ker\u00edt": true,
         "ker\u00edtetlen": true,
+        "ker\u00edtette": true,
         "ker\u00edtettek": true,
         "ker\u00edt\u00e9s": true,
         "ker\u00edt\u00e9se": true,
@@ -12431,6 +12574,7 @@
         "kg": true,
         "ki": true,
         "kiab\u00e1l": true,
+        "kiad": true,
         "kiadat\u00e1s": true,
         "kiadt\u00e1k": true,
         "kiad\u00e1s": true,
@@ -12445,6 +12589,7 @@
         "kibocs\u00e1tja": true,
         "kibontott": true,
         "kibr\u00f3t": true,
+        "kib\u00e9k\u00fcl\u00e9s": true,
         "kib\u00edrhatatlan": true,
         "kib\u00fav\u00f3": true,
         "kicsapni": true,
@@ -12810,6 +12955,7 @@
         "kis": true,
         "kisbaba": true,
         "kisded": true,
+        "kisdedek": true,
         "kisebb": true,
         "kisebbedik": true,
         "kisebbik": true,
@@ -13062,6 +13208,7 @@
         "kol": true,
         "koldul": true,
         "koldus": true,
+        "kolh\u00f3ze": true,
         "kol\u00f3nia": true,
         "koma": true,
         "komisz": true,
@@ -13170,6 +13317,7 @@
         "kor\u00e1bbiakat": true,
         "kor\u00e1l": true,
         "kor\u00e1n": true,
+        "kor\u00e1nak": true,
         "kor\u00e1ntsem": true,
         "kor\u00fa": true,
         "kos": true,
@@ -13184,6 +13332,7 @@
         "kosok": true,
         "kosokat": true,
         "kosonk\u00e9nt": true,
+        "kosr\u00f3l": true,
         "kossal": true,
         "kost": true,
         "kosz": true,
@@ -13216,6 +13365,7 @@
         "kov\u00e1szt": true,
         "kov\u00e1sztalan": true,
         "kozmikus": true,
+        "kr": true,
         "krajc\u00e1r": true,
         "kripta": true,
         "krist\u00e1ly": true,
@@ -13224,6 +13374,7 @@
         "krisztusban": true,
         "krisztusnak": true,
         "krisztust": true,
+        "kritika": true,
         "krizolit": true,
         "kri\u00e1nak": true,
         "krokodil": true,
@@ -13267,6 +13418,7 @@
         "kuty\u00e1knak": true,
         "kuvik": true,
         "kuvikot": true,
+        "kvadr": true,
         "k\u00e1ba": true,
         "k\u00e1bul": true,
         "k\u00e1bulat": true,
@@ -13276,8 +13428,11 @@
         "k\u00e1d\u00e9s": true,
         "k\u00e1d\u00e9sban": true,
         "k\u00e1ka": true,
+        "k\u00e1ldeai": true,
         "k\u00e1ldeus": true,
         "k\u00e1ldeusok": true,
+        "k\u00e1leb": true,
+        "k\u00e1lebnek": true,
         "k\u00e1lmos": true,
         "k\u00e1l\u00e9b": true,
         "k\u00e1l\u00e9bnak": true,
@@ -13369,6 +13524,7 @@
         "k\u00e9nyszermunk\u00e1k": true,
         "k\u00e9nyszermunk\u00e1t\u00f3l": true,
         "k\u00e9nyszermunk\u00e1val": true,
+        "k\u00e9nyszerrel": true,
         "k\u00e9nyszer\u00edt": true,
         "k\u00e9nyszer\u00edtem": true,
         "k\u00e9nyszer\u00edtett": true,
@@ -13637,6 +13793,7 @@
         "k\u00edm\u00e9letes": true,
         "k\u00edm\u00e9letlen": true,
         "k\u00edm\u00e9letlen\u00fcl": true,
+        "k\u00edm\u00e9lik": true,
         "k\u00edn": true,
         "k\u00ednjai": true,
         "k\u00ednl\u00f3dik": true,
@@ -13915,6 +14072,7 @@
         "k\u00f6telekkel": true,
         "k\u00f6teles": true,
         "k\u00f6teless\u00e9ge": true,
+        "k\u00f6teless\u00e9gek": true,
         "k\u00f6teless\u00e9g\u00fck": true,
         "k\u00f6telez": true,
         "k\u00f6telezett": true,
@@ -13961,6 +14119,7 @@
         "k\u00f6vete": true,
         "k\u00f6vetei": true,
         "k\u00f6veteid": true,
+        "k\u00f6veteimet": true,
         "k\u00f6veteit": true,
         "k\u00f6vetek": true,
         "k\u00f6veteket": true,
@@ -13987,6 +14146,7 @@
         "k\u00f6vetkezt\u00e9ben": true,
         "k\u00f6vetkez\u0151": true,
         "k\u00f6vetkez\u0151k": true,
+        "k\u00f6vetkez\u0151ket": true,
         "k\u00f6vetkez\u0151t": true,
         "k\u00f6vetni": true,
         "k\u00f6vets\u00e9g": true,
@@ -14294,6 +14454,7 @@
         "k\u0151v\u00e1r": true,
         "k\u0151v\u00e9": true,
         "k\u0151zet": true,
+        "l": true,
         "la": true,
         "labda": true,
         "lada": true,
@@ -14528,6 +14689,7 @@
         "legyetek": true,
         "legyilkolta": true,
         "legyilkoltak": true,
+        "legyilkol\u00e1s\u00e1r\u00f3l": true,
         "legyint": true,
         "legy\u00e9l": true,
         "legy\u00fcnk": true,
@@ -14599,6 +14761,7 @@
         "leli": true,
         "lelke": true,
         "lelkedben": true,
+        "lelkedb\u0151l": true,
         "lelkedet": true,
         "lelkednek": true,
         "lelkei": true,
@@ -14692,6 +14855,7 @@
         "lepi": true,
         "lepje": true,
         "lepke": true,
+        "lepleket": true,
         "leplez": true,
         "leplezetlen": true,
         "leplezett": true,
@@ -14825,6 +14989,7 @@
         "leviat\u00e1n": true,
         "leviat\u00e1nt": true,
         "levita": true,
+        "levit\u00e1k": true,
         "levonult": true,
         "lev\u00e1g": true,
         "lev\u00e1gatta": true,
@@ -14890,6 +15055,7 @@
         "le\u00edr\u00e1sa": true,
         "le\u00edr\u00e1st": true,
         "le\u00f6l\u00e9s": true,
+        "le\u00fcl": true,
         "le\u00fclt": true,
         "le\u00fcltek": true,
         "liba": true,
@@ -15020,12 +15186,15 @@
         "l\u00e1bsz\u00e1rakat": true,
         "l\u00e1bsz\u00e1rcsont": true,
         "l\u00e1bsz\u00e1rv\u00e9d\u0151": true,
+        "l\u00e1bsz\u00e1r\u00e1t": true,
         "l\u00e1bujj": true,
+        "l\u00e1bukat": true,
         "l\u00e1bukkal": true,
         "l\u00e1bunkat": true,
         "l\u00e1b\u00e1hoz": true,
         "l\u00e1b\u00e1n": true,
         "l\u00e1b\u00e1nnak": true,
+        "l\u00e1b\u00e1n\u00e1l": true,
         "l\u00e1b\u00e1ra": true,
         "l\u00e1b\u00e1t": true,
         "l\u00e1b\u00e1val": true,
@@ -15179,6 +15348,7 @@
         "l\u00e1zadjatok": true,
         "l\u00e1zadoz": true,
         "l\u00e1zadozik": true,
+        "l\u00e1zad\u00e1s": true,
         "l\u00e1zad\u00e1st": true,
         "l\u00e1zas": true,
         "l\u00e1zong": true,
@@ -15206,6 +15376,7 @@
         "l\u00e9lekkel": true,
         "l\u00e9leknek": true,
         "l\u00e9lekre": true,
+        "l\u00e9lekr\u0151l": true,
         "l\u00e9leksz\u00e1m": true,
         "l\u00e9leksz\u00e1mnak": true,
         "l\u00e9lektelen": true,
@@ -15270,6 +15441,7 @@
         "l\u00e9zeng": true,
         "l\u00edbia": true,
         "l\u00eddia": true,
+        "l\u00edzi\u00e1sz": true,
         "l\u00f3": true,
         "l\u00f3b\u00e1l": true,
         "l\u00f3ca": true,
@@ -15321,6 +15493,7 @@
         "maak\u00e1i": true,
         "maak\u00e1t": true,
         "maar\u00e1t": true,
+        "maaszja": true,
         "maasz\u00e9j\u00e1": true,
         "maasz\u00e9j\u00e1t": true,
         "maced\u00f3n": true,
@@ -15430,6 +15603,7 @@
         "magunkfajta": true,
         "magunknak": true,
         "magvas": true,
+        "magvet\u0151": true,
         "magyar\u00e1z": true,
         "magyar\u00e1zat": true,
         "magyar\u00e1zata": true,
@@ -15487,9 +15661,11 @@
         "maked\u00f3ni\u00e1n": true,
         "maked\u00f3nok": true,
         "makh\u00e9l\u00f3tb\u00f3l": true,
+        "makkabeussal": true,
         "makp\u00e9lai": true,
         "malkijj\u00e1": true,
         "malk\u00ed\u00e9l": true,
+        "mall\u00f3n": true,
         "mall\u00fak": true,
         "malmot": true,
         "malom": true,
@@ -15497,6 +15673,7 @@
         "malomk\u0151": true,
         "malter": true,
         "mammon": true,
+        "mamre": true,
         "mamr\u00e9": true,
         "mamr\u00e9ba": true,
         "mamr\u00e9nak": true,
@@ -15555,6 +15732,8 @@
         "marasztal": true,
         "marcangol": true,
         "mardos": true,
+        "mard\u00f3keus": true,
+        "mard\u00f3keusnak": true,
         "maresa": true,
         "marha": true,
         "marhacsord\u00e1ja": true,
@@ -15610,6 +15789,7 @@
         "matuzs\u00e1lem": true,
         "mazsola": true,
         "me": true,
+        "medd": true,
         "meddig": true,
         "medd\u0151": true,
         "medd\u0151k": true,
@@ -15657,6 +15837,7 @@
         "megbesz\u00e9lt\u00e9k": true,
         "megbesz\u00e9l\u00e9s": true,
         "megbetegedett": true,
+        "megbocs": true,
         "megbocs\u00e1tani": true,
         "megbocs\u00e1tja": true,
         "megbocs\u00e1tj\u00e1tok": true,
@@ -15726,6 +15907,7 @@
         "megel\u0151z\u0151en": true,
         "megemelkedik": true,
         "megeml\u00e9kezett": true,
+        "megeml\u00e9kezik": true,
         "megeml\u00e9kez\u00e9s": true,
         "megem\u00e9szt": true,
         "megem\u00e9sztette": true,
@@ -15828,6 +16010,7 @@
         "megf\u00e9kez\u00e9s": true,
         "megf\u00fajta": true,
         "megf\u00fajt\u00e1k": true,
+        "megf\u00fcrd\u00f6tt": true,
         "megf\u00fcr\u00f6dj\u00e9k": true,
         "megf\u0151zt\u00e9k": true,
         "meggazdagodj": true,
@@ -15838,6 +16021,7 @@
         "meggyal\u00e1zt\u00e1k": true,
         "meggyal\u00e1zt\u00e1tok": true,
         "meggyal\u00e1zva": true,
+        "meggyal\u00e1zza": true,
         "meggyal\u00e1zz\u00e1tok": true,
         "meggyal\u00e1z\u00e1s": true,
         "meggyilkolja": true,
@@ -15939,6 +16123,7 @@
         "megh\u00edvott": true,
         "megh\u00edvt\u00e1k": true,
         "megh\u00edv\u00e1s": true,
+        "megh\u00edv\u00e1sotokhoz": true,
         "megh\u00edzott": true,
         "megh\u00edztak": true,
         "megh\u00f3d\u00edtatlan": true,
@@ -15972,7 +16157,9 @@
         "megitatod": true,
         "megitatta": true,
         "megittasodtak": true,
+        "megjegyz": true,
         "megjegyz\u00e9s": true,
+        "megjegyz\u00e9se": true,
         "megjelenik": true,
         "megjelenjetek": true,
         "megjelenni": true,
@@ -16012,6 +16199,7 @@
         "megker\u00fclt\u00e9k": true,
         "megkezdett": true,
         "megkezdt\u00e9k": true,
+        "megkezdve": true,
         "megkoron\u00e1zta": true,
         "megk\u00e9rdezd": true,
         "megk\u00e9rdezhetn\u00e9nk": true,
@@ -16127,6 +16315,7 @@
         "megnagyobb\u00edtj\u00e1k": true,
         "megnedves\u00edt\u00e9s": true,
         "megnehez\u00edtette": true,
+        "megnyeri": true,
         "megnyerje": true,
         "megnyerte": true,
         "megnyert\u00e9k": true,
@@ -16250,6 +16439,7 @@
         "megsokasodtok": true,
         "megsokas\u00edt": true,
         "megsokas\u00edtottad": true,
+        "megszabad": true,
         "megszabadul": true,
         "megszabaduljak": true,
         "megszabadulnak": true,
@@ -16290,6 +16480,7 @@
         "megszents\u00e9gtelen\u00edt\u00e9s": true,
         "megszeretett": true,
         "megszerette": true,
+        "megszerezte": true,
         "megszerzett": true,
         "megszerzik": true,
         "megszerz\u00e9s": true,
@@ -16300,6 +16491,7 @@
         "megszomorodik": true,
         "megszomorodtatok": true,
         "megszomor\u00edtott": true,
+        "megszor\u00edtotta": true,
         "megsz\u00e1llott": true,
         "megsz\u00e1llta": true,
         "megsz\u00e1ll\u00e1s": true,
@@ -16384,6 +16576,7 @@
         "megtisztul\u00e1s": true,
         "megtisztul\u00e1sa": true,
         "megtiszt\u00edtani": true,
+        "megtiszt\u00edtja": true,
         "megtiszt\u00edtj\u00e1tok": true,
         "megtiszt\u00edtlak": true,
         "megtiszt\u00edtom": true,
@@ -16703,6 +16896,7 @@
         "mened\u00e9khelyet": true,
         "mened\u00e9kv\u00e1ros\u00e1t": true,
         "mened\u00e9k\u00fcl": true,
+        "menek": true,
         "menekedik": true,
         "menekv\u00e9s": true,
         "menek\u00edt": true,
@@ -17033,10 +17227,12 @@
         "mindenekf\u00f6l\u00f6tt": true,
         "mindenesetre": true,
         "mindenest\u00fcl": true,
+        "mindenest\u0151l": true,
         "mindenfel\u00e9": true,
         "mindenfel\u0151l": true,
         "mindenf\u00e9le": true,
         "mindenf\u00e9l\u00e9t": true,
+        "mindenhat": true,
         "mindenhat\u00f3": true,
         "mindenhat\u00f3val": true,
         "mindenhol": true,
@@ -17190,6 +17386,7 @@
         "mondhass\u00e1k": true,
         "mondhatja": true,
         "mondhatna": true,
+        "mondhatn\u00e1d": true,
         "mondhatod": true,
         "mondja": true,
         "mondjak": true,
@@ -17259,6 +17456,7 @@
         "mosolyodik": true,
         "mosolyog": true,
         "mossa": true,
+        "moss\u00e1k": true,
         "moss\u00e1tok": true,
         "most": true,
         "mostan": true,
@@ -17391,11 +17589,13 @@
         "m\u00e1morosodik": true,
         "m\u00e1moros\u00edt": true,
         "m\u00e1mor\u00edt": true,
+        "m\u00e1mzer": true,
         "m\u00e1nahat": true,
         "m\u00e1n\u00f3ah": true,
         "m\u00e1n\u00f3ahnak": true,
         "m\u00e1r": true,
         "m\u00e1rcius": true,
+        "m\u00e1res\u00e1t": true,
         "m\u00e1ria": true,
         "m\u00e1ris": true,
         "m\u00e1ri\u00e1nak": true,
@@ -17713,6 +17913,7 @@
         "naam\u00e1nt\u00f3l": true,
         "naar\u00e1": true,
         "naar\u00e1n": true,
+        "nabukodonozor": true,
         "nadr\u00e1g": true,
         "nadr\u00e1gostul": true,
         "nad\u00e1ly": true,
@@ -17858,6 +18059,7 @@
         "nap\u00f3ra": true,
         "nap\u00f3r\u00e1j\u00e1n": true,
         "nazar\u00e9nus": true,
+        "na\u00e1s": true,
         "ne": true,
         "nearj\u00e1nak": true,
         "nebukadneccar": true,
@@ -18151,6 +18353,7 @@
         "nyernek": true,
         "nyerni": true,
         "nyers": true,
+        "nyert": true,
         "nyer\u00e9szkedik": true,
         "nyer\u00edt": true,
         "nyes": true,
@@ -18746,6 +18949,7 @@
         "oktalanul": true,
         "oktat": true,
         "oktatgat": true,
+        "oktatsz": true,
         "oktat\u00e1s": true,
         "okt\u00e1v": true,
         "okul": true,
@@ -18812,6 +19016,7 @@
         "old\u00f3dik": true,
         "olimpia": true,
         "olimpiai": true,
+        "olimposzi": true,
         "oll\u00f3": true,
         "olt": true,
         "oltalma": true,
@@ -18856,6 +19061,7 @@
         "olvasni": true,
         "olvasom": true,
         "olvasott": true,
+        "olvassuk": true,
         "olvass\u00e1k": true,
         "olvasta": true,
         "olvastat": true,
@@ -18987,6 +19193,7 @@
         "or\u00e1kulum": true,
         "oskola": true,
         "oson": true,
+        "osszam": true,
         "ossz\u00e1tok": true,
         "ostoba": true,
         "ostobas\u00e1g": true,
@@ -19079,6 +19286,7 @@
         "ottl\u00e9temkor": true,
         "ottmarad": true,
         "ottmaradt": true,
+        "p": true,
         "pad": true,
         "paddan": true,
         "padl\u00e1s": true,
@@ -19300,6 +19508,7 @@
         "pattog": true,
         "patvarkodik": true,
         "patyolat": true,
+        "patyolatba": true,
         "pat\u00e1i": true,
         "pazar": true,
         "pazarl\u00e1s": true,
@@ -19398,6 +19607,7 @@
         "pettyes": true,
         "pettyesek": true,
         "pezsd\u00fcl": true,
+        "pezsd\u00fcljenek": true,
         "pezseg": true,
         "pe\u00f3r": true,
         "pe\u00f3rhoz": true,
@@ -19560,6 +19770,7 @@
         "potom": true,
         "pozdor": true,
         "pozdorja": true,
+        "pr": true,
         "presbiter": true,
         "presbiterek": true,
         "presbit\u00e9rium": true,
@@ -19648,6 +19859,7 @@
         "pulya": true,
         "purim": true,
         "pur\u00e1val": true,
+        "puszt": true,
         "puszta": true,
         "pusztai": true,
         "pusztas\u00e1g": true,
@@ -19861,6 +20073,8 @@
         "p\u00fcsp\u00f6k": true,
         "p\u00fcsp\u00f6ks\u00e9g": true,
         "p\u0151re": true,
+        "q": true,
+        "r": true,
         "raamj\u00e1val": true,
         "rab": true,
         "rabbi": true,
@@ -19897,6 +20111,7 @@
         "ragadd": true,
         "ragadja": true,
         "ragadjon": true,
+        "ragadj\u00e1k": true,
         "ragadj\u00e1tok": true,
         "ragadoz": true,
         "ragadoz\u00f3": true,
@@ -19974,6 +20189,7 @@
         "ramszeszb\u0151l": true,
         "rang": true,
         "rangos": true,
+        "rangsor": true,
         "rang\u00fa": true,
         "ravasz": true,
         "ravaszabb": true,
@@ -20138,6 +20354,7 @@
         "rend\u00edthetetlen": true,
         "rend\u00fcl": true,
         "rend\u00fcletlen": true,
+        "rend\u00fcletlen\u00fcl": true,
         "rend\u00fclj\u00f6n": true,
         "rend\u0151r": true,
         "rend\u0171": true,
@@ -20384,6 +20601,7 @@
         "rugalmas": true,
         "rugaszkodik": true,
         "rugdal": true,
+        "rugdalt\u00e1tok": true,
         "rugdal\u00f3dzik": true,
         "rugdal\u00f3zik": true,
         "rug\u00f3": true,
@@ -20464,6 +20682,7 @@
         "r\u00e1hel": true,
         "r\u00e1helt": true,
         "r\u00e1h\u00e1b": true,
+        "r\u00e1illesztette": true,
         "r\u00e1ja": true,
         "r\u00e1juk": true,
         "r\u00e1k": true,
@@ -20507,6 +20726,7 @@
         "r\u00e1szedt\u00e9l": true,
         "r\u00e1szed\u00e9s": true,
         "r\u00e1szorult": true,
+        "r\u00e1szorultak": true,
         "r\u00e1sz\u00e1llott": true,
         "r\u00e1sz\u00e1ntam": true,
         "r\u00e1tal\u00e1l": true,
@@ -20865,6 +21085,7 @@
         "sef\u00e1mt\u00f3l": true,
         "sef\u00e9l\u00e1": true,
         "sef\u00f3": true,
+        "seg": true,
         "segedelem": true,
         "seg\u00e9d": true,
         "seg\u00e9dcsapatnak": true,
@@ -20872,6 +21093,8 @@
         "seg\u00e9dkezzenek": true,
         "seg\u00e9l": true,
         "seg\u00e9ly": true,
+        "seg\u00e9lyki\u00e1lt\u00e1s": true,
+        "seg\u00e9lyk\u00e9r\u00e9s": true,
         "seg\u00edt": true,
         "seg\u00edtene": true,
         "seg\u00edteni": true,
@@ -21157,6 +21380,7 @@
         "sokas\u00e1gb\u00f3l": true,
         "sokas\u00e1ggal": true,
         "sokas\u00e1got": true,
+        "sokas\u00e1g\u00e1t\u00f3l": true,
         "sokas\u00edt": true,
         "sokat": true,
         "sokfajta": true,
@@ -21233,6 +21457,7 @@
         "sugall": true,
         "sugallat": true,
         "sugalmaz": true,
+        "sugarai": true,
         "sugdol\u00f3zik": true,
         "sugdos": true,
         "sug\u00e1r": true,
@@ -21251,6 +21476,7 @@
         "suttog": true,
         "suttognak": true,
         "suttog\u00f3": true,
+        "sz": true,
         "szab": true,
         "szabad": true,
         "szabadban": true,
@@ -21340,6 +21566,7 @@
         "szaladg\u00e1l": true,
         "szaladj": true,
         "szaladt": true,
+        "szaladtak": true,
         "szalag": true,
         "szalamandra": true,
         "szalaszt": true,
@@ -21379,6 +21606,7 @@
         "szanasz\u00e9t": true,
         "szanballat": true,
         "szanballatnak": true,
+        "szanherib": true,
         "szanh\u00e9rib": true,
         "szapora": true,
         "szaporodik": true,
@@ -21527,6 +21755,7 @@
         "szellemek": true,
         "szellemet": true,
         "szellemi": true,
+        "szellem\u00e9vel": true,
         "szell\u0151": true,
         "szell\u0151s": true,
         "szel\u00e9n": true,
@@ -21686,6 +21915,7 @@
         "szent\u00e9lyemet": true,
         "szent\u00e9lyemn\u00e9l": true,
         "szent\u00e9lyn\u00e9l": true,
+        "szent\u00e9lyre": true,
         "szent\u00e9ly\u00e9be": true,
         "szent\u00e9ly\u00e9rt": true,
         "szent\u00e9ly\u00e9t": true,
@@ -21810,6 +22040,7 @@
         "szerkeszt": true,
         "szerkesztet": true,
         "szerkezet": true,
+        "szerkezet\u00fck": true,
         "szerk\u00e9z": true,
         "szersz\u00e1m": true,
         "szersz\u00e1mai": true,
@@ -21839,6 +22070,7 @@
         "szerz\u0151d\u00e9s": true,
         "szerz\u0151d\u00e9st": true,
         "szerz\u0151je": true,
+        "szerz\u0151j\u00e9re": true,
         "szer\u00e1f": true,
         "szer\u00e1j": true,
         "szer\u00e1j\u00e1": true,
@@ -21860,6 +22092,7 @@
         "szidalmazt\u00e1k": true,
         "szidalom": true,
         "szidd\u00edm": true,
+        "szidoniak": true,
         "szid\u00f3n": true,
         "szid\u00f3ni": true,
         "szid\u00f3niak": true,
@@ -21965,6 +22198,7 @@
         "szokott": true,
         "szokta": true,
         "szoktak": true,
+        "szoktass\u00e1tok": true,
         "szoktat": true,
         "szokt\u00e1k": true,
         "szok\u00e1s": true,
@@ -22074,6 +22308,7 @@
         "szombat": true,
         "szombati": true,
         "szombatja": true,
+        "szombatjain": true,
         "szombaton": true,
         "szombatonk\u00e9nt": true,
         "szombatra": true,
@@ -22276,6 +22511,7 @@
         "sz\u00e1nd\u00e9kosan": true,
         "sz\u00e1nd\u00e9kot": true,
         "sz\u00e1nd\u00e9kotok": true,
+        "sz\u00e1nd\u00e9kotokat": true,
         "sz\u00e1nd\u00e9kozik": true,
         "sz\u00e1nd\u00e9kuk": true,
         "sz\u00e1nd\u00e9k\u00e1t": true,
@@ -22343,6 +22579,7 @@
         "sz\u00e1rny\u00e1t": true,
         "sz\u00e1rny\u00e1val": true,
         "sz\u00e1rny\u00fa": true,
+        "sz\u00e1rt\u00e1na": true,
         "sz\u00e1r\u00e1f": true,
         "sz\u00e1r\u00edt": true,
         "sz\u00e1r\u00edtott": true,
@@ -22512,6 +22749,7 @@
         "sz\u00edh\u00f3nnal": true,
         "sz\u00edh\u00f3nt": true,
         "sz\u00edj": true,
+        "sz\u00edjjal": true,
         "sz\u00edn": true,
         "sz\u00ednarannyal": true,
         "sz\u00ednarany": true,
@@ -22969,6 +23207,7 @@
         "s\u00e9rtetlen": true,
         "s\u00e9rtett": true,
         "s\u00e9rthetetlen": true,
+        "s\u00e9rt\u0151": true,
         "s\u00e9rv": true,
         "s\u00e9r\u00e9bj\u00e1": true,
         "s\u00e9r\u00e9bj\u00e1t": true,
@@ -23010,6 +23249,7 @@
         "s\u00edrg\u00f6d\u00f6r": true,
         "s\u00edrhely": true,
         "s\u00edrhelyet": true,
+        "s\u00edrhoz": true,
         "s\u00edrjatok": true,
         "s\u00edrj\u00e1ba": true,
         "s\u00edrj\u00e1n\u00e1l": true,
@@ -23164,6 +23404,7 @@
         "tagadjalak": true,
         "tagja": true,
         "tagjai": true,
+        "tagjainknak": true,
         "tagjaitokat": true,
         "tagjaitokban": true,
         "tagj\u00e1t": true,
@@ -23324,6 +23565,7 @@
         "tan\u00edtv\u00e1nyhoz": true,
         "tan\u00edtv\u00e1nyok": true,
         "tan\u00edtv\u00e1nyokat": true,
+        "tan\u00edtv\u00e1nyoknak": true,
         "tan\u00edtv\u00e1ny\u00e1t": true,
         "tan\u00edt\u00e1s": true,
         "tan\u00edt\u00e1sa": true,
@@ -23337,6 +23579,7 @@
         "tan\u00edt\u00f3ja": true,
         "tan\u00edt\u00f3k": true,
         "tan\u00edt\u00f3kk\u00e1": true,
+        "tan\u00edt\u00f3knak": true,
         "tan\u00edt\u00f3mn\u00e1l": true,
         "tan\u00fa": true,
         "tan\u00fabizonys\u00e1g": true,
@@ -23371,6 +23614,7 @@
         "tapasztalatlan": true,
         "tapasztalt": true,
         "tapint": true,
+        "tapintat": true,
         "tapintatlan": true,
         "tapod": true,
         "tapogat": true,
@@ -23480,7 +23724,9 @@
         "tart\u00f3zkod\u00f3": true,
         "tart\u00f3ztass\u00e1tok": true,
         "tart\u00f3ztat": true,
+        "tarzusz": true,
         "tarzuszban": true,
+        "tasz": true,
         "taszig\u00e1l": true,
         "tasz\u00edt": true,
         "tasz\u00edtod": true,
@@ -23496,6 +23742,7 @@
         "tavasz": true,
         "tavaszi": true,
         "te": true,
+        "tebb\u00e1tn\u00e1l": true,
         "tedd": true,
         "teel\u0151tted": true,
         "tegez": true,
@@ -23524,6 +23771,7 @@
         "teherhord\u00f3t": true,
         "tehetek": true,
         "tehetetlen": true,
+        "tehetetlens": true,
         "tehetetlens\u00e9g": true,
         "tehetett": true,
         "teheti": true,
@@ -23571,6 +23819,7 @@
         "tekints": true,
         "tekintsd": true,
         "tekintsetek": true,
+        "tekints\u00fcnk": true,
         "tekintve": true,
         "tekint\u00e9ly": true,
         "tekint\u00e9lyes": true,
@@ -23606,8 +23855,10 @@
         "teljes": true,
         "teljesedik": true,
         "teljesedni": true,
+        "teljesednie": true,
         "teljesen": true,
         "teljess\u00e9": true,
+        "teljess\u00e9gre": true,
         "teljess\u00e9g\u00e9nek": true,
         "teljes\u00edt": true,
         "teljes\u00edted": true,
@@ -24085,6 +24336,7 @@
         "tiszteletrem\u00e9lt\u00f3": true,
         "tiszteletteljes": true,
         "tisztelet\u00e9re": true,
+        "tiszteli": true,
         "tisztelik": true,
         "tisztelitek": true,
         "tisztelj\u00fck": true,
@@ -24097,6 +24349,7 @@
         "tisztes": true,
         "tisztess\u00e9g": true,
         "tisztess\u00e9ges": true,
+        "tisztess\u00e9gesen": true,
         "tisztess\u00e9gtelen": true,
         "tisztess\u00e9gtud\u00f3": true,
         "tisztet": true,
@@ -24302,6 +24555,7 @@
         "tov\u00e1bb\u00e1": true,
         "tov\u00e1bb\u00edt": true,
         "trakh\u00f3nitisz": true,
+        "trif\u00f3n": true,
         "troglodita": true,
         "trombita": true,
         "trombitaharsog\u00e1s": true,
@@ -24330,12 +24584,14 @@
         "tr\u00f3nol\u00f3": true,
         "tr\u00f3nomat": true,
         "tr\u00f3non": true,
+        "tr\u00f3nra": true,
         "tr\u00f3ntermet": true,
         "tr\u00f3nus": true,
         "tr\u00f3nusom": true,
         "tr\u00f3\u00e1szban": true,
         "tud": true,
         "tudakol": true,
+        "tudakol\u00f3t": true,
         "tudakoz": true,
         "tudakozik": true,
         "tudakoz\u00f3dik": true,
@@ -24534,6 +24790,7 @@
         "t\u00e1ntor\u00edt": true,
         "t\u00e1ntor\u00edthatatlan": true,
         "t\u00e1ny\u00e9r": true,
+        "t\u00e1n\u00e1k": true,
         "t\u00e1pl\u00e1l": true,
         "t\u00e1pl\u00e1lkozik": true,
         "t\u00e1pl\u00e1lkozol": true,
@@ -24646,6 +24903,7 @@
         "t\u00e9rdre": true,
         "t\u00e9rd\u00e9n": true,
         "t\u00e9rd\u00fck\u00f6n": true,
+        "t\u00e9rek": true,
         "t\u00e9ren": true,
         "t\u00e9res": true,
         "t\u00e9rhetnek": true,
@@ -24718,8 +24976,10 @@
         "t\u00edzparancsolat": true,
         "t\u00edzszer": true,
         "t\u00f3": true,
+        "t\u00f3biel": true,
         "t\u00f3bijj\u00e1": true,
         "t\u00f3bijj\u00e1nak": true,
+        "t\u00f3bit": true,
         "t\u00f3b\u00f3l": true,
         "t\u00f3csa": true,
         "t\u00f3dul": true,
@@ -24780,7 +25040,9 @@
         "t\u00f6m": true,
         "t\u00f6mb": true,
         "t\u00f6meg": true,
+        "t\u00f6megb\u0151l": true,
         "t\u00f6meges": true,
+        "t\u00f6meget": true,
         "t\u00f6megt\u0151l": true,
         "t\u00f6meg\u00e9t": true,
         "t\u00f6met": true,
@@ -24875,6 +25137,7 @@
         "t\u00f6rt\u00e9nt": true,
         "t\u00f6rt\u00e9nte": true,
         "t\u00f6rt\u00e9ntek": true,
+        "t\u00f6rt\u00e9nteken": true,
         "t\u00f6rt\u00e9n\u0151": true,
         "t\u00f6rv\u00e9ny": true,
         "t\u00f6rv\u00e9nyad\u00f3": true,
@@ -25138,6 +25401,7 @@
         "ugr\u00e1l": true,
         "ugr\u00e1lva": true,
         "ugr\u00e1ndozik": true,
+        "ugr\u00e1ndoztok": true,
         "ugr\u00f3": true,
         "ugyan": true,
         "ugyanabba": true,
@@ -25217,6 +25481,7 @@
         "untig": true,
         "ura": true,
         "urad": true,
+        "uradat": true,
         "uradhoz": true,
         "urai": true,
         "uraik": true,
@@ -25255,6 +25520,7 @@
         "uras\u00e1g": true,
         "urat": true,
         "uratok": true,
+        "urim": true,
         "urna": true,
         "uruk": true,
         "urukhoz": true,
@@ -25270,6 +25536,7 @@
         "uszony": true,
         "usz\u00e1ly": true,
         "usz\u00edt": true,
+        "ut": true,
         "utadat": true,
         "utadon": true,
         "utaid": true,
@@ -25424,6 +25691,7 @@
         "vagyon": true,
         "vagyona": true,
         "vagyonodat": true,
+        "vagyonom": true,
         "vagyonomat": true,
         "vagyonos": true,
         "vagyonotokat": true,
@@ -25493,6 +25761,7 @@
         "valamennyit": true,
         "valamerre": true,
         "valami": true,
+        "valamiben": true,
         "valamif\u00e9le": true,
         "valamikor": true,
         "valamik\u00e9ppen": true,
@@ -25510,6 +25779,7 @@
         "valld": true,
         "vallj": true,
         "valljunk": true,
+        "vallom": true,
         "vallom\u00e1s": true,
         "vallott": true,
         "vallottad": true,
@@ -25603,6 +25873,7 @@
         "vej": true,
         "veje": true,
         "vej\u00e9nek": true,
+        "vel": true,
         "vele": true,
         "veled": true,
         "velem": true,
@@ -25968,6 +26239,7 @@
         "virradatkor": true,
         "virradatra": true,
         "virradatt\u00f3l": true,
+        "virrad\u00f3ra": true,
         "virraszt": true,
         "virraszt\u00e1sban": true,
         "virul": true,
@@ -26482,6 +26754,7 @@
         "v\u00e1rosszerte": true,
         "v\u00e1rost": true,
         "v\u00e1rost\u00f3l": true,
+        "v\u00e1rosukat": true,
         "v\u00e1ros\u00e1ba": true,
         "v\u00e1ros\u00e1ban": true,
         "v\u00e1ros\u00e1b\u00f3l": true,
@@ -26624,6 +26897,7 @@
         "v\u00e9gz\u00e9s\u00e9t": true,
         "v\u00e9gz\u0151": true,
         "v\u00e9gz\u0151dik": true,
+        "v\u00e9gz\u0151dnek": true,
         "v\u00e9g\u00e9ig": true,
         "v\u00e9g\u00e9n": true,
         "v\u00e9g\u00e9n\u00e9l": true,
@@ -26811,6 +27085,7 @@
         "v\u00edgan": true,
         "v\u00edv": true,
         "v\u00edvat": true,
+        "v\u00edvott": true,
         "v\u00edv\u00f3": true,
         "v\u00edv\u00f3dik": true,
         "v\u00edz": true,
@@ -26887,6 +27162,7 @@
         "zaav\u00e1n": true,
         "zab": true,
         "zaba": true,
+        "zabdiel": true,
         "zabd\u00ed": true,
         "zabla": true,
         "zabola": true,
@@ -26904,7 +27180,9 @@
         "zajong": true,
         "zajong\u00e1s": true,
         "zajos": true,
+        "zakari\u00e1s": true,
         "zakari\u00e1snak": true,
+        "zakeus": true,
         "zakk\u00far": true,
         "zaklat": true,
         "zaklatta": true,
@@ -26988,6 +27266,7 @@
         "zord": true,
         "zordon": true,
         "zr\u00ed": true,
+        "zs": true,
         "zsarnok": true,
         "zsarnokoskodik": true,
         "zsarnoks\u00e1g": true,
@@ -27032,6 +27311,7 @@
         "zsoldjukba": true,
         "zsoldos": true,
         "zsoldosai": true,
+        "zsolt": true,
         "zsolt\u00e1r": true,
         "zsolt\u00e1ra": true,
         "zsolt\u00e1r\u00e9neke": true,
@@ -27242,8 +27522,10 @@
         "\u00e1gy\u00e1ban": true,
         "\u00e1gy\u00e9k": true,
         "\u00e1gy\u00e9kk\u00f6t\u0151": true,
+        "\u00e1g\u00e1g": true,
         "\u00e1g\u00e1l": true,
         "\u00e1g\u00e1n": true,
+        "\u00e1hilud": true,
         "\u00e1h\u00e1z": true,
         "\u00e1h\u00e1znak": true,
         "\u00e1h\u00edt": true,
@@ -27280,6 +27562,7 @@
         "\u00e1ldozataidat": true,
         "\u00e1ldozataik": true,
         "\u00e1ldozataitokat": true,
+        "\u00e1ldozataitokon": true,
         "\u00e1ldozatak\u00e9nt": true,
         "\u00e1ldozatb\u00f3l": true,
         "\u00e1ldozati": true,
@@ -27484,6 +27767,7 @@
         "\u00e1mulatba": true,
         "\u00e1muldozik": true,
         "\u00e1muljatok": true,
+        "\u00e1m\u00e1n": true,
         "\u00e1m\u00edt": true,
         "\u00e1m\u00edt\u00f3k": true,
         "\u00e1m\u00f3k": true,
@@ -27624,6 +27908,7 @@
         "\u00e1tdolgoz\u00f3": true,
         "\u00e1tellenben": true,
         "\u00e1tellen\u00e9ben": true,
+        "\u00e1tengedem": true,
         "\u00e1tenged\u00e9s": true,
         "\u00e1tfog\u00f3": true,
         "\u00e1thalad": true,
@@ -27645,6 +27930,7 @@
         "\u00e1tkelve": true,
         "\u00e1tkel\u00e9s": true,
         "\u00e1tkel\u0151hely": true,
+        "\u00e1tki\u00e1ltott": true,
         "\u00e1tkokat": true,
         "\u00e1tkot": true,
         "\u00e1tkoz": true,
@@ -27661,6 +27947,7 @@
         "\u00e1tk\u00f6t\u0151": true,
         "\u00e1tl\u00e1thatatlan": true,
         "\u00e1tl\u00e1tsz\u00f3": true,
+        "\u00e1tl\u00e1tta": true,
         "\u00e1tmegy": true,
         "\u00e1tmenet": true,
         "\u00e1tmeneti": true,
@@ -27863,6 +28150,7 @@
         "\u00e9latot": true,
         "\u00e9lcsapat": true,
         "\u00e9ldeg\u00e9l": true,
+        "\u00e9le": true,
         "\u00e9led": true,
         "\u00e9lelem": true,
         "\u00e9lelemre": true,
@@ -27892,6 +28180,7 @@
         "\u00e9leter\u0151": true,
         "\u00e9leter\u0151s": true,
         "\u00e9letet": true,
+        "\u00e9letetek": true,
         "\u00e9letfa": true,
         "\u00e9letforma": true,
         "\u00e9lethossziglan": true,
@@ -28091,6 +28380,7 @@
         "\u00e9rintheti": true,
         "\u00e9rinti": true,
         "\u00e9rintkezik": true,
+        "\u00e9rintse": true,
         "\u00e9rints\u00e9tek": true,
         "\u00e9rintve": true,
         "\u00e9rint\u0151": true,
@@ -28522,6 +28812,7 @@
         "\u00f6lt\u00f6zet\u00e9t": true,
         "\u00f6lt\u00f6zik": true,
         "\u00f6lt\u00f6zk\u00f6dik": true,
+        "\u00f6lt\u00f6zk\u00f6d\u00f6tt": true,
         "\u00f6lt\u00f6znek": true,
         "\u00f6lt\u00f6ztek": true,
         "\u00f6lt\u00f6ztesd": true,
@@ -28529,6 +28820,7 @@
         "\u00f6lt\u00f6ztet": true,
         "\u00f6lt\u00f6ztetett": true,
         "\u00f6lt\u00f6ztettelek": true,
+        "\u00f6lt\u00f6ztettetek": true,
         "\u00f6lt\u00f6zt\u00e9l": true,
         "\u00f6lt\u00f6zve": true,
         "\u00f6lt\u00f6zz": true,
@@ -28566,6 +28858,7 @@
         "\u00f6nmagukat": true,
         "\u00f6nmagukhoz": true,
         "\u00f6nmag\u00e1ra": true,
+        "\u00f6nmag\u00e1t": true,
         "\u00f6nmag\u00e1val": true,
         "\u00f6nmegtagad\u00e1s": true,
         "\u00f6nmegtart\u00f3ztat\u00e1s": true,
@@ -28886,6 +29179,7 @@
         "\u00f6vez": true,
         "\u00f6vezd": true,
         "\u00f6vgerenda": true,
+        "\u00f6vvel": true,
         "\u00f6v\u00e9": true,
         "\u00f6v\u00e9k": true,
         "\u00f6v\u00e9t": true,
@@ -28899,6 +29193,7 @@
         "\u00f6zvegyen": true,
         "\u00f6zvegyet": true,
         "\u00f6zvegyi": true,
+        "\u00f6zvegyre": true,
         "\u00f6zvegys\u00e9g": true,
         "\u00f6zvegy\u00e9t": true,
         "\u00f6z\u00f6n": true,
@@ -29143,6 +29438,7 @@
         "\u00fcnneps\u00e9g": true,
         "\u00fcnnep\u00e9ly": true,
         "\u00fcnnep\u00e9lyes": true,
+        "\u00fcnnep\u00e9nek": true,
         "\u00fcnnep\u00e9t": true,
         "\u00fcn\u0151": true,
         "\u00fcreg": true,
@@ -29256,6 +29552,7 @@
         "\u0151rz\u0151j\u00e9nek": true,
         "\u0151r\u00e1": true,
         "\u0151r\u00e1ll\u00f3": true,
+        "\u0151r\u00e1ll\u00f3nak": true,
         "\u0151r\u00e9hez": true,
         "\u0151r\u00f6k": true,
         "\u0151r\u00f6ket": true,
@@ -29531,6 +29828,7 @@
     "abironnal": [],
     "abiront": [],
     "abir\u00e1m": [],
+    "abir\u00e1mhoz": [],
     "abir\u00e1mmal": [],
     "abir\u00e1mnak": [],
     "abir\u00e1mot": [],
@@ -29658,6 +29956,7 @@
         "ablak"
     ],
     "abner": [],
+    "abnerhez": [],
     "abnernak": [],
     "abnernek": [],
     "abnerra": [],
@@ -30469,6 +30768,9 @@
     "adom\u00e1nyaival": [
         "adom\u00e1ny"
     ],
+    "adom\u00e1nyai\u00e9rt": [
+        "vallom"
+    ],
     "adom\u00e1nyban": [
         "adom\u00e1ny"
     ],
@@ -30598,6 +30900,9 @@
     "adom\u00e1ny\u00e1val": [
         "adom\u00e1ny"
     ],
+    "adom\u00e1ny\u00e1\u00e9rt": [
+        "t"
+    ],
     "adoni": [],
     "adonibezek": [],
     "adonibezeket": [],
@@ -30697,6 +31002,7 @@
         "ad"
     ],
     "adu": [],
+    "aduel": [],
     "aduel\u00e9": [],
     "adullam": [],
     "adullamban": [],
@@ -30734,6 +31040,9 @@
     "ad\u00e1l": [],
     "ad\u00e1lak": [],
     "ad\u00e1li": [],
+    "ad\u00e1lia": [
+        "vel"
+    ],
     "ad\u00e1li\u00e1t": [],
     "ad\u00e1m": [],
     "ad\u00e1ma": [],
@@ -34019,6 +34328,9 @@
     "alam\u00e1tot": [],
     "alant": [],
     "alantas": [],
+    "alantasabb": [
+        "mulatozik"
+    ],
     "alap": [],
     "alapanyagokat": [
         "alapanyag"
@@ -35526,6 +35838,7 @@
     "al\u00e1tekintett": [
         "tekint"
     ],
+    "al\u00e1tett\u00e9k": [],
     "al\u00e1val\u00f3": [],
     "al\u00e1val\u00f3an": [
         "al\u00e1val\u00f3"
@@ -35943,6 +36256,7 @@
     "amci": [],
     "amc\u00ed": [],
     "amdata": [],
+    "amd\u00e1ti": [],
     "ameadot": [],
     "ameddig": [],
     "amekkora": [],
@@ -36723,6 +37037,10 @@
     "antiochusszal": [],
     "antiochusz": [],
     "antiochuszt": [],
+    "antiokhosz": [],
+    "antiokhosznak": [],
+    "antiokhoszt": [],
+    "antiokhoszt\u00f3l": [],
     "antipater": [],
     "antipatert": [],
     "antipatrisba": [],
@@ -36745,10 +37063,12 @@
     "anti\u00f3choszt\u00f3l": [],
     "anti\u00f3khia": [],
     "anti\u00f3khiai": [],
+    "anti\u00f3khisznak": [],
     "anti\u00f3khi\u00e1ba": [],
     "anti\u00f3khi\u00e1ban": [],
     "anti\u00f3khi\u00e1b\u00f3l": [],
     "anti\u00f3khi\u00e1ig": [],
+    "anti\u00f3khi\u00e1t": [],
     "antotia": [],
     "ant\u00f3tijj\u00e1": [],
     "anubot": [],
@@ -37229,6 +37549,9 @@
     ],
     "apj\u00e1\u00e9val": [
         "apa"
+    ],
+    "apokalipszise": [
+        "apokalipszis"
     ],
     "apollion": [],
     "apolli\u00f3n": [],
@@ -38412,6 +38735,10 @@
         "arany",
         "szab\u00e1ly"
     ],
+    "aranyszab\u00e1lyok": [
+        "tapintat",
+        "tapint"
+    ],
     "aranyszegekkel": [
         "arany",
         "szeg"
@@ -39305,6 +39632,9 @@
     "artemisz": [],
     "artemisze": [],
     "artemisznek": [],
+    "artemiszt": [
+        "h"
+    ],
     "artem\u00e1szt": [],
     "arubbotban": [],
     "arubb\u00f3tban": [],
@@ -41560,6 +41890,7 @@
     "baeljada": [],
     "bagat\u00e1n": [],
     "bagat\u00e1nak": [],
+    "bagat\u00e1val": [],
     "baglyok": [
         "bagoly"
     ],
@@ -42875,6 +43206,9 @@
     ],
     "bar\u00e1tokat": [
         "bar\u00e1t"
+    ],
+    "bar\u00e1tokban": [
+        "vita"
     ],
     "bar\u00e1tokk\u00e1": [
         "bar\u00e1t"
@@ -44344,6 +44678,9 @@
     "begy\u00f3gyult": [
         "gy\u00f3gyul"
     ],
+    "begy\u00f3gy\u00edt\u00e1sa": [
+        "gy"
+    ],
     "begy\u00fclt": [],
     "begy\u0171jtesz": [
         "gy\u0171jt"
@@ -45350,6 +45687,9 @@
     ],
     "bek\u00f6t\u0151": [
         "k\u00f6t"
+    ],
+    "bek\u00f6t\u0151utakra": [
+        "puszt"
     ],
     "bek\u00f6veteli": [
         "k\u00f6vetel"
@@ -48601,6 +48941,9 @@
     "betarts\u00e1k": [
         "tart"
     ],
+    "betart\u00e1sa": [
+        "el"
+    ],
     "betasbeai": [],
     "betasz\u00edt": [
         "tasz\u00edt"
@@ -48958,6 +49301,7 @@
     "beteljesed\u00e9sekor": [
         "teljesedik"
     ],
+    "beteljesed\u00e9sre": [],
     "beteljesed\u00e9st": [
         "teljesedik"
     ],
@@ -49247,6 +49591,9 @@
     "betszaid\u00e1nak": [],
     "betszaid\u00e1val": [],
     "betudni": [
+        "tud"
+    ],
+    "betudta": [
         "tud"
     ],
     "betuel": [],
@@ -50035,6 +50382,9 @@
     "bev\u00e1dolta": [
         "v\u00e1dol"
     ],
+    "bev\u00e1doltak": [
+        "k"
+    ],
     "bev\u00e1doltat\u00e9k": [],
     "bev\u00e1dolt\u00e1k": [
         "v\u00e1dol"
@@ -50345,6 +50695,7 @@
         "\u00e1llta"
     ],
     "be\u00e1ll\u00edta": [],
+    "be\u00e1ll\u00edtalak": [],
     "be\u00e1ll\u00edtlak": [
         "\u00e1ll\u00edt"
     ],
@@ -50763,6 +51114,9 @@
     ],
     "bilincseket": [
         "bilincs"
+    ],
+    "bilincsekig": [
+        "munka"
     ],
     "bilincsekkel": [
         "bilincs"
@@ -51559,6 +51913,12 @@
     ],
     "bizalomra": [
         "bizalom"
+    ],
+    "bizalomr\u00f3l": [
+        "k"
+    ],
+    "bizalomteli": [
+        "bilincs"
     ],
     "bizjotheja": [],
     "bizjotja": [],
@@ -52900,6 +53260,9 @@
     "boldogs\u00e1g\u00e1t": [
         "boldogs\u00e1g",
         "boldog"
+    ],
+    "boldogs\u00e1g\u00e1\u00e9rt": [
+        "v"
     ],
     "boldogtalan": [],
     "boldogtalanok": [
@@ -55851,6 +56214,9 @@
     ],
     "b\u00e1lv\u00e1nyim\u00e1d\u00f3nak": [
         "b\u00e1lv\u00e1nyim\u00e1d\u00f3"
+    ],
+    "b\u00e1lv\u00e1nyim\u00e1d\u00f3r\u00f3l": [
+        "hatalmaskodik"
     ],
     "b\u00e1lv\u00e1nyim\u00e1d\u00f3v\u00e1": [
         "b\u00e1lv\u00e1nyim\u00e1d\u00f3"
@@ -59910,6 +60276,9 @@
     "b\u00fabj\u00e1ig": [
         "b\u00fab"
     ],
+    "b\u00fabj\u00e1n": [
+        "b"
+    ],
     "b\u00fabos": [
         "b\u00fab"
     ],
@@ -59931,6 +60300,9 @@
     ],
     "b\u00facs\u00fat": [
         "b\u00facs\u00fa"
+    ],
+    "b\u00facs\u00favacsora": [
+        "p"
     ],
     "b\u00facs\u00fazkod\u00e1s": [
         "b\u00facs\u00fazkodik"
@@ -60006,6 +60378,9 @@
     ],
     "b\u00faslakodnak": [
         "b\u00faslakodik"
+    ],
+    "b\u00fasongani": [
+        "b"
     ],
     "b\u00fasul": [
         "b\u00fas",
@@ -61061,6 +61436,9 @@
     "b\u0171nbocs\u00e1natot": [
         "b\u0171nbocs\u00e1nat"
     ],
+    "b\u0171nbocs\u00e1nat\u00e9rt": [
+        "gy"
+    ],
     "b\u0171nbocs\u00e1t\u00f3": [
         "b\u0171n",
         "bocs\u00e1t\u00f3",
@@ -61998,10 +62376,17 @@
     "cidkij\u00e1t": [],
     "cidkij\u00e1val": [],
     "cif": [],
+    "cifa": [],
+    "cifbe": [],
+    "cifbeliek": [],
+    "cifet": [
+        "cint"
+    ],
     "cifit\u00e1k": [],
     "cifjonit\u00e1k": [],
     "cifjont\u00f3l": [],
     "cifj\u00f3n": [],
+    "cifnek": [],
     "cifras\u00e1gokat": [
         "cifra"
     ],
@@ -62086,6 +62471,9 @@
     ],
     "cint\u00e1ny\u00e9rokkal": [
         "cint\u00e1ny\u00e9r"
+    ],
+    "cint\u00e1ny\u00e9rokon": [
+        "dics"
     ],
     "cint\u00e1ny\u00e9rokra": [
         "cint\u00e1ny\u00e9r"
@@ -62638,6 +63026,12 @@
         "csal\u00e1d"
     ],
     "csal\u00e1dfa": [],
+    "csal\u00e1df\u00e1i": [
+        "kisgyermek"
+    ],
+    "csal\u00e1df\u00e1inak": [
+        "csal"
+    ],
     "csal\u00e1df\u00e1ja": [
         "csal\u00e1dfa"
     ],
@@ -64442,6 +64836,9 @@
     "cselekedhess\u00e9tek": [
         "cselekedik"
     ],
+    "cselekedhess\u00fcnk": [
+        "cselekedik"
+    ],
     "cselekedhet": [
         "cselekedik"
     ],
@@ -65994,6 +66391,9 @@
     "csodatettedet": [
         "csoda",
         "tett"
+    ],
+    "csodatettei": [
+        "l"
     ],
     "csodatetteid": [
         "csoda",
@@ -68237,6 +68637,9 @@
     ],
     "c\u00e1f\u00f3n": [],
     "c\u00e1l\u00e1f": [],
+    "c\u00e1reft\u00e1ba": [],
+    "c\u00e1reft\u00e1ban": [],
+    "c\u00e1reft\u00e1j\u00e1ba": [],
     "c\u00e1ret\u00e1n": [],
     "c\u00e1rt\u00e1n": [],
     "c\u00e1\u00edrba": [],
@@ -69489,6 +69892,7 @@
     "deszk\u00e1zattal": [
         "deszk\u00e1zat"
     ],
+    "deuteroizaj\u00e1s": [],
     "deuteronomium": [],
     "de\u00fa\u00e9l": [],
     "di": [],
@@ -70048,6 +70452,7 @@
     "dics\u00e9ret\u00e9t": [
         "dics\u00e9ret"
     ],
+    "dics\u00e9ret\u00e9vel": [],
     "dics\u00e9ret\u00fcket": [
         "dics\u00e9ret"
     ],
@@ -70667,6 +71072,7 @@
     "din\u00e1t": [],
     "dion\u00edsziosz": [],
     "dion\u00edziosz": [],
+    "dion\u00fcszosz": [],
     "dion\u00fcszosznak": [],
     "dion\u00fczoszi": [],
     "dioszkorosz": [],
@@ -70696,6 +71102,7 @@
         "diszn\u00f3",
         "csorda"
     ],
+    "diszn\u00f3h\u00fas": [],
     "diszn\u00f3h\u00fast": [
         "diszn\u00f3h\u00fas"
     ],
@@ -72204,6 +72611,9 @@
     ],
     "d\u00e9mont": [
         "d\u00e9mon"
+    ],
+    "d\u00e9mon\u0171z\u00e9sek": [
+        "bek"
     ],
     "d\u00e9m\u00e1s": [],
     "d\u00e9m\u00e1sz": [],
@@ -73749,6 +74159,7 @@
     "ef\u00e1nak": [],
     "ef\u00e1nk\u00e9nt": [],
     "ef\u00e1nyit": [],
+    "ef\u00e1ra": [],
     "ef\u00e1t": [],
     "ef\u00e9l\u00e9b\u0151l": [],
     "ef\u00e9zus": [],
@@ -74093,6 +74504,7 @@
         "gy\u0171lik"
     ],
     "egybegy\u0171l\u00e9stek": [],
+    "egybegy\u0171l\u00e9s\u00fcnket": [],
     "egybegy\u0171l\u00e9s\u00fcnkre": [
         "gy\u0171l",
         "gy\u0171lik"
@@ -74947,6 +75359,9 @@
     "egyh\u00e1z\u00fcld\u00f6z\u00e9s": [
         "egyh\u00e1z",
         "\u00fcld\u00f6z"
+    ],
+    "egyh\u00e1z\u00fcld\u00f6z\u00e9se": [
+        "bizalomteli"
     ],
     "egyh\u00f3napos": [],
     "egyh\u00f3naposok": [],
@@ -77067,6 +77482,9 @@
     ],
     "elcsod\u00e1lkoztam": [
         "csod\u00e1lkozik"
+    ],
+    "elcsod\u00e1lkozva": [
+        "tan"
     ],
     "elcsod\u00e1lkoz\u00e1nak": [],
     "elcsod\u00e1lkoz\u00e9k": [],
@@ -79757,6 +80175,9 @@
     "elhalt": [
         "hal"
     ],
+    "elhaltt\u00f3l": [
+        "k"
+    ],
     "elhalv\u00e1nyodott": [
         "halv\u00e1nyodik"
     ],
@@ -79905,6 +80326,9 @@
     ],
     "elhatott": [
         "hat"
+    ],
+    "elhat\u00e1rol\u00f3d\u00e1s": [
+        "h"
     ],
     "elhat\u00e1roz": [
         "hat\u00e1roz",
@@ -80709,6 +81133,9 @@
     "elh\u00edvassa": [
         "h\u00edv",
         "h\u00edvat"
+    ],
+    "elh\u00edvassalak": [
+        "h"
     ],
     "elh\u00edvatott": [
         "h\u00edv",
@@ -82012,6 +82439,9 @@
     "elkezdi": [
         "kezd"
     ],
+    "elkezdik": [
+        "k"
+    ],
     "elkezdj\u00fck": [
         "kezd"
     ],
@@ -82186,6 +82616,9 @@
         "k\u00e9pzel"
     ],
     "elk\u00e9redz\u00e9k": [],
+    "elk\u00e9ri": [
+        "takar"
+    ],
     "elk\u00e9rik": [
         "k\u00e9r"
     ],
@@ -82402,6 +82835,7 @@
     "elk\u00f6lteni": [
         "k\u00f6lt"
     ],
+    "elk\u00f6lthesd": [],
     "elk\u00f6lthess\u00e9k": [
         "k\u00f6lt"
     ],
@@ -82449,6 +82883,9 @@
     ],
     "elk\u00f6lt\u00f6zz\u00e9k": [
         "k\u00f6lt\u00f6zik"
+    ],
+    "elk\u00f6lt\u00f6zz\u00f6n": [
+        "teljesedik"
     ],
     "elk\u00f6lt\u00f6z\u00e9k": [],
     "elk\u00f6lt\u00f6z\u00e9se": [
@@ -84612,6 +85049,9 @@
     "elm\u00e9db\u0151l": [
         "elme"
     ],
+    "elm\u00e9ddel": [
+        "marasztal"
+    ],
     "elm\u00e9det": [
         "elme"
     ],
@@ -85975,6 +86415,9 @@
     "elpuszt\u00edttatik": [],
     "elpuszt\u00edttatott": [
         "puszt\u00edt"
+    ],
+    "elpuszt\u00edttatta": [
+        "sz"
     ],
     "elpuszt\u00edttattak": [
         "puszt\u00edt"
@@ -87498,6 +87941,9 @@
     "elsz\u00e9lesztem": [
         "sz\u00e9leszt"
     ],
+    "elsz\u00e9lesztette": [
+        "sz"
+    ],
     "elsz\u00e9lesztetted": [
         "sz\u00e9leszt",
         "sz\u00e9lesztet"
@@ -88192,6 +88638,9 @@
     ],
     "eltasz\u00edt\u00e1": [],
     "eltasz\u00edt\u00e1k": [],
+    "eltasz\u00edt\u00e1sa": [
+        "tasz"
+    ],
     "eltegye": [
         "tesz"
     ],
@@ -89969,6 +90418,7 @@
         "vesztet",
         "elvesztett"
     ],
+    "elvesztettnek": [],
     "elvesztett\u00e9k": [
         "veszt",
         "vesztet",
@@ -91823,6 +92273,9 @@
     "el\u00e9gg\u00e9": [
         "el\u00e9g"
     ],
+    "el\u00e9gjek": [
+        "alantas"
+    ],
     "el\u00e9gjen": [
         "\u00e9g"
     ],
@@ -93295,6 +93748,9 @@
     "el\u0151nye": [
         "el\u0151ny"
     ],
+    "el\u0151nyei": [
+        "p"
+    ],
     "el\u0151nyeikkel": [
         "el\u0151ny"
     ],
@@ -93375,6 +93831,9 @@
     ],
     "el\u0151rel\u00e1tva": [
         "l\u00e1t"
+    ],
+    "el\u0151rel\u00e1t\u00e1s": [
+        "tart"
     ],
     "el\u0151rel\u00e1t\u00f3": [
         "l\u00e1t",
@@ -93590,6 +94049,9 @@
     "el\u0151t\u00f6rtetnek": [
         "t\u00f6rtet"
     ],
+    "el\u0151t\u00f6rt\u00e9net": [
+        "istenk"
+    ],
     "el\u0151t\u00f6r\u0151": [
         "t\u00f6r",
         "t\u00f6rik"
@@ -93670,6 +94132,7 @@
     "el\u0151vezet\u00e9se": [
         "vezet"
     ],
+    "el\u0151vigy\u00e1zatoss\u00e1g": [],
     "el\u0151vitt\u00e9l": [
         "visz"
     ],
@@ -96770,6 +97233,9 @@
     "epif\u00e1n\u00e9szhez": [],
     "epif\u00e1n\u00e9sznek": [],
     "epikureus": [],
+    "epil\u00f3gus": [
+        "el"
+    ],
     "ep\u00e9ben": [
         "epe"
     ],
@@ -97340,6 +97806,7 @@
         "ernyed"
     ],
     "erre": [],
+    "errea": [],
     "err\u0151l": [],
     "ersz\u00e9ny": [],
     "ersz\u00e9nybe": [
@@ -97415,6 +97882,7 @@
     "er\u00e9nyeire": [
         "er\u00e9ny"
     ],
+    "er\u00e9nyek": [],
     "er\u00e9nyekre": [
         "er\u00e9ny"
     ],
@@ -97700,6 +98168,10 @@
     "er\u0151megnyilv\u00e1nul\u00e1sok": [
         "er\u0151",
         "nyilv\u00e1nul"
+    ],
+    "er\u0151megnyilv\u00e1nul\u00e1sokat": [
+        "felt",
+        "t"
     ],
     "er\u0151megnyilv\u00e1nul\u00e1ssal": [
         "er\u0151",
@@ -98657,6 +99129,9 @@
     "er\u0151vel": [
         "er\u0151"
     ],
+    "er\u0151\u00e9rt": [
+        "sz"
+    ],
     "er\u0151\u00e9t": [
         "er\u0151"
     ],
@@ -98932,6 +99407,7 @@
         "eset"
     ],
     "esetleg": [],
+    "esetlegess\u00e9ge": [],
     "esetre": [
         "eset"
     ],
@@ -99223,6 +99699,9 @@
     "esk\u00fcv\u0151nek": [
         "esk\u00fcv\u0151",
         "esk\u00fcszik"
+    ],
+    "esk\u00fcv\u0151r\u0151l": [
+        "v"
     ],
     "esk\u00fcv\u0151t": [
         "esk\u00fcv\u0151",
@@ -103555,6 +104034,9 @@
         "fegyelmez",
         "fegyelem"
     ],
+    "fegyelmezetts\u00e9ge": [
+        "tan"
+    ],
     "fegyelmezi": [
         "fegyelmez",
         "fegyelem"
@@ -107199,6 +107681,9 @@
     "felfesz\u00edtett\u00e9k": [
         "fesz\u00edt"
     ],
+    "felfesz\u00edtve": [
+        "hit"
+    ],
     "felfigyel": [
         "figyel"
     ],
@@ -108848,6 +109333,9 @@
     "felkel\u00e9k": [],
     "felkel\u00e9l": [],
     "felkel\u00e9nek": [],
+    "felkel\u00e9s": [
+        "hat"
+    ],
     "felkel\u00e9se": [
         "felkel\u00e9s",
         "kel"
@@ -110879,6 +111367,10 @@
     "felsz\u00f3l\u00edt\u00e1s": [
         "sz\u00f3l\u00edt"
     ],
+    "felsz\u00f3l\u00edt\u00e1sa": [
+        "megszabad",
+        "szabad"
+    ],
     "felsz\u00f3l\u00edt\u00e1somnak": [
         "felsz\u00f3l\u00edt\u00e1s",
         "sz\u00f3l\u00edt"
@@ -111260,6 +111752,7 @@
         "felt\u00e1mad\u00e1s",
         "t\u00e1mad"
     ],
+    "felt\u00e1mad\u00e1sunk": [],
     "felt\u00e1mad\u00e1s\u00e1ba": [
         "felt\u00e1mad\u00e1s",
         "t\u00e1mad"
@@ -112380,6 +112873,9 @@
     ],
     "fel\u00e9gettetett": [
         "\u00e9get"
+    ],
+    "fel\u00e9gettette": [
+        "kegyetlen"
     ],
     "fel\u00e9gett\u00e9k": [
         "\u00e9get",
@@ -113603,6 +114099,9 @@
     "fens\u00e9g\u00e9nek": [
         "fens\u00e9g"
     ],
+    "fens\u00e9g\u00e9r\u0151l": [
+        "teremt"
+    ],
     "fens\u00e9g\u00e9t": [
         "fens\u00e9g"
     ],
@@ -113682,6 +114181,7 @@
     "fenyeget\u00e9s": [
         "fenyeget"
     ],
+    "fenyeget\u00e9se": [],
     "fenyeget\u00e9sedet": [
         "fenyeget"
     ],
@@ -114247,6 +114747,9 @@
     "fesz\u00edtettetek": [
         "fesz\u00edtett",
         "fesz\u00edt"
+    ],
+    "fesz\u00edtettnek": [
+        "tasz"
     ],
     "fesz\u00edtett\u00e9k": [
         "fesz\u00edtett",
@@ -115041,6 +115544,11 @@
         "figyelem"
     ],
     "figyelmeztet\u00e9seit": [
+        "figyelmeztet",
+        "figyelmez",
+        "figyelem"
+    ],
+    "figyelmeztet\u00e9sek": [
         "figyelmeztet",
         "figyelmez",
         "figyelem"
@@ -117428,6 +117936,9 @@
         "foh\u00e1szkodik"
     ],
     "foh\u00e1szkod\u00e9k": [],
+    "foh\u00e1szok": [
+        "k"
+    ],
     "foh\u00e1szomat": [
         "foh\u00e1sz"
     ],
@@ -118824,6 +119335,9 @@
     "ford\u00edtottj\u00e1t": [
         "ford\u00edtott",
         "ford\u00edt"
+    ],
+    "ford\u00edtottuk": [
+        "ford"
     ],
     "ford\u00edtott\u00e1k": [
         "ford\u00edt"
@@ -121378,6 +121892,9 @@
     "f\u00e9lholtan": [
         "f\u00e9lholt"
     ],
+    "f\u00e9lhom\u00e1lyhoz": [
+        "s"
+    ],
     "f\u00e9li": [
         "f\u00e9l"
     ],
@@ -121762,6 +122279,7 @@
         "\u00e9rt",
         "f\u00e9lre\u00e9rt"
     ],
+    "f\u00e9lre\u00e9rt\u00e9sek": [],
     "f\u00e9lsz": [
         "f\u00e9l"
     ],
@@ -124423,6 +124941,9 @@
     "f\u00f6ljelentj\u00fck": [
         "jelent",
         "jelenik"
+    ],
+    "f\u00f6ljelent\u00e9s\u00e9rt": [
+        "kr"
     ],
     "f\u00f6lj\u00e1rat\u00e1nak": [
         "f\u00f6lj\u00e1rat"
@@ -128566,6 +129087,9 @@
     "f\u0151papra": [
         "f\u0151pap"
     ],
+    "f\u0151paps\u00e1g": [
+        "kvadr"
+    ],
     "f\u0151paps\u00e1ga": [
         "f\u0151",
         "paps\u00e1g"
@@ -131257,6 +131781,7 @@
     "gondolkodott": [
         "gondolkodik"
     ],
+    "gondolkodsz": [],
     "gondolkodtak": [
         "gondolkodik"
     ],
@@ -136467,6 +136992,7 @@
         "hoz"
     ],
     "gy\u00fcm\u00f6lcsko": [],
+    "gy\u00fcm\u00f6lcskos\u00e1r": [],
     "gy\u00fcm\u00f6lcsszed\u00e9s": [
         "gy\u00fcm\u00f6lcs",
         "szed"
@@ -136733,8 +137259,12 @@
     "gy\u0151zelm\u00e9re": [
         "gy\u0151zelem"
     ],
+    "gy\u0151zelm\u00e9r\u0151l": [],
     "gy\u0151zelm\u00e9t": [
         "gy\u0151zelem"
+    ],
+    "gy\u0151zelm\u00e9\u00e9rt": [
+        "isten"
     ],
     "gy\u0151zelm\u00fcknek": [
         "gy\u0151zelem"
@@ -140457,6 +140987,10 @@
     "hajsz\u00e1laitok": [
         "hajsz\u00e1l"
     ],
+    "hajsz\u00e1laitokat": [
+        "volta",
+        "volt"
+    ],
     "hajsz\u00e1lakat": [
         "hajsz\u00e1l"
     ],
@@ -141695,6 +142229,7 @@
     "hallgatagon": [
         "hallgatag"
     ],
+    "hallgatags\u00e1ga": [],
     "hallgathatja": [
         "hallgat"
     ],
@@ -142918,6 +143453,9 @@
     "hal\u00e1lvesz\u00e9lyben": [
         "hal\u00e1l",
         "vesz\u00e9ly"
+    ],
+    "hal\u00e1lvesz\u00e9lyb\u0151l": [
+        "menek"
     ],
     "hal\u00e1l\u00e1ba": [
         "hal\u00e1l"
@@ -146190,6 +146728,9 @@
     "hatalmaskod\u00f3nak": [
         "hatalmaskodik"
     ],
+    "hatalmaskod\u00f3r\u00f3l": [
+        "zs"
+    ],
     "hatalmaskod\u00f3\u00e9": [
         "hatalmaskodik"
     ],
@@ -146523,6 +147064,9 @@
     "hatodszor": [],
     "hatol": [],
     "hatolhat": [
+        "hatol"
+    ],
+    "hatolhatna": [
         "hatol"
     ],
     "hatoljanak": [
@@ -147508,6 +148052,9 @@
     "hazahoz\u00e1s\u00e1ban": [
         "hoz"
     ],
+    "hazah\u00edvja": [
+        "h"
+    ],
     "hazah\u00edvt\u00e1k": [
         "h\u00edv"
     ],
@@ -147721,6 +148268,9 @@
         "vezet"
     ],
     "hazavezette": [
+        "vezet"
+    ],
+    "hazavezet\u0151": [
         "vezet"
     ],
     "hazavez\u00e9rel": [
@@ -151311,6 +151861,12 @@
     "hitehagyottakra": [
         "hitehagyott"
     ],
+    "hitel": [
+        "fegyelmezetts",
+        "fegyelmezett",
+        "fegyelmez",
+        "fegyelem"
+    ],
     "hitele": [
         "hitel"
     ],
@@ -151609,6 +152165,9 @@
         "hit",
         "hirdet\u0151",
         "hirdet"
+    ],
+    "hithirdet\u0151k": [
+        "visz"
     ],
     "hith\u0171s\u00e9gben": [
         "hith\u0171"
@@ -153251,6 +153810,9 @@
     ],
     "honfit\u00e1rs\u00e1t": [
         "honfit\u00e1rs"
+    ],
+    "honfoglal\u00e1s": [
+        "hon"
     ],
     "honfoglal\u00e1sra": [
         "hon",
@@ -155973,6 +156535,7 @@
     "h\u00e1laad\u00f3\u00e1ldozat": [],
     "h\u00e1laad\u00f3\u00e1ldozatait": [],
     "h\u00e1laad\u00f3\u00e1ldozatok": [],
+    "h\u00e1ladal": [],
     "h\u00e1ladala": [
         "h\u00e1la",
         "dal"
@@ -158309,6 +158872,9 @@
     "h\u00e1\u00e9zernek": [],
     "h\u00e9": [],
     "h\u00e9ber": [],
+    "h\u00e9berben": [
+        "h"
+    ],
     "h\u00e9berek": [
         "h\u00e9ber"
     ],
@@ -159129,6 +159695,9 @@
     "h\u00edvasd": [
         "h\u00edv",
         "h\u00edvat"
+    ],
+    "h\u00edvass": [
+        "fesz"
     ],
     "h\u00edvassa": [
         "h\u00edv",
@@ -160731,6 +161300,9 @@
     "h\u0151siess\u00e9g": [
         "h\u0151sies"
     ],
+    "h\u0151siess\u00e9ge": [
+        "bizalom"
+    ],
     "h\u0151siess\u00e9gr\u0151l": [
         "h\u0151sies"
     ],
@@ -160961,6 +161533,9 @@
     "h\u0171s\u00e9geseknek": [
         "h\u0171s\u00e9ges",
         "h\u0171"
+    ],
+    "h\u0171s\u00e9gesek\u00e9rt": [
+        "h"
     ],
     "h\u0171s\u00e9gesen": [
         "h\u0171s\u00e9ges",
@@ -161862,6 +162437,9 @@
         "id\u0151"
     ],
     "id\u0151szak": [],
+    "id\u0151szaka": [
+        "hajsz"
+    ],
     "id\u0151szakait": [
         "id\u0151szak"
     ],
@@ -162549,6 +163127,9 @@
     ],
     "igazol\u00e1sunkra": [
         "igazol"
+    ],
+    "igazol\u00f3": [
+        "juh"
     ],
     "igazol\u00f3dik": [
         "igazol"
@@ -168022,11 +168603,18 @@
     ],
     "istenk\u00e1": [],
     "istenk\u00e1roml\u00e1s": [],
+    "istenk\u00e1roml\u00e1saikr\u00f3l": [],
     "istenk\u00e1roml\u00e1sok": [
         "istenk\u00e1roml\u00e1s"
     ],
     "istenk\u00e1roml\u00e1sokat": [
         "istenk\u00e1roml\u00e1s"
+    ],
+    "istenk\u00e1roml\u00e1sokr\u00f3l": [
+        "l"
+    ],
+    "istenk\u00e1roml\u00e1son": [
+        "istenk"
     ],
     "istenk\u00e1roml\u00e1st": [
         "istenk\u00e1roml\u00e1s"
@@ -168145,6 +168733,9 @@
     ],
     "istent": [
         "isten"
+    ],
+    "istentagad\u00f3k": [
+        "fenyeget"
     ],
     "istentek": [],
     "istentekben": [],
@@ -170735,6 +171326,9 @@
     "jekn\u00e1mot": [],
     "jekolj\u00e1": [],
     "jekoni\u00e1s": [],
+    "jekoni\u00e1ssal": [
+        "q"
+    ],
     "jekoni\u00e1st": [],
     "jekonj\u00e1": [],
     "jekonj\u00e1t": [],
@@ -171308,6 +171902,9 @@
     ],
     "jellemet": [
         "jellem"
+    ],
+    "jellemz\u00e9se": [
+        "kar"
     ],
     "jell\u00e9": [
         "jel"
@@ -173040,6 +173637,9 @@
     ],
     "juhokra": [
         "juh"
+    ],
+    "juhokr\u00f3l": [
+        "csod"
     ],
     "juhok\u00e9": [
         "juh"
@@ -175732,6 +176332,9 @@
     "j\u00f3sz\u00e1nd\u00e9k\u00e1t": [],
     "j\u00f3sz\u00e1nd\u00e9k\u00fa": [],
     "j\u00f3sz\u00e1ntadb\u00f3l": [],
+    "j\u00f3sz\u00e1ntatokb\u00f3l": [
+        "j"
+    ],
     "j\u00f3sz\u00e1ntotokb\u00f3l": [],
     "j\u00f3sz\u00e1ntukb\u00f3l": [],
     "j\u00f3sz\u00e1nt\u00e1b\u00f3l": [],
@@ -177173,6 +177776,9 @@
     "kaft\u00f3rb\u00f3l": [],
     "kaft\u00f3riak": [],
     "kaft\u00f3riakat": [],
+    "kaft\u00f3rimot": [
+        "csal"
+    ],
     "kaif\u00e1s": [],
     "kaif\u00e1shoz": [],
     "kaif\u00e1snak": [],
@@ -177922,6 +178528,9 @@
         "kapcsol\u00f3dik",
         "kapcsol"
     ],
+    "kapcs\u00e1n": [
+        "vitel"
+    ],
     "kapd": [
         "kap"
     ],
@@ -178478,6 +179087,7 @@
     "kapzsinak": [
         "kapzsi"
     ],
+    "kapzsir\u00f3l": [],
     "kapzsis\u00e1g": [
         "kapzsi"
     ],
@@ -179253,6 +179863,10 @@
     "kar\u00e1mba": [
         "kar\u00e1m"
     ],
+    "kar\u00e1mban": [
+        "nemes",
+        "nem"
+    ],
     "kar\u00e1mhoz": [
         "kar\u00e1m"
     ],
@@ -179627,6 +180241,9 @@
     "kecskebakot": [
         "kecske",
         "bak"
+    ],
+    "kecskebakr\u00f3l": [
+        "kecske"
     ],
     "kecskebakul": [
         "kecske",
@@ -180706,6 +181323,9 @@
     ],
     "kegyetlenek": [
         "kegyetlen"
+    ],
+    "kegyetleneket": [
+        "szolga"
     ],
     "kegyetleneknek": [
         "kegyetlen"
@@ -183058,6 +183678,7 @@
         "keres"
     ],
     "keret": [],
+    "keretelbesz\u00e9l\u00e9s": [],
     "keretet": [
         "keret"
     ],
@@ -183090,6 +183711,7 @@
     "kerettel": [
         "keret"
     ],
+    "kerett\u00f6rt\u00e9net": [],
     "keretvers": [
         "keret",
         "vers"
@@ -185523,6 +186145,10 @@
     ],
     "kiad\u00e1st": [
         "kiad\u00e1s",
+        "ad"
+    ],
+    "kiad\u00e1s\u00e1b\u00f3l": [
+        "kiad",
         "ad"
     ],
     "kiad\u00e1s\u00e1nak": [
@@ -188371,6 +188997,9 @@
     ],
     "kij\u00e1tszott\u00e1k": [
         "j\u00e1tszik"
+    ],
+    "kij\u00e1tsz\u00e1sa": [
+        "j"
     ],
     "kij\u00f3zanodni": [
         "j\u00f3zanodik"
@@ -191232,6 +191861,7 @@
     "kir\u00e1lyfit": [
         "kir\u00e1lyfi"
     ],
+    "kir\u00e1lygyilkos": [],
     "kir\u00e1lyhoz": [
         "kir\u00e1ly"
     ],
@@ -191795,6 +192425,9 @@
     "kisarjadt": [
         "sarjad"
     ],
+    "kisarjadtak": [
+        "s"
+    ],
     "kisarjasztja": [
         "sarjaszt"
     ],
@@ -191919,6 +192552,7 @@
         "semmiz",
         "semmi"
     ],
+    "kisemmiz\u00e9se": [],
     "kiseperve": [
         "seper"
     ],
@@ -191974,6 +192608,9 @@
     ],
     "kisgyermekr\u0151l": [
         "kisgyermek"
+    ],
+    "kisgyermek\u00e9": [
+        "sz"
     ],
     "kishit\u0171": [],
     "kishit\u0171ek": [
@@ -192992,6 +193629,9 @@
     ],
     "kitasz\u00edtj\u00e1k": [
         "tasz\u00edt"
+    ],
+    "kitasz\u00edtott\u00e1k": [
+        "kap"
     ],
     "kitasz\u00edtva": [
         "tasz\u00edt"
@@ -194942,6 +195582,7 @@
         "v\u00e9gez",
         "v\u00e9g"
     ],
+    "kiv\u00e9geztek": [],
     "kiv\u00e9geztessenek": [
         "v\u00e9gez",
         "v\u00e9g"
@@ -195091,6 +195732,9 @@
     ],
     "kizs\u00e1km\u00e1nyol\u00f3knak": [
         "zs\u00e1km\u00e1nyol"
+    ],
+    "kizs\u00e1km\u00e1nyol\u00f3r\u00f3l": [
+        "kapzsi"
     ],
     "kiz\u00e1r": [
         "z\u00e1r"
@@ -196970,6 +197614,9 @@
     "korintusb\u00f3l": [],
     "korintusi": [],
     "korintusiak": [],
+    "korintusiakkal": [
+        "tiszt"
+    ],
     "korintusiaknak": [],
     "korintusiak\u00e9rt": [],
     "korl\u00e1t": [],
@@ -198132,6 +198779,9 @@
     "krisztus\u00e9rt": [],
     "krisztus\u00e9val": [],
     "kriszus": [],
+    "kritik\u00e1ja": [
+        "esetleges"
+    ],
     "krizoberill": [],
     "krizolit": [],
     "krizolith": [],
@@ -198197,6 +198847,9 @@
     ],
     "kr\u00f3nik\u00e1k": [
         "kr\u00f3nika"
+    ],
+    "kr\u00f3nik\u00e1kba": [
+        "t"
     ],
     "kr\u00f3nik\u00e1kban": [
         "kr\u00f3nika"
@@ -198272,6 +198925,9 @@
     "kultikus": [],
     "kultusz": [],
     "kultusza": [
+        "kultusz"
+    ],
+    "kultuszra": [
         "kultusz"
     ],
     "kultuszreformjai": [
@@ -198504,6 +199160,9 @@
         "kuvik"
     ],
     "kuz\u00e1nak": [],
+    "kvadr\u00e1ns": [
+        "fedd"
+    ],
     "kvartusz": [],
     "kvintusz": [],
     "kviriniusz": [],
@@ -199039,6 +199698,7 @@
     "k\u00e1roml\u00e1sokon": [
         "k\u00e1romol"
     ],
+    "k\u00e1roml\u00e1sok\u00e9rt": [],
     "k\u00e1roml\u00e1sra": [
         "k\u00e1romol"
     ],
@@ -199149,6 +199809,7 @@
     "k\u00e1rosuljanak": [
         "k\u00e1rosul"
     ],
+    "k\u00e1ros\u00edtja": [],
     "k\u00e1ros\u00edtod": [
         "k\u00e1ros\u00edt",
         "k\u00e1r"
@@ -201877,6 +202538,9 @@
     "k\u00e9telked\u0151": [
         "k\u00e9telkedik"
     ],
+    "k\u00e9telked\u0151k": [
+        "k"
+    ],
     "k\u00e9telked\u0151k\u00f6n": [
         "k\u00e9telkedik"
     ],
@@ -202428,6 +203092,9 @@
     ],
     "k\u00e9zimunk\u00e1ra": [
         "k\u00e9zimunka"
+    ],
+    "k\u00e9ziratokban": [
+        "k"
     ],
     "k\u00e9zmos\u00e1st": [
         "k\u00e9z",
@@ -203034,6 +203701,9 @@
     "k\u00edn\u00e1lkozik": [],
     "k\u00edn\u00e1lkozott": [
         "k\u00edn\u00e1lkozik"
+    ],
+    "k\u00edn\u00e1lkoz\u00f3": [
+        "medd"
     ],
     "k\u00edn\u00e1lnak": [
         "k\u00edn\u00e1l"
@@ -204347,6 +205017,9 @@
     "k\u00f6lt\u00f6z\u00f6tt": [
         "k\u00f6lt\u00f6zik"
     ],
+    "k\u00f6lt\u0151": [
+        "kritika"
+    ],
     "k\u00f6lt\u0151itek": [
         "k\u00f6lt\u0151",
         "k\u00f6lt"
@@ -204769,6 +205442,7 @@
         "k\u00f6nyv",
         "csin\u00e1l"
     ],
+    "k\u00f6nyvc\u00edm": [],
     "k\u00f6nyve": [
         "k\u00f6nyv"
     ],
@@ -204898,6 +205572,7 @@
     "k\u00f6nyv\u00fcnk": [
         "k\u00f6nyv"
     ],
+    "k\u00f6ny\u00e9kig": [],
     "k\u00f6ny\u00f6k": [],
     "k\u00f6ny\u00f6kben": [
         "k\u00f6ny\u00f6k"
@@ -207418,6 +208093,7 @@
         "k\u00f6t",
         "anyag"
     ],
+    "k\u00f6t\u0151anyagnak": [],
     "k\u00f6t\u0151anyagul": [
         "k\u00f6t",
         "anyag"
@@ -208498,6 +209174,9 @@
     "k\u00f6zbenj\u00e1rt": [
         "k\u00f6zbenj\u00e1r"
     ],
+    "k\u00f6zbenj\u00e1r\u00e1s": [
+        "foh"
+    ],
     "k\u00f6zbenj\u00e1r\u00e1sa": [
         "k\u00f6zbenj\u00e1r\u00e1s",
         "k\u00f6zbenj\u00e1r"
@@ -208931,6 +209610,10 @@
     "k\u00f6zl\u00e9seivel": [
         "k\u00f6z\u00f6l",
         "k\u00f6zl\u00e9s"
+    ],
+    "k\u00f6zl\u00e9sek": [
+        "elvesztett",
+        "veszt"
     ],
     "k\u00f6zl\u00e9s\u00e9re": [
         "k\u00f6z\u00f6l",
@@ -210085,6 +210768,9 @@
     ],
     "k\u00fcld\u0151j\u00e9nek": [
         "k\u00fcld"
+    ],
+    "k\u00fclf\u00f6ld": [
+        "hallgatag"
     ],
     "k\u00fclf\u00f6ldre": [
         "k\u00fclf\u00f6ld"
@@ -215959,6 +216645,9 @@
     ],
     "lej\u00e1rd": [
         "j\u00e1r"
+    ],
+    "lej\u00e1rk\u00e1lnak": [
+        "j"
     ],
     "lej\u00e1rnia": [
         "j\u00e1r"
@@ -223045,6 +223734,7 @@
     "l\u00e1mp\u00e1val": [
         "l\u00e1mpa"
     ],
+    "l\u00e1muel": [],
     "l\u00e1muelnek": [],
     "l\u00e1m\u00e1": [],
     "l\u00e1nc": [],
@@ -223518,6 +224208,9 @@
     ],
     "l\u00e1nyom\u00e9t": [
         "l\u00e1ny"
+    ],
+    "l\u00e1nyos": [
+        "rangsor"
     ],
     "l\u00e1nyost\u00f3l": [
         "l\u00e1ny"
@@ -224896,6 +225589,7 @@
         "l\u00e9legzik",
         "l\u00e9legez"
     ],
+    "l\u00e9legzet\u00e9vel": [],
     "l\u00e9legzet\u00fck": [
         "l\u00e9legzet"
     ],
@@ -228525,6 +229219,9 @@
     "marasztalj\u00e1k": [
         "marasztal"
     ],
+    "marasztalnak": [
+        "pr"
+    ],
     "marasztalni": [
         "marasztal"
     ],
@@ -229186,6 +229883,7 @@
     "medd\u0151k": [
         "medd\u0151"
     ],
+    "medd\u0151k\u00e9nt": [],
     "medd\u0151nek": [
         "medd\u0151"
     ],
@@ -230246,6 +230944,9 @@
     "megbocs\u00e1t\u00e1s\u00e1ra": [
         "megbocs\u00e1t\u00e1s",
         "bocs\u00e1t"
+    ],
+    "megbocs\u00e1t\u00e1s\u00e9rt": [
+        "esk"
     ],
     "megbocs\u00e1t\u00f3": [
         "bocs\u00e1t"
@@ -233109,6 +233810,9 @@
     ],
     "megfeddtem": [
         "fedd"
+    ],
+    "megfeddt\u00e9k": [
+        "sarjad"
     ],
     "megfedd\u00e9": [],
     "megfedd\u00e9m": [],
@@ -237713,6 +238417,11 @@
         "jegyez",
         "jegyz\u00e9s"
     ],
+    "megjegyz\u00e9se": [
+        "jegyez",
+        "jegyz",
+        "megjegyz"
+    ],
     "megjegyz\u00e9sek": [
         "jegyez",
         "jegyz\u00e9s",
@@ -238153,6 +238862,7 @@
     "megkapj\u00e1tok": [
         "kap"
     ],
+    "megkapnak": [],
     "megkapod": [
         "kap"
     ],
@@ -238831,6 +239541,9 @@
     "megk\u00e1ros\u00edtott": [
         "k\u00e1ros\u00edt",
         "k\u00e1r"
+    ],
+    "megk\u00e1ros\u00edtottam": [
+        "v"
     ],
     "megk\u00e1ros\u00edt\u00e1s\u00e1ra": [
         "k\u00e1ros\u00edt",
@@ -241414,6 +242127,7 @@
     "megnehez\u00edtette": [
         "nehez\u00edt"
     ],
+    "megnemes\u00edti": [],
     "megneszeli": [
         "neszel"
     ],
@@ -244628,6 +245342,9 @@
         "megszabad\u00edt\u00e1s",
         "szabad\u00edt"
     ],
+    "megszabad\u00edt\u00e1s\u00e1r\u00f3l": [
+        "fens"
+    ],
     "megszabad\u00edt\u00e1s\u00e1\u00e9rt": [
         "megszabad\u00edt\u00e1s",
         "szabad\u00edt"
@@ -245671,6 +246388,7 @@
     "megsz\u00e1llnom": [
         "sz\u00e1ll"
     ],
+    "megsz\u00e1llok": [],
     "megsz\u00e1llott": [
         "sz\u00e1ll"
     ],
@@ -251395,6 +252113,9 @@
         "meg\u00e1talkodott",
         "meg\u00e1talkodik"
     ],
+    "meg\u00e1talkodottakat": [
+        "k"
+    ],
     "meg\u00e1talkodottan": [
         "meg\u00e1talkodott",
         "meg\u00e1talkodik"
@@ -252364,6 +253085,9 @@
     "meg\u00edr\u00e1": [],
     "meg\u00edr\u00e1k": [],
     "meg\u00edr\u00e1m": [],
+    "meg\u00edr\u00e1s\u00e1nak": [
+        "volt"
+    ],
     "meg\u00edr\u00e1s\u00e1ra": [
         "\u00edr"
     ],
@@ -253656,7 +254380,11 @@
     ],
     "mehet\u0151": [],
     "mehida": [],
+    "meholai": [
+        "ut"
+    ],
     "meholita": [],
+    "mehol\u00e1ig": [],
     "mehol\u00e1thb\u00f3l": [],
     "mehuja\u00e9l": [],
     "mehuja\u00e9lt": [],
@@ -254755,6 +255483,9 @@
     ],
     "menek\u00fcl\u00e9s\u00e9nek": [
         "menek\u00fcl"
+    ],
+    "menek\u00fcl\u00e9s\u00e9rt": [
+        "b"
     ],
     "menek\u00fcl\u00f6k": [
         "menek\u00fcl"
@@ -257286,6 +258017,7 @@
     "midi\u00e1nita": [],
     "midi\u00e1nit\u00e1k": [],
     "midi\u00e1nit\u00e1kat": [],
+    "midi\u00e1nit\u00e1kkal": [],
     "midi\u00e1nit\u00e1kon": [],
     "midi\u00e1nit\u00e1kt\u00f3l": [],
     "midi\u00e1nnak": [],
@@ -257929,6 +258661,9 @@
     ],
     "mindenhat\u00f3s\u00e1g": [
         "mindenhat\u00f3"
+    ],
+    "mindenhat\u00f3s\u00e1ga": [
+        "mindenhat"
     ],
     "mindenhat\u00f3s\u00e1god": [
         "mindenhat\u00f3"
@@ -260198,6 +260933,7 @@
     "mulatoz\u00e1saik": [
         "mulatozik"
     ],
+    "mulatoz\u00e1sban": [],
     "mulatoz\u00e1snak": [
         "mulatozik"
     ],
@@ -260293,6 +261029,9 @@
         "munka",
         "fel\u00fcgyel\u0151",
         "\u00fcgyel"
+    ],
+    "munkaker\u00fcl\u0151k": [
+        "gy"
     ],
     "munkak\u00f6r\u00fcnkben": [
         "munkak\u00f6r"
@@ -260677,6 +261416,10 @@
     "munk\u00e1lkod\u00e1nak": [],
     "munk\u00e1lkod\u00e1sa": [
         "munk\u00e1lkodik"
+    ],
+    "munk\u00e1lkod\u00e1stokat": [
+        "kapcs",
+        "kapocs"
     ],
     "munk\u00e1lkod\u00e1sunkban": [
         "munk\u00e1lkodik"
@@ -263155,6 +263898,9 @@
     "m\u00e9rgesen": [
         "m\u00e9rges",
         "m\u00e9reg"
+    ],
+    "m\u00e9rgesk\u00edgy\u00f3k": [
+        "er"
     ],
     "m\u00e9rgess\u00e9g": [
         "m\u00e9rges",
@@ -273073,6 +273819,9 @@
         "n\u00e9p",
         "t\u00f6meg"
     ],
+    "n\u00e9pt\u00f6meget": [
+        "perec"
+    ],
     "n\u00e9pt\u00f6meg\u00e9": [
         "n\u00e9p",
         "t\u00f6meg"
@@ -274607,6 +275356,7 @@
         "h\u00edv",
         "h\u00edvat"
     ],
+    "odah\u00edvatt\u00e1k": [],
     "odah\u00edvott": [
         "h\u00edvott",
         "h\u00edv"
@@ -282733,6 +283483,9 @@
     "perben": [
         "per"
     ],
+    "perbesz\u00e9d": [
+        "per"
+    ],
     "perbesz\u00e9d\u00e9t": [
         "per",
         "besz\u00e9d"
@@ -282759,6 +283512,7 @@
     "perecben": [
         "perec"
     ],
+    "perecet": [],
     "pereci": [
         "perec"
     ],
@@ -283109,6 +283863,9 @@
     "persi\u00e1ban": [],
     "persi\u00e1nak": [],
     "persze": [],
+    "perszepolisznak": [
+        "vigasz"
+    ],
     "persziszt": [],
     "persz\u00e9szt": [],
     "pers\u00e1k": [],
@@ -284399,6 +285156,7 @@
     "polg\u00e1r\u00e1nak": [
         "polg\u00e1r"
     ],
+    "politika": [],
     "politikai": [
         "politika"
     ],
@@ -284832,6 +285590,9 @@
     "presbiterekr\u0151l": [
         "presbiter"
     ],
+    "presbiterekt\u0151l": [
+        "h"
+    ],
     "presbitert\u00e1rs": [
         "presbiter",
         "t\u00e1rs"
@@ -284861,6 +285622,7 @@
     "prokonzulok": [],
     "prokonzuls\u00e1ga": [],
     "prostit\u00faci\u00f3": [],
+    "protoizaj\u00e1s": [],
     "provincia": [],
     "provinci\u00e1ba": [
         "provincia"
@@ -284887,6 +285649,7 @@
     "pr\u00e9dak\u00e9nt": [
         "pr\u00e9da"
     ],
+    "pr\u00e9dik\u00e1ci\u00f3": [],
     "pr\u00e9dik\u00e1ci\u00f3ja": [
         "pr\u00e9dik\u00e1ci\u00f3"
     ],
@@ -285706,7 +286469,16 @@
     "pr\u00fcszk\u00f6l\u00e9se": [
         "pr\u00fcszk\u00f6l"
     ],
+    "ptolemaiosszal": [
+        "felkel",
+        "kel"
+    ],
     "ptolemaiosz": [],
+    "ptolemaioszhoz": [],
+    "ptolemaiosznak": [
+        "istenk"
+    ],
+    "ptolemaioszt": [],
     "ptolemaisba": [],
     "ptolemaisszal": [],
     "ptolemaisz": [],
@@ -286034,6 +286806,9 @@
         "pusztul"
     ],
     "pusztul\u00e1s\u00e1val": [
+        "pusztul"
+    ],
+    "pusztul\u00e1s\u00e1\u00e9rt": [
         "pusztul"
     ],
     "pusztul\u00f3": [
@@ -286700,6 +287475,9 @@
     "p\u00e1rhagym\u00e1kra": [
         "p\u00e1rhagyma"
     ],
+    "p\u00e1rhuzam": [
+        "adom"
+    ],
     "p\u00e1rhuzamosan": [
         "p\u00e1rhuzamos",
         "p\u00e1rhuzam"
@@ -287322,6 +288100,9 @@
     "p\u00e1sztorr\u00e1": [
         "p\u00e1sztor"
     ],
+    "p\u00e1sztorr\u00f3l": [
+        "kezd"
+    ],
     "p\u00e1sztors\u00e1guknak": [],
     "p\u00e1sztort": [
         "p\u00e1sztor"
@@ -287467,6 +288248,9 @@
     "p\u00e9ldabesz\u00e9dre": [
         "p\u00e9ldabesz\u00e9d"
     ],
+    "p\u00e9ldabesz\u00e9d\u00e9t": [
+        "sz"
+    ],
     "p\u00e9ldabesz\u00e9d\u00fcl": [
         "p\u00e9ldabesz\u00e9d"
     ],
@@ -287515,6 +288299,9 @@
     ],
     "p\u00e9ld\u00e1ban": [
         "p\u00e9lda"
+    ],
+    "p\u00e9ld\u00e1d": [
+        "k"
     ],
     "p\u00e9ld\u00e1ink": [
         "p\u00e9lda"
@@ -288203,6 +288990,7 @@
     "p\u0151r\u00f6ly\u00e9re": [],
     "p\u0151r\u00f6ly\u00f6kkel": [],
     "p\u0151r\u00f6ly\u00f6m": [],
+    "q": [],
     "quartus": [],
     "quartusz": [],
     "quintusz": [],
@@ -289770,6 +290558,9 @@
     ],
     "rangot": [
         "rang"
+    ],
+    "rangsora": [
+        "hitel"
     ],
     "rang\u00fa": [
         "rang"
@@ -296678,6 +297469,7 @@
     "r\u00e1z\u00fadult": [
         "z\u00fadul"
     ],
+    "r\u00e1z\u00fadultak": [],
     "r\u00e1z\u00fad\u00edtod": [
         "z\u00fad\u00edt"
     ],
@@ -296757,6 +297549,7 @@
         "\u00fcl"
     ],
     "r\u00e1\u00fcle": [],
+    "r\u00e1\u00fclj\u00f6n": [],
     "r\u00e1\u00fclt": [
         "\u00fcl"
     ],
@@ -297607,6 +298400,9 @@
     "r\u00e9szint": [],
     "r\u00e9szk\u00e9nt": [
         "r\u00e9sz"
+    ],
+    "r\u00e9szlet": [
+        "r"
     ],
     "r\u00e9szletei": [
         "r\u00e9szlet"
@@ -300320,6 +301116,9 @@
     "seg\u00e9lyb\u0151l": [
         "seg\u00e9ly"
     ],
+    "seg\u00e9lyki\u00e1lt\u00e1s": [
+        "keret"
+    ],
     "seg\u00e9lyki\u00e1lt\u00e1sa": [
         "seg\u00e9ly",
         "ki\u00e1lt\u00e1s",
@@ -300654,6 +301453,10 @@
         "seg\u00edt\u0151",
         "seg\u00edt"
     ],
+    "seg\u00edt\u0151j\u00e9nek": [
+        "boldogs",
+        "boldog"
+    ],
     "seg\u00edt\u0151j\u00e9t": [
         "seg\u00edt\u0151",
         "seg\u00edt"
@@ -300686,6 +301489,7 @@
         "t\u00e1rs",
         "seg\u00edt"
     ],
+    "seg\u00edt\u0151t\u00e1rsa": [],
     "seg\u00edt\u0151t\u00e1rsai": [
         "seg\u00edt\u0151",
         "t\u00e1rs"
@@ -302159,6 +302963,7 @@
     "silo": [],
     "siloahnak": [],
     "siloe": [],
+    "siloni": [],
     "silo\u00e1m": [],
     "silo\u00e1mban": [],
     "silo\u00e1mhoz": [],
@@ -304732,6 +305537,9 @@
     "szabad\u00edt\u00f3j\u00e1ra": [
         "szabad\u00edt"
     ],
+    "szabad\u00edt\u00f3j\u00e1r\u00f3l": [
+        "seg"
+    ],
     "szabad\u00edt\u00f3j\u00e1t": [
         "szabad\u00edt"
     ],
@@ -304756,6 +305564,7 @@
     "szabad\u00edt\u00f3nk": [
         "szabad\u00edt"
     ],
+    "szabad\u00edt\u00f3r\u00f3l": [],
     "szabad\u00edt\u00f3t": [
         "szabad\u00edt"
     ],
@@ -308527,6 +309336,7 @@
     "szemernek": [],
     "szemernyi": [],
     "szemeron": [],
+    "szemert\u0151l": [],
     "szemes": [
         "szem"
     ],
@@ -312379,11 +313189,13 @@
     "szichemiek": [],
     "szichemieket": [],
     "szichemiekkel": [],
+    "szichemieknek": [],
     "szichemit\u00e1k": [],
     "szichemmel": [],
     "szichemnek": [],
     "szichemn\u00e9l": [],
     "szichemt\u0151l": [],
+    "szichem\u00e9rt": [],
     "szichomnak": [],
     "szichon": [],
     "szichonhoz": [],
@@ -313950,6 +314762,9 @@
         "szolga",
         "t\u00e1rs"
     ],
+    "szolgat\u00e1rsaddal": [
+        "id"
+    ],
     "szolgat\u00e1rsadon": [
         "szolga",
         "t\u00e1rs"
@@ -314389,6 +315204,7 @@
         "szolg\u00e1lat",
         "tesz"
     ],
+    "szolg\u00e1lattev\u0151i": [],
     "szolg\u00e1lattev\u0151k": [
         "szolg\u00e1lat",
         "tesz",
@@ -315868,6 +316684,7 @@
     "szomsz\u00e9dj\u00e1val": [
         "szomsz\u00e9d"
     ],
+    "szomsz\u00e9dn\u00e9p": [],
     "szomsz\u00e9dod": [
         "szomsz\u00e9d"
     ],
@@ -317756,6 +318573,18 @@
         "sz\u00e1m",
         "sz\u00e1j"
     ],
+    "sz\u00e1monk\u00e9rem": [
+        "sz"
+    ],
+    "sz\u00e1monk\u00e9ri": [
+        "sz"
+    ],
+    "sz\u00e1monk\u00e9rik": [
+        "sz"
+    ],
+    "sz\u00e1monk\u00e9rni": [
+        "sz"
+    ],
     "sz\u00e1monk\u00e9rte": [
         "sz\u00e1monk\u00e9r"
     ],
@@ -317765,6 +318594,7 @@
     "sz\u00e1monk\u00e9r\u0151kkel": [
         "sz\u00e1monk\u00e9r"
     ],
+    "sz\u00e1montartj\u00e1k": [],
     "sz\u00e1mos": [
         "sz\u00e1m"
     ],
@@ -318382,6 +319212,9 @@
     ],
     "sz\u00e1nom": [
         "sz\u00e1n"
+    ],
+    "sz\u00e1nsz": [
+        "p"
     ],
     "sz\u00e1nt": [
         "sz\u00e1n"
@@ -319092,6 +319925,9 @@
         "sz\u00e1rny"
     ],
     "sz\u00e1rnyal": [],
+    "sz\u00e1rnyaljanak": [
+        "sz"
+    ],
     "sz\u00e1rnyaljon": [
         "sz\u00e1rnyal"
     ],
@@ -323354,6 +324190,9 @@
     "sz\u00f3rakozni": [
         "sz\u00f3rakozik"
     ],
+    "sz\u00f3rakozott": [
+        "elme"
+    ],
     "sz\u00f3rakoztak": [
         "sz\u00f3rakozik"
     ],
@@ -323539,6 +324378,10 @@
     ],
     "sz\u00f3sz\u00f3l\u00f3juk": [
         "sz\u00f3sz\u00f3l\u00f3"
+    ],
+    "sz\u00f3sz\u00f3l\u00f3j\u00e1hoz": [
+        "felsz",
+        "sz"
     ],
     "sz\u00f3sz\u00f3l\u00f3m": [
         "sz\u00f3sz\u00f3l\u00f3"
@@ -323850,6 +324693,9 @@
     "sz\u00f6rny\u0171s\u00e9g": [
         "sz\u00f6rny\u0171",
         "sz\u00f6rny"
+    ],
+    "sz\u00f6rny\u0171s\u00e9ge": [
+        "sz"
     ],
     "sz\u00f6rny\u0171s\u00e9geikkel": [
         "sz\u00f6rny\u0171",
@@ -324624,6 +325470,9 @@
     ],
     "sz\u00fcks\u00e9gre": [
         "sz\u00fcks\u00e9g"
+    ],
+    "sz\u00fcks\u00e9gszer\u0171s\u00e9ge": [
+        "f"
     ],
     "sz\u00fcks\u00e9gtek": [],
     "sz\u00fcks\u00e9gteket": [],
@@ -325860,8 +326709,17 @@
     "sz\u0151l\u0151skertjeit": [
         "sz\u0151l\u0151skert"
     ],
+    "sz\u0151l\u0151skertj\u00e9r\u0151l": [
+        "sz"
+    ],
     "sz\u0151l\u0151skertj\u00e9t": [
         "sz\u0151l\u0151skert"
+    ],
+    "sz\u0151l\u0151skertj\u00e9\u00e9rt": [
+        "zsolt"
+    ],
+    "sz\u0151l\u0151skertr\u0151l": [
+        "sz"
     ],
     "sz\u0151l\u0151skertt\u00e9": [
         "sz\u0151l\u0151skert"
@@ -326659,6 +327517,9 @@
     ],
     "s\u00e1ntik\u00e1ltok": [
         "s\u00e1ntik\u00e1l"
+    ],
+    "s\u00e1ntik\u00e1lva": [
+        "k"
     ],
     "s\u00e1ntik\u00e1l\u00f3kat": [
         "s\u00e1ntik\u00e1l"
@@ -327956,6 +328817,7 @@
     "s\u00ednyl\u0151dtek": [
         "s\u00ednyl\u0151dik"
     ],
+    "s\u00ednyl\u0151dtem": [],
     "s\u00ednyl\u0151dve": [
         "s\u00ednyl\u0151dik"
     ],
@@ -330262,6 +331124,7 @@
         "takar\u00f3",
         "takar"
     ],
+    "takar\u00f3dzik": [],
     "takar\u00f3f\u00fcgg\u00f6nyt": [
         "takar\u00f3",
         "f\u00fcgg\u00f6ny"
@@ -331832,6 +332695,9 @@
     "tan\u00edthat": [
         "tan\u00edt"
     ],
+    "tan\u00edthatatlan": [
+        "el"
+    ],
     "tan\u00edthatja": [
         "tan\u00edt"
     ],
@@ -331966,6 +332832,9 @@
     ],
     "tan\u00edtv\u00e1nyaidnak": [
         "tan\u00edtv\u00e1ny"
+    ],
+    "tan\u00edtv\u00e1nyaidra": [
+        "sz"
     ],
     "tan\u00edtv\u00e1nyaihoz": [
         "tan\u00edtv\u00e1ny"
@@ -332828,6 +333697,7 @@
     "tapasz": [],
     "tapasztal": [],
     "tapasztalat": [],
+    "tapasztalata": [],
     "tapasztalatai": [
         "tapasztalat"
     ],
@@ -332844,6 +333714,7 @@
         "tapasztalatlan",
         "tapasztal"
     ],
+    "tapasztalatlans\u00e1g": [],
     "tapasztalatod": [
         "tapasztalat"
     ],
@@ -332922,12 +333793,16 @@
     "tapintani": [
         "tapint"
     ],
+    "tapintat": [
+        "vesz"
+    ],
     "tapintatlan": [
         "tapint"
     ],
     "tapinthat\u00f3": [
         "tapint"
     ],
+    "tapinthat\u00f3hoz": [],
     "tapintott": [
         "tapint"
     ],
@@ -334123,6 +334998,12 @@
     "tarzisba": [],
     "tarzisk\u0151": [],
     "tarzisk\u0151vel": [],
+    "tarzisz": [],
+    "tarziszba": [
+        "semmiz",
+        "semmi"
+    ],
+    "tarziszk\u0151": [],
     "tarzusba": [],
     "tarzusban": [],
     "tarzusb\u00f3l": [],
@@ -334632,6 +335513,9 @@
     "tehetetlens\u00e9g": [
         "tesz",
         "tehetetlen"
+    ],
+    "tehetetlens\u00e9ge": [
+        "tapasztalat"
     ],
     "tehetetlens\u00e9ggel": [
         "tesz",
@@ -337013,6 +337897,7 @@
     ],
     "teodotoszt": [],
     "teodotuszt": [],
+    "teod\u00f3tion": [],
     "teofil": [],
     "teofilosz": [],
     "teofiloszom": [],
@@ -337481,6 +338366,9 @@
     "teremt\u0151nek": [
         "teremt\u0151",
         "teremt"
+    ],
+    "teremt\u0151r\u0151l": [
+        "terv"
     ],
     "teremt\u0151t": [
         "teremt\u0151",
@@ -338331,6 +339219,9 @@
     "terveink": [
         "terv"
     ],
+    "terveir\u0151l": [
+        "szabad"
+    ],
     "terveit": [
         "terv"
     ],
@@ -338782,6 +339673,7 @@
     "tesszalonikiek": [],
     "tesszalonik\u00e1ba": [],
     "tesszalonik\u00e1ban": [],
+    "tesszalonik\u00e1b\u00f3l": [],
     "tesszelonik\u00e1ba": [],
     "tessz\u00fck": [
         "tesz"
@@ -339376,6 +340268,9 @@
     "testv\u00e9rteket": [
         "test",
         "v\u00e9rt"
+    ],
+    "testv\u00e9rt\u00f6rzsek": [
+        "test"
     ],
     "testv\u00e9rt\u00f6rzsekkel": [
         "test",
@@ -342216,6 +343111,7 @@
     "tiszt\u00e1zza": [
         "tiszt\u00e1z"
     ],
+    "tiszt\u00e1z\u00e1sa": [],
     "tiszt\u00e9be": [
         "tiszt"
     ],
@@ -342710,6 +343606,9 @@
     "tized\u00edzig": [
         "t\u00edz",
         "\u00edz"
+    ],
+    "tized\u00edziglen": [
+        "tized"
     ],
     "tized\u00fck": [
         "t\u00edz",
@@ -343837,6 +344736,7 @@
     "tov\u00e1bbmegy": [
         "megy"
     ],
+    "tov\u00e1bbmegyek": [],
     "tov\u00e1bbmegy\u00fcnk": [
         "megy"
     ],
@@ -343921,6 +344821,7 @@
         "v\u00e1ndorol"
     ],
     "tov\u00e1bb\u00e1": [],
+    "tov\u00e1bb\u00e9l\u00e9se": [],
     "tov\u00e1bb\u00edtsa": [
         "tov\u00e1bb\u00edt"
     ],
@@ -343945,6 +344846,7 @@
     "trif\u00f3s\u00e1t": [],
     "trif\u00f3z\u00e1t": [],
     "tripolisz": [],
+    "tritoizaj\u00e1s": [],
     "trofimosz": [],
     "trofimoszt": [],
     "trofimus": [],
@@ -344367,6 +345269,7 @@
     "tr\u00f3nus\u00e1t": [
         "tr\u00f3nus"
     ],
+    "tr\u00f3n\u00f6r\u00f6kl\u00e9s": [],
     "tr\u00f3n\u00f6r\u00f6k\u00f6st": [
         "tr\u00f3n",
         "\u00f6r\u00f6k\u00f6s"
@@ -345547,6 +346450,7 @@
     "tuls\u00f3": [],
     "tumim": [],
     "tumimot": [],
+    "tummim": [],
     "tummimhoz": [],
     "tummimmal": [],
     "tummimodat": [],
@@ -347678,6 +348582,7 @@
         "t\u00e1r",
         "t\u00e1ra"
     ],
+    "t\u00e1r\u00e1val": [],
     "t\u00e1r\u00e9": [
         "t\u00e1r"
     ],
@@ -348167,6 +349072,9 @@
     "t\u00e9ma": [],
     "t\u00e9men\u00edt": [],
     "t\u00e9m\u00e1": [],
+    "t\u00e9m\u00e1ja": [
+        "vesz"
+    ],
     "t\u00e9m\u00e1n": [
         "t\u00e9ma"
     ],
@@ -349658,6 +350566,9 @@
     "t\u00f6lgyf\u00e1i": [
         "t\u00f6lgyfa"
     ],
+    "t\u00f6lgyf\u00e1in\u00e1l": [
+        "t"
+    ],
     "t\u00f6lgyf\u00e1ja": [
         "t\u00f6lgyfa"
     ],
@@ -350497,6 +351408,9 @@
         "t\u00f6rekszik",
         "t\u00f6rekv\u00e9s"
     ],
+    "t\u00f6rekv\u00e9seiket": [
+        "t"
+    ],
     "t\u00f6rekv\u00e9sem": [
         "t\u00f6rekszik",
         "t\u00f6rekv\u00e9s"
@@ -351139,6 +352053,7 @@
     "t\u00f6rv\u00e9nyetekr\u0151l": [
         "t\u00f6rv\u00e9ny"
     ],
+    "t\u00f6rv\u00e9nygy\u0171jtem\u00e9ny": [],
     "t\u00f6rv\u00e9nyhez": [
         "t\u00f6rv\u00e9ny"
     ],
@@ -352382,6 +353297,9 @@
     ],
     "t\u00falt\u00e1pl\u00e1lt": [
         "t\u00e1pl\u00e1l"
+    ],
+    "t\u00falvil\u00e1gi": [
+        "k"
     ],
     "t\u00falz\u00e1sba": [
         "t\u00faloz",
@@ -353649,6 +354567,7 @@
     "udvariszolg\u00e1ival": [],
     "udvariszolg\u00e1k": [],
     "udvariszolg\u00e1t": [],
+    "udvaritisztjeivel": [],
     "udvarlanak": [],
     "udvarlottak": [],
     "udvarl\u00e1s\u00e1nak": [
@@ -354521,6 +355440,7 @@
     "untig": [
         "un"
     ],
+    "ur": [],
     "ura": [
         "\u00far"
     ],
@@ -354916,6 +355836,9 @@
     ],
     "uralm\u00e1ra": [
         "uralom"
+    ],
+    "uralm\u00e1r\u00f3l": [
+        "gy"
     ],
     "uralm\u00e1t": [
         "uralom"
@@ -356386,6 +357309,10 @@
         "ut\u00f3d"
     ],
     "ut\u00f3dl\u00e1s": [],
+    "ut\u00f3dl\u00e1sa": [
+        "jellemez",
+        "jellemz"
+    ],
     "ut\u00f3dnak": [
         "ut\u00f3d"
     ],
@@ -357846,6 +358773,7 @@
     "vallom": [
         "vall"
     ],
+    "vallom\u00e1s": [],
     "vallom\u00e1sa": [
         "vallom\u00e1s"
     ],
@@ -359097,6 +360025,9 @@
     ],
     "veleje": [
         "vel\u0151"
+    ],
+    "velej\u00e9ig": [
+        "v"
     ],
     "velej\u00e9t": [
         "vel\u0151"
@@ -360609,6 +361540,7 @@
     "vesz\u00e9lyei": [
         "vesz\u00e9ly"
     ],
+    "vesz\u00e9lyek": [],
     "vesz\u00e9lyekben": [
         "vesz\u00e9ly"
     ],
@@ -360686,6 +361618,9 @@
     ],
     "vesz\u00edtette": [
         "vesz\u00edt"
+    ],
+    "vesz\u00edtettem": [
+        "vita"
     ],
     "vesz\u00edtheti": [
         "vesz\u00edt"
@@ -361594,6 +362529,9 @@
     ],
     "vezess\u00e9tek": [
         "vezet"
+    ],
+    "vezess\u00fcnk": [
+        "fesz"
     ],
     "vezet": [],
     "vezeted": [
@@ -362871,6 +363809,9 @@
         "vigasztal"
     ],
     "vigasztokat": [],
+    "vigaszt\u00f3": [
+        "diszn"
+    ],
     "vigaszuk": [
         "vigasz"
     ],
@@ -366275,6 +367216,9 @@
         "visz"
     ],
     "vita": [],
+    "vitabesz\u00e9dek": [
+        "keret"
+    ],
     "vitapontokban": [
         "vitapont"
     ],
@@ -366361,6 +367305,7 @@
     "vitelkor": [
         "vitel"
     ],
+    "vitelt": [],
     "vitelt\u0151l": [
         "vitel"
     ],
@@ -366493,11 +367438,17 @@
     "vitt\u00fck": [
         "visz"
     ],
+    "vitt\u00fcnk": [
+        "p"
+    ],
     "vit\u00e1ba": [
         "vita"
     ],
     "vit\u00e1ban": [
         "vita"
+    ],
+    "vit\u00e1i": [
+        "igazol"
     ],
     "vit\u00e1iban": [
         "vita"
@@ -367030,6 +367981,9 @@
     "voltatok": [
         "van"
     ],
+    "voltnak": [
+        "sz"
+    ],
     "voltod": [
         "volta",
         "volt"
@@ -367068,6 +368022,9 @@
     "voltotok": [
         "volta",
         "volt"
+    ],
+    "voltotokat": [
+        "el"
     ],
     "voltukban": [
         "volta"
@@ -367744,6 +368701,7 @@
         "v\u00e1dol",
         "v\u00e1dl\u00f3"
     ],
+    "v\u00e1dl\u00f3kkal": [],
     "v\u00e1dl\u00f3knak": [
         "v\u00e1dol",
         "v\u00e1dl\u00f3"
@@ -369563,6 +370521,10 @@
     ],
     "v\u00e1ltott\u00e1l": [
         "v\u00e1lt"
+    ],
+    "v\u00e1ltozand\u00f3s\u00e1g": [
+        "tapasztalatlan",
+        "tapasztal"
     ],
     "v\u00e1ltozand\u00f3s\u00e1gnak": [
         "v\u00e1ltozand\u00f3",
@@ -371438,6 +372400,9 @@
     "v\u00e9delemnek": [
         "v\u00e9delem"
     ],
+    "v\u00e9delem\u00e9rt": [
+        "er"
+    ],
     "v\u00e9delem\u00fcl": [
         "v\u00e9delem"
     ],
@@ -372113,6 +373078,8 @@
         "v\u00e9g",
         "id\u0151"
     ],
+    "v\u00e9gid\u0151beli": [],
+    "v\u00e9gid\u0151ben": [],
     "v\u00e9gid\u0151re": [
         "v\u00e9g",
         "id\u0151"
@@ -372525,6 +373492,9 @@
     "v\u00e9gt\u0151l": [
         "v\u00e9g"
     ],
+    "v\u00e9gvesz\u00e9lyben": [
+        "k"
+    ],
     "v\u00e9gv\u00e1rai": [
         "v\u00e9g",
         "v\u00e1r"
@@ -372778,6 +373748,9 @@
     "v\u00e9g\u00e9vel": [
         "v\u00e9g"
     ],
+    "v\u00e9g\u00edt\u00e9leten": [
+        "epil"
+    ],
     "v\u00e9g\u00f6k": [],
     "v\u00e9g\u00f6ket": [],
     "v\u00e9g\u00fck": [
@@ -372810,6 +373783,9 @@
     "v\u00e9ka": [],
     "v\u00e9kabeli": [
         "v\u00e9ka"
+    ],
+    "v\u00e9knyakat": [
+        "v"
     ],
     "v\u00e9knyakhoz": [
         "v\u00e9knya"
@@ -373678,6 +374654,9 @@
     ],
     "v\u00e9r\u00fcnk\u00f6n": [
         "v\u00e9r"
+    ],
+    "v\u00e9r\u0171": [
+        "v"
     ],
     "v\u00e9sd": [
         "v\u00e9s"
@@ -375678,6 +376657,7 @@
     "zar\u00e1ja": [],
     "zar\u00e1j\u00e1t": [],
     "zar\u00e1ndok": [],
+    "zar\u00e1ndokhelye": [],
     "zar\u00e1ndoklat": [],
     "zar\u00e1ndoklataitokat": [
         "zar\u00e1ndoklat"
@@ -376293,6 +377273,7 @@
     "zet\u00e1rnak": [],
     "zeusz": [],
     "zeusznak": [],
+    "zeuszr\u00f3l": [],
     "ze\u00e9b": [],
     "ze\u00e9bbel": [],
     "ze\u00e9bet": [],
@@ -376936,6 +377917,9 @@
     "zsolt\u00e1r": [],
     "zsolt\u00e1ra": [
         "zsolt\u00e1r"
+    ],
+    "zsolt\u00e1rai": [
+        "uralom"
     ],
     "zsolt\u00e1rainkat": [
         "zsolt\u00e1r"
@@ -377753,6 +378737,11 @@
     "z\u00e1rsz": [
         "z\u00e1r"
     ],
+    "z\u00e1rszava": [
+        "csoda",
+        "tett"
+    ],
+    "z\u00e1rsz\u00f3": [],
     "z\u00e1rt": [
         "z\u00e1r"
     ],
@@ -378856,6 +379845,9 @@
     "\u00e1guk": [
         "\u00e1g"
     ],
+    "\u00e1gur": [
+        "szabad"
+    ],
     "\u00e1gurnak": [],
     "\u00e1gy": [],
     "\u00e1gya": [
@@ -379517,6 +380509,9 @@
     ],
     "\u00e1ldozataik\u00e9nt": [
         "\u00e1ldozat"
+    ],
+    "\u00e1ldozataimat": [
+        "k"
     ],
     "\u00e1ldozataimra": [
         "\u00e1ldozat"
@@ -380200,6 +381195,9 @@
     ],
     "\u00e1ld\u00e1s\u00e1val": [
         "\u00e1ld"
+    ],
+    "\u00e1ld\u00e1s\u00e1\u00e9rt": [
+        "adom"
     ],
     "\u00e1ld\u00e1s\u00e9rt": [
         "\u00e1ld"
@@ -382079,6 +383077,10 @@
     "\u00e1ltatja": [
         "\u00e1ltat"
     ],
+    "\u00e1ltatok": [
+        "elhalt",
+        "hal"
+    ],
     "\u00e1ltatott": [
         "\u00e1ltat"
     ],
@@ -382121,6 +383123,7 @@
     "\u00e1mont": [],
     "\u00e1mos": [],
     "\u00e1mosz": [],
+    "\u00e1moszhoz": [],
     "\u00e1mosznak": [],
     "\u00e1moszt": [],
     "\u00e1mosz\u00e9": [],
@@ -384529,6 +385532,9 @@
         "l\u00e1t",
         "l\u00e1thatatlan"
     ],
+    "\u00e1tl\u00e1thatatlans\u00e1ga": [
+        "v"
+    ],
     "\u00e1tl\u00e1tja": [
         "l\u00e1t"
     ],
@@ -385551,6 +386557,9 @@
     ],
     "\u00e9brednek": [
         "\u00e9bred"
+    ],
+    "\u00e9bredn\u00fcnk": [
+        "vezet"
     ],
     "\u00e9bredsz": [
         "\u00e9bred"
@@ -387354,6 +388363,7 @@
     "\u00e9letn\u00e9l": [
         "\u00e9let"
     ],
+    "\u00e9letrajzi": [],
     "\u00e9letre": [
         "\u00e9let"
     ],
@@ -389202,6 +390212,7 @@
         "\u00e9p\u00fclet",
         "k\u0151"
     ],
+    "\u00e9p\u00fcletk\u0151nek": [],
     "\u00e9p\u00fcletnek": [
         "\u00e9p\u00fclet"
     ],
@@ -390456,6 +391467,9 @@
     "\u00e9rthetetlen": [
         "\u00e9rt"
     ],
+    "\u00e9rthetetlens\u00e9ge": [
+        "bar"
+    ],
     "\u00e9rthetetlen\u00fcl": [
         "\u00e9rthetetlen",
         "\u00e9rt"
@@ -391285,6 +392299,12 @@
     ],
     "\u00e9szrev\u00e9v\u00e9n": [
         "vesz"
+    ],
+    "\u00e9szszer\u0171": [
+        "t"
+    ],
+    "\u00e9szszer\u0171nek": [
+        "presbiter"
     ],
     "\u00e9szszer\u0171tlennek": [
         "\u00e9szszer\u0171tlen"
@@ -393064,6 +394084,7 @@
         "mond",
         "monda"
     ],
+    "\u00edt\u00e9letmond\u00e1sok": [],
     "\u00edt\u00e9letmond\u00e1st": [
         "\u00edt\u00e9let",
         "monda",
@@ -393123,6 +394144,9 @@
     ],
     "\u00edt\u00e9let\u00e9vel": [
         "\u00edt\u00e9let"
+    ],
+    "\u00edt\u00e9let\u00e9\u00e9rt": [
+        "sz"
     ],
     "\u00edt\u00e9let\u00f6k": [],
     "\u00edt\u00e9let\u00fck": [
@@ -395985,6 +397009,9 @@
     "\u00f6nuralommal": [
         "\u00f6nuralom"
     ],
+    "\u00f6nuralom\u00e9rt": [
+        "arany"
+    ],
     "\u00f6nv\u00e9delemre": [
         "\u00f6nv\u00e9delem"
     ],
@@ -398103,6 +399130,11 @@
         "gy\u0171lik"
     ],
     "\u00f6sszegy\u0171l\u00e9nek": [],
+    "\u00f6sszegzi": [
+        "tesz",
+        "tehetetlens",
+        "tehetetlen"
+    ],
     "\u00f6sszeg\u00e1zoltad": [
         "g\u00e1zol"
     ],
@@ -400289,6 +401321,9 @@
     "\u00f6z\u00f6nlik": [
         "\u00f6z\u00f6n\u00f6l"
     ],
+    "\u00f6z\u00f6nl\u00f6tt": [
+        "meg"
+    ],
     "\u00f6z\u00f6nl\u00f6ttek": [
         "\u00f6z\u00f6nlik"
     ],
@@ -400476,6 +401511,10 @@
         "\u00fajj\u00e1sz\u00fclet\u00e9s",
         "sz\u00fcletik"
     ],
+    "\u00fajj\u00e1sz\u00fclet\u00e9s\u00e9rt": [
+        "megbocs",
+        "bocs"
+    ],
     "\u00fajj\u00e1sz\u00fclt": [
         "sz\u00fcl"
     ],
@@ -400554,6 +401593,7 @@
     "\u00fajj\u00e1\u00e9p\u00edtve": [
         "\u00e9p\u00edt"
     ],
+    "\u00fajj\u00e1\u00e9p\u00edt\u00e9s": [],
     "\u00fajj\u00e1\u00e9p\u00edt\u00e9se": [
         "\u00fajj\u00e1\u00e9p\u00edt\u00e9s",
         "\u00e9p\u00edt"
@@ -400596,6 +401636,9 @@
     "\u00fajrah\u00e1zasod\u00e1sa": [
         "h\u00e1zasodik",
         "h\u00e1z"
+    ],
+    "\u00fajrakezd\u00e9s": [
+        "b"
     ],
     "\u00fajrakezd\u00e9se": [
         "kezd"
@@ -400918,6 +401961,9 @@
     "\u00fatb\u00f3l": [
         "\u00fat"
     ],
+    "\u00fatel\u00e1gaz\u00e1sn\u00e1l": [
+        "k"
+    ],
     "\u00fatf\u00e9len": [
         "\u00fatf\u00e9l"
     ],
@@ -401161,6 +402207,9 @@
     ],
     "\u00fatkeresztez\u0151d\u00e9sn\u00e9l": [
         "\u00fatkeresztez\u0151d\u00e9s"
+    ],
+    "\u00fatk\u00e9nt": [
+        "gondolkodik"
     ],
     "\u00fatk\u00f6zben": [],
     "\u00fatmutat\u00e1sa": [
@@ -401526,6 +402575,7 @@
         "\u00fcdv\u00f6s",
         "\u00fcdv"
     ],
+    "\u00fcdv\u00f6ss\u00e9g\u00e9rt": [],
     "\u00fcdv\u00f6ss\u00e9g\u00e9t": [
         "\u00fcdv\u00f6s",
         "\u00fcdv"

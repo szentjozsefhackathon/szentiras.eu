@@ -56,7 +56,7 @@ return [
             'copyright' => 'A Szent Jeromos Katolikus Bibliatársulat ideiglenes engedélyével. (Megújítva: 2025. április)',
             'commonName' => 'Káldi-Neovulgáta',
             'publisher' => [ 'name' => 'Szent Jeromos Katolikus Bibliatársulat', 'url' => 'https://www.biblia-tarsulat.hu'],
-            'toc_heading_levels' => '5-9'
+            'toc_heading_levels' => '4-9'
         ],
 
         'KG' => [
