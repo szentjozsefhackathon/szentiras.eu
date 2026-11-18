@@ -1,0 +1,128 @@
+[
+    {
+        "slug": "23-zsoltar",
+        "name": "23. zsoltár",
+        "alternative_names": ["Az Úr az én pásztorom"],
+        "reference": "Zsolt 23",
+        "key_verse": "Zsolt 23,1"
+    },
+    {
+        "slug": "a-hegyi-beszed",
+        "name": "A hegyi beszéd",
+        "alternative_names": ["Jézus hegyi beszéde"],
+        "reference": "Mt 5,1-7,29",
+        "key_verse": "Mt 5,3"
+    },
+    {
+        "slug": "a-nyolc-boldogsag",
+        "name": "A nyolc boldogság",
+        "alternative_names": ["Boldogmondások", "Boldogok a lélekben szegények"],
+        "reference": "Mt 5,1-12",
+        "key_verse": "Mt 5,3"
+    },
+    {
+        "slug": "szeretethimnusz",
+        "name": "Szeretethimnusz",
+        "alternative_names": ["A szeretet himnusza", "A szeretet türelmes"],
+        "reference": "1Kor 13,1-13",
+        "key_verse": "1Kor 13,4"
+    },
+    {
+        "slug": "miatyank",
+        "name": "Miatyánk",
+        "alternative_names": ["Az Úr imája"],
+        "reference": "Mt 6,9-13",
+        "key_verse": "Mt 6,9"
+    },
+    {
+        "slug": "az-ut-az-igazsag-es-az-elet",
+        "name": "Én vagyok az út, az igazság és az élet",
+        "alternative_names": ["Ne legyen nyugtalan a szívetek", "János evangéliuma 14. fejezet"],
+        "reference": "Jn 14",
+        "key_verse": "Jn 14,6"
+    },
+    {
+        "slug": "91-zsoltar",
+        "name": "91. zsoltár",
+        "alternative_names": ["Isten védőszárnya alatt", "Aki a Fölséges védelmében lakik"],
+        "reference": "Zsolt 91",
+        "key_verse": "Zsolt 91,1"
+    },
+    {
+        "slug": "a-vilag-teremtese",
+        "name": "A világ teremtése",
+        "alternative_names": ["Az első teremtéstörténet", "Kezdetkor teremtette Isten az eget és a földet"],
+        "reference": "Ter 1,1-2,3",
+        "key_verse": "Ter 1,1"
+    },
+    {
+        "slug": "gyertek-hozzam-mindnyajan",
+        "name": "Gyertek hozzám mindnyájan",
+        "alternative_names": ["Jöjjetek hozzám mindnyájan, akik elfáradtatok"],
+        "reference": "Mt 11,25-30",
+        "key_verse": "Mt 11,28"
+    },
+    {
+        "slug": "kezdetben-volt-az-ige",
+        "name": "Kezdetben volt az Ige",
+        "alternative_names": ["János evangéliumának előszava"],
+        "reference": "Jn 1,1-18",
+        "key_verse": "Jn 1,1"
+    },
+    {
+        "slug": "mindennek-megvan-az-ideje",
+        "name": "Mindennek megvan az órája",
+        "alternative_names": ["Mindennek megvan az ideje", "Mindennek rendelt ideje van"],
+        "reference": "Préd 3,1-15",
+        "key_verse": "Préd 3,1"
+    },
+    {
+        "slug": "romai-level-8",
+        "name": "A rómaiaknak írt levél 8. fejezete",
+        "alternative_names": ["Ha Isten velünk, ki ellenünk?", "Akik Istent szeretik, azoknak minden javukra válik"],
+        "reference": "Róm 8",
+        "key_verse": "Róm 8,28"
+    },
+    {
+        "slug": "a-jo-pasztor",
+        "name": "A jó pásztor",
+        "alternative_names": ["Én vagyok a jó pásztor"],
+        "reference": "Jn 10,1-18",
+        "key_verse": "Jn 10,11"
+    },
+    {
+        "slug": "az-igazi-szoloto",
+        "name": "Az igazi szőlőtő",
+        "alternative_names": ["Én vagyok a szőlőtő, ti a szőlővesszők"],
+        "reference": "Jn 15,1-17",
+        "key_verse": "Jn 15,5"
+    },
+    {
+        "slug": "jeremias-levele-a-szamuzotteknek",
+        "name": "Jeremiás levele a száműzötteknek",
+        "alternative_names": ["Tudom, milyen terveket gondoltam el felőletek"],
+        "reference": "Jer 29,1-14",
+        "key_verse": "Jer 29,11"
+    },
+    {
+        "slug": "a-tekozlo-fiu",
+        "name": "A tékozló fiú",
+        "alternative_names": ["Az irgalmas atya példabeszéde"],
+        "reference": "Lk 15,11-32",
+        "key_verse": "Lk 15,20"
+    },
+    {
+        "slug": "jezus-szuletese",
+        "name": "Jézus születése",
+        "alternative_names": ["A karácsonyi evangélium"],
+        "reference": "Lk 2,1-20",
+        "key_verse": "Lk 2,11"
+    },
+    {
+        "slug": "90-zsoltar",
+        "name": "90. zsoltár",
+        "alternative_names": ["Az ember mulandósága", "Uram, te voltál menedékünk"],
+        "reference": "Zsolt 90",
+        "key_verse": "Zsolt 90,12"
+    }
+]

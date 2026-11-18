@@ -89,10 +89,15 @@ Wording: Catholic usage, "Nevezetes szentírási szakaszok" / "szentírási hely
   - when the passage is read in the liturgy, worked out from the daily-readings data;
   - structured data (FAQ for the common questions), verse card and PDF.
 - [x] **Chapter banner** ("23. zsoltár – Az Úr az én pásztorom (Zsolt 23): magyarázat és fordítások") and **sitemap entry** (in `sitemap-guides.xml`).
-- [ ] **More internal links:** a homepage tile, a menu link to `/szakasz`, and quick search by name.
+- [x] **Menu link** to `/szakasz` (Információk → Nevezetes szentírási szakaszok) and a card on `/informaciok`.
+- [ ] **More internal links:** a homepage tile and quick search by name.
 - [x] **KNB text from the XML** (imported on production 2026-11-18). KNB switches to `szentiras:importScriptureXml` (`xml/KNB.xml`): the revised text replaces the pre-2020 wording the xlsx import showed, and the stray "0" lines are gone. Same heading structure as SZIT (book parts, sections at level 4, TOC levels 4–9). The revision renumbers a few verses (Józs 4,25→4,24, Józs 5,16→5,15, Jób 16, Bír 5,32, 2Mak 12,46), and verses missing from the Neovulgata are empty. Italics come from the XML's web layout (psalm superscriptions, the words quoted literally from the OT, 869 lines), and the synoptic parallels become cross-references (716). KNB now has stems too, so stem search works for it (it had none before). Import workflow: run the import locally with Hunspell, which updates `database/preload/stems.json`; commit and deploy; then on production `printf 'KNB\n' | php artisan szentiras:importScriptureXml --no-hunspell`, which takes the stems from that file (site is in maintenance mode for a few minutes).
 - [ ] **3 KNB verse fixes conflict** with the imported text: check them in the editor (Szövegjavítások).
-- [ ] **Poem lines (902) get no stems** (`ImportScripture::STEMMED_VERSE_TYPES` lacks 902), so stem search misses most of the Psalms in KNB and SZIT.
+- [ ] **Poem lines (902) get no stems** (`ImportScripture::STEMMED_VERSE_TYPES` lacks 902), so stem search misses most of the Psalms in KNB and SZIT (KNB: 28,274 poem lines, SZIT: about 28,300). Fix:
+  1. Add the translation's `poemLine` types to `ImportScripture::stemmedVerseTypesFor()`, the same way the heading types are added.
+  2. Re-import KNB and SZIT locally with Hunspell, so `stems.json` gets the new words, and commit it.
+  3. Deploy, then re-import both on production with `--no-hunspell`.
+  4. Check: a search for "pásztor" in Zsolt finds "Az Úr az én pásztorom" (Zsolt 23,1).
 - [ ] **First batch,** ordered by Search Console demand:
   1. Zsolt 23
   2. Mt 5 (Hegyi beszéd, Boldogmondások)
@@ -105,7 +110,11 @@ Wording: Catholic usage, "Nevezetes szentírási szakaszok" / "szentírási hely
   9. Jn 1,1-18
   10. Préd 3
 - [ ] **Second batch:** Róm 8, Jn 10, Jn 15, Jer 29,11, Lk 15, Lk 2, Zsolt 90.
-- [ ] **Content workflow:** AI draft from the real text and Greek analysis, then human review before publishing.
+- [x] **Drafts of both batches** (`resources/data/famous-passages.json`): `php artisan szentiras:import-famous-passages` creates the missing ones as inactive drafts (name, alternative names, reference, key verse; no AI-written introduction) and collects their Church citations. Existing slugs are skipped.
+- [x] **Church documents citing the passage:** quoted in their own words from the Catechism, Vatican II, encyclicals and apostolic documents, collected from Hittéka, formerly Magister (`/api/kerdes?q=<reference>&forras=<group>`) by `php artisan szentiras:famous-passage-citations [slug…]` and stored with the passage. Rerun after changing a reference. The page names and links Hittéka (`MAGISTER_PUBLIC_URL`, default https://hitteka.szentiras.eu) only when `MAGISTER_BRAND_PUBLIC=true`; until then it shows only the count of citing places.
+- [x] **Commentaries:** the chapter pages' commentary box (with its verification label) under the text.
+- [ ] **Review and publish** the drafts in the editor; Zsolt 90 has no Church citations, Zsolt 91, Préd 3 and Jer 29 only one or two.
+- [ ] **Content workflow** for the body: from the real text and Greek analysis, reviewed before publishing.
 
 ### Open question: verse searches
 

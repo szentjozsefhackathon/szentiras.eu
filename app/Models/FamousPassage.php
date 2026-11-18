@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $chapter_to
  * @property string|null $introduction
  * @property string|null $content
+ * @property list<array{key: string, title: string, total: int, citations: list<array<string, string|null>>}>|null $church_citations
+ * @property \Illuminate\Support\Carbon|null $church_citations_fetched_at
  * @property string|null $seo_title
  * @property string|null $seo_description
  * @property bool $is_active
@@ -51,6 +53,8 @@ class FamousPassage extends Model
         'chapter_to',
         'introduction',
         'content',
+        'church_citations',
+        'church_citations_fetched_at',
         'seo_title',
         'seo_description',
         'is_active',
@@ -64,6 +68,8 @@ class FamousPassage extends Model
     {
         return [
             'alternative_names' => 'array',
+            'church_citations' => 'array',
+            'church_citations_fetched_at' => 'datetime',
             'chapter_from' => 'integer',
             'chapter_to' => 'integer',
             'is_active' => 'boolean',

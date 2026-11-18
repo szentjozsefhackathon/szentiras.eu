@@ -39,6 +39,17 @@
     </div>
 
     <div class="card mb-4 shadow-sm">
+        <div class="card-body d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+            <i class="bi bi-bookmark-star fs-1 text-primary"></i>
+            <div>
+                <h2 class="h5 mb-1"><a href="{{ route('famousPassages.index') }}" class="text-decoration-none">Nevezetes szentírási szakaszok</a></h2>
+                <p class="mb-2 text-muted">A Biblia legismertebb részei: a szöveg több fordításban, összefüggései és magyarázata.</p>
+                <a href="{{ route('famousPassages.index') }}" class="btn btn-sm btn-outline-primary">Nevezetes szakaszok megnyitása</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
         <div class="card-body">
             <div class="markdown-content">
                 {% apply markdown_to_html %}

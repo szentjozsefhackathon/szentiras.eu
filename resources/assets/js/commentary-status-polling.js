@@ -370,6 +370,20 @@ class CommentaryStatusPoller {
     }
 }
 
+/**
+ * Shows one commentary panel of a container and hides the others; a second click closes it.
+ * Global, because the buttons of the loaded commentary fragment call it from onclick.
+ */
+window.toggleCommentaryPanel = function (containerIndex, panelId) {
+    const container = document.getElementById('commentary-panels-' + containerIndex);
+    if (!container) { return; }
+    const panels = container.querySelectorAll('.commentary-panel');
+    const target = document.getElementById(panelId);
+    const isActive = target && !target.classList.contains('hidden');
+    panels.forEach(function (panel) { panel.classList.add('hidden'); });
+    if (!isActive && target) { target.classList.remove('hidden'); }
+};
+
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {

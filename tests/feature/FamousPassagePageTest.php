@@ -96,6 +96,20 @@ class FamousPassagePageTest extends FastDatabaseTestCase
             ->assertDontSee('magyarázat és fordítások</a>', false);
     }
 
+    public function test_visitors_find_the_list_in_the_menu_and_on_the_information_page(): void
+    {
+        $listLink = 'href="'.route('famousPassages.index').'"';
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee($listLink, false);
+
+        $this->get('/informaciok')
+            ->assertOk()
+            ->assertSee($listLink, false)
+            ->assertSee('Nevezetes szentírási szakaszok</a>', false);
+    }
+
     public function test_sitemap_lists_active_passages(): void
     {
         FamousPassage::factory()->create();

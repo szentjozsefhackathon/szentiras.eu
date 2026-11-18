@@ -45,6 +45,7 @@ class FamousPassageController extends Controller
             'translation' => $translation,
             'verseContainers' => $verseContainers,
             'translationRows' => $this->famousPassageService->translationRows($famousPassage),
+            'magisterUrl' => config('services.magister.brand_public') ? rtrim((string) config('services.magister.public_url'), '/') : null,
             'pageTitle' => $famousPassage->seo_title ?: "{$famousPassage->displayName()} – szöveg, magyarázat, fordítások",
             'teaser' => $famousPassage->seo_description
                 ?: Str::limit($famousPassage->introduction ?: $this->textService->getTeaser($verseContainers), 300, '…', true),

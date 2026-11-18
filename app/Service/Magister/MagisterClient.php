@@ -37,6 +37,42 @@ class MagisterClient
     }
 
     /**
+     * The units of one source group (KEK, zsinat, enciklikak…) that cite a Bible reference, and
+     * how many cite it in all: Magister returns at most 15 units per query. A reference Magister
+     * does not recognise as one would be answered by a meaning search, so that counts as none.
+     *
+     * @return array{total: int, units: list<array<string, mixed>>}
+     *
+     * @throws MagisterUnavailableException
+     */
+    public function unitsCiting(string $reference, string $sourceGroup): array
+    {
+        try {
+            $response = Http::baseUrl(config('services.magister.url'))
+                ->timeout((int) config('services.magister.timeout'))
+                ->acceptJson()
+                ->get('/api/kerdes', ['q' => $reference, 'forras' => $sourceGroup, 'limit' => 50, 'szentiras' => 0])
+                ->throw();
+        } catch (ConnectionException|RequestException $e) {
+            Log::warning("Magister citation lookup failed: {$e->getMessage()}");
+            throw new MagisterUnavailableException('Magister citation lookup failed.', 0, $e);
+        }
+
+        $citing = $response->json('idezi');
+        $units = $response->json('units');
+        if (! is_array($citing) || ! is_array($units)) {
+            return ['total' => 0, 'units' => []];
+        }
+
+        return [
+            'total' => (int) ($citing['total'] ?? 0),
+            'units' => array_values(array_filter($units, fn ($unit): bool => is_array($unit)
+                && is_string($unit['id'] ?? null)
+                && is_string($unit['cites'] ?? null) && $unit['cites'] !== '')),
+        ];
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function fetchPassages(string $question, int $limit): array

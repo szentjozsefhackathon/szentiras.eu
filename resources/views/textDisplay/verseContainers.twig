@@ -1,15 +1,3 @@
-<script>
-    function toggleCommentaryPanel(containerIndex, panelId) {
-        const container = document.getElementById('commentary-panels-' + containerIndex);
-        if (!container) { return; }
-        const panels = container.querySelectorAll('.commentary-panel');
-        const target = document.getElementById(panelId);
-        const isActive = target && !target.classList.contains('hidden');
-        panels.forEach(function(p) { p.classList.add('hidden'); });
-        if (!isActive && target) { target.classList.remove('hidden'); }
-    }
-</script>
-
 {% for verseContainer in verseContainers %}
     {% set containerIndex = loop.index0 %}
     <div>

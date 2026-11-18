@@ -51,7 +51,11 @@ return [
 ],
 
 'magister' => [
-    'url' => env('MAGISTER_URL', 'https://magister.szentiras.eu'),
+    'url' => env('MAGISTER_URL', 'https://hitteka.szentiras.eu'),
+    // Where visitors are sent; MAGISTER_URL may be an internal address. Public name: Hittéka
+    'public_url' => env('MAGISTER_PUBLIC_URL', 'https://hitteka.szentiras.eu'),
+    // Until the brand is launched, pages neither name Hittéka nor link to it
+    'brand_public' => (bool) env('MAGISTER_BRAND_PUBLIC', false),
     'timeout' => env('MAGISTER_TIMEOUT', 15),
     // Magister answers with references in this translation's numbering and book abbreviations
     'reference_translation' => env('MAGISTER_REFERENCE_TRANSLATION', 'SZIT'),

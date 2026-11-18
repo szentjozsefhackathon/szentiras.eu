@@ -37,6 +37,11 @@
         {% for verseContainer in verseContainers %}
             {{ include('textDisplay.parsedVerseContainer', { 'verseContainer': verseContainer, 'translation': translation, 'verseToPlaces': [] }) }}
         {% endfor %}
+        {# Loaded client-side from /api/commentaries/content, the same box as on the chapter pages #}
+        <div class="commentary-container"
+             data-reference="{{ passage.reference }}"
+             data-translation="{{ translation.abbrev }}"
+             data-container-index="0"></div>
     </section>
 
     {% if translationRows is not empty %}
@@ -55,6 +60,41 @@
         </section>
     {% endif %}
 
+    {% if passage.church_citations is not empty %}
+        <section id="egyhazi-dokumentumok" class="mb-4">
+            <h2 class="h4">Az Egyház dokumentumaiban</h2>
+            <p class="small text-muted">Ahol az Egyház tanítóhivatali dokumentumai ezt a szakaszt idézik, a saját szavaikkal.{% if magisterUrl %} A helyeket a <a href="{{ magisterUrl }}" target="_blank" rel="noopener">Hittéka</a>, az Egyház dokumentumainak forráskeresője gyűjtötte össze.{% endif %}</p>
+            {% for group in passage.church_citations %}
+                <h3 class="h5 mt-3">{{ group.title }}</h3>
+                <div class="list-group shadow-sm">
+                    {% for citation in group.citations %}
+                        <div class="list-group-item py-3">
+                            <blockquote class="mb-1">{{ citation.quote }}</blockquote>
+                            <div class="small">
+                                {% if citation.url %}
+                                    <a href="{{ citation.url }}" target="_blank" rel="noopener">{{ citation.label }} <i class="bi bi-box-arrow-up-right"></i></a>
+                                {% else %}
+                                    {{ citation.label }}
+                                {% endif %}
+                                {% if citation.author %}<span class="text-muted">– {{ citation.author }}{{ citation.docType ? ', ' ~ citation.docType }}{{ citation.year ? ', ' ~ citation.year }}</span>{% endif %}
+                                <span class="text-muted">· {{ citation.cites }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if group.total > group.citations|length %}
+                    <p class="small mt-1 mb-0">
+                        {% if magisterUrl %}
+                            <a href="{{ magisterUrl }}/?{{ { q: passage.reference, forras: group.key }|url_encode }}" target="_blank" rel="noopener">Mind a {{ group.total }} hely a Hittékában <i class="bi bi-box-arrow-up-right"></i></a>
+                        {% else %}
+                            <span class="text-muted">Összesen {{ group.total }} helyen idézik.</span>
+                        {% endif %}
+                    </p>
+                {% endif %}
+            {% endfor %}
+        </section>
+    {% endif %}
+
     {% if passage.content %}
         <section class="markdown-content mb-4">
             {{ passage.content|markdown_to_html|raw }}
@@ -62,3 +102,5 @@
     {% endif %}
 </article>
 {% endblock %}
+
+{% set js = ['commentary-status-polling'] %}
