@@ -55,6 +55,12 @@ class ImportScripture extends Command
     protected $hunspellEnabled = false;
 
     /**
+     * With --no-hunspell (production has no Hunspell) the stems come from the stems file saved
+     * by a local import that ran Hunspell; words missing from the file get no stems.
+     */
+    protected bool $stemsFromFileOnly = false;
+
+    /**
      * The verse types stemmed regardless of the translation.
      */
     public const STEMMED_VERSE_TYPES = [60, 6, 901, 5, 10, 20, 30, 1, 2, 3, 401, 501, 601, 701, 703, 704];
@@ -66,6 +72,11 @@ class ImportScripture extends Command
      */
     protected array $stemmedVerseTypes = self::STEMMED_VERSE_TYPES;
     protected $newStems = 0;
+
+    /**
+     * Words missing from the stems file when stemming without Hunspell.
+     */
+    protected int $wordsWithoutStems = 0;
     protected $sourceDirectory;
     protected $importableTranslations = ['BD', 'KG', 'KNB', 'RUF', 'UF', 'SZIT', 'STL'];
     // Mapping: Database columns to Books Sheet header column numbers
@@ -112,7 +123,9 @@ class ImportScripture extends Command
             \Laravel\Telescope\Telescope::stopRecording();
         }
 
-        if (!$this->option('no-hunspell')) {
+        if ($this->option('no-hunspell')) {
+            $this->useStemsFile();
+        } else {
             $this->testHunspell();
         }
         $transAbbrevToImport = $this->choice('Melyik fordítást töltsük be?', $this->importableTranslations);
@@ -152,7 +165,7 @@ class ImportScripture extends Command
     {
         return [
             ['file', null, InputOption::VALUE_OPTIONAL, 'Ha fájlból szeretnéd betölteni, nem dropboxból, az importálandó fájl elérési útja', null],
-            ['no-hunspell', null, InputOption::VALUE_NONE, 'Szótöveket ne állítsa elő'],
+            ['no-hunspell', null, InputOption::VALUE_NONE, 'Hunspell helyett a szótövek fájlból (database/preload/stems.json)'],
             ['filter', null, InputOption::VALUE_OPTIONAL, 'Szűrés `gepi` (regex) szerint', null],
         ];
     }
@@ -329,7 +342,7 @@ class ImportScripture extends Command
         $dbToHeaderMap = $this->mapVerseSheetHeadersToDbColumns($verseSheetHeaders);
 
         $pipes = [];
-        if ($this->hunspellEnabled) {
+        if ($this->hunspellEnabled && !$this->stemsFromFileOnly) {
             $hunspellProcess = proc_open(
                 'stdbuf -oL hunspell -m -d hu_HU -i UTF-8',
                 $this->descriptorspec,
@@ -355,7 +368,7 @@ class ImportScripture extends Command
         );
         $reader->close();
 
-        if ($this->hunspellEnabled) {
+        if ($this->hunspellEnabled && !$this->stemsFromFileOnly) {
             fclose($pipes[0]);
             fclose($pipes[1]);
             fclose($pipes[2]);
@@ -404,7 +417,7 @@ class ImportScripture extends Command
         }
     }
 
-    protected function testHunspell()
+    protected function testHunspell(): void
     {
         $hunspellInstalledReturnVal = shell_exec("which hunspell");
         if (empty($hunspellInstalledReturnVal)) {
@@ -415,6 +428,21 @@ class ImportScripture extends Command
             App::abort(500, 'Can\'t open the hu_HU dictionary. Try to install hunspell-hu or use \'--no-hunspell\' instead.');
         }
         $this->hunspellEnabled = true;
+    }
+
+    /**
+     * With --no-hunspell the stems come from the stems file saved by a local import that ran
+     * Hunspell; without the file the verses get no stems.
+     */
+    protected function useStemsFile(): void
+    {
+        if (!file_exists(self::STEM_FILE)) {
+            $this->warn('Nincs ' . self::STEM_FILE . ': a versek szótövek nélkül kerülnek be.');
+            return;
+        }
+        $this->info('A szótöveket a ' . self::STEM_FILE . ' fájlból vesszük, Hunspell nélkül.');
+        $this->hunspellEnabled = true;
+        $this->stemsFromFileOnly = true;
     }
 
     protected function getSheets(Reader $reader): array
@@ -620,6 +648,10 @@ class ImportScripture extends Command
                 $cachedStems = Cache::store("array")->get("hunspell_{$word}");
                 $cachedStems[] = $word;
                 $verseroots = $verseroots->merge($cachedStems);
+            } elseif ($this->stemsFromFileOnly) {
+                Cache::store("array")->put("hunspell_{$word}", [], 60 * 60 * 24);
+                $verseroots = $verseroots->merge([$word]);
+                $this->wordsWithoutStems++;
             } else {
                 fwrite($pipes[0], "{$word}\n"); // send start
                 $stems = collect();

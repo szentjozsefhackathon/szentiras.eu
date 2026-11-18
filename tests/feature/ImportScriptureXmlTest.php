@@ -157,6 +157,20 @@ class ImportScriptureXmlTest extends TestCase
         ], $verses);
     }
 
+    public function test_with_no_hunspell_the_stems_come_from_the_stems_file(): void
+    {
+        $command = $this->app->make(ImportScriptureXml::class);
+        $command->setOutput(new \Illuminate\Console\OutputStyle(new \Symfony\Component\Console\Input\ArrayInput([]), new \Symfony\Component\Console\Output\NullOutput()));
+        (new \ReflectionMethod($command, 'useStemsFile'))->invoke($command);
+        $this->assertTrue((new \ReflectionProperty($command, 'stemsFromFileOnly'))->getValue($command));
+        \Cache::store('array')->put('hunspell_pásztorom', ['pásztor'], 60);
+
+        $verseroot = (new \ReflectionMethod($command, 'executeStemming'))->invoke($command, 'Az Úr az én pásztorom,', []);
+
+        $this->assertSame('az úr az én pásztor pásztorom', $verseroot);
+        $this->assertSame(3, (new \ReflectionProperty($command, 'wordsWithoutStems'))->getValue($command));
+    }
+
     public function test_a_verse_deleted_entirely_keeps_an_empty_record_for_its_number(): void
     {
         $verses = $this->versesOf(<<<'XML'

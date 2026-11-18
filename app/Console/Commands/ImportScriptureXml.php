@@ -67,7 +67,7 @@ class ImportScriptureXml extends ImportScripture
         // Hunspell stemming setup
         $pipes = [];
         $hunspellProcess = null;
-        if ($this->hunspellEnabled) {
+        if ($this->hunspellEnabled && !$this->stemsFromFileOnly) {
             $hunspellProcess = proc_open(
                 'stdbuf -oL hunspell -m -d hu_HU -i UTF-8',
                 $this->descriptorspec,
@@ -126,7 +126,7 @@ class ImportScriptureXml extends ImportScripture
         }
 
         // Close Hunspell process if opened
-        if ($this->hunspellEnabled) {
+        if ($this->hunspellEnabled && !$this->stemsFromFileOnly) {
             fclose($pipes[0]);
             fclose($pipes[1]);
             fclose($pipes[2]);
@@ -135,6 +135,9 @@ class ImportScriptureXml extends ImportScripture
             }
         }
 
+        if ($this->stemsFromFileOnly) {
+            $this->info("A szótövek fájljában nem szereplő szavak: {$this->wordsWithoutStems}");
+        }
         $this->info(sprintf("%d könyv és %d vers beolvasva.", count($bookInserts), count($verseInserts)));
         return [$bookInserts, $verseInserts];
     }
