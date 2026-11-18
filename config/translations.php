@@ -179,6 +179,7 @@ return [
             'order' => 12,
             'copyright' => 'Káldi György SJ 1626-os fordításának Tárkányi Béla által elvégzett revíziója, 1865 (nem jogvédett)',
             'commonName' => 'Káldi Biblia 1626',
+            'numberingScheme' => 'vulgata',
             'publisher' => [ 'name' => 'Káldi Biblia Gitlab Projekt', 'url' => 'https://kaldibiblia.gitlab.io/'],
             'toc_heading_levels' => '5-9'
         ]

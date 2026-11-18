@@ -1,0 +1,24 @@
+{% extends 'layout.twig' %}
+{% set pageTitle = 'Új szakasz | Szentírás' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Új szakasz</h1>
+    <p class="text-muted">Egy nevezetes szentírási szakasz saját oldala. Mentés után inaktívként is megnézheted a nyilvános címén.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ route('editor.famousPassages.store') }}" method="POST">
+                    {{ csrf_field() }}
+                    {% include 'editor.famousPassages._form' %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

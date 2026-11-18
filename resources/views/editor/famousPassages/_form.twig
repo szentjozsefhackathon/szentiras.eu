@@ -1,0 +1,108 @@
+{% if session('success') %}
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i> {{ session('success') }}
+    </div>
+{% endif %}
+
+{% if errors.any() %}
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            {% for error in errors.all() %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label for="name" class="form-label">Név <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="name" name="name" maxlength="255" required autofocus
+               value="{{ old('name', passage is defined ? passage.name : '') }}" placeholder="23. zsoltár">
+        <div class="form-text">Ahogy az emberek keresik; ez lesz az oldal címsora.</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="slug" class="form-label">URL-részlet</label>
+        <div class="input-group">
+            <span class="input-group-text">/szakasz/</span>
+            <input type="text" class="form-control" id="slug" name="slug" maxlength="255"
+                   value="{{ old('slug', passage is defined ? passage.slug : '') }}" placeholder="23-zsoltar">
+        </div>
+        <div class="form-text">Üresen hagyva a névből készül. Közzététel után ne változtasd, mert a régi linkek elromlanak.</div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label for="alternative_names" class="form-label">Más nevei</label>
+    <textarea class="form-control" id="alternative_names" name="alternative_names" rows="3" maxlength="1000"
+              placeholder="Az Úr az én pásztorom">{{ old('alternative_names', passage is defined ? passage.alternative_names|join("\n") : '') }}</textarea>
+    <div class="form-text">Soronként egy: kezdősor, közismert név. Az első a fejezetoldalakon megjelenő sávba is bekerül.</div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label for="reference" class="form-label">Szentírási hely <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="reference" name="reference" maxlength="100" required
+               value="{{ old('reference', passage is defined ? passage.reference : '') }}" placeholder="Zsolt 23">
+        <div class="form-text">Az alapértelmezett fordítás jelölésével, egy könyvön belül: <code>Zsolt 23</code>, <code>Mt 5,1-12</code>.</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="key_verse" class="form-label">Kulcsvers</label>
+        <input type="text" class="form-control" id="key_verse" name="key_verse" maxlength="100"
+               value="{{ old('key_verse', passage is defined ? passage.key_verse : '') }}" placeholder="Zsolt 23,1">
+        <div class="form-text">Ez jelenik meg az összes fordításban egymás alatt.</div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label for="introduction" class="form-label">Bevezető</label>
+    <textarea class="form-control" id="introduction" name="introduction" rows="3" maxlength="1000">{{ old('introduction', passage is defined ? passage.introduction : '') }}</textarea>
+    <div class="form-text">Egy-két mondat a szöveg előtt; ha nincs külön leírás, ez lesz a keresőben megjelenő leírás.</div>
+</div>
+
+<div class="mb-3">
+    <label for="content" class="form-label">Magyarázat (Markdown)</label>
+    <textarea class="form-control font-monospace" id="content" name="content" rows="20"
+              placeholder="## Összefüggés">{{ old('content', passage is defined ? passage.content : '') }}</textarea>
+    <div class="form-text">Pl. <code>## Összefüggés</code>, <code>## Gyakori kérdések</code>, <code>## Kapcsolódó szentírási helyek</code>.</div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label for="seo_title" class="form-label">Keresőbeli cím</label>
+        <input type="text" class="form-control" id="seo_title" name="seo_title" maxlength="255"
+               value="{{ old('seo_title', passage is defined ? passage.seo_title : '') }}">
+        <div class="form-text">Üresen: „Név – első más név – szöveg, magyarázat, fordítások”.</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="seo_description" class="form-label">Keresőbeli leírás</label>
+        <input type="text" class="form-control" id="seo_description" name="seo_description" maxlength="320"
+               value="{{ old('seo_description', passage is defined ? passage.seo_description : '') }}">
+        <div class="form-text">Üresen a bevezető.</div>
+    </div>
+</div>
+
+<div class="row align-items-center mb-4">
+    <div class="col-md-3 mb-3">
+        <label for="position" class="form-label">Sorrend</label>
+        <input type="number" class="form-control" id="position" name="position" min="0"
+               value="{{ old('position', passage is defined ? passage.position : '') }}">
+    </div>
+    <div class="col-md-9">
+        <div class="form-check form-switch">
+            <input type="hidden" name="is_active" value="0">
+            <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" value="1"
+                {{ old('is_active', passage is defined and passage.is_active ? '1' : '0') == '1' ? 'checked' : '' }}>
+            <label class="form-check-label" for="is_active">Aktív, a nyilvános oldalon megjelenik</label>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap justify-content-between gap-2">
+    <a href="{{ route('editor.famousPassages.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Vissza a listához
+    </a>
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle"></i> Mentés
+    </button>
+</div>

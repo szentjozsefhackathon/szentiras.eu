@@ -101,10 +101,13 @@ class GuideManagementTest extends TestCase
         $response->assertSee('<loc>'.route('guides.show', $activeGuide).'</loc>', false);
         $response->assertDontSee('<loc>'.route('guides.show', $inactiveGuide).'</loc>', false);
 
-        $this->assertCount(1, $queries);
+        $this->assertCount(2, $queries);
         $this->assertStringContainsString('guides', $queries[0]['query']);
-        $this->assertStringNotContainsString('books', $queries[0]['query']);
-        $this->assertStringNotContainsString('verses', $queries[0]['query']);
+        $this->assertStringContainsString('famous_passages', $queries[1]['query']);
+        foreach ($queries as $query) {
+            $this->assertStringNotContainsString('books', $query['query']);
+            $this->assertStringNotContainsString('verses', $query['query']);
+        }
     }
 
     public function test_information_navigation_links_to_guides(): void

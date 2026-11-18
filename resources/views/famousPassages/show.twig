@@ -1,0 +1,64 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<article class="famous-passage my-4">
+    <nav aria-label="Morzsamenü">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('famousPassages.index') }}">Nevezetes szentírási szakaszok</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ passage.name }}</li>
+        </ol>
+    </nav>
+
+    {% if not passage.is_active %}
+        <div class="alert alert-warning">Ez az oldal még nem nyilvános, csak a szerkesztők látják.</div>
+    {% endif %}
+
+    <header class="d-flex justify-content-between align-items-start gap-3 mb-3">
+        <div>
+            <h1 class="h2 mb-1">{{ passage.name }}</h1>
+            {% if passage.alternative_names is not empty %}
+                <p class="text-muted mb-1">Más néven: {{ passage.alternative_names|join(', ') }}</p>
+            {% endif %}
+            <p class="small text-muted mb-0">{{ passage.reference }}</p>
+        </div>
+        {% if isEditor() %}
+            <a href="{{ route('editor.famousPassages.edit', passage) }}" class="btn btn-sm btn-outline-secondary text-nowrap">
+                <i class="bi bi-pencil"></i> Szerkesztés
+            </a>
+        {% endif %}
+    </header>
+
+    {% if passage.introduction %}
+        <p class="lead">{{ passage.introduction }}</p>
+    {% endif %}
+
+    <section id="szoveg" class="mb-4">
+        <h2 class="h4">A szöveg <small class="text-muted fs-6">({{ translation.name }})</small></h2>
+        {% for verseContainer in verseContainers %}
+            {{ include('textDisplay.parsedVerseContainer', { 'verseContainer': verseContainer, 'translation': translation, 'verseToPlaces': [] }) }}
+        {% endfor %}
+    </section>
+
+    {% if translationRows is not empty %}
+        <section id="forditasok" class="mb-4">
+            <h2 class="h4">{{ passage.key_verse ? passage.key_verse ~ ' különböző fordításokban' : 'Más fordításokban' }}</h2>
+            <div class="list-group shadow-sm">
+                {% for row in translationRows %}
+                    <div class="list-group-item py-3">
+                        {% if row.keyVerseText %}
+                            <blockquote class="mb-1">{{ row.keyVerseText }}</blockquote>
+                        {% endif %}
+                        <a href="{{ row.url }}" class="small">{{ row.translation.name }} ({{ row.translation.abbrev }}) <i class="bi bi-chevron-right"></i></a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if passage.content %}
+        <section class="markdown-content mb-4">
+            {{ passage.content|markdown_to_html|raw }}
+        </section>
+    {% endif %}
+</article>
+{% endblock %}

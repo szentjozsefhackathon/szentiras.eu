@@ -86,6 +86,99 @@ class NumberingSchemeService
     }
 
     /**
+     * Whether a translation numbers its chapters and verses the Vulgate way (KAL), set by
+     * 'numberingScheme' => 'vulgata' in its translation definition.
+     */
+    public function usesVulgataNumbering(string $translationAbbrev): bool
+    {
+        return config("translations.definitions.{$translationAbbrev}.numberingScheme") === 'vulgata';
+    }
+
+    /**
+     * Converts a reference written in the default numbering into the Vulgate numbering:
+     * "Zsolt 23" becomes "Zsolt 22,1-6". Chapters and verses without a mapping keep their numbers.
+     */
+    public function toVulgata(CanonicalReference $ref): CanonicalReference
+    {
+        $translation = $ref->translationId ? $this->translationRepository->getById($ref->translationId) : null;
+        $translationAbbrev = $translation ? $translation->abbrev : 'default';
+        $vulgataVersesByDefaultVerse = $this->getVulgataVersesByDefaultVerse();
+
+        $verses = $this->hasVerseNumbers($ref) ? $this->expandToVerseList($ref) : [];
+        if ($verses === []) {
+            foreach ($ref->bookRefs as $bookRef) {
+                $usx = UsxCodes::getUsxFromBookAbbrevAndTranslation($bookRef->bookId, $translationAbbrev);
+                foreach ($bookRef->chapterRanges as $chapterRange) {
+                    $endChapter = $chapterRange->untilChapterRef->chapterId ?? $chapterRange->chapterRef->chapterId;
+                    for ($chapter = $chapterRange->chapterRef->chapterId; $chapter <= $endChapter; $chapter++) {
+                        $mappedVerses = array_filter(
+                            $vulgataVersesByDefaultVerse,
+                            fn (string $key): bool => str_starts_with($key, "{$usx} {$chapter}:"),
+                            ARRAY_FILTER_USE_KEY,
+                        );
+                        if ($mappedVerses === []) {
+                            return $ref;
+                        }
+                        foreach ($mappedVerses as [$targetUsx, $targetChapter, $targetVerse]) {
+                            $verses[] = [
+                                'bookId' => UsxCodes::getPreferredAbbreviation($targetUsx, $translationAbbrev) ?? $bookRef->bookId,
+                                'chapter' => $targetChapter,
+                                'verse' => $targetVerse,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            return $this->buildCanonicalReference($verses, $ref->translationId);
+        }
+
+        $mappedVerses = [];
+        foreach ($verses as $verse) {
+            $usx = UsxCodes::getUsxFromBookAbbrevAndTranslation($verse['bookId'], $translationAbbrev);
+            $key = "{$usx} {$verse['chapter']}:{$verse['verse']}";
+            if ($usx && isset($vulgataVersesByDefaultVerse[$key])) {
+                [$targetUsx, $targetChapter, $targetVerse] = $vulgataVersesByDefaultVerse[$key];
+                $mappedVerses[] = [
+                    'bookId' => UsxCodes::getPreferredAbbreviation($targetUsx, $translationAbbrev) ?? $verse['bookId'],
+                    'chapter' => $targetChapter,
+                    'verse' => $targetVerse,
+                ];
+            } else {
+                $mappedVerses[] = $verse;
+            }
+        }
+
+        return $this->buildCanonicalReference($mappedVerses, $ref->translationId);
+    }
+
+    /**
+     * The default-numbered chapter a Vulgate-numbered chapter starts in: Psalm 22 → 23.
+     */
+    public function defaultChapterOf(string $usxCode, int $vulgataChapter): int
+    {
+        return $this->getChapterMapping()["{$usxCode} {$vulgataChapter}"][0][1] ?? $vulgataChapter;
+    }
+
+    /**
+     * The verse mapping inverted: "PSA 23:1" (default) => ['PSA', 22, 1] (Vulgate).
+     *
+     * @return array<string, array{0: string, 1: int, 2: int}>
+     */
+    private function getVulgataVersesByDefaultVerse(): array
+    {
+        $inverted = [];
+        foreach ($this->getMapping() as $vulgataKey => [$usx, $chapter, $verse]) {
+            if (preg_match('/^(\S+) (\d+):(\d+)$/', $vulgataKey, $matches)) {
+                $inverted["{$usx} {$chapter}:{$verse}"] ??= [$matches[1], (int) $matches[2], (int) $matches[3]];
+            }
+        }
+        uasort($inverted, fn (array $a, array $b): int => [$a[1], $a[2]] <=> [$b[1], $b[2]]);
+
+        return $inverted;
+    }
+
+    /**
      * Expand a CanonicalReference into a flat list of individual verses.
      * Each verse is represented as ['bookId' => ..., 'chapter' => ..., 'verse' => ...].
      *

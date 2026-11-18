@@ -76,6 +76,9 @@
     {% if not readingPlanDay and (pageHeading or metaReference) %}
         <h1 class="h4">{{ pageHeading ? pageHeading : metaReference }}</h1>
     {% endif %}
+    {% for famousPassage in famousPassages ?? [] %}
+        <p class="small mb-2"><a href="{{ route('famousPassages.show', famousPassage) }}"><i class="bi bi-bookmark-star"></i> {{ famousPassage.displayName() }} ({{ famousPassage.reference }}): magyarázat és fordítások</a></p>
+    {% endfor %}
     {% if bookIntroductionLink %}
         <p class="small mb-2"><a href="{{ bookIntroductionLink }}"><i class="bi bi-book"></i> Bevezetés a könyvhöz</a></p>
     {% endif %}

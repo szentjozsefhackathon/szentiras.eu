@@ -24,6 +24,7 @@ use SzentirasHu\Data\Repository\ReadingPlanRepository;
 use SzentirasHu\Data\BookCommonNames;
 use SzentirasHu\Data\Entity\Book;
 use SzentirasHu\Models\BookIntroduction;
+use SzentirasHu\Models\FamousPassage;
 use SzentirasHu\Models\GreekVerse;
 use SzentirasHu\Models\Media;
 use SzentirasHu\Data\Entity\Place;
@@ -428,6 +429,7 @@ class TextDisplayController extends Controller
                 'metaReference' => $this->getReference($verseContainers),
                 'pageHeading' => $pageHeading,
                 'bookIntroductionLink' => $this->bookIntroductionLink($verseContainers, $translation),
+                'famousPassages' => $this->famousPassagesIn($verseContainers, $translation),
                 'teaser' => $this->buildMetaDescription($verseContainers, $translation),
                 'chapterLinks' => $chapterLinks,
                 'media' => $mediaVerses ?? [],
@@ -777,6 +779,29 @@ class TextDisplayController extends Controller
         $hasIntroduction = BookIntroduction::query()->forBook($translation->id, $book->usx_code)->exists();
 
         return $hasIntroduction ? "/{$translation->abbrev}/{$book->abbrev}#bevezetes" : null;
+    }
+
+    /**
+     * The famous passages in the displayed chapter, for a banner that links to their pages.
+     * Passages are stored in the default numbering, so a Vulgate-numbered chapter is converted first.
+     *
+     * @param VerseContainer[] $verseContainers
+     * @return \Illuminate\Database\Eloquent\Collection<int, FamousPassage>|null
+     */
+    private function famousPassagesIn(array $verseContainers, Translation $translation): ?\Illuminate\Database\Eloquent\Collection
+    {
+        $chapterRanges = count($verseContainers) === 1 ? ($verseContainers[0]->bookRef->chapterRanges ?? []) : [];
+        if (count($chapterRanges) !== 1 || $chapterRanges[0]->untilChapterRef !== null) {
+            return null;
+        }
+
+        $usxCode = $verseContainers[0]->book->usx_code;
+        $chapter = (int) $chapterRanges[0]->chapterRef->chapterId;
+        if ($this->numberingSchemeService->usesVulgataNumbering($translation->abbrev)) {
+            $chapter = $this->numberingSchemeService->defaultChapterOf($usxCode, $chapter);
+        }
+
+        return FamousPassage::query()->active()->inChapter($usxCode, $chapter)->get();
     }
 
     /**

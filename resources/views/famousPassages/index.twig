@@ -1,0 +1,43 @@
+{% extends 'layout.twig' %}
+{% set pageTitle = 'Nevezetes szentírási szakaszok – a Biblia leghíresebb részei | Szentírás' %}
+{% set teaser = 'A Biblia legismertebb részei egy helyen: a szöveg több fordításban, összefüggései és magyarázata.' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Nevezetes szentírási szakaszok</h1>
+    <p class="text-muted">A Biblia legismertebb részei: a szöveg több fordításban, összefüggései és magyarázata.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="famous-passages-list">
+    {% if passages is empty %}
+        <div class="alert alert-info">
+            Jelenleg nincs elérhető szakasz.
+        </div>
+    {% else %}
+        <div class="list-group shadow-sm">
+            {% for passage in passages %}
+                <a href="{{ route('famousPassages.show', passage) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-3 py-3">
+                    <span class="d-flex align-items-start gap-2">
+                        <i class="bi bi-bookmark-star text-primary"></i>
+                        <span class="d-flex flex-column align-items-start gap-1">
+                            <strong>{{ passage.name }}</strong>
+                            <span class="small text-muted">{{ passage.reference }}{% if passage.alternative_names is not empty %} · {{ passage.alternative_names|join(', ') }}{% endif %}</span>
+                        </span>
+                    </span>
+                    <i class="bi bi-chevron-right text-muted"></i>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if isEditor() %}
+        <div class="mt-4">
+            <a href="{{ route('editor.famousPassages.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil-square"></i> Nevezetes szakaszok kezelése
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

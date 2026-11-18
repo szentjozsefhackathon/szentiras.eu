@@ -1,0 +1,72 @@
+{% extends 'layout.twig' %}
+{% set pageTitle = 'Nevezetes szakaszok kezelése | Szentírás' %}
+
+{% block pageHeader %}
+<div class="page-header mb-4">
+    <h1>Nevezetes szakaszok kezelése</h1>
+    <p class="text-muted">Egy-egy nevezetes szentírási szakasz saját oldala: a szöveg több fordításban, összefüggései és magyarázata. Az inaktív oldalakat csak a szerkesztők látják.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if session('success') %}
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i> {{ session('success') }}
+    </div>
+{% endif %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <a href="{{ route('editor.famousPassages.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Új szakasz
+    </a>
+    <a href="{{ route('famousPassages.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-eye"></i> Nyilvános oldal
+    </a>
+</div>
+
+{% if passages is empty %}
+    <div class="alert alert-info">Még nincs szakasz.</div>
+{% else %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="text-center" style="width: 3rem;">Sorrend</th>
+                        <th scope="col">Név</th>
+                        <th scope="col">Hely</th>
+                        <th scope="col">Állapot</th>
+                        <th scope="col" class="text-end">Műveletek</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for passage in passages %}
+                        <tr>
+                            <td class="text-center">{{ passage.position }}</td>
+                            <td><a href="{{ route('famousPassages.show', passage) }}">{{ passage.name }}</a></td>
+                            <td>{{ passage.reference }}</td>
+                            <td>
+                                {% if passage.is_active %}
+                                    <span class="badge bg-success">Aktív</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Vázlat</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a href="{{ route('editor.famousPassages.edit', passage) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Szerkesztés
+                                </a>
+                                <form action="{{ route('editor.famousPassages.destroy', passage) }}" method="POST" class="d-inline" onsubmit="return confirm('Biztosan törlöd: {{ passage.name|e('js') }}?');">
+                                    {{ csrf_field() }}
+                                    {{ method_field('DELETE') }}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Törlés</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
