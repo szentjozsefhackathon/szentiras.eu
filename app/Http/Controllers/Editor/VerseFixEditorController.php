@@ -99,6 +99,7 @@ class VerseFixEditorController extends Controller
             'translation' => $verse->translation,
             'bookAbbrev' => $verse->book->abbrev,
             'targetVerses' => collect(),
+            'verseTypeOptions' => $this->verseFixService->verseTypeOptions($verse->translation, $verse->tip),
         ]);
     }
 
@@ -110,12 +111,16 @@ class VerseFixEditorController extends Controller
         if ($this->verseFixService->findFixForVerse($verse)) {
             return back()->withInput()->withErrors(['fixed_text' => 'Ehhez a vershez már tartozik javítás.']);
         }
-        if ($validated['fixed_text'] === $verse->verse) {
-            return back()->withInput()->withErrors(['fixed_text' => 'A javított szöveg megegyezik az eredetivel.']);
+        $fixedTip = (int) ($validated['fixed_tip'] ?? $verse->tip);
+        if (! array_key_exists($fixedTip, $this->verseFixService->verseTypeOptions($verse->translation, $verse->tip))) {
+            return back()->withInput()->withErrors(['fixed_tip' => 'Ez a verstípus ennél a fordításnál nem választható.']);
+        }
+        if ($validated['fixed_text'] === $verse->verse && $fixedTip === $verse->tip) {
+            return back()->withInput()->withErrors(['fixed_text' => 'A javított szöveg és típus megegyezik az eredetivel.']);
         }
 
         try {
-            $verseFix = $this->verseFixService->create($verse, $validated['fixed_text'], $validated['note'] ?? null, $this->editorToken($request));
+            $verseFix = $this->verseFixService->create($verse, $validated['fixed_text'], $fixedTip, $validated['note'] ?? null, $this->editorToken($request));
         } catch (VerseFixNotApplicableException $exception) {
             return back()->withInput()->withErrors(['fixed_text' => $exception->getMessage()]);
         }
@@ -135,6 +140,7 @@ class VerseFixEditorController extends Controller
             'translation' => $verseFix->translation,
             'bookAbbrev' => $this->bookAbbrevs(collect([$verseFix]))[$this->bookKey($verseFix->translation_id, $verseFix->usx_code)] ?? $verseFix->usx_code,
             'targetVerses' => $this->verseFixService->findTargetVerses($verseFix),
+            'verseTypeOptions' => $this->verseFixService->verseTypeOptions($verseFix->translation, $verseFix->tip, $verseFix->targetTip()),
         ]);
     }
 
@@ -151,12 +157,16 @@ class VerseFixEditorController extends Controller
             $newOriginalText = (string) $baseVerse->verse;
         }
 
-        if ($validated['fixed_text'] === ($newOriginalText ?? $verseFix->original_text)) {
-            return back()->withInput()->withErrors(['fixed_text' => 'A javított szöveg megegyezik az eredetivel.']);
+        $fixedTip = (int) ($validated['fixed_tip'] ?? $verseFix->targetTip());
+        if (! array_key_exists($fixedTip, $this->verseFixService->verseTypeOptions($verseFix->translation, $verseFix->tip, $verseFix->targetTip()))) {
+            return back()->withInput()->withErrors(['fixed_tip' => 'Ez a verstípus ennél a fordításnál nem választható.']);
+        }
+        if ($validated['fixed_text'] === ($newOriginalText ?? $verseFix->original_text) && $fixedTip === $verseFix->tip) {
+            return back()->withInput()->withErrors(['fixed_text' => 'A javított szöveg és típus megegyezik az eredetivel.']);
         }
 
         try {
-            $this->verseFixService->update($verseFix, $validated['fixed_text'], $validated['note'] ?? null, $newOriginalText, $this->editorToken($request));
+            $this->verseFixService->update($verseFix, $validated['fixed_text'], $fixedTip, $validated['note'] ?? null, $newOriginalText, $this->editorToken($request));
         } catch (VerseFixNotApplicableException $exception) {
             return back()->withInput()->withErrors(['fixed_text' => $exception->getMessage()]);
         }

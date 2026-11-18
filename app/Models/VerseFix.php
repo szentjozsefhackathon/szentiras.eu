@@ -12,7 +12,8 @@ use SzentirasHu\Data\Enum\VerseFixStatus;
 
 /**
  * A manual correction of one stored verse record (translation + gepi + tip),
- * replacing original_text with fixed_text. Re-applied after every import.
+ * replacing original_text with fixed_text and, when fixed_tip is set, tip with fixed_tip.
+ * Re-applied after every import.
  *
  * @property int $id
  * @property int $translation_id
@@ -23,6 +24,7 @@ use SzentirasHu\Data\Enum\VerseFixStatus;
  * @property int $tip
  * @property string $original_text
  * @property string $fixed_text
+ * @property int|null $fixed_tip
  * @property string|null $note
  * @property VerseFixStatus $status
  * @property \Illuminate\Support\Carbon|null $last_applied_at
@@ -68,6 +70,7 @@ class VerseFix extends Model
         'tip',
         'original_text',
         'fixed_text',
+        'fixed_tip',
         'note',
         'status',
         'last_applied_at',
@@ -83,9 +86,18 @@ class VerseFix extends Model
             'chapter' => 'integer',
             'numv' => 'integer',
             'tip' => 'integer',
+            'fixed_tip' => 'integer',
             'status' => VerseFixStatus::class,
             'last_applied_at' => 'datetime',
         ];
+    }
+
+    /**
+     * The verse type the fixed record gets: the changed type, or the original one.
+     */
+    public function targetTip(): int
+    {
+        return $this->fixed_tip ?? $this->tip;
     }
 
     public function translation(): BelongsTo

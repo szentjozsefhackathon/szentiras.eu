@@ -35,6 +35,7 @@ class StoreVerseFixRequest extends FormRequest
         return [
             'verse_id' => ['required', 'integer'],
             'fixed_text' => ['required', 'string', 'max:20000'],
+            'fixed_tip' => ['nullable', 'integer'],
             'note' => ['nullable', 'string', 'max:2000'],
         ];
     }
@@ -48,6 +49,7 @@ class StoreVerseFixRequest extends FormRequest
             'verse_id.required' => 'Hiányzik a javítandó vers azonosítója.',
             'fixed_text.required' => 'A javított szöveget meg kell adni.',
             'fixed_text.max' => 'A javított szöveg legfeljebb 20000 karakter hosszú lehet.',
+            'fixed_tip.integer' => 'A verstípus egy szám.',
             'note.max' => 'A megjegyzés legfeljebb 2000 karakter hosszú lehet.',
         ];
     }

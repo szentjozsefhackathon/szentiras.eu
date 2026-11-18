@@ -9,7 +9,7 @@
         <div>
             <h1>{{ referenceLabel }} <small class="text-muted">{{ translation.abbrev }}</small></h1>
             <p class="text-muted mb-0">
-                <span class="badge bg-light text-dark">tip: {{ target.tip }}</span>
+                <span class="badge bg-light text-dark">tip: {{ target.tip }}{% if verseFix and verseFix.fixed_tip is not null %} → {{ verseFix.fixed_tip }}{% endif %}</span>
                 {% if verseFix %}
                     <span class="badge {{ verseFix.status.badgeClass() }}">{{ verseFix.status.label() }}</span>
                     {% if verseFix.last_applied_at %}
@@ -93,6 +93,17 @@
                 <div class="form-text">A szöveg a forrás jelölőivel (pl. HTML-címkék, lábjegyzetjelek) együtt kerül tárolásra.</div>
             </div>
 
+            {% set selectedTip = old('fixed_tip', verseFix ? verseFix.targetTip() : verse.tip) %}
+            <div class="mb-3">
+                <label for="fixed_tip" class="form-label">Verstípus</label>
+                <select class="form-select" id="fixed_tip" name="fixed_tip">
+                    {% for tip, label in verseTypeOptions %}
+                        <option value="{{ tip }}" {{ selectedTip == tip ? 'selected' }}>{{ tip }} – {{ label }}{{ tip == target.tip ? ' (eredeti)' }}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-text">Pl. egy oda nem illő sort a „Kihúzott sor” típussal lehet elrejteni; a szöveg ilyenkor maradhat változatlan.</div>
+            </div>
+
             <div class="mb-3">
                 <label class="form-label">Változások</label>
                 <div id="fix-diff" class="border rounded p-2 bg-body-tertiary font-monospace small"></div>
@@ -133,6 +144,7 @@
                         <th>Időpont</th>
                         <th>Forrás</th>
                         <th>Állapot</th>
+                        <th>Típus</th>
                         <th>Javított szöveg</th>
                         <th>Megjegyzés</th>
                         <th></th>
@@ -144,10 +156,11 @@
                             <td class="text-nowrap"><small>{{ revision.created_at|date('Y-m-d H:i') }}</small></td>
                             <td><small>{{ revision.source == 'import' ? 'betöltés' : 'szerkesztő' }}</small></td>
                             <td><span class="badge {{ revision.status.badgeClass() }}">{{ revision.status.label() }}</span></td>
+                            <td><small>{{ revision.fixed_tip ?? verseFix.tip }}</small></td>
                             <td><code class="text-body small">{{ revision.fixed_text }}</code></td>
                             <td><small class="text-muted">{{ revision.note }}</small></td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-outline-secondary load-revision" data-text="{{ revision.fixed_text }}">
+                                <button type="button" class="btn btn-sm btn-outline-secondary load-revision" data-text="{{ revision.fixed_text }}" data-tip="{{ revision.fixed_tip ?? verseFix.tip }}">
                                     <i class="bi bi-arrow-counterclockwise"></i> Betöltés
                                 </button>
                             </td>
@@ -222,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.load-revision').forEach(function (button) {
         button.addEventListener('click', function () {
             fixedField.value = button.dataset.text;
+            document.getElementById('fixed_tip').value = button.dataset.tip;
             renderDiff();
             fixedField.focus();
         });

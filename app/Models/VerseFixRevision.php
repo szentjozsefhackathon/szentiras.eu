@@ -15,6 +15,7 @@ use SzentirasHu\Data\Enum\VerseFixStatus;
  * @property int $verse_fix_id
  * @property string $original_text
  * @property string $fixed_text
+ * @property int|null $fixed_tip
  * @property string|null $note
  * @property VerseFixStatus $status
  * @property string $source
@@ -54,6 +55,7 @@ class VerseFixRevision extends Model
         'verse_fix_id',
         'original_text',
         'fixed_text',
+        'fixed_tip',
         'note',
         'status',
         'source',
@@ -66,6 +68,7 @@ class VerseFixRevision extends Model
     protected function casts(): array
     {
         return [
+            'fixed_tip' => 'integer',
             'status' => VerseFixStatus::class,
         ];
     }

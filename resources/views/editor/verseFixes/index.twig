@@ -119,7 +119,7 @@
                             <td>{{ verseFix.translation.abbrev ?? verseFix.translation_id }}</td>
                             <td class="text-nowrap">{{ bookAbbrevs[verseFix.translation_id ~ '_' ~ verseFix.usx_code] ?? verseFix.usx_code }} {{ verseFix.chapter }},{{ verseFix.numv }}</td>
                             <td><span class="badge {{ verseFix.status.badgeClass() }}">{{ verseFix.status.label() }}</span></td>
-                            <td><small>{{ verseFix.fixed_text|striptags|str_limit(120, '…') }}</small></td>
+                            <td><small>{{ verseFix.fixed_text|striptags|str_limit(120, '…') }}{% if verseFix.fixed_tip is not null %} <span class="badge bg-light text-dark">tip: {{ verseFix.tip }} → {{ verseFix.fixed_tip }}</span>{% endif %}</small></td>
                             <td><small class="text-muted">{{ verseFix.note|str_limit(80, '…') }}</small></td>
                             <td class="text-nowrap"><small>{{ verseFix.updated_at|date('Y-m-d H:i') }}</small></td>
                             <td>

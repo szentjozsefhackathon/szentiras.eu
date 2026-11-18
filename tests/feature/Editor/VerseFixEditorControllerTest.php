@@ -376,4 +376,110 @@ class VerseFixEditorControllerTest extends FastDatabaseTestCase
         $this->assertSame(VerseFixStatus::Disabled, $verseFix->fresh()->status);
         $this->assertSame([self::SEEDED_TEXT], $this->storedTexts());
     }
+
+    public function test_form_offers_the_verse_types_of_the_translation_and_the_hidden_type(): void
+    {
+        $this->get(route('editor.verseFixes.create', ['verse_id' => $this->seededVerse()->id]))
+            ->assertOk()
+            ->assertSee('<option value="6" selected>6 – Szöveg (eredeti)</option>', false)
+            ->assertSee('<option value="902" >902 – Verssor</option>', false)
+            ->assertSee('<option value="10" >10 – Címsor (2. szint)</option>', false)
+            ->assertSee('850 – Kihúzott sor, nem jelenik meg');
+    }
+
+    public function test_type_change_alone_hides_a_stray_record(): void
+    {
+        $verse = $this->seededVerse();
+
+        $this->post(route('editor.verseFixes.store'), [
+            'verse_id' => $verse->id,
+            'fixed_text' => self::SEEDED_TEXT,
+            'fixed_tip' => VerseFixService::HIDDEN_VERSE_TYPE,
+        ])->assertSessionHasNoErrors();
+
+        $verseFix = VerseFix::query()->firstOrFail();
+        $this->assertSame(VerseFixService::HIDDEN_VERSE_TYPE, $verseFix->fixed_tip);
+        $this->assertSame(VerseFixService::HIDDEN_VERSE_TYPE, $verse->fresh()->tip);
+        $this->assertSame(self::SEEDED_TEXT, $verse->fresh()->verse);
+        $this->assertSame(VerseFixService::HIDDEN_VERSE_TYPE, $verseFix->revisions()->firstOrFail()->fixed_tip);
+        $this->get('/TESTTRANS/Ter2')->assertOk()->assertDontSee(self::SEEDED_TEXT);
+
+        $this->get(route('editor.verseFixes.create', ['verse_id' => $verse->id]))
+            ->assertRedirect(route('editor.verseFixes.edit', $verseFix));
+        $this->get(route('editor.verseFixes.edit', $verseFix))
+            ->assertOk()
+            ->assertSee('tip: 6 → 850')
+            ->assertSee('<option value="850" selected>', false);
+    }
+
+    public function test_store_rejects_a_verse_type_the_translation_does_not_offer(): void
+    {
+        $this->post(route('editor.verseFixes.store'), [
+            'verse_id' => $this->seededVerse()->id,
+            'fixed_text' => 'verse javított',
+            'fixed_tip' => 4444,
+        ])->assertSessionHasErrors('fixed_tip');
+
+        $this->assertSame(0, VerseFix::query()->count());
+    }
+
+    public function test_update_can_change_text_and_type_back_and_forth(): void
+    {
+        $verseFix = $this->createFix('első változat');
+
+        $this->put(route('editor.verseFixes.update', $verseFix), ['fixed_text' => 'verssor lett', 'fixed_tip' => 902])
+            ->assertSessionHasNoErrors();
+        $this->assertSame(902, $verseFix->fresh()->fixed_tip);
+        $this->assertSame(['verssor lett'], $this->storedTexts(902));
+        $this->assertSame([], $this->storedTexts());
+
+        $this->put(route('editor.verseFixes.update', $verseFix), ['fixed_text' => 'mégis szöveg', 'fixed_tip' => 6])
+            ->assertSessionHasNoErrors();
+        $this->assertNull($verseFix->fresh()->fixed_tip);
+        $this->assertSame(['mégis szöveg'], $this->storedTexts());
+    }
+
+    public function test_disable_restores_original_type(): void
+    {
+        $this->post(route('editor.verseFixes.store'), [
+            'verse_id' => $this->seededVerse()->id,
+            'fixed_text' => self::SEEDED_TEXT,
+            'fixed_tip' => VerseFixService::HIDDEN_VERSE_TYPE,
+        ]);
+        $verseFix = VerseFix::query()->firstOrFail();
+
+        $this->post(route('editor.verseFixes.disable', $verseFix))->assertSessionHasNoErrors();
+
+        $this->assertSame([self::SEEDED_TEXT], $this->storedTexts());
+        $this->assertSame([], $this->storedTexts(VerseFixService::HIDDEN_VERSE_TYPE));
+    }
+
+    public function test_reapply_after_import_changes_the_type_again(): void
+    {
+        $verse = $this->seededVerse();
+        $this->post(route('editor.verseFixes.store'), [
+            'verse_id' => $verse->id,
+            'fixed_text' => self::SEEDED_TEXT,
+            'fixed_tip' => VerseFixService::HIDDEN_VERSE_TYPE,
+        ]);
+        $verse->fresh()->update(['tip' => 6]);
+
+        $statusCounts = app(VerseFixService::class)->reapplyForTranslation(1001);
+
+        $this->assertSame(1, $statusCounts['active']);
+        $this->assertSame(VerseFixService::HIDDEN_VERSE_TYPE, $verse->fresh()->tip);
+    }
+
+    public function test_reapply_detects_type_change_already_in_source(): void
+    {
+        $this->post(route('editor.verseFixes.store'), [
+            'verse_id' => $this->seededVerse()->id,
+            'fixed_text' => self::SEEDED_TEXT,
+            'fixed_tip' => VerseFixService::HIDDEN_VERSE_TYPE,
+        ]);
+
+        $statusCounts = app(VerseFixService::class)->reapplyForTranslation(1001);
+
+        $this->assertSame(1, $statusCounts['resolved_upstream']);
+    }
 }
